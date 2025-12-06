@@ -44,7 +44,7 @@ const ExploreProducts = () => {
    const fetchProducts = async () => {
      setIsLoading(true);
      try {
-         CONST url='https://gruhani3.onrender.com';
+         const url='https://gruhani3.onrender.com';
        console.log('Fetching products from backend...');
 
        // Update the URL to match your backend endpoint
