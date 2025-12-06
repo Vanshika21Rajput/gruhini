@@ -2,15 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
+/* -------------------------------
+   DESIGN TOKENS (CSS Variables)
+--------------------------------*/
 @layer base {
   :root {
-    /* Gruh Aangan Design System - Warm & Trustworthy */
-    --background: 44 83% 97%; /* Cream White #FFF8E7 */
-    --foreground: 0 33% 24%; /* Deep Maroon #7B2E2E */
+    --background: 44 83% 97%;
+    --foreground: 0 33% 24%;
 
     --card: 0 0% 100%;
     --card-foreground: 0 33% 24%;
@@ -18,19 +16,16 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 0 33% 24%;
 
-    /* Terracotta as primary - main CTA color */
-    --primary: 22 60% 58%; /* Terracotta #D98958 */
+    --primary: 22 60% 58%;
     --primary-foreground: 44 83% 97%;
 
-    /* Mint Green as secondary - trust color */
-    --secondary: 93 34% 70%; /* Mint Green #B6D7A8 */
+    --secondary: 93 34% 70%;
     --secondary-foreground: 0 33% 24%;
 
     --muted: 44 50% 92%;
     --muted-foreground: 22 20% 45%;
 
-    /* Turmeric Yellow as accent */
-    --accent: 48 100% 45%; /* Turmeric Yellow #E6B800 */
+    --accent: 48 100% 45%;
     --accent-foreground: 0 33% 24%;
 
     --destructive: 0 84% 60%;
@@ -40,18 +35,15 @@ All colors MUST be HSL.
     --input: 44 30% 85%;
     --ring: 22 60% 58%;
 
-    /* Custom Gruh Aangan tokens */
-    --ethnic-primary: 0 33% 24%; /* Deep Maroon */
-    --ethnic-accent: 48 100% 45%; /* Turmeric */
-    --warm-bg: 44 83% 97%; /* Cream */
-    --trust-green: 93 34% 70%; /* Mint Green */
-    
-    /* Gradients */
+    --ethnic-primary: 0 33% 24%;
+    --ethnic-accent: 48 100% 45%;
+    --warm-bg: 44 83% 97%;
+    --trust-green: 93 34% 70%;
+
     --gradient-ethnic: linear-gradient(135deg, hsl(22 60% 58%), hsl(48 100% 45%));
     --gradient-warm: linear-gradient(180deg, hsl(44 83% 97%), hsl(44 50% 92%));
     --gradient-trust: linear-gradient(135deg, hsl(93 34% 70%), hsl(22 60% 58%));
-    
-    /* Shadows */
+
     --shadow-warm: 0 4px 20px hsl(22 60% 58% / 0.15);
     --shadow-gentle: 0 2px 10px hsl(0 33% 24% / 0.08);
     --shadow-ethnic: 0 8px 32px hsl(0 33% 24% / 0.12);
@@ -59,19 +51,12 @@ All colors MUST be HSL.
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -103,22 +88,37 @@ All colors MUST be HSL.
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
 
+/* ----------------------------------------------
+   FIX: CUSTOM TAILWIND UTILITY CLASSES
+   (Required for bg-background, text-foreground, etc.)
+---------------------------------------------- */
+@layer utilities {
+  .bg-background { background-color: hsl(var(--background)); }
+  .text-foreground { color: hsl(var(--foreground)); }
+
+  .bg-card { background-color: hsl(var(--card)); }
+  .text-card-foreground { color: hsl(var(--card-foreground)); }
+
+  .border-border { border-color: hsl(var(--border)); }
+  .bg-popover { background-color: hsl(var(--popover)); }
+  .text-popover-foreground { color: hsl(var(--popover-foreground)); }
+
+  .bg-primary { background-color: hsl(var(--primary)); }
+  .text-primary-foreground { color: hsl(var(--primary-foreground)); }
+
+  .bg-secondary { background-color: hsl(var(--secondary)); }
+  .text-secondary-foreground { color: hsl(var(--secondary-foreground)); }
+}
+
+/* ----------------------------------------------
+   GLOBAL DEFAULTS
+---------------------------------------------- */
 @layer base {
   * {
-
     @apply border border-gray-500;
-
   }
 
   body {
