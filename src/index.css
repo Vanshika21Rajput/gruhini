@@ -1,0 +1,125 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Gruh Aangan Design System - Warm & Trustworthy */
+    --background: 44 83% 97%; /* Cream White #FFF8E7 */
+    --foreground: 0 33% 24%; /* Deep Maroon #7B2E2E */
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 33% 24%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 33% 24%;
+
+    /* Terracotta as primary - main CTA color */
+    --primary: 22 60% 58%; /* Terracotta #D98958 */
+    --primary-foreground: 44 83% 97%;
+
+    /* Mint Green as secondary - trust color */
+    --secondary: 93 34% 70%; /* Mint Green #B6D7A8 */
+    --secondary-foreground: 0 33% 24%;
+
+    --muted: 44 50% 92%;
+    --muted-foreground: 22 20% 45%;
+
+    /* Turmeric Yellow as accent */
+    --accent: 48 100% 45%; /* Turmeric Yellow #E6B800 */
+    --accent-foreground: 0 33% 24%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 44 83% 97%;
+
+    --border: 44 30% 85%;
+    --input: 44 30% 85%;
+    --ring: 22 60% 58%;
+
+    /* Custom Gruh Aangan tokens */
+    --ethnic-primary: 0 33% 24%; /* Deep Maroon */
+    --ethnic-accent: 48 100% 45%; /* Turmeric */
+    --warm-bg: 44 83% 97%; /* Cream */
+    --trust-green: 93 34% 70%; /* Mint Green */
+    
+    /* Gradients */
+    --gradient-ethnic: linear-gradient(135deg, hsl(22 60% 58%), hsl(48 100% 45%));
+    --gradient-warm: linear-gradient(180deg, hsl(44 83% 97%), hsl(44 50% 92%));
+    --gradient-trust: linear-gradient(135deg, hsl(93 34% 70%), hsl(22 60% 58%));
+    
+    /* Shadows */
+    --shadow-warm: 0 4px 20px hsl(22 60% 58% / 0.15);
+    --shadow-gentle: 0 2px 10px hsl(0 33% 24% / 0.08);
+    --shadow-ethnic: 0 8px 32px hsl(0 33% 24% / 0.12);
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
