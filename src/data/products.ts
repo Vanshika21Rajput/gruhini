@@ -63,19 +63,19 @@ export const categories = [
 export const realProducts: Product[] = [
   {
     id: 1,
-    name: "Atte ke laddu",
+    name: "Atte ke Laddu",
     seller: "Sunita's Kitchen",
     price: "₹249",
     originalPrice: "₹299",
     discount: "17% OFF",
     rating: 4.8,
     deliveryTime: "45 min",
-    image: "/products/atte-ke-laddu.jpeg" ,
+    image: "/products/atte-ke-laddu.jpeg",
     badge: "Bestseller",
     verified: true,
     category: "Homemade Food",
-    subcategory: "Traditional Meals",
-    description: "Authentic Atte ke laddu cooked fresh at home."
+    subcategory: "Traditional Sweets",
+    description: "Authentic Atte ke Laddu cooked fresh at home."
   },
   {
     id: 2,
