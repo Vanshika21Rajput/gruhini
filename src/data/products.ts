@@ -63,19 +63,19 @@ export const categories = [
 export const realProducts: Product[] = [
   {
     id: 1,
-    name: "Gujarati Thali",
+    name: "Atte ke laddu",
     seller: "Sunita's Kitchen",
     price: "₹249",
     originalPrice: "₹299",
     discount: "17% OFF",
     rating: 4.8,
     deliveryTime: "45 min",
-    image: "/products/gujarati-thali.jpg",
+    image: "/products/atte-ke-laddu.jpeg" ,
     badge: "Bestseller",
     verified: true,
     category: "Homemade Food",
     subcategory: "Traditional Meals",
-    description: "Authentic Gujarati thali cooked fresh at home."
+    description: "Authentic Atte ke laddu cooked fresh at home."
   },
   {
     id: 2,
