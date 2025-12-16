@@ -1,7 +1,7 @@
 // CommonJS protobuf decoder for ProductList.
 // Exports decodeProductList function using module.exports.
 
-function decodeProductList(bytes) {
+export function decodeProductList(bytes) {
   const products = [];
 
   if (bytes.length === 0) {
@@ -251,7 +251,6 @@ function decodeIntField(value, wireType) {
   }
   return 0;
 }
+// Named export for ESM consumers
+export { decodeProductList };
 
-module.exports = {
-  decodeProductList,
-};
