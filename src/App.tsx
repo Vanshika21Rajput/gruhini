@@ -33,11 +33,32 @@ import Register from "./pages/Register";
 import AdminDashboard from './pages/AdminDashboard';
 import './App.css';
 
-// 1. Removed the top-level fetch that was blocking the app.
-// If you need to test the protobuf decoding, do it inside a component (like Index.tsx)
-// or use a console.log inside a useEffect hook.
+import { decodeProductList } from './lib/product.client.ts';
+const response = await fetch('/get-all-products');
+const bytes = new Uint8Array(await response.arrayBuffer());
+const { products } = decodeProductList(bytes);
+
+
+
+
+
+
+
+
+
+
+
+
 
 const queryClient = new QueryClient();
+
+function Apps() {
+  return (
+    <div className="App">
+      <AdminDashboard />
+    </div>
+  );
+}
 
 const App = () => {
   const [showIntro, setShowIntro] = useState(true);
