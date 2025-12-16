@@ -1,5 +1,5 @@
 // API configuration and utilities
-const API_BASE_URL = 'http://localhost:8080'; // Your Spring Boot backend URL
+const API_BASE_URL = 'https://gruhani3.onrender.com'; // Your Spring Boot backend URL
 
 export interface LoginRequest {
   username: string;
