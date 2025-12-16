@@ -33,7 +33,7 @@ import Register from "./pages/Register";
 import AdminDashboard from './pages/AdminDashboard';
 import './App.css';
 
-import { decodeProductList } from './lib/product.client.js';
+import { decodeProductList } from './lib/product.client';
 const response = await fetch('/get-all-products');
 const bytes = new Uint8Array(await response.arrayBuffer());
 const { products } = decodeProductList(bytes);
