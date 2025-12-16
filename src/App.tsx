@@ -33,10 +33,8 @@ import Register from "./pages/Register";
 import AdminDashboard from './pages/AdminDashboard';
 import './App.css';
 
-import { decodeProductList } from './lib/product.client.ts';
-const response = await fetch('/get-all-products');
-const bytes = new Uint8Array(await response.arrayBuffer());
-const { products } = decodeProductList(bytes);
+// Note: product fetching/decoding is handled inside pages/components (e.g. ExploreProducts).
+// Removed top-level fetch to avoid top-level await and target-environment issues during build.
 
 
 
