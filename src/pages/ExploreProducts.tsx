@@ -41,87 +41,65 @@ const ExploreProducts = () => {
   const HEADER_HEIGHT_OFFSET = "72px";
 
   useEffect(() => {
-   const fetchProducts = async () => {
-     setIsLoading(true);
-     try {
-         const url='https://gruhani3.onrender.com';
-       console.log('Fetching products from backend...');
+    const fetchProducts = async () => {
+      setIsLoading(true);
+      try {
+        // 1. Correct URL with the specific endpoint
+        const url = 'https://gruhani3.onrender.com/get-all-products';
+        console.log('Fetching products from:', url);
 
-       // Update the URL to match your backend endpoint
-       const response = await fetch({url}, {
-         method: 'GET',
-         headers: {
-           "Accept": "application/json",
-           "Content-Type": "application/json"
-         },
-         credentials: 'include'
-       });
+        const response = await fetch(url, {
+          method: 'GET',
+        });
 
-       if (!response.ok) {
-         throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
-       }
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
+        }
 
-       const data = await response.json();
-       console.log('Received JSON products:', data.length);
+        // 2. Receive as ArrayBuffer (Binary Data), not JSON
+        const buffer = await response.arrayBuffer();
+        const bytes = new Uint8Array(buffer);
 
-       // Map JSON products to frontend format
-       const mapped: MappedProduct[] = data.map((p, index) => {
-         console.log(`Processing product ${index + 1}:`, {
-           id: p.id,
-           name: p.name,
-           price: p.price,
-           rating: p.rating,
-           stock: p.stock
-         });
+        // 3. Decode using your helper function
+        console.log('Received bytes:', bytes.length);
+        const { products: protobufProducts } = decodeProductList(bytes as unknown as Uint8Array);
+        console.log('Decoded products:', protobufProducts.length);
 
-         // Convert string price to display format
-         const numericPrice = parseFloat(p.price) || 0;
-         const formattedPrice = `₹${numericPrice.toFixed(2)}`;
+        // 4. Map Protobuf data to your Frontend Interface
+        const mapped: MappedProduct[] = protobufProducts.map((p, index) => {
+          const numericId = parseInt(p.id) || index + 1;
+          const priceString = (p.price || '').toString().replace(/[^0-9.]/g, '');
+          const numericPrice = parseFloat(priceString) || 0;
+          const formattedPrice = `₹${numericPrice.toFixed(2)}`;
 
-         // Convert string id to number for frontend
-         const numericId = parseInt(p.id) || index + 1;
+          return {
+            id: numericId,
+            name: p.name || `Product ${numericId}`,
+            seller: 'Gruhini Seller',
+            price: formattedPrice,
+            originalPrice: undefined,
+            discount: undefined,
+            rating: p.rating || 0,
+            deliveryTime: '2-3 days',
+            image: p.image || '/placeholder.svg',
+            badge: p.badge || '',
+            verified: p.verified || false,
+            category: p.category || 'Home Decor',
+            subcategory: p.subcategory || 'Herbal Soaps',
+            description: p.description || 'No description available',
+            kitchenVideoUrl: undefined,
+            stock: p.stock || 0,
+          };
+        });
 
-         return {
-           id: numericId,
-           name: p.name || `Product ${numericId}`,
-           seller: "Gruhini Seller", // You may need to get seller info from another API
-           price: formattedPrice,
-           originalPrice: undefined, // Not available in JSON
-           discount: undefined, // Not available in JSON
-           rating: p.rating || 0,
-           deliveryTime: "2-3 days", // Default delivery time
-           image: p.image || "/placeholder.svg",
-           badge: p.badge || "",
-           verified: p.verified || false,
-           category: p.category || "Home Decor",
-           subcategory: p.subcategory || "Herbal Soaps",
-           description: p.description || "No description available",
-           kitchenVideoUrl: undefined, // Not available in JSON
-           stock: p.stock || 0
-         };
-       });
-
-       console.log('Mapped products for frontend:', mapped.length);
-       setProducts(mapped);
-     } catch (error) {
-       console.error("Failed to fetch JSON products:", error);
-
-       // More detailed error logging
-       if (error instanceof TypeError && error.message.includes('fetch')) {
-         console.error('Network error - check if backend is running on http://localhost:8085');
-       } else if (error instanceof Error && error.message.includes('HTTP error')) {
-         console.error('Backend returned error response');
-       } else {
-         console.error('JSON parsing error:', error);
-       }
-
-       // Fallback to empty array on error
-       setProducts([]);
-     } finally {
-       setIsLoading(false);
-     }
-   };
-
+        setProducts(mapped);
+      } catch (error) {
+        console.error('Failed to fetch products:', error);
+        setProducts([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
     fetchProducts();
   }, []);
