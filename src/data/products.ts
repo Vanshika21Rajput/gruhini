@@ -57,3 +57,38 @@ export const categories = [
     ]
   }
 ];
+
+// ================= REAL PRODUCTS =================
+
+export const realProducts: Product[] = [
+  {
+    id: 1,
+    name: "Gujarati Thali",
+    seller: "Sunita's Kitchen",
+    price: "₹249",
+    originalPrice: "₹299",
+    discount: "17% OFF",
+    rating: 4.8,
+    deliveryTime: "45 min",
+    image: "/products/gujarati-thali.jpg",
+    badge: "Bestseller",
+    verified: true,
+    category: "Homemade Food",
+    subcategory: "Traditional Meals",
+    description: "Authentic Gujarati thali cooked fresh at home."
+  },
+  {
+    id: 2,
+    name: "Besan Ladoo",
+    seller: "Sharma Sweets",
+    price: "₹199",
+    rating: 4.6,
+    deliveryTime: "30 min",
+    image: "/products/besan-ladoo.jpg",
+    badge: "Pure Ghee",
+    verified: true,
+    category: "Homemade Food",
+    subcategory: "Traditional Sweets",
+    description: "Traditional besan ladoos made with pure desi ghee."
+  }
+];
