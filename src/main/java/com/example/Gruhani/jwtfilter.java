@@ -41,7 +41,20 @@ public class jwtfilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String headauth= request.getHeader("Authorization");
         System.out.println("inside jwt filter");
-        if(headauth!=null && headauth.startsWith("Bearer") )
+
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        String path = request.getServletPath();
+        if (path.equals("/logins") ||
+                path.equals("/register") ||
+                path.equals("/register-seller")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        if(headauth!=null && headauth.startsWith("Bearer ") )
         {
                String s=headauth.split("Bearer ")[1];
                 String user=a.validatetoken(s);//validate and get username from token

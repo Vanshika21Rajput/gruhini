@@ -7,7 +7,6 @@ import com.example.Gruhani.dtos.sellerDto;
 import com.example.Gruhani.dtos.userDto;
 import com.example.Gruhani.models.Seller;
 import com.example.Gruhani.models.Users;
-import com.example.Gruhani.service.Mail;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 @RestController
-public class ProductandSeller {
+public class RegisterALL {
     @Autowired
     SellerRepo srepo;
     @Autowired
@@ -30,6 +29,8 @@ public class ProductandSeller {
 
 @Autowired
     BCryptPasswordEncoder bcp;
+
+// REGISTER USER
     @PostMapping("/register")
     public ResponseEntity<Map<String, Object>> register(@RequestBody @Valid userDto user) {
         try {
@@ -66,6 +67,10 @@ public class ProductandSeller {
         }
 
     }
+
+
+
+    // REGISTER SELLER
 
     @PostMapping("/register-seller")
     public ResponseEntity<?> sellerRegister( @Valid @RequestBody sellerDto sd)

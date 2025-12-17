@@ -72,6 +72,9 @@ public class AuthController {
         request.getSession().invalidate(); // Invalidate session
         return ResponseEntity.ok("Logged out successfully");
     }
+
+
+    //SESSION BASED FORM LOGIN LOGIC commented because now we have updated with JWT
   /*  @PostMapping("/logins")
     public ResponseEntity<?> loginPage(@RequestBody @Valid LoginRequest lr, HttpServletRequest req) {
         Authentication authentication;
