@@ -57,7 +57,7 @@ public UserDetailsService userDetailsService()
                     .logoutSuccessUrl("/logins")
                   )
 
-                .authorizeHttpRequests(o->o.requestMatchers("/logins").permitAll()
+                .authorizeHttpRequests(o->o.requestMatchers("/logins","/register","/register-seller").permitAll()
                  ///logins","/register","/home","/api/**","/register-seller","/seller-login","/view-pending","/get-all-products","/add-product","/got-message","/upload"
                     .anyRequest().authenticated())
                 .addFilterBefore(jf, UsernamePasswordAuthenticationFilter.class)
@@ -69,7 +69,7 @@ public UserDetailsService userDetailsService()
     public CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*")); // ✅ use this
+        configuration.setAllowedOrigins(Arrays.asList("https://gruhani-zjje.onrender.com/"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
