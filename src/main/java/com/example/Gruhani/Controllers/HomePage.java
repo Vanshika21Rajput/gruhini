@@ -109,6 +109,8 @@ public class products_seller {
 
     }
 
+    //SENDING PRODUCTS TO FRONTEND VIA PROTOBUF BUT JS PROTOBUF DECODER FAILED,PROTOBUF SUCCESSFULLY WORKED IN BACKED
+
 /*
     @GetMapping(value = "/get-all-products00", produces = "application/x-protobuf")
     public byte[] getProductsAsProtobufss() {
@@ -155,7 +157,7 @@ public class products_seller {
 
     }
 
-    @CrossOrigin(origins = "https://grihini-1.onrender.com", allowCredentials = "true")
+  //  @CrossOrigin(origins = "https://grihini-1.onrender.com", allowCredentials = "true")
     @GetMapping("/view-pending")
     public ResponseEntity<?> methods() {
 
@@ -204,29 +206,10 @@ public class products_seller {
         return ResponseEntity.ok().body("ok");
     }
 
-    String VERIFY_TOKEN = "gruhani-token";
 
 
-    // same as the one you gave in dashboard
-    @GetMapping("/got-message")
-    public ResponseEntity<String> verifyWebhook(
-            @RequestParam("hub.mode") String mode,
-            @RequestParam("hub.verify_token") String token,
-            @RequestParam("hub.challenge") String challenge) {
-        System.out.print("reached inside");
 
-        if ("subscribe".equals(mode) && VERIFY_TOKEN.equals(token)) {
-            return ResponseEntity.ok(challenge);  // ✅ Verification success
-        } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Verification failed kutttsss");
-        }
-    }
 
-    @PostMapping("/got-message")
-    public ResponseEntity<String> vanshi(@RequestBody Map<String, Object> payload) {
-        System.out.println("mesaage form user0" + payload);
-        return ResponseEntity.ok("done");
-    }
 
 }
 
