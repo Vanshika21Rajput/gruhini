@@ -114,14 +114,11 @@
 }
 
 /* ----------------------------------------------
-   GLOBAL DEFAULTS
+   GLOBAL DEFAULTS (PRODUCTION SAFE)
 ---------------------------------------------- */
 @layer base {
-  * {
-    @apply border border-gray-500;
-  }
-
   body {
     @apply bg-background text-foreground;
   }
 }
+
