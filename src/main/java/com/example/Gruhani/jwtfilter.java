@@ -41,12 +41,13 @@ public class jwtfilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String headauth= request.getHeader("Authorization");
         System.out.println("inside jwt filter");
-
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            filterChain.doFilter(request, response);
+            response.setStatus(HttpServletResponse.SC_OK);
             return;
         }
 
+
+        System.out.print("inside jwt shpuldnt be here");
         String path = request.getServletPath();
         if (path.equals("/logins") ||
                 path.equals("/register") ||
