@@ -73,7 +73,7 @@ return responseo.id();
 
 
 
-    public int addindex(productdto pdto) throws IOException {
+   /* public int addindex(productdto pdto) throws IOException {
     try {
         Document d = new Document();
 
@@ -101,7 +101,7 @@ return responseo.id();
     }
     return 1;
 
-    }
+    }*/
     public void searchidx(String s) throws ParseException, IOException {
         QueryParser qp=new QueryParser("name",new StandardAnalyzer());
         Query q=qp.parse(s);

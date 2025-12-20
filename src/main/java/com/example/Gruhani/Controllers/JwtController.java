@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 public class JwtController {
 
@@ -24,16 +26,16 @@ public class JwtController {
     authutil at;
 
     @PostMapping("/logins")
-    public ResponseEntity<String> method(@RequestBody @Valid userDto u)
+    public ResponseEntity<Map<String, String>> method(@RequestBody @Valid userDto u)
     {
         Authentication auth=authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(u.getEmail(),u.getPassword()));
          if(auth.isAuthenticated())
          {
             userdetails ut= (userdetails) auth.getPrincipal();
             String token=at.generateToken(ut);
-            return ResponseEntity.ok(token);
+            return ResponseEntity.ok(Map.of("token", token));
          }
-         return ResponseEntity.badRequest().body("try again later dear");
+         return (ResponseEntity<Map<String, String>>) ResponseEntity.badRequest();
 
     }
 }

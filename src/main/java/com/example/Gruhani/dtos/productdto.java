@@ -10,7 +10,7 @@ public class productdto {
 
     String id;
    String  name;
-   String price;
+   int price;
     String category;
      String subcategory;
   String  description;
@@ -48,11 +48,11 @@ public class productdto {
         this.name = name;
     }
 
-    public String getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 

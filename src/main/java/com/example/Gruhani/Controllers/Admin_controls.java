@@ -50,8 +50,8 @@ public class Admin_controls {
 
         System.out.print("lullu" + selectedOrders);
         for (Idclass i : selectedOrders) {
-            String id = i.getId();
-            product p = prepo.findByid(id);
+            Long id = i.getId();
+            product p = prepo.findByid(id).get();
             p.setStatus("approved");
             System.out.print("product" + p);
 
@@ -66,8 +66,8 @@ public class Admin_controls {
 
         System.out.print("lullu" + selectedOrders);
         for (Idclass i : selectedOrders) {
-            String id = i.getId();
-            product p = prepo.findByid(id);
+            Long id = i.getId();
+            product p = prepo.findByid(id).get();
             p.setStatus("rejected");
             System.out.print("product" + p);
 

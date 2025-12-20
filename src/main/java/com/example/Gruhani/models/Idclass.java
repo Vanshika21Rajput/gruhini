@@ -4,13 +4,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Idclass {
-    String id;
+    Long id;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 }

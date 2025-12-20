@@ -8,12 +8,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductRepo extends JpaRepository<product,String> {
     List<product> findAllBystatus(String approved);
 
-    product findByid(String id);
+    Optional<product> findByid(Long id);
 
      List<product> findAllByname(String s);
 

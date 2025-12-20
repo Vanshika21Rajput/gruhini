@@ -1,35 +1,32 @@
 package com.example.Gruhani.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "products", schema = "public")
 public class product {
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
-    String id;
+    Long id;
     String name;
     String description;
     Boolean verified;
-    String price;
+    int price;
     float rating;
     String badge;
     String deliverytime;
     String image;
-     int quantity;
+
     String status;
     String category;
     String subcategory;
     int stock;
     String discount;
 
-    public int getQuantity() {
-        return quantity;
-    }
+    @ManyToOne
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
+    @JoinColumn(name="seller_id",nullable = true)
+    Seller seller;
 
     public String getCategory() {
         return category;
@@ -75,16 +72,13 @@ public class product {
         this.rating = rating;
     }
 
-    @ManyToOne
 
-    @JoinColumn(name="seller_id",nullable = true)
-    Seller seller;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -112,11 +106,11 @@ public class product {
         this.verified = verified;
     }
 
-    public String getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 
@@ -161,4 +155,6 @@ public class product {
     public void setSeller(Seller seller) {
         this.seller = seller;
     }
+
+
 }

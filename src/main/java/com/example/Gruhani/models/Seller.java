@@ -5,11 +5,12 @@ import net.minidev.json.annotate.JsonIgnore;
 import java.util.List;
 
 @Entity
-@Table(name = "Seller", schema = "public")
+@Table(name = "seller", schema = "public")
 public class Seller {
+    @GeneratedValue(
+            strategy = GenerationType.AUTO)
     @Id
-    String id;
-    String name;
+    Long id;
     String address;
     String contactNo;
     Boolean isApproved;
@@ -17,19 +18,10 @@ public class Seller {
     @JoinColumn(name="user_id")
     @OneToOne
     Users user;
-    @JoinColumn(name="seller_id",nullable = true)
-    @OneToMany
+
+    @OneToMany(mappedBy = "seller",fetch=FetchType.LAZY,orphanRemoval = true,cascade = CascadeType.ALL)
     List<product> pr;
-
-    String email;
-List<String> categories;
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
+     List<String> categories;
 
     public Users getUser() {
         return user;
@@ -47,21 +39,15 @@ List<String> categories;
         BusinessName = businessName;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public Boolean getApproved() {
         return isApproved;

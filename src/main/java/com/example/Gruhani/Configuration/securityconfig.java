@@ -51,7 +51,6 @@ public UserDetailsService userDetailsService()
         return hs.csrf(o->o.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(h->h.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
                 .logout(logout -> logout
                     .logoutUrl("/logout")
                     .logoutSuccessUrl("/logins")
@@ -69,7 +68,7 @@ public UserDetailsService userDetailsService()
     public CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("https://gruhani-zjje.onrender.com"));
+        configuration.setAllowedOrigins(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);

@@ -1,9 +1,6 @@
 package com.example.Gruhani.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.Set;
 
@@ -11,14 +8,29 @@ import java.util.Set;
 @Table(name = "Users", schema = "public")
 public class Users {
     @Id
-    String id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    Long id;
 
     String name;
     @Column(unique = true)
     String email;
     String contact;
     String password;
+    @ElementCollection(fetch = FetchType.EAGER)
+
     Set<String> role;
+    String address;
+    @OneToOne(mappedBy = "u",fetch=FetchType.LAZY,cascade = CascadeType.ALL)
+    Cart cart;
+
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
     public String getName() {
         return name;
@@ -60,11 +72,11 @@ public class Users {
         this.role = role;
     }
 
-    public void setid(String string) {
+    public void setid(Long string) {
         this.id=string;
     }
 
-    public Object getId() {
+    public Long getId() {
         return id;
     }
 }

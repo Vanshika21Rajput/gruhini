@@ -2,12 +2,14 @@ package com.example.Gruhani.Controllers;
 
 import com.example.Gruhani.Repositories.ProductRepo;
 import com.example.Gruhani.Repositories.SellerRepo;
+import com.example.Gruhani.Repositories.UserRepo;
 import com.example.Gruhani.dtos.productdto;
 import com.example.Gruhani.models.Seller;
 import com.example.Gruhani.models.product;
 import com.example.Gruhani.service.addproduct_db;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,11 +26,14 @@ public class Seller_dashboard_controls {
     SellerRepo sr;
     @Autowired
     ProductRepo prepo;
+    @Autowired
+    UserRepo urepo;
 
     @Autowired
     addproduct_db db;
 
 
+    @PreAuthorize("hasRole('SELLER')")
     @PostMapping("/add-product")
     public ResponseEntity<?> method(@RequestBody productdto pdto) {
         System.out.println("inside add prodict");
@@ -51,12 +56,12 @@ public class Seller_dashboard_controls {
                 System.out.println("Username: " + user.getUsername());
                 System.out.println("Authorities: " + user.getAuthorities());
                 System.out.println("email");
-                Seller seller = sr.findByemail(user.getUsername());
+                Seller seller = sr.findByuser_email(user.getUsername());//_ tells spring to move from users in seller table to id in users table
                 System.out.println("pseller" + seller);
                 pr.setSeller(seller);
             }
             System.out.print("product" + pr);
-            pr.setId(java.util.UUID.randomUUID().toString());
+         //   pr.setId(java.util.UUID.randomUUID().toString());
             pr.setVerified(pdto.isVerified());
             pr.setCategory(pdto.getCategory());
             pr.setSubcategory(pdto.getSubcategory());
@@ -77,7 +82,7 @@ public class Seller_dashboard_controls {
                     )
             );*/
 
-            db.addindex(pdto);
+            //db.addindex(pdto);
 
 
             response.put("success", true);

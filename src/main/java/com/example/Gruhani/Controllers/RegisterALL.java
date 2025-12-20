@@ -7,6 +7,7 @@ import com.example.Gruhani.dtos.sellerDto;
 import com.example.Gruhani.dtos.userDto;
 import com.example.Gruhani.models.Seller;
 import com.example.Gruhani.models.Users;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +39,7 @@ public class RegisterALL {
 
             Users u = new Users();
 
-                u.setid(java.util.UUID.randomUUID().toString()); // Generate unique ID
+               // Generate unique ID
                 u.setEmail(user.getEmail());
                 Set<String> r = new HashSet<>();
                 r.add("ROLE_USER");
@@ -73,42 +74,44 @@ public class RegisterALL {
     // REGISTER SELLER
 
     @PostMapping("/register-seller")
+    @Transactional
     public ResponseEntity<?> sellerRegister( @Valid @RequestBody sellerDto sd)
     {
         System.out.print("inside-sller");
         System.out.print("seller-mail"+sd.getEmail());
 
-      /*  Users us=ur.findByemail(sd.getEmail());
+      Users us=ur.findByemail(sd.getEmail());
         System.out.print("user-seller"+us.getEmail());
 
         if(us==null)
         {
             return ResponseEntity.notFound().build();
-        }*/
+        }
         Seller seller=new Seller();
         seller.setContactNo(sd.getPhone());
-        seller.setName(sd.getName());
+
         seller.setBusinessName(sd.getBusinessName());
         seller.setApproved(false);
         Set<String> s=new HashSet<>();
         s.add("ROLE_USER");
         s.add("ROLE_SELLER");
-    //    us.setRole(s);
+            us.setRole(s);
      //   seller.setUser(us);
-        seller.setId(java.util.UUID.randomUUID().toString());
+       // seller.setId(java.util.UUID.randomUUID().toString());
         seller.setCategories(sd.getCategories());
-        seller.setEmail(sd.getEmail());
-        Users usu=seller.getUser();
+
+        seller.setUser(us);
         srepo.save(seller);
-        System.out.print("final seller"+seller.getEmail());
+        ur.save(us);
+
         return ResponseEntity.ok(Map.of(
                 "success", true,
                 "message", "Login successful as a seller",
                 "seller", Map.of(
                         "id", seller.getId(),
-                        "name", seller.getName(),
-                        "businessName", seller.getBusinessName(),
-                        "email", seller.getEmail()
+                        "name",seller.getUser().getName(),
+                        "businessName", seller.getBusinessName()
+
                 )
         ));
 
