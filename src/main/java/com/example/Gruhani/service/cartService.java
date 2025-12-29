@@ -29,7 +29,7 @@ public class cartService {
     @Autowired
     UserRepo ur;
     @Autowired
-    CartRepo cr;
+    CartRepo cartRepo;
     @Autowired
     CartItemRepository cartItemRepository;
     @Transactional
@@ -37,14 +37,14 @@ public class cartService {
     {
                Long u_id= (Long) l.get(2);
                Cart cart;
-               Cart cart1=cr.findByu_id(u_id);
+               Cart cart1=cartRepo.findByu_id(u_id);
         Users user=ur.findById(u_id).orElseThrow(()->new RuntimeException("no  user found"));
                if(cart1==null)
                {
                    cart=new Cart();
                    cart.setL(new ArrayList<>());
                    cart.setU(user);
-                   cr.save(cart);
+                   cartRepo.save(cart);
 
                }
                else {
@@ -77,7 +77,7 @@ public class cartService {
 
 
         }
-        cr.save(cart);
+        cartRepo.save(cart);
 
 
 return ResponseEntity.ok("product successfully added to plate !");
@@ -88,5 +88,7 @@ return ResponseEntity.ok("product successfully added to plate !");
     }
 
 
-
+    public Cart getCartbyUsername(String username) {
+        return cartRepo.findCartandRelatedFields(username);
+    }
 }

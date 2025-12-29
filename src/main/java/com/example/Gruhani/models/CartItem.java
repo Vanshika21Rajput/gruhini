@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 public class CartItem {
-    @ManyToOne( fetch = FetchType.LAZY)
+    @ManyToOne( fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
     product p;
     @Id
