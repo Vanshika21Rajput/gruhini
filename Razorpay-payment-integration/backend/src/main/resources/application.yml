@@ -1,0 +1,40 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: gruhini-payment-service
+  
+  datasource:
+    # Update these with your local PostgreSQL credentials
+    url: jdbc:postgresql://localhost:5432/gruhini_payments
+    username: postgres
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: update # Use 'validate' in production with Flyway
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  
+  flyway:
+    enabled: false # Enable when migration scripts are ready
+    baseline-on-migrate: true
+
+# Razorpay Configuration
+razorpay:
+  key-id: ${RAZORPAY_KEY_ID:rzp_test_placeholder}
+  key-secret: ${RAZORPAY_KEY_SECRET:secret_placeholder}
+  webhook-secret: ${RAZORPAY_WEBHOOK_SECRET:webhook_placeholder}
+
+# Security
+app:
+  security:
+    allowed-origins: http://localhost:5173,http://localhost:3000
+    session-timeout: 1800 # 30 minutes

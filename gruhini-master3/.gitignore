@@ -1,0 +1,15 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# Backend secrets
+backend/src/main/resources/application.properties
+backend/**/credentials.json
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+src/main/resources/credentials.json

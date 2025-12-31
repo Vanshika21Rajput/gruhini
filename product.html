@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gruhini - Order Details</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        amber: { 50: '#fffbeb', 100: '#fef3c7', 600: '#d97706', 700: '#b45309', 800: '#92400e', 900: '#78350f' },
+                        cream: '#FDF8F0'
+                    },
+                    fontFamily: {
+                        serif: ['Playfair Display', 'serif'],
+                        cinzel: ['Cinzel', 'serif'],
+                        sans: ['Lato', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="js/config.js"></script>
+    <style>
+        /* Custom Audio Player Styling */
+        audio {
+            width: 100%;
+            height: 36px;
+            border-radius: 99px;
+        }
+
+        audio::-webkit-media-controls-panel {
+            background-color: #fffbeb;
+            /* amber-50 */
+        }
+
+        audio::-webkit-media-controls-play-button {
+            background-color: #d97706;
+            /* amber-600 */
+            border-radius: 50%;
+        }
+    </style>
+</head>
+
+<body class="bg-cream text-amber-900 font-sans antialiased min-h-screen">
+
+    <nav id="navbar"
+        class="fixed top-0 w-full z-50 transition-all duration-300 px-6 py-4 flex justify-between items-center text-white bg-transparent">
+        <a href="index.html" class="font-cinzel text-xl font-bold tracking-widest drop-shadow-md">GRUHINI</a>
+        <div onclick="window.location.href='index.html'"
+            class="cursor-pointer bg-white/20 backdrop-blur-md px-4 py-2 rounded-full text-xs font-bold hover:bg-white/30 transition-colors border border-white/20">
+            &larr; BACK TO MENU
+        </div>
+    </nav>
+
+    <div id="loading" class="fixed inset-0 flex items-center justify-center bg-amber-900 text-white z-40">
+        <div class="text-center">
+            <div class="text-4xl animate-spin mb-4">⏳</div>
+            <p class="font-cinzel tracking-widest text-sm animate-pulse">Preparing Kitchen...</p>
+        </div>
+    </div>
+
+    <div id="content" class="hidden">
+
+        <div class="relative h-[55vh] lg:h-[65vh]">
+            <img id="heroImg" class="w-full h-full object-cover" alt="Dish Image">
+            <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent"></div>
+
+            <div class="absolute bottom-0 left-0 w-full p-6 lg:p-12 text-white">
+                <div class="max-w-5xl mx-auto">
+                    <span id="chefBadge"
+                        class="inline-block bg-amber-600 px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase mb-4 shadow-lg cursor-pointer transform hover:scale-105 transition-transform">
+                        By Mrs. Unknown
+                    </span>
+                    <h1 id="pName" class="font-serif text-3xl lg:text-5xl font-bold mb-2 leading-tight drop-shadow-lg">
+                        Loading Dish...</h1>
+                    <div class="flex items-center gap-4 text-sm text-gray-300 font-light mb-2">
+                        <span id="pLoc">📍 Kitchen</span>
+                        <span>•</span>
+                        <span class="text-amber-400 font-bold">⭐ 4.8 (124 Reviews)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-5xl mx-auto px-4 lg:px-0 py-8 lg:py-12 -mt-8 relative z-10">
+
+            <div class="bg-white rounded-[30px] shadow-xl p-6 lg:p-10 border border-amber-100">
+
+                <div class="flex flex-col lg:flex-row gap-10">
+
+                    <div class="flex-1">
+                        <h2 class="font-cinzel text-xl text-amber-900 font-bold mb-4 border-b border-amber-100 pb-2">
+                            The Story</h2>
+                        <p id="pDesc" class="text-gray-600 leading-relaxed text-base font-serif italic mb-8">
+                            Loading story...
+                        </p>
+
+                        <div class="mb-8">
+                            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Key Ingredients
+                            </h3>
+                            <div class="flex flex-wrap gap-2">
+                                <span
+                                    class="px-3 py-1 bg-amber-50 rounded-full text-xs font-bold text-amber-800 border border-amber-100">🧈
+                                    Pure Ghee</span>
+                                <span
+                                    class="px-3 py-1 bg-amber-50 rounded-full text-xs font-bold text-amber-800 border border-amber-100">🍅
+                                    Fresh Tomatoes</span>
+                                <span
+                                    class="px-3 py-1 bg-amber-50 rounded-full text-xs font-bold text-amber-800 border border-amber-100">🌶️
+                                    Homemade Spices</span>
+                            </div>
+                        </div>
+
+                        <div id="voiceSection" class="hidden p-4 bg-amber-50 rounded-xl border border-amber-200">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-10 h-10 bg-amber-600 rounded-full flex items-center justify-center text-white text-lg">
+                                    🎙️</div>
+                                <div>
+                                    <p class="text-[10px] font-bold text-amber-900 uppercase tracking-wider">Chef's
+                                        Voice
+                                    </p>
+                                    <p class="text-xs text-gray-600">Hear the story behind this dish.</p>
+                                </div>
+                            </div>
+                            <audio id="audioPlayer" controls class="w-full mt-3"></audio>
+                        </div>
+                    </div>
+
+                    <div class="w-full lg:w-80 shrink-0">
+                        <div
+                            class="sticky top-24 bg-white border border-amber-100 shadow-lg rounded-2xl p-6 text-center">
+                            <p class="text-[10px] text-gray-400 uppercase font-bold mb-1">Price per plate</p>
+                            <div id="pPrice" class="text-4xl font-serif font-bold text-amber-900 mb-6">₹--</div>
+
+                            <div class="flex items-center justify-center gap-4 mb-6">
+                                <button onclick="updateQty(-1)"
+                                    class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 font-bold text-gray-600">-</button>
+                                <span id="qtyDisplay" class="text-lg font-bold w-6">1</span>
+                                <button onclick="updateQty(1)"
+                                    class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 font-bold text-gray-600">+</button>
+                            </div>
+
+                            <button onclick="addToCart()" id="btn-add"
+                                class="w-full py-3 bg-gradient-to-r from-amber-700 to-amber-600 text-white font-cinzel font-bold text-sm tracking-widest rounded-lg hover:shadow-lg hover:shadow-amber-600/30 hover:-translate-y-0.5 transition-all">
+                                ADD TO PLATE
+                            </button>
+
+                            <p class="text-[10px] text-gray-400 mt-3 text-center">Safe & Hygienic Packaging</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        // CONFIGURATION
+        const BASE_URL = (typeof API_CONFIG !== 'undefined') ? API_CONFIG.API_BASE_URL : 'https://gruhini2.onrender.com';
+
+        // --- LOGIC ---
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+        let currentProduct = null;
+        let qty = 1;
+
+        async function init() {
+            if (!productId) {
+                alert("No Dish Selected");
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // 1. Try Cache First (Instant Load)
+            const cache = localStorage.getItem('gruhini_menu_cache');
+            let foundInCache = false;
+
+            if (cache) {
+                const items = JSON.parse(cache);
+                // Ensure ID comparison works for both strings and numbers
+                const item = items.find(i => String(i.id) === String(productId));
+                if (item) {
+                    render(item);
+                    foundInCache = true;
+                }
+            }
+
+            // 2. Fetch Fresh Data (Silent Update)
+            try {
+                // Fetching Explore list again to stay consistent with Index.
+                // Ideal world: fetch(`${BASE_URL}/products/${productId}`)
+                const response = await fetch(`${BASE_URL}/explore`);
+                const data = await response.json();
+
+                const freshItem = data.find(i => String(i.id) === String(productId));
+
+                if (freshItem) {
+                    render(freshItem);
+                    currentProduct = freshItem;
+                } else if (!foundInCache) {
+                    // Not in cache, not in API -> Invalid Product
+                    document.getElementById('loading').innerHTML = "<p class='text-white'>Dish not found.</p>";
+                    return;
+                }
+            } catch (e) {
+                console.warn("Network error, using cache if available", e);
+                if (!foundInCache) {
+                    document.getElementById('loading').innerText = "Unable to load dish. Please check connection.";
+                    return;
+                }
+            }
+
+            // Reveal Content
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('content').classList.remove('hidden');
+        }
+
+        function render(item) {
+            currentProduct = item;
+
+            // Update Text
+            setText('pName', item.name);
+            setText('pDesc', item.description || "A wonderful home-cooked delicacy prepared with love.");
+            setText('pLoc', "📍 " + (item.loc || "Home Kitchen"));
+            setText('pPrice', "₹" + item.price);
+            document.getElementById('chefBadge').innerText = "By " + (item.chef || "Home Chef");
+
+            // Update Image
+            const img = item.image ? item.image : "https://images.unsplash.com/photo-1546833999-b9f5816029bd?q=80&w=600";
+            document.getElementById('heroImg').src = img;
+
+            // Handle Voice Note
+            if (item.audio) {
+                document.getElementById('voiceSection').classList.remove('hidden');
+                document.getElementById('audioPlayer').src = item.audio;
+            } else {
+                document.getElementById('voiceSection').classList.add('hidden');
+            }
+        }
+
+        function setText(id, txt) {
+            const el = document.getElementById(id);
+            if (el) el.innerText = txt;
+        }
+
+        function updateQty(change) {
+            qty += change;
+            if (qty < 1) qty = 1;
+            document.getElementById('qtyDisplay').innerText = qty;
+        }
+
+        async function addToCart() {
+            const token = localStorage.getItem('authToken');
+
+            // 1. Auth Check
+            if (!token) {
+                // Save current page to return after login
+                localStorage.setItem('redirectAfterLogin', window.location.href);
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const btn = document.getElementById('btn-add');
+            const originalText = btn.innerText;
+
+            // 2. Loading State
+            btn.innerText = "ADDING...";
+            btn.classList.add('opacity-70', 'cursor-not-allowed');
+            btn.disabled = true;
+
+            try {
+                // Use api.request for consistent auth and correct endpoint /add-to-cart
+                await api.request('/add-to-cart', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        productid: currentProduct.id,
+                        quantity: qty
+                    })
+                });
+
+                // 3. Success Feedback
+                btn.innerText = "ADDED TO PLATE ✓";
+                btn.classList.replace('from-amber-700', 'from-green-600');
+                btn.classList.replace('to-amber-600', 'to-green-500');
+
+                // Redirect to Menu after short delay
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+
+            } catch (e) {
+                console.error(e);
+                alert("Could not add to cart. Try again. " + (e.message || ""));
+                btn.innerText = originalText;
+                btn.classList.remove('opacity-70', 'cursor-not-allowed');
+                btn.disabled = false;
+            }
+        }
+
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('bg-black/80', 'backdrop-blur-md', 'py-2');
+                nav.classList.remove('bg-transparent', 'py-4');
+            } else {
+                nav.classList.remove('bg-black/80', 'backdrop-blur-md', 'py-2');
+                nav.classList.add('bg-transparent', 'py-4');
+            }
+        });
+
+        // Initialize Page
+        init();
+    </script>
+
+</body>
+
+</html>

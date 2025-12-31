@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gruhini - Full Menu</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Playfair+Display:wght@600;700&family=Lato:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        amber: { 600: '#d97706', 800: '#92400e', 900: '#78350f' },
+                        cream: '#FDF5E6'
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="js/config.js"></script>
+</head>
+
+<body class="bg-cream font-sans text-amber-900 min-h-screen">
+
+    <!-- Navbar -->
+    <nav
+        class="fixed top-0 w-full z-40 bg-white/95 backdrop-blur-md shadow-sm border-b border-amber-900/10 px-6 py-4 flex justify-between items-center">
+        <a href="index.html" class="font-serif text-2xl font-bold tracking-widest text-amber-800">GRUHINI</a>
+        <div onclick="window.location.href=API_CONFIG.APP_URL"
+            class="cursor-pointer bg-amber-900 text-white px-5 py-2 rounded-full text-xs font-bold hover:shadow-lg transition-transform hover:-translate-y-0.5">
+            MY PLATE
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="pt-32 pb-10 text-center px-4 bg-gradient-to-b from-amber-50 to-cream">
+        <h1 class="font-serif text-5xl font-bold text-amber-900 mb-4">Today's Menu</h1>
+        <p class="text-amber-700/60 uppercase tracking-[3px] font-bold text-xs">Freshly Prepared • Home Cooked •
+            Delivered Hot</p>
+    </header>
+
+    <!-- Content -->
+    <div id="loading" class="text-center py-20 text-gray-400 font-serif italic text-xl animate-pulse">Consulting the
+        Chefs...</div>
+
+    <div id="menuGrid" class="max-w-7xl mx-auto px-4 pb-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 hidden">
+        <!-- Injected by JS -->
+    </div>
+
+    <script>
+        async function loadMenu() {
+            try {
+                const products = await api.request('/explore');
+                const grid = document.getElementById('menuGrid');
+                const loading = document.getElementById('loading');
+
+                if (!products || products.length === 0) throw new Error("No items");
+
+                loading.classList.add('hidden');
+                grid.classList.remove('hidden');
+
+                grid.innerHTML = products.map(p => {
+                    const img = (p.image || p.img || 'public/placeholder.svg').replace(/\\/g, '/');
+                    const safeImg = img.startsWith('http') || img.startsWith('public') ? img : 'public/' + img;
+
+                    return `
+                        <div class="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-amber-900/5 flex flex-col h-full group">
+                            <div class="h-64 overflow-hidden relative">
+                                <img src="${safeImg}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="this.src='public/placeholder.svg'">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
+                                    <div>
+                                        <div class="text-amber-300 text-xs font-bold uppercase tracking-wider mb-1">By ${(p.chef || "Home Chef")}</div>
+                                        <h2 class="text-white font-serif text-2xl font-bold leading-tight">${p.name}</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="p-6 flex flex-col flex-1">
+                                <p class="text-gray-500 text-sm leading-relaxed mb-6 flex-1">${p.description || "A delicious homemade specialty."}</p>
+                                
+                                <div class="flex items-center justify-between border-t border-gray-100 pt-6 mt-auto">
+                                    <span class="font-serif text-2xl font-bold text-amber-900">₹${p.price}</span>
+                                    <button onclick="addToCart('${p.id}')" class="bg-amber-100 text-amber-800 px-6 py-3 rounded-full font-bold text-xs uppercase tracking-wider hover:bg-amber-900 hover:text-white transition-colors">
+                                        Add +
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (err) {
+                document.getElementById('loading').innerText = "Kitchen Closed (Server Offline)";
+            }
+        }
+
+        async function addToCart(id) {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert("Please Login First to Order!");
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                await api.request('/add-to-cart', {
+                    method: 'POST',
+                    body: JSON.stringify({ productid: id, quantity: 1 })
+                });
+                // Simple Toast via Alert for now (or upgrade to custom)
+                // Since this is HTML, standard alert is "okay" but user asked for Premium. 
+                // Adding a temporary overlay logic would be better.
+                showToast("Added to Plate!");
+            } catch (e) {
+                alert("Error adding item");
+            }
+        }
+
+        function showToast(msg) {
+            const t = document.createElement('div');
+            t.className = "fixed bottom-10 left-1/2 -translate-x-1/2 bg-amber-900 text-white px-8 py-3 rounded-full shadow-2xl z-50 animate-bounce";
+            t.innerText = msg;
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 2000);
+        }
+
+        loadMenu();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,20 @@
+{
+  "short_name": "गृहिणी",
+  "name": "गृहिणी - Authentic Homemade Delights",
+  "icons": [
+    {
+      "src": "/assets/logo.jpg",
+      "type": "image/jpeg",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/assets/logo.jpg",
+      "type": "image/jpeg",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#FFF8E1",
+  "background_color": "#FFFFFF"
+}

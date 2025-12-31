@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gruhini – Login</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Playfair+Display:wght@600;700&family=Lato:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="js/config.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        royalBrown: '#2a160e', // Deep Coffee
+                        royalGold: '#b45309',  // Dark Gold
+                        cream: '#fffaf0',      // Parchment
+                        errorRed: '#dc2626'
+                    },
+                    fontFamily: {
+                        cinzel: ['Cinzel', 'serif'],
+                        serif: ['Playfair Display', 'serif'],
+                        sans: ['Lato', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+            background-color: #fffaf0;
+            /* Light Base */
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        input {
+            user-select: text;
+        }
+
+        /* --- LEFT SIDE: THE MENU CARD (Light & Textured) --- */
+        .split-left {
+            width: 30%;
+            /* Narrower decorative strip */
+            background-color: #fffaf0;
+            /* Subtle Paper Texture */
+            background-image:
+                radial-gradient(#b45309 0.5px, transparent 0.5px),
+                linear-gradient(to right, rgba(180, 83, 9, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px, 40px 100%;
+            position: relative;
+            border-right: 4px solid #b45309;
+            /* Gold Divider */
+            z-index: 1;
+        }
+
+        /* --- RIGHT SIDE: THE KITCHEN (Dark & Atmospheric) --- */
+        .split-right {
+            width: 70%;
+            position: relative;
+            background-color: #1a0f0a;
+            background-image: url('background2.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Dark Gradient Overlay for Drama */
+        .split-right::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to left, rgba(26, 15, 10, 0.6), rgba(26, 15, 10, 0.9));
+        }
+
+        /* Steam Animation */
+        .split-right::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(30% 50% at 30% 60%, rgba(255, 255, 255, 0.1), transparent 60%);
+            animation: steam 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes steam {
+            0% {
+                opacity: 0.3;
+                transform: translateY(10px);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: translateY(-10px);
+            }
+
+            100% {
+                opacity: 0.3;
+                transform: translateY(10px);
+            }
+        }
+
+        /* --- AUTH CARD: THE BRIDGE --- */
+        @keyframes cardIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -48%) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .auth-container {
+            position: absolute;
+            top: 50%;
+            left: 30%;
+            /* Sits exactly on the split line */
+            transform: translate(-50%, -50%);
+            width: 420px;
+
+            /* PURE WHITE BOX for Maximum Contrast */
+            background-color: #ffffff;
+
+            /* Clean Gold Border */
+            border: 1px solid #e7d5c0;
+
+            /* Double Shadow for "Floating" effect */
+            box-shadow:
+                0 0 0 4px #fffaf0,
+                /* Cream Ring */
+                0 30px 60px -15px rgba(0, 0, 0, 0.6);
+            /* Deep Shadow */
+
+            border-radius: 20px;
+            padding: 40px;
+            z-index: 10;
+            animation: cardIn 0.6s ease-out;
+        }
+
+        /* INPUTS - Clean & readable */
+        .input-group input {
+            width: 100%;
+            padding: 14px 16px;
+            background: #fff;
+            border: 1px solid #d1d5db;
+            /* Neutral Gray Border */
+            border-radius: 10px;
+            color: #1f2937;
+            /* Dark Gray Text */
+            font-family: 'Lato', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .input-group input:focus {
+            border-color: #b45309;
+            /* Gold Focus */
+            box-shadow: 0 0 0 3px rgba(180, 83, 9, 0.1);
+            outline: none;
+        }
+
+        #btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        #google-btn-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        #google-btn-wrapper>div {
+            border-radius: 999px !important;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.4s ease-out forwards;
+        }
+
+        @media(max-width: 900px) {
+            .split-left {
+                display: none;
+            }
+
+            .split-right {
+                width: 100%;
+            }
+
+            .auth-container {
+                left: 50%;
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <noscript>
+        <div style="padding: 20px; text-align: center; color: white; background: #b45309;">
+            Javascript is required to use Gruhini.
+        </div>
+    </noscript>
+
+    <aside class="split-left" aria-hidden="true"></aside>
+
+    <div class="split-right" role="img" aria-label="Authentic Indian Kitchen"></div>
+
+    <main class="auth-container">
+        <div class="text-center">
+            <h1 class="font-cinzel text-4xl text-royalBrown font-bold mb-1">Gruhini</h1>
+            <p id="page-title" class="font-sans text-xs font-bold text-gray-500 uppercase tracking-[0.2em] mb-6">Unlock
+                the Kitchen</p>
+        </div>
+
+        <div id="success-section" class="hidden text-center py-6 animate-fade-in-up" role="alert" aria-live="polite">
+            <div class="text-4xl mb-3">🍲</div>
+            <h3 class="text-royalBrown font-cinzel text-xl font-bold">Welcome Home</h3>
+            <p class="text-xs text-gray-500 tracking-wide mt-2">Setting your table...</p>
+        </div>
+
+        <div id="auth-section">
+            <div id="google-btn-wrapper"></div>
+
+            <div class="relative flex py-2 items-center mb-6">
+                <div class="flex-grow border-t border-gray-200"></div>
+                <span class="flex-shrink-0 mx-4 text-gray-400 text-[10px] font-bold uppercase tracking-widest">Or Login
+                    With Email</span>
+                <div class="flex-grow border-t border-gray-200"></div>
+            </div>
+
+            <div class="bg-gray-100 p-1 rounded-xl flex mb-6 relative border border-gray-200" role="group">
+                <div id="glider"
+                    class="absolute top-1 left-1 w-[calc(50%-4px)] h-[calc(100%-8px)] bg-white shadow-md rounded-lg transition-transform duration-300 z-0 border border-gray-100">
+                </div>
+
+                <button type="button" onclick="AppState.setRole('customer')" id="btn-customer"
+                    class="flex-1 py-2.5 text-xs font-bold uppercase tracking-wider relative z-10 text-royalBrown transition-colors">
+                    Customer
+                </button>
+                <button type="button" onclick="AppState.setRole('seller')" id="btn-seller"
+                    class="flex-1 py-2.5 text-xs font-bold uppercase tracking-wider relative z-10 text-gray-400 transition-colors">
+                    Seller
+                </button>
+            </div>
+
+            <form onsubmit="Handlers.handleAuth(event)" class="space-y-4" novalidate>
+                <div class="input-group">
+                    <label for="email" class="sr-only">Email Address</label>
+                    <input type="email" id="email" placeholder="Email Address" required autocomplete="email">
+                </div>
+                <div class="input-group">
+                    <label for="password" class="sr-only">Password</label>
+                    <input type="password" id="password" placeholder="Password" required
+                        autocomplete="current-password">
+                </div>
+
+                <div id="extra-fields"></div>
+
+                <p id="form-error" class="text-errorRed text-xs text-center font-bold hidden" role="alert"></p>
+
+                <button id="btn-submit" type="submit"
+                    class="w-full py-3.5 mt-2 bg-gradient-to-r from-royalBrown to-[#4a2c20] text-white font-cinzel font-bold text-sm uppercase tracking-widest rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-70">
+                    Login
+                </button>
+            </form>
+
+            <div class="text-center mt-6">
+                <span id="footer-text" class="text-gray-500 text-xs">New to Gruhini?</span>
+                <button type="button" onclick="AppState.toggleMode()" id="footer-link"
+                    class="text-royalGold font-bold text-xs uppercase tracking-wide hover:underline ml-1">Create
+                    Account</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const CONFIG = {
+            BASE_URL: (typeof API_CONFIG !== 'undefined') ? API_CONFIG.API_BASE_URL : 'http://localhost:8080',
+            GOOGLE_CLIENT_ID: "YOUR_GOOGLE_CLIENT_ID_HERE"
+        };
+
+        const AppState = {
+            view: 'login', role: 'customer', isLoading: false,
+            setRole(newRole) { this.role = newRole; UI.updateRoleToggle(newRole); UI.renderForm(); UI.clearError(); },
+            toggleMode() { this.view = this.view === 'login' ? 'register' : 'login'; UI.renderForm(); UI.clearError(); }
+        };
+
+        const UI = {
+            updateRoleToggle(role) {
+                const isSeller = role === 'seller';
+                document.getElementById('glider').style.transform = isSeller ? 'translateX(100%)' : 'translateX(0)';
+
+                const cBtn = document.getElementById('btn-customer');
+                const sBtn = document.getElementById('btn-seller');
+
+                cBtn.className = isSeller
+                    ? 'flex-1 py-2.5 text-xs font-bold uppercase tracking-wider relative z-10 text-gray-400 transition-colors'
+                    : 'flex-1 py-2.5 text-xs font-bold uppercase tracking-wider relative z-10 text-royalBrown transition-colors';
+
+                sBtn.className = isSeller
+                    ? 'flex-1 py-2.5 text-xs font-bold uppercase tracking-wider relative z-10 text-royalBrown transition-colors'
+                    : 'flex-1 py-2.5 text-xs font-bold uppercase tracking-wider relative z-10 text-gray-400 transition-colors';
+            },
+
+            renderForm() {
+                const isRegister = AppState.view === 'register';
+                const isSeller = AppState.role === 'seller';
+                const extraDiv = document.getElementById('extra-fields');
+
+                document.getElementById('page-title').innerText = isRegister
+                    ? (isSeller ? "Join as a Chef" : "Join as a Foodie")
+                    : "Unlock the Kitchen";
+
+                document.getElementById('btn-submit').innerText = isRegister ? "Create Account" : "Login";
+                document.getElementById('footer-text').innerText = isRegister ? "Already have an account?" : "New to Gruhini?";
+                document.getElementById('footer-link').innerText = isRegister ? "Login" : "Create Account";
+
+                // Show fields for both Login and Register if backend requires them for Login
+                // User requirement: /logins needs name, email, contact, password.
+
+                // Matching clean input style
+                const inputClass = "w-full p-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:border-royalGold focus:outline-none transition-all placeholder:text-gray-400 text-sm font-sans";
+
+                let html = `
+                    <div class="input-group animate-[fadeInUp_0.3s]">
+                        <input type="text" id="name" placeholder="Full Name" required class="${inputClass}">
+                    </div>
+                    <div class="input-group animate-[fadeInUp_0.3s] mt-4">
+                        <input type="tel" id="contact" placeholder="Phone Number" required class="${inputClass}">
+                    </div>`;
+
+                if (isSeller && isRegister) {
+                    html += `
+                        <div class="input-group animate-[fadeInUp_0.3s] mt-4">
+                            <input type="text" id="businessName" placeholder="Kitchen Name" required class="${inputClass}">
+                        </div>`;
+                } else if (!isRegister) {
+                    // If it's Login, we still show Name/Contact, but maybe not BusinessName unless required? 
+                    // User said "/logins: name, email, contact, password". Did not mention businessName.
+                    // So we keep the basic fields.
+                }
+
+                extraDiv.innerHTML = html;
+            },
+
+            showError(msg) {
+                const el = document.getElementById('form-error');
+                el.innerText = msg;
+                el.classList.remove('hidden');
+            },
+            clearError() { document.getElementById('form-error').classList.add('hidden'); },
+
+            setLoading(loading) {
+                AppState.isLoading = loading;
+                const btn = document.getElementById('btn-submit');
+                if (loading) {
+                    btn.innerHTML = `<span class="animate-pulse">Processing...</span>`;
+                    btn.disabled = true;
+                } else {
+                    btn.innerText = AppState.view === 'register' ? "Create Account" : "Login";
+                    btn.disabled = false;
+                }
+            },
+
+            showSuccessAndRedirect(role) {
+                document.getElementById('auth-section').style.display = 'none';
+                document.getElementById('success-section').classList.remove('hidden');
+                setTimeout(() => {
+                    window.location.href = role.toUpperCase() === 'SELLER' ? 'sellers.html' : 'menu.html';
+                }, 1500);
+            }
+        };
+
+        const Handlers = {
+            async handleAuth(e) {
+                e.preventDefault();
+                if (AppState.isLoading) return;
+                UI.clearError();
+                UI.setLoading(true);
+
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const name = document.getElementById('name').value;
+                const contact = document.getElementById('contact').value;
+
+                try {
+                    let response;
+                    if (AppState.view === 'login') {
+                        // Login Payload: name, email, contact, password
+                        response = await fetch(`${CONFIG.BASE_URL}/logins`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                name,
+                                email,
+                                contact,
+                                password
+                            })
+                        });
+                    } else {
+                        // Registration
+                        // User requirement: Seller uses 'phone', User uses 'contact'.
+                        const payload = { email, password, name, role: AppState.role.toUpperCase() };
+
+                        if (AppState.role === 'seller') {
+                            payload.phone = contact; // Map contact input to 'phone' for seller
+                            const bizNameInput = document.getElementById('businessName');
+                            payload.businessName = bizNameInput ? bizNameInput.value : '';
+                            payload.categories = ["North Indian", "Tiffin"]; // Default or modify to have input
+                        } else {
+                            payload.contact = contact; // Keep 'contact' for customer
+                        }
+                        const endpoint = AppState.role === 'seller' ? '/register-seller' : '/register';
+                        response = await fetch(`${CONFIG.BASE_URL}${endpoint}`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                    }
+
+                    const data = await response.json();
+                    if (!response.ok) throw new Error(data.message || 'Authentication failed');
+
+                    localStorage.setItem('authToken', data.token);
+                    localStorage.setItem('userRole', data.role);
+                    localStorage.setItem('userName', data.name);
+                    UI.showSuccessAndRedirect(data.role);
+
+                } catch (error) {
+                    console.error("Auth Error:", error);
+                    UI.showError(error.message || "Connection Failed");
+                    UI.setLoading(false);
+                }
+            },
+
+            async handleGoogleResponse(response) {
+                try {
+                    const res = await fetch(`${CONFIG.BASE_URL}/google-login`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ token: response.credential, role: AppState.role.toUpperCase() })
+                    });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.message || "Google Login Failed");
+
+                    localStorage.setItem('authToken', data.token);
+                    localStorage.setItem('userRole', data.role);
+                    localStorage.setItem('userName', data.name);
+                    UI.showSuccessAndRedirect(data.role);
+                } catch (err) {
+                    UI.showError(err.message);
+                }
+            }
+        };
+
+        window.addEventListener("load", () => {
+            if (window.google) {
+                google.accounts.id.initialize({ client_id: CONFIG.GOOGLE_CLIENT_ID, callback: Handlers.handleGoogleResponse });
+                google.accounts.id.renderButton(document.getElementById("google-btn-wrapper"), { theme: "outline", size: "large", width: "320", shape: "pill" });
+            }
+        });
+    </script>
+</body>
+
+</html>

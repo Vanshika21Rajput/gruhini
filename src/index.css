@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* --- THE ROYAL DARK PALETTE --- */
+  --royal-bg: #050201;        /* Deepest Black-Brown */
+  --royal-card: #120a05;      /* Rich Espresso for cards */
+  --royal-gold: #d4af37;      /* Primary Gold */
+  --royal-gold-mute: #8c6a38; /* Matte Gold for borders */
+  --royal-text: #e8e0d5;      /* Soft Cream for text (readable on dark) */
+  --royal-accent: #f59e0b;    /* Amber for highlights */
+  
+  --font-heading: 'Cinzel', serif;
+  --font-body: 'Lato', sans-serif;
+  --font-script: 'Playfair Display', serif;
+}
+
+body {
+  background-color: var(--royal-bg);
+  color: var(--royal-text);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+}
+
+/* Scrollbar Luxury */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #1a1008; }
+::-webkit-scrollbar-thumb { background: #5c4018; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #8c6a38; }
+
+/* Utility Classes for Royal Look */
+.text-gold { color: var(--royal-gold); }
+.text-gold-mute { color: var(--royal-gold-mute); }
+.bg-royal-card { background: linear-gradient(145deg, #1a1008, #0a0502); border: 1px solid rgba(212, 175, 55, 0.15); }
+.border-gold { border-color: var(--royal-gold-mute); }
+
+/* Animations */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in { animation: fade-in-up 0.8s ease-out forwards; }
