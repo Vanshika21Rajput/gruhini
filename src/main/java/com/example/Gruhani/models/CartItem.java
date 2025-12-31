@@ -2,6 +2,8 @@ package com.example.Gruhani.models;
 
 import jakarta.persistence.*;
 
+import java.math.BigInteger;
+
 @Entity
 public class CartItem {
     @ManyToOne( fetch = FetchType.LAZY,cascade = CascadeType.ALL)
@@ -14,7 +16,7 @@ public class CartItem {
     @JoinColumn(name="cart_id") //by default it references primary key column but you can use "referencedColumn=column_name"
     Cart c;
     int quantity;
-    int priceAtAddTime;
+    BigInteger priceAtAddTime;
 
     public product getP() {
         return p;
@@ -48,14 +50,11 @@ public class CartItem {
         this.quantity = quantity;
     }
 
-    public int getPriceAtAddTime() {
+    public BigInteger getPriceAtAddTime() {
         return priceAtAddTime;
     }
 
-    public void setPriceAtAddTime(int priceAtAddTime) {
+    public void setPriceAtAddTime(BigInteger priceAtAddTime) {
         this.priceAtAddTime = priceAtAddTime;
     }
-
-
-
 }

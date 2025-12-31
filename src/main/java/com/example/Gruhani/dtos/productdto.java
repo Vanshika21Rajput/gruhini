@@ -3,14 +3,15 @@ package com.example.Gruhani.dtos;
 import com.example.Gruhani.models.Seller;
 import jakarta.persistence.*;
 
+import java.math.BigInteger;
 import java.util.List;
 
 
 public class productdto {
 
-    String id;
+   Long id;
    String  name;
-   int price;
+   BigInteger price;
     String category;
      String subcategory;
   String  description;
@@ -48,11 +49,11 @@ public class productdto {
         this.name = name;
     }
 
-    public int getPrice() {
+    public BigInteger getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(BigInteger price) {
         this.price = price;
     }
 
@@ -126,5 +127,13 @@ public class productdto {
 
     public void setVerified(boolean verified) {
         this.verified = verified;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

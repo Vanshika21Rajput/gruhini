@@ -5,7 +5,6 @@ import com.example.Gruhani.dtos.AddtoCartDto;
 import com.example.Gruhani.models.Cart;
 import com.example.Gruhani.service.authutil;
 import com.example.Gruhani.service.cartService;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-public class Cart_Order {
+public class CART {
 
     @Autowired
     authutil at;

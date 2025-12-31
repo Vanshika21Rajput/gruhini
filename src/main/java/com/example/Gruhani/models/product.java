@@ -1,6 +1,10 @@
 package com.example.Gruhani.models;
 
+/*import com.example.Gruhani.dtos.OrderItem;*/
 import jakarta.persistence.*;
+
+import java.math.BigInteger;
+import java.util.List;
 
 @Entity
 @Table(name = "products", schema = "public")
@@ -11,7 +15,7 @@ public class product {
     String name;
     String description;
     Boolean verified;
-    int price;
+   BigInteger price;
     float rating;
     String badge;
     String deliverytime;
@@ -22,10 +26,13 @@ public class product {
     String subcategory;
     int stock;
     String discount;
+    @OneToMany(mappedBy = "p",fetch = FetchType.LAZY)
+    private List<CartItem> cartItems;
+   /* @OneToMany(mappedBy ="p",fetch = FetchType.LAZY)
+    private List<OrderItem> orderItems;*/
 
     @ManyToOne
-
-    @JoinColumn(name="seller_id",nullable = true)
+    @JoinColumn(name="seller_id",nullable =false)
     Seller seller;
 
     public String getCategory() {
@@ -106,13 +113,23 @@ public class product {
         this.verified = verified;
     }
 
-    public int getPrice() {
+    public BigInteger getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(BigInteger price) {
         this.price = price;
     }
+
+    public List<CartItem> getCartItems() {
+        return cartItems;
+    }
+
+    public void setCartItems(List<CartItem> cartItems) {
+        this.cartItems = cartItems;
+    }
+
+
 
     public Float getRating() {
         return rating;
