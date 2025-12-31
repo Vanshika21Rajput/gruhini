@@ -2,6 +2,7 @@ package com.example.Gruhani.models;
 
 import jakarta.persistence.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -10,7 +11,8 @@ public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
-
+    @OneToMany(mappedBy = "user")
+    List<Order> orderList;
     String name;
     @Column(unique = true)
     String email;

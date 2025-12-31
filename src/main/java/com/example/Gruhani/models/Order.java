@@ -1,4 +1,4 @@
-/*package com.example.Gruhani.models;
+package com.example.Gruhani.models;
 
 import com.example.Gruhani.Enums.OrderStatus;
 import com.example.Gruhani.dtos.OrderItem;
@@ -11,12 +11,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
+@Table(name="Orders")
 @Component
 public class Order {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private  Long id;
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order",fetch=FetchType.LAZY)
     List<OrderItem> orderItemList;
     @Enumerated(EnumType.STRING)
     OrderStatus orderStatus;
@@ -27,9 +28,7 @@ public class Order {
     LocalDateTime placedAt;
     String deliveryAddress;
     int OrderValue;
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="seller_id")
-    Seller seller;
+
     String message;
 
     public String getMessage() {
@@ -112,11 +111,5 @@ public class Order {
         OrderValue = orderValue;
     }
 
-    public Seller getSeller() {
-        return seller;
-    }
 
-    public void setSeller(Seller seller) {
-        this.seller = seller;
-    }
-}*/
+}

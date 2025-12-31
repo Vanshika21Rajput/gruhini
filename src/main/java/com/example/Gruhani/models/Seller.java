@@ -19,6 +19,8 @@ public class Seller {
     @OneToOne
     Users user;
 
+
+
     @OneToMany(mappedBy = "seller",fetch=FetchType.LAZY,orphanRemoval = true,cascade = CascadeType.ALL)
     List<product> pr;
      List<String> categories;

@@ -75,7 +75,7 @@ public class RegisterALL {
 
     @PostMapping("/register-seller")
     @Transactional
-    public ResponseEntity<?> sellerRegister( @Valid @RequestBody sellerDto sd)
+    public ResponseEntity<Map<String, Object>> sellerRegister( @Valid @RequestBody sellerDto sd)
     {
         System.out.print("inside-sller");
         System.out.print("seller-mail"+sd.getEmail());
@@ -83,10 +83,6 @@ public class RegisterALL {
       Users us=ur.findByemail(sd.getEmail());
         System.out.print("user-seller"+us.getEmail());
 
-        if(us==null)
-        {
-            return ResponseEntity.notFound().build();
-        }
         Seller seller=new Seller();
         seller.setContactNo(sd.getPhone());
 

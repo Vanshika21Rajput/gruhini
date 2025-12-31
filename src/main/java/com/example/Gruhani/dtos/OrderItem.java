@@ -1,4 +1,4 @@
-/*package com.example.Gruhani.dtos;
+package com.example.Gruhani.dtos;
 
 import com.example.Gruhani.models.Order;
 import com.example.Gruhani.models.product;
@@ -13,8 +13,8 @@ public class OrderItem {
      @GeneratedValue(strategy=GenerationType.AUTO)
     Long id;
     int quantity;
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="orderReference")
+    @ManyToOne(fetch=FetchType.LAZY,cascade = CascadeType.ALL)
+    @JoinColumn(name="orderRef")
     Order order;
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name="productReference")
@@ -60,4 +60,4 @@ public class OrderItem {
     public void setPriceAtOrderTime(BigInteger priceAtOrderTime) {
         this.priceAtOrderTime = priceAtOrderTime;
     }
-}*/
+}

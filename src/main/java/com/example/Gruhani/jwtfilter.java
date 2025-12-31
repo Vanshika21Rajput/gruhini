@@ -38,7 +38,7 @@ public class jwtfilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        String path = request.getServletPath();
+        String path = request.getRequestURI();
         System.out.print("inside should not filter");
 
         return path.equals("/logins")

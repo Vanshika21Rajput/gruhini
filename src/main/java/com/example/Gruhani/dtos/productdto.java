@@ -2,6 +2,7 @@ package com.example.Gruhani.dtos;
 
 import com.example.Gruhani.models.Seller;
 import jakarta.persistence.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -15,7 +16,7 @@ public class productdto {
     String category;
      String subcategory;
   String  description;
-   String image;
+
    int stock;
     String status;
     float rating;
@@ -81,13 +82,8 @@ public class productdto {
         this.description = description;
     }
 
-    public String getImage() {
-        return image;
-    }
 
-    public void setImage(String image) {
-        this.image = image;
-    }
+
 
     public int getStock() {
         return stock;

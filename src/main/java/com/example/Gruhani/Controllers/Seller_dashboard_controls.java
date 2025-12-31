@@ -1,11 +1,13 @@
 package com.example.Gruhani.Controllers;
 
+import com.cloudinary.Cloudinary;
 import com.example.Gruhani.Repositories.ProductRepo;
 import com.example.Gruhani.Repositories.SellerRepo;
 import com.example.Gruhani.Repositories.UserRepo;
 import com.example.Gruhani.dtos.productdto;
 import com.example.Gruhani.models.Seller;
 import com.example.Gruhani.models.product;
+import com.example.Gruhani.service.CloudinaryService;
 import com.example.Gruhani.service.addproduct_db;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +15,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,21 +29,23 @@ public class Seller_dashboard_controls {
     ProductRepo prepo;
     @Autowired
     UserRepo urepo;
-
+@Autowired
+CloudinaryService cloudinaryService;
     @Autowired
     addproduct_db db;
 
 
     @PreAuthorize("hasRole('SELLER')")
     @PostMapping("/add-product")
-    public ResponseEntity<?> method(@RequestBody productdto pdto) {
+    public ResponseEntity<?> method(@RequestPart("data") productdto pdto ,@RequestPart("image") MultipartFile image) {
         System.out.println("inside add prodict");
         Map<String, Object> response = new HashMap<>();
         ;
         try {
             product pr = new product();
             pr.setDescription(pdto.getDescription());
-            pr.setImage(pdto.getImage());
+          String imageurl=cloudinaryService.uploadImage(image);
+            pr.setImage(imageurl);
             pr.setPrice(pdto.getPrice());
             pr.setName(pdto.getName());
             pr.setRating(pdto.getRating());

@@ -1,6 +1,7 @@
 package com.example.Gruhani.models;
 
-/*import com.example.Gruhani.dtos.OrderItem;*/
+import com.example.Gruhani.dtos.OrderItem;
+import com.example.Gruhani.dtos.OrderItem;
 import jakarta.persistence.*;
 
 import java.math.BigInteger;
@@ -28,8 +29,8 @@ public class product {
     String discount;
     @OneToMany(mappedBy = "p",fetch = FetchType.LAZY)
     private List<CartItem> cartItems;
-   /* @OneToMany(mappedBy ="p",fetch = FetchType.LAZY)
-    private List<OrderItem> orderItems;*/
+    @OneToMany(mappedBy ="p",fetch = FetchType.LAZY)
+    private List<OrderItem> orderItems;
 
     @ManyToOne
     @JoinColumn(name="seller_id",nullable =false)
@@ -45,6 +46,14 @@ public class product {
 
     public String getSubcategory() {
         return subcategory;
+    }
+
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
     }
 
     public void setSubcategory(String subcategory) {

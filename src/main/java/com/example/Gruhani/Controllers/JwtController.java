@@ -1,5 +1,6 @@
 package com.example.Gruhani.Controllers;
 
+import com.example.Gruhani.dtos.LoginRequest;
 import com.example.Gruhani.dtos.userDto;
 import com.example.Gruhani.models.Users;
 import com.example.Gruhani.models.userdetails;
@@ -26,9 +27,9 @@ public class JwtController {
     authutil at;
 
     @PostMapping("/logins")
-    public ResponseEntity<Map<String, String>> method(@RequestBody @Valid userDto u)
+    public ResponseEntity<Map<String, String>> method(@RequestBody @Valid LoginRequest loginRequest)
     {
-        Authentication auth=authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(u.getEmail(),u.getPassword()));
+        Authentication auth=authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),loginRequest.getPassword()));
          if(auth.isAuthenticated())
          {
             userdetails ut= (userdetails) auth.getPrincipal();
