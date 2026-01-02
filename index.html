@@ -1,30 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gruhini – The Royal Experience</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet">
 
-    <!-- Fonts -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&family=Noto+Sans+Devanagari:wght@400;600&display=swap"
-        rel="stylesheet">
-
-    <!-- Tailwind CSS (CDN for Static Pages) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        amber: { 50: '#fffbeb', 100: '#fef3c7', 200: '#fde68a', 300: '#fcd34d', 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309', 800: '#92400e', 900: '#78350f' },
-                        emerald: { 900: '#064e3b' },
-                        cream: '#FDF8F0'
+                        gold: { main: '#c5a059', matte: '#8c6a38', rose: '#e2b091' },
+                        royal: { dark: '#0f0805', brown: '#1a0f0a' }
                     },
                     fontFamily: {
-                        serif: ['Playfair Display', 'serif'],
                         cinzel: ['Cinzel', 'serif'],
+                        playfair: ['Playfair Display', 'serif'],
                         sans: ['Lato', 'sans-serif'],
                         hindi: ['Noto Sans Devanagari', 'sans-serif']
                     }
@@ -32,299 +28,273 @@
             }
         }
     </script>
+    <script src="js/config.js"></script>
+
     <style>
-        .glass-nav {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(180, 83, 9, 0.1);
+        body { background-color: #0f0805; color: #fff; overflow-x: hidden; }
+        
+        /* Hero Background */
+        .hero-bg { position: fixed; inset: 0; z-index: -1; background: url('public/background.jpg') center/cover no-repeat; opacity: 0.65; }
+        .hero-overlay { position: fixed; inset: 0; z-index: -1; background: linear-gradient(to bottom, rgba(5,2,1,0.1), #0f0805); }
+        
+        @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+        .ticker-anim { animation: ticker 40s linear infinite; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .nav-glass { background: rgba(5, 2, 1, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(197, 160, 89, 0.2); }
+
+        /* --- ROLLER GEOMETRY (FIXED & BIGGER) --- */
+        .thali-widget {
+            display: grid; grid-template-columns: 1fr 1.2fr; background: #1a0f0a; border: 1px solid rgba(197, 160, 89, 0.3);
+            border-radius: 40px; box-shadow: 0 30px 70px rgba(0,0,0,0.8); max-width: 1000px; margin: 0 auto; min-height: 500px; position: relative;
+        }
+        
+        /* 🚨 FIX: Bigger size, perfect centering via transform */
+        .plate-ring {
+            width: 360px; height: 360px; /* Bigger size */
+            border-radius: 50%; position: absolute;
+            top: 50%; left: 50%; 
+            /* Removed negative margins, using transform for centering */
+            transform: translate(-50%, -50%); 
+            border: 1px dashed rgba(197, 160, 89, 0.15);
+            transition: transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transform-origin: center center;
         }
 
-        .hero-gradient {
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, rgba(15, 8, 5, 0.95) 90%, #0f0805 100%);
+        .katori {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 75px; height: 75px;
+            margin-left: -37.5px; margin-top: -37.5px;
+            z-index: 10;
+            pointer-events: auto;
         }
 
-        .ticker-anim {
-            animation: ticker 40s linear infinite;
+        .katori-inner {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            background: #000;
+            border: 2px solid #8c6a38;
+            overflow: hidden;
+            transition: transform 0.35s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.6);
         }
 
-        @keyframes ticker {
-            0% {
-                transform: translateX(0);
-            }
+        .katori-inner img { width: 100%; height: 100%; object-fit: cover; }
 
-            100% {
-                transform: translateX(-100%);
-            }
+        .plate-center {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 150px; height: 150px; border-radius: 50%;
+            border: 4px solid #c5a059; overflow: hidden; box-shadow: 0 0 50px rgba(197, 160, 89, 0.3);
+            z-index: 20; background: #000; cursor: pointer;
         }
-
-        .spin-slow {
-            animation: spin 20s linear infinite;
-        }
-
-        @keyframes spin {
-            from {
-                transform: rotate(0deg);
-            }
-
-            to {
-                transform: rotate(360deg);
-            }
+        
+        @media(max-width: 900px) { 
+            .thali-widget { grid-template-columns: 1fr; } 
+            /* Adjusted for mobile, removed margins */
+            .plate-ring { width: 300px; height: 300px; margin: 0; } 
         }
     </style>
-    <script src="js/config.js"></script>
 </head>
+<body>
 
-<body class="bg-[#0f0805] text-cream font-sans antialiased overflow-x-hidden">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
 
-    <!-- TICKER -->
-    <div
-        class="fixed top-0 w-full z-50 bg-[#2c1810] text-[#eebb55] text-[10px] font-bold tracking-[2px] py-2 overflow-hidden border-b border-amber-900/30">
+    <div class="fixed top-0 w-full z-50 bg-[#2c1810] text-[#eebb55] text-[10px] font-bold tracking-[2px] py-2 overflow-hidden border-b border-matte/30">
         <div class="ticker-anim whitespace-nowrap inline-block pl-[100%] font-cinzel">
-            ✦ Live from Jaipur: Mrs. Joshi added tadka to Kadhi... ✦ Lucknow: Slow-cooked Dal simmering for 8 hrs... ✦
-            Hyderabad: Fresh Biryani spices being ground... ✦ Mumbai: Puran Poli just came off the tawa...
+            ✦ Jaipur: Mrs. Joshi just soaked the Dal... ✦ Lucknow: Dum Biryani sealed in clay pot... ✦ Mumbai: Puran Poli on the tawa... ✦
         </div>
     </div>
 
-    <!-- HERO BACKGROUND -->
-    <div class="fixed inset-0 z-[-1]">
-        <img src="public/background.jpg" class="w-full h-full object-cover opacity-60 filter brightness-75 scale-105"
-            alt="Background">
-        <div class="absolute inset-0 hero-gradient"></div>
-    </div>
-
-    <!-- NAVBAR -->
-    <nav class="fixed top-8 w-full z-40 transition-all duration-300 px-6 py-4 flex justify-between items-center"
-        id="navbar">
-        <a href="#"
-            class="font-cinzel text-3xl font-bold text-amber-400 tracking-[4px] hover:text-amber-300 transition-colors">GRUHINI</a>
-
-        <div class="flex items-center gap-8">
-            <div onclick="window.location.href=API_CONFIG.APP_URL" class="cursor-pointer flex items-center gap-2 group">
-                <span
-                    class="text-amber-400 font-cinzel font-bold text-sm tracking-wider group-hover:text-white transition-colors">🛒
-                    MY PLATE</span>
-                <span id="cartCount"
-                    class="hidden bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-lg">0</span>
+    <nav class="fixed top-10 w-full z-40 px-6 py-4 flex justify-between items-center transition-all duration-300" id="navbar">
+        <a href="index.html" class="flex items-center gap-3 group">
+            <div class="w-12 h-12 rounded-full overflow-hidden relative shadow-[0_0_15px_rgba(197,160,89,0.4)] group-hover:shadow-[0_0_25px_rgba(197,160,89,0.6)] transition-all duration-500 border border-gold-main/30">
+                <img src="public/logo.jpg" alt="Gruhini" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                <div class="absolute inset-0 bg-gradient-to-tr from-black/10 to-transparent pointer-events-none"></div>
             </div>
-            <a href="login.html"
-                class="px-6 py-2 border border-amber-600/50 rounded-full text-amber-400 text-xs font-bold tracking-widest hover:bg-amber-600 hover:text-white transition-all uppercase">Login</a>
+            <span class="font-cinzel text-2xl font-bold text-gold-main tracking-widest drop-shadow-md group-hover:text-white transition-colors">GRUHINI</span>
+        </a>
+
+        <div class="flex items-center gap-6">
+            <button onclick="window.location.href='cart.html'" class="text-gold-main text-xs font-bold tracking-widest uppercase hover:text-white transition-colors">Your Plate</button>
+            <a href="login.html" class="border border-gold-matte px-6 py-2 rounded-full text-gold-main text-xs font-bold tracking-widest hover:bg-gold-matte hover:text-white transition-all uppercase">Login</a>
         </div>
     </nav>
 
-    <!-- HERO CONTENT -->
-    <header class="min-h-screen flex flex-col items-center justify-center text-center px-4 pt-32 pb-20 relative">
-        <h1
-            class="font-hindi text-6xl md:text-8xl font-bold bg-gradient-to-b from-white to-amber-400 bg-clip-text text-transparent mb-6 drop-shadow-2xl leading-tight opacity-0 animate-[fadeIn_1s_ease-out_forwards]">
+    <header class="min-h-screen flex flex-col items-center justify-center text-center px-4 relative pt-24">
+        <h1 class="font-hindi text-5xl md:text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-white to-gold-main mb-6 leading-[1.4] py-4 drop-shadow-2xl opacity-0 animate-[fadeIn_1s_ease-out_forwards]">
             स्वाद जो दिल छू जाए<br>
-            <span class="text-4xl md:text-6xl block mt-4">घर का खाना, शाही अंदाज़ में</span>
+            <span class="text-3xl md:text-5xl block mt-2 font-playfair italic text-gold-rose font-normal tracking-wide">Ghar ka khana, Royal Andaaz.</span>
         </h1>
-        <p
-            class="text-xl md:text-2xl text-gray-300 font-light max-w-3xl mb-12 leading-relaxed opacity-0 animate-[fadeIn_1s_ease-out_0.5s_forwards]">
-            Handmade meals, freshly prepared by India's finest home chefs — delivered to your doorstep.
+        <p class="text-gray-300 text-lg max-w-2xl mb-10 font-light tracking-wide opacity-0 animate-[fadeIn_1s_0.3s_forwards]">
+            Handmade meals by India's finest home chefs. No preservatives. Just love.
         </p>
-        <a href="menu.html"
-            class="opacity-0 animate-[fadeIn_1s_ease-out_1s_forwards] bg-gradient-to-r from-amber-600 to-amber-700 text-white px-10 py-4 rounded-full font-cinzel font-bold text-sm tracking-[3px] shadow-[0_0_30px_rgba(217,119,6,0.4)] hover:shadow-[0_0_50px_rgba(217,119,6,0.6)] hover:-translate-y-1 transition-all uppercase">
-            Explore Full Menu
-        </a>
+        <button onclick="window.location.href='menu.html'" class="bg-gradient-to-r from-gold-matte to-gold-main text-black px-10 py-4 rounded-full font-cinzel font-bold text-sm tracking-[3px] shadow-[0_0_30px_rgba(197,160,89,0.4)] hover:scale-105 transition-transform uppercase opacity-0 animate-[fadeIn_1s_0.6s_forwards]">
+            Explore The Menu
+        </button>
     </header>
 
-    <!-- THALI WIDGET -->
-    <section class="max-w-6xl mx-auto px-4 pb-32">
-        <h2 class="text-center font-cinzel text-4xl text-amber-400 mb-16 tracking-[4px] uppercase">Today's Royal Menu
-        </h2>
-
-        <div id="thaliWidget"
-            class="bg-[#1a0f0a] border border-amber-900/30 rounded-[40px] overflow-hidden shadow-2xl grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] relative min-h-[550px]">
-
-            <!-- VISUAL SIDE -->
-            <div
-                class="relative bg-gradient-to-br from-amber-900/10 to-transparent flex items-center justify-center overflow-hidden min-h-[400px]">
-                <!-- Center Dish -->
-                <div
-                    class="absolute z-20 w-40 h-40 rounded-full border-4 border-amber-500 shadow-[0_0_50px_rgba(217,119,6,0.3)] overflow-hidden bg-black">
+    <section class="pb-32 px-4" id="thali-section">
+        <div class="thali-widget">
+            <div class="relative flex items-center justify-center overflow-hidden min-h-[500px]">
+                <div class="plate-center" onclick="goToProduct()">
                     <img id="centerImg" src="" class="w-full h-full object-cover transition-opacity duration-300">
                 </div>
-                <!-- Rotating Ring -->
-                <div id="plate"
-                    class="w-[450px] h-[450px] rounded-full border border-amber-900/50 absolute transition-transform duration-1000 ease-[cubic-bezier(0.2,0.8,0.2,1)] will-change-transform">
-                    <!-- Katoris injected by JS -->
-                </div>
+                <div class="plate-ring" id="plate"></div>
             </div>
-
-            <!-- CONTENT SIDE -->
-            <div class="p-12 lg:p-16 flex flex-col justify-center bg-white/5 backdrop-blur-sm relative">
-
-                <!-- Chef Info -->
-                <div class="flex items-center gap-4 mb-8">
-                    <img id="chefImg" src="" class="w-16 h-16 rounded-full border-2 border-amber-500 object-cover">
+            <div class="p-12 lg:p-16 flex flex-col justify-center relative z-10">
+                <p class="text-[10px] font-bold text-gold-matte uppercase tracking-[0.2em] mb-4">Trending This Week</p>
+                <div class="flex items-center gap-4 mb-6">
+                    <img id="chefImg" src="" class="w-14 h-14 rounded-full border-2 border-gold-rose object-cover">
                     <div>
-                        <h4 id="chefName" class="font-cinzel text-amber-400 text-lg font-bold">Loading...</h4>
-                        <p id="chefLoc" class="font-sans text-xs text-gray-400 uppercase tracking-widest mt-1">Please
-                            Wait</p>
+                        <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-1">Kitchen Of</p>
+                        <h4 id="chefName" class="font-cinzel text-gold-rose text-xl font-bold">--</h4>
+                        <span id="chefLoc" class="text-xs text-gray-500 font-bold uppercase">--</span>
                     </div>
                 </div>
-
-                <!-- Dish Info -->
-                <h2 id="dishTitle" class="font-serif text-5xl text-white mb-4 leading-none">Connecting...</h2>
-                <p id="dishDesc"
-                    class="font-sans text-gray-400 text-lg leading-relaxed mb-10 pl-6 border-l-4 border-amber-600">
-                    Fetching today's specials from the kitchen...
+                <h2 id="dishTitle" class="font-playfair text-4xl md:text-5xl text-white mb-4 leading-tight">Loading...</h2>
+                <p id="dishDesc" class="font-sans text-gray-400 text-sm leading-7 mb-10 border-l-2 border-gold-matte pl-6 italic max-w-md h-16 overflow-hidden">
+                    Fetching today's specials...
                 </p>
-
-                <!-- Action -->
-                <div class="mt-auto flex justify-between items-center border-t border-white/10 pt-8">
-                    <span id="dishPrice" class="font-cinzel text-4xl text-amber-500 font-bold">--</span>
-                    <button onclick="addToCart()"
-                        class="bg-amber-600 hover:bg-amber-500 text-white px-8 py-3 rounded-full font-cinzel font-bold text-xs tracking-widest uppercase transition-all shadow-lg hover:shadow-amber-600/40 transform active:scale-95">
-                        Add to Plate
+                <div class="flex items-center justify-between border-t border-white/10 pt-8">
+                    <span id="dishPrice" class="font-cinzel text-4xl text-gold-main font-bold">--</span>
+                    <div class="flex gap-3">
+                        <button onclick="rotateThali(-1)" class="w-12 h-12 rounded-full border border-gray-600 text-white hover:border-gold-main transition-colors text-xl flex items-center justify-center pb-1">&larr;</button>
+                        <button onclick="rotateThali(1)" class="w-12 h-12 rounded-full border border-gray-600 text-white hover:border-gold-main transition-colors text-xl flex items-center justify-center pb-1">&rarr;</button>
+                    </div>
+                    <button onclick="goToProduct()" class="bg-gradient-to-r from-gold-matte to-gold-main text-black px-8 py-4 rounded-full font-bold text-xs uppercase tracking-[0.2em] hover:shadow-[0_0_20px_rgba(197,160,89,0.3)] transition-all">
+                        View Details
                     </button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- LOGIC -->
     <script>
-        // Navbar Scroll Effect
-        window.addEventListener('scroll', () => {
-            const nav = document.getElementById('navbar');
-            if (window.scrollY > 50) nav.classList.add('glass-nav', 'py-3');
-            else nav.classList.remove('glass-nav', 'py-3');
-        });
+        const MOCK_DATA = [
+            { id: "1", title: "Dal Makhani", price: 299, chef: "Mrs. Singh", loc: "Amritsar", desc: "Black lentils cooked overnight on charcoal.", img: window.CONFIG.PLACEHOLDER, avatar: window.CONFIG.PLACEHOLDER },
+            { id: "2", title: "Hyderabadi Biryani", price: 450, chef: "Mrs. Reddy", loc: "Hyderabad", desc: "Aromatic basmati rice sealed with dough.", img: window.CONFIG.PLACEHOLDER, avatar: window.CONFIG.PLACEHOLDER },
+            { id: "3", title: "Gajar Halwa", price: 199, chef: "Mrs. Gupta", loc: "Delhi", desc: "Winter carrots slow cooked in pure Desi Ghee.", img: window.CONFIG.PLACEHOLDER, avatar: window.CONFIG.PLACEHOLDER },
+            { id: "4", title: "Shahi Paneer", price: 349, chef: "Mrs. Kapoor", loc: "Jaipur", desc: "Cottage cheese in a royal creamy sauce.", img: window.CONFIG.PLACEHOLDER, avatar: window.CONFIG.PLACEHOLDER },
+            { id: "5", title: "Rajma Chawal", price: 240, chef: "Nani's Kitchen", loc: "Punjab", desc: "Comfort food at its finest.", img: window.CONFIG.PLACEHOLDER, avatar: window.CONFIG.PLACEHOLDER }
+        ];
 
-        // Data
-        let items = [];
+        let items = [...MOCK_DATA];
         let currIdx = 0;
-        let cartItems = 0;
+        let autoRotate;
 
         async function init() {
             try {
-                const data = await api.request('/explore');
-                items = data.slice(0, 6);
-                if (items.length > 0) setupThali();
-            } catch (e) {
-                console.error("API Error:", e);
-                // Can show toast here if we had toast component, for now generic fallback
-            }
-        }
+                const response = await fetch(`${window.CONFIG.BASE_URL}/explore`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.length > 0) { items = data.slice(0, 5); setupThali(); return; }
+                }
+            } catch (e) { console.log("Backend offline."); }
 
-        function fixPath(path) {
-            if (!path) return 'public/placeholder.svg';
-            if (path.startsWith('http')) return path;
-            if (!path.startsWith('public/')) return 'public/' + path.replace(/\\/g, '/');
-            return path;
+            try {
+                const res = await fetch('real-products.json');
+                if (res.ok) {
+                    const data = await res.json();
+                    items = data.slice(0, 5).map(i => ({
+                        ...i, title: i.title||i.name, desc: i.desc||i.description,
+                        img: i.img ? (i.img.startsWith('http') ? i.img : `public/${i.img}`) : window.CONFIG.PLACEHOLDER,
+                        avatar: i.avatar ? (i.avatar.startsWith('http') ? i.avatar : `public/${i.avatar}`) : window.CONFIG.PLACEHOLDER
+                    }));
+                    setupThali();
+                }
+            } catch (e) { console.log("Local missing."); }
+            setupThali();
         }
 
         function setupThali() {
             const plate = document.getElementById('plate');
-            const r = 160;
             plate.innerHTML = '';
+            
+            // 🚨 FIX: Responsive Radius for Bigger Ring
+            const isMobile = window.innerWidth < 900;
+            const r = isMobile ? 150 : 180; // 180px radius for 360px ring
 
             items.forEach((item, i) => {
-                // Create Katori logic
                 const el = document.createElement('div');
-                const imgPath = fixPath(item.image || item.img);
+                el.className = 'katori';
+                
+                const ang = (360 / items.length) * i;
+                
+                // Position logic
+                el.style.transform = `rotate(${ang}deg) translate(${r}px) rotate(-${ang}deg)`;
 
-                el.className = 'absolute w-20 h-20 rounded-full border-2 border-amber-600/50 bg-[#1a1008] overflow-hidden cursor-pointer shadow-lg hover:scale-110 hover:border-white transition-all duration-300';
-                el.innerHTML = `<img src="${imgPath}" class="w-full h-full object-cover p-0.5 rounded-full" onerror="this.src='public/placeholder.svg'">`;
-
-                const angleStep = 360 / items.length;
-                const rad = (angleStep * i - 90) * (Math.PI / 180);
-                const x = r * Math.cos(rad) + 225 - 40; // Center offset (225) - half width (40)
-                const y = r * Math.sin(rad) + 225 - 40;
-
-                el.style.left = `${x}px`;
-                el.style.top = `${y}px`;
-                // Counter-rotate to keep image upright if we rotated the container, but here we rotate container
-                // Actually, if we rotate container, the items rotate with it. We just need to position them initially.
-
-                el.onclick = () => updateUI(i);
+                el.innerHTML = `
+                    <div class="katori-inner">
+                        <img src="${item.img||window.CONFIG.PLACEHOLDER}" onerror="this.src='${window.CONFIG.PLACEHOLDER}'">
+                    </div>
+                `;
+                
+                el.onclick = () => { updateUI(i); resetTimer(); };
                 plate.appendChild(el);
             });
 
             updateUI(0);
-            // Auto Rotate
-            setInterval(() => updateUI((currIdx + 1) % items.length), 5000);
+            resetTimer();
         }
 
         function updateUI(idx) {
-            if (!items[idx]) return;
             currIdx = idx;
             const item = items[idx];
-
-            // Rotate Plate
-            const angleStep = 360 / items.length;
-            document.getElementById('plate').style.transform = `rotate(${idx * -angleStep}deg)`;
-
-            // Update Center
-            const center = document.getElementById('centerImg');
-            center.style.opacity = 0;
-            setTimeout(() => {
-                center.src = fixPath(item.image || item.img);
-                center.style.opacity = 1;
-            }, 300);
-
-            // Update Text
-            document.getElementById('dishTitle').innerText = item.name || item.title;
-            document.getElementById('dishPrice').innerText = "₹" + item.price;
-            document.getElementById('dishDesc').innerText = item.description || item.desc || "A delicious homemade delicacy.";
-            document.getElementById('chefName').innerText = item.chef || "Home Chef";
-            document.getElementById('chefLoc').innerText = (item.loc || "Kitchen") + " • " + (item.trustStat || "Fresh");
-            document.getElementById('chefImg').src = item.avatar ? fixPath(item.avatar) : 'public/placeholder.svg';
-        }
-
-        async function addToCart() {
-            const token = localStorage.getItem('authToken');
-            if (!token) {
-                alert("Please Login First to Order!");
-                window.location.href = 'login.html';
-                return;
-            }
-
-            const item = items[currIdx];
             if (!item) return;
 
-            try {
-                // User contract: /add-to-cart takes productid (Long) and quantity (int)
-                // We assume item.id is the productid. If item.id is string "neelam-dal-bati", this might fail if backend expects Long.
-                // However, real-products.json has string IDs. If backend needs Long, this mismatch needs addressing.
-                // Assuming backend acts on string ID or we parse it? 
-                // Wait, user contract said "Long productid". String IDs like "neelam-dal-bati" are NOT Longs.
-                // But the fetched data from /explore likely returns Long IDs if it comes from DB.
-                // If /explore returns real DB objects, they will have numeric IDs. 
-                // We will send item.id as is.
+            // 🚨 FIX: Ensure transform maintains center during rotation
+            document.getElementById('plate').style.transform = `translate(-50%, -50%) rotate(-${(360 / items.length) * idx}deg)`;
+            
+            const center = document.getElementById('centerImg');
+            center.style.opacity = 0;
+            setTimeout(() => { center.src = item.img||window.CONFIG.PLACEHOLDER; center.style.opacity = 1; }, 200);
 
-                await api.request('/add-to-cart', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        productid: item.id,
-                        quantity: 1
-                    })
-                });
+            document.getElementById('dishTitle').innerText = item.title;
+            const safePrice = Number(String(item.price).replace(/[^0-9.]/g, '')) || 0;
+            document.getElementById('dishPrice').innerText = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 }).format(safePrice);
+            document.getElementById('dishDesc').innerText = item.desc;
+            document.getElementById('chefName').innerText = item.chef;
+            document.getElementById('chefLoc').innerText = item.loc;
+            document.getElementById('chefImg').src = item.avatar||window.CONFIG.PLACEHOLDER;
 
-                cartItems++;
-                const badge = document.getElementById('cartCount');
-                badge.innerText = cartItems;
-                badge.style.display = 'block';
-
-                // Interaction Feedback
-                const btn = document.querySelector('button[onclick="addToCart()"]');
-                const original = btn.innerText;
-                btn.innerText = "ADDED";
-                btn.classList.add('bg-green-600', 'hover:bg-green-600');
-                setTimeout(() => {
-                    btn.innerText = original;
-                    btn.classList.remove('bg-green-600', 'hover:bg-green-600');
-                }, 1000);
-
-            } catch (e) {
-                console.error("Cart Error:", e);
-                alert("Failed to add to cart: " + e.message);
-            }
+            document.querySelectorAll('.katori-inner').forEach((k, i) => {
+                if (i === idx) {
+                    k.style.transform = 'scale(1.25)';
+                    k.style.borderColor = '#c5a059';
+                    k.style.boxShadow = '0 0 25px rgba(197, 160, 89, 0.6)';
+                } else {
+                    k.style.transform = 'scale(1)';
+                    k.style.borderColor = '#8c6a38';
+                    k.style.boxShadow = '0 5px 20px rgba(0,0,0,0.6)';
+                }
+            });
         }
+
+        function rotateThali(dir) {
+            let newIdx = currIdx + dir;
+            if (newIdx < 0) newIdx = items.length - 1;
+            if (newIdx >= items.length) newIdx = 0;
+            updateUI(newIdx);
+            resetTimer();
+        }
+
+        function resetTimer() { clearInterval(autoRotate); autoRotate = setInterval(() => rotateThali(1), 5000); }
+        
+        function goToProduct() { 
+            if (items[currIdx]) window.open(`product.html?id=${items[currIdx].id}`, '_blank'); 
+        }
+
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) nav.classList.add('nav-glass'); else nav.classList.remove('nav-glass');
+        });
+
+        // Reload on resize to adjust radius
+        window.addEventListener('resize', () => { setupThali(); });
 
         init();
     </script>
 </body>
-
 </html>

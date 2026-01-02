@@ -1,137 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gruhini - Full Menu</title>
-
+    <meta charset="UTF-8"><title>Gruhini - The Menu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Playfair+Display:wght@600;700&family=Lato:wght@400;700&display=swap"
-        rel="stylesheet">
-
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        amber: { 600: '#d97706', 800: '#92400e', 900: '#78350f' },
-                        cream: '#FDF5E6'
-                    }
-                }
-            }
-        }
+        tailwind.config = { theme: { extend: { colors: { amber: { 600: '#d97706', 800: '#92400e' }, cream: '#FDF8F0', gold: '#c5a059' }, fontFamily: { cinzel: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] } } } }
     </script>
     <script src="js/config.js"></script>
+    <style>.hide-scroll::-webkit-scrollbar { display: none; }</style>
 </head>
+<body class="bg-cream text-gray-900 font-sans min-h-screen">
 
-<body class="bg-cream font-sans text-amber-900 min-h-screen">
+    <div class="relative w-full h-[55vh] min-h-[450px] overflow-hidden">
+        <div class="absolute inset-0 bg-[url('public/background.jpg')] bg-cover bg-center"></div>
+        
+        <div class="absolute inset-0 bg-black/60"></div>
+        
+        <div class="absolute bottom-0 left-0 w-full h-48 bg-gradient-to-t from-[#FDF8F0] via-[#FDF8F0]/60 to-transparent"></div>
 
-    <!-- Navbar -->
-    <nav
-        class="fixed top-0 w-full z-40 bg-white/95 backdrop-blur-md shadow-sm border-b border-amber-900/10 px-6 py-4 flex justify-between items-center">
-        <a href="index.html" class="font-serif text-2xl font-bold tracking-widest text-amber-800">GRUHINI</a>
-        <div onclick="window.location.href=API_CONFIG.APP_URL"
-            class="cursor-pointer bg-amber-900 text-white px-5 py-2 rounded-full text-xs font-bold hover:shadow-lg transition-transform hover:-translate-y-0.5">
-            MY PLATE
+        <nav class="absolute top-0 w-full z-50 px-6 py-6 flex justify-between items-center">
+            
+            <a href="index.html" class="flex items-center gap-3 group">
+                <div class="w-12 h-12 rounded-full overflow-hidden relative shadow-[0_0_15px_rgba(197,160,89,0.4)] group-hover:shadow-[0_0_25px_rgba(197,160,89,0.6)] transition-all duration-500 border border-gold/30">
+                    <img src="public/logo.jpg" alt="Gruhini" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-black/10 to-transparent pointer-events-none"></div>
+                </div>
+                <span class="font-cinzel text-xl font-bold text-gold tracking-widest group-hover:text-white transition-colors duration-300 drop-shadow-md">GRUHINI</span>
+            </a>
+
+            <a href="cart.html" class="text-xs font-bold uppercase tracking-widest text-cream hover:text-gold transition-colors border border-white/20 px-4 py-2 rounded-full backdrop-blur-sm bg-black/20">Cart</a>
+        </nav>
+
+        <div class="absolute inset-0 flex flex-col justify-center items-center text-center px-4 pt-10">
+            <h1 class="font-cinzel text-5xl md:text-6xl text-gold mb-3 drop-shadow-lg">The Royal Menu</h1>
+            <p class="text-gray-200 text-xs md:text-sm tracking-[0.4em] uppercase font-light">Handmade Thalis, Snacks & Crafts</p>
         </div>
-    </nav>
+    </div>
 
-    <!-- Header -->
-    <header class="pt-32 pb-10 text-center px-4 bg-gradient-to-b from-amber-50 to-cream">
-        <h1 class="font-serif text-5xl font-bold text-amber-900 mb-4">Today's Menu</h1>
-        <p class="text-amber-700/60 uppercase tracking-[3px] font-bold text-xs">Freshly Prepared • Home Cooked •
-            Delivered Hot</p>
-    </header>
+    <div class="relative z-10 -mt-16 mb-12">
+        <div class="flex justify-center gap-4 overflow-x-auto hide-scroll px-4 pb-4">
+            <button id="btn-All" onclick="filter('All')" class="tab-btn px-8 py-3 rounded-full bg-amber-800 text-white text-xs font-bold uppercase shadow-lg transition-all hover:scale-105 border border-amber-900">All</button>
+            <button id="btn-Thalis" onclick="filter('Thalis')" class="tab-btn px-8 py-3 rounded-full bg-white border border-gray-200 text-gray-600 text-xs font-bold uppercase hover:bg-amber-50 hover:text-amber-800 transition-all shadow-md">Thalis</button>
+            <button id="btn-Snacks" onclick="filter('Snacks')" class="tab-btn px-8 py-3 rounded-full bg-white border border-gray-200 text-gray-600 text-xs font-bold uppercase hover:bg-amber-50 hover:text-amber-800 transition-all shadow-md">Snacks</button>
+            <button id="btn-Desserts" onclick="filter('Desserts')" class="tab-btn px-8 py-3 rounded-full bg-white border border-gray-200 text-gray-600 text-xs font-bold uppercase hover:bg-amber-50 hover:text-amber-800 transition-all shadow-md">Desserts</button>
+            <button id="btn-Crafts" onclick="filter('Crafts')" class="tab-btn px-8 py-3 rounded-full bg-white border border-gray-200 text-gray-600 text-xs font-bold uppercase hover:bg-amber-50 hover:text-amber-800 transition-all shadow-md">Crafts</button>
+        </div>
+    </div>
 
-    <!-- Content -->
-    <div id="loading" class="text-center py-20 text-gray-400 font-serif italic text-xl animate-pulse">Consulting the
-        Chefs...</div>
-
-    <div id="menuGrid" class="max-w-7xl mx-auto px-4 pb-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 hidden">
-        <!-- Injected by JS -->
+    <div class="max-w-7xl mx-auto px-4 pb-24">
+        <div id="loading" class="text-center py-20 text-amber-800/50 animate-pulse tracking-widest font-cinzel">Setting the table...</div>
+        <div id="menuGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 hidden"></div>
     </div>
 
     <script>
-        async function loadMenu() {
+        let allItems = [];
+
+        async function init() {
             try {
-                const products = await api.request('/explore');
-                const grid = document.getElementById('menuGrid');
-                const loading = document.getElementById('loading');
-
-                if (!products || products.length === 0) throw new Error("No items");
-
-                loading.classList.add('hidden');
-                grid.classList.remove('hidden');
-
-                grid.innerHTML = products.map(p => {
-                    const img = (p.image || p.img || 'public/placeholder.svg').replace(/\\/g, '/');
-                    const safeImg = img.startsWith('http') || img.startsWith('public') ? img : 'public/' + img;
-
-                    return `
-                        <div class="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-amber-900/5 flex flex-col h-full group">
-                            <div class="h-64 overflow-hidden relative">
-                                <img src="${safeImg}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="this.src='public/placeholder.svg'">
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
-                                    <div>
-                                        <div class="text-amber-300 text-xs font-bold uppercase tracking-wider mb-1">By ${(p.chef || "Home Chef")}</div>
-                                        <h2 class="text-white font-serif text-2xl font-bold leading-tight">${p.name}</h2>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="p-6 flex flex-col flex-1">
-                                <p class="text-gray-500 text-sm leading-relaxed mb-6 flex-1">${p.description || "A delicious homemade specialty."}</p>
-                                
-                                <div class="flex items-center justify-between border-t border-gray-100 pt-6 mt-auto">
-                                    <span class="font-serif text-2xl font-bold text-amber-900">₹${p.price}</span>
-                                    <button onclick="addToCart('${p.id}')" class="bg-amber-100 text-amber-800 px-6 py-3 rounded-full font-bold text-xs uppercase tracking-wider hover:bg-amber-900 hover:text-white transition-colors">
-                                        Add +
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-
-            } catch (err) {
-                document.getElementById('loading').innerText = "Kitchen Closed (Server Offline)";
+                try {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 sec timeout
+                    const res = await fetch(`${window.CONFIG.BASE_URL}/explore`, { signal: controller.signal });
+                    clearTimeout(timeoutId);
+                    if(res.ok) allItems = await res.json();
+                    else throw new Error();
+                } catch(e) {
+                    const localRes = await fetch('real-products.json');
+                    const localData = await localRes.json();
+                    allItems = localData.map(i => ({...i, image: i.img?.startsWith('http') ? i.img : "public/" + i.img})); 
+                }
+                render(allItems);
+            } catch(err) {
+                document.getElementById('loading').innerText = "Kitchen Closed";
             }
         }
 
-        async function addToCart(id) {
-            const token = localStorage.getItem('authToken');
-            if (!token) {
-                alert("Please Login First to Order!");
-                window.location.href = 'login.html';
+        function render(items) {
+            document.getElementById('loading').classList.add('hidden');
+            const grid = document.getElementById('menuGrid');
+            grid.classList.remove('hidden');
+            
+            if(items.length === 0) {
+                grid.innerHTML = '<div class="col-span-full text-center text-gray-400 italic py-10">No items found.</div>';
                 return;
             }
 
+            grid.innerHTML = items.map(item => {
+                const safePrice = Number(String(item.price).replace(/[^0-9.]/g, '')) || 0;
+                const price = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 }).format(safePrice);
+                const img = item.image || item.img || window.CONFIG.PLACEHOLDER;
+                
+                return `
+                <div class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 group hover:-translate-y-2 border border-gray-100">
+                    <div class="h-60 overflow-hidden relative cursor-pointer" onclick="window.open('product.html?id=${item.id}', '_blank')">
+                        <img src="${img}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4 backdrop-blur-[2px]">
+                            <span class="text-gold font-cinzel text-lg border-b border-gold pb-1 mb-1">View Details</span>
+                        </div>
+                        <div class="absolute top-3 right-3 bg-white/90 backdrop-blur text-[10px] font-bold px-2 py-1 rounded text-amber-900 shadow-sm uppercase tracking-wide">
+                            ${item.time || 'Fresh'}
+                        </div>
+                    </div>
+                    
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-cinzel text-lg text-gray-900 font-bold leading-tight truncate pr-2">${item.name || item.title}</h3>
+                            <span class="text-amber-600 text-xs font-bold bg-amber-50 px-2 py-1 rounded border border-amber-100">${item.category || 'Veg'}</span>
+                        </div>
+                        <p class="text-xs text-gray-500 uppercase tracking-widest mb-3">By ${item.chef || 'Home Chef'}</p>
+                        <p class="text-sm text-gray-600 line-clamp-2 italic mb-6 font-light leading-relaxed h-10">${item.desc || item.description || "Authentic homemade delicacy."}</p>
+                        
+                        <div class="flex justify-between items-center pt-4 border-t border-gray-100">
+                            <span class="text-2xl font-cinzel text-amber-800 font-bold">${price}</span>
+                            <button onclick="addToCart('${item.id}', this)" class="bg-gray-900 hover:bg-amber-700 text-white px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg transition-all flex items-center gap-2 group-hover:bg-amber-800">
+                                Add <span class="text-gold">+</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        async function addToCart(id, btn) {
+            const token = localStorage.getItem('authToken');
+            if(!token) { window.location.href = 'login.html'; return; }
+            const originalText = btn.innerHTML;
+            btn.innerHTML = "Adding..."; btn.classList.add("opacity-70");
             try {
-                await api.request('/add-to-cart', {
-                    method: 'POST',
-                    body: JSON.stringify({ productid: id, quantity: 1 })
-                });
-                // Simple Toast via Alert for now (or upgrade to custom)
-                // Since this is HTML, standard alert is "okay" but user asked for Premium. 
-                // Adding a temporary overlay logic would be better.
-                showToast("Added to Plate!");
-            } catch (e) {
-                alert("Error adding item");
-            }
+                await fetch(`${window.CONFIG.BASE_URL}/add-to-cart`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify({ productid: id, quantity: 1 }) });
+                btn.innerHTML = "Added ✓"; btn.classList.replace("bg-gray-900", "bg-green-600"); btn.classList.replace("group-hover:bg-amber-800", "hover:bg-green-700");
+                setTimeout(() => { btn.innerHTML = originalText; btn.classList.replace("bg-green-600", "bg-gray-900"); btn.classList.replace("hover:bg-green-700", "group-hover:bg-amber-800"); btn.classList.remove("opacity-70"); }, 1500);
+            } catch(e) { btn.innerHTML = "Err"; }
         }
 
-        function showToast(msg) {
-            const t = document.createElement('div');
-            t.className = "fixed bottom-10 left-1/2 -translate-x-1/2 bg-amber-900 text-white px-8 py-3 rounded-full shadow-2xl z-50 animate-bounce";
-            t.innerText = msg;
-            document.body.appendChild(t);
-            setTimeout(() => t.remove(), 2000);
-        }
+        function normalize(c) { return (c || "").toLowerCase().trim(); }
+        
+        function filter(cat) { 
+            const inactiveClass = "tab-btn px-8 py-3 rounded-full bg-white border border-gray-200 text-gray-600 text-xs font-bold uppercase hover:bg-amber-50 hover:text-amber-800 transition-all shadow-md";
+            const activeClass   = "tab-btn px-8 py-3 rounded-full bg-amber-800 text-white text-xs font-bold uppercase shadow-lg transition-all hover:scale-105 border border-amber-900";
 
-        loadMenu();
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.className = inactiveClass);
+            const target = document.getElementById(`btn-${cat}`);
+            if(target) target.className = activeClass;
+
+            if(cat === 'All') render(allItems); 
+            else render(allItems.filter(i => normalize(i.category) === normalize(cat)));
+        }
+        init();
     </script>
 </body>
-
 </html>
