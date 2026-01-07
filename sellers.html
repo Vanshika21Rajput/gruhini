@@ -72,12 +72,27 @@
 
     <nav
         class="fixed top-0 w-full z-50 bg-[#0f0805]/90 backdrop-blur-md border-b border-white/10 px-6 py-4 flex justify-between items-center">
-        <a href="index.html"
-            class="font-cinzel text-xl font-bold text-amber-500 tracking-widest hover:text-amber-400 transition-colors">GRUHINI</a>
-        <a href="index.html"
-            class="bg-white/5 hover:bg-white/10 px-4 py-2 rounded-full border border-white/10 text-[10px] uppercase tracking-widest font-bold text-gray-300 transition-all">
-            &larr; Back to Menu
+        <a href="index.html" class="flex items-center gap-3 group">
+            <div
+                class="w-10 h-10 rounded-full overflow-hidden relative shadow-[0_0_15px_rgba(197,160,89,0.3)] border border-amber-500/30">
+                <img src="public/logo.jpg" alt="Gruhini" class="w-full h-full object-cover">
+            </div>
+            <span
+                class="font-cinzel text-xl font-bold text-amber-500 tracking-widest group-hover:text-amber-400 transition-colors">GRUHINI</span>
         </a>
+        <div class="flex items-center gap-4">
+            <a href="index.html"
+                class="text-[10px] uppercase tracking-widest font-bold text-gray-400 hover:text-cream transition-colors">Home</a>
+            <a href="menu.html"
+                class="text-[10px] uppercase tracking-widest font-bold text-gray-400 hover:text-cream transition-colors">Menu</a>
+            <span
+                class="text-[10px] uppercase tracking-widest font-bold text-amber-500 border-b border-amber-500 pb-0.5">Our
+                Kitchens</span>
+            <a href="about.html"
+                class="text-[10px] uppercase tracking-widest font-bold text-gray-400 hover:text-cream transition-colors">About</a>
+            <a href="login.html"
+                class="bg-amber-600 hover:bg-amber-500 px-4 py-2 rounded-full text-[10px] uppercase tracking-widest font-bold text-white transition-all">Login</a>
+        </div>
     </nav>
 
     <div class="relative pt-40 pb-20 px-6 text-center border-b border-white/5">
@@ -86,8 +101,11 @@
             रसोई के उस्ताद
         </h1>
         <p
-            class="font-cinzel text-xs md:text-sm text-gray-400 tracking-[0.4em] uppercase opacity-0 animate-[fadeIn_1s_0.3s_forwards]">
+            class="font-cinzel text-xs md:text-sm text-gray-400 tracking-[0.4em] uppercase opacity-0 animate-[fadeIn_1s_0.3s_forwards] mb-4">
             Meet The Hands Behind The Taste
+        </p>
+        <p class="text-sm text-amber-500/80 opacity-0 animate-[fadeIn_1s_0.5s_forwards]">
+            Verified home kitchens you can trust.
         </p>
     </div>
 
@@ -168,7 +186,8 @@
         async function init() {
             try {
                 // Fetch Sellers (Using explore endpoint to derive sellers)
-                const response = await fetch(`${CONFIG.BASE_URL}/products/explore`);
+                const baseUrl = window.CONFIG?.BASE_URL || 'http://localhost:8080';
+                const response = await fetch(`${baseUrl}/explore`);
 
                 if (!response.ok) throw new Error("Backend unavailable");
 
@@ -194,7 +213,7 @@
                 renderSellers(Array.from(sellersMap.values()));
 
             } catch (e) {
-                console.warn("Backend sleeping or empty. Loading Mock Chefs.");
+                console.warn("Backend sleeping or empty. Loading Mock Chefs.", e);
                 renderSellers(MOCK_CHEFS);
             }
         }
@@ -231,7 +250,7 @@
                     <div class="flex items-start gap-5">
                         <div class="relative">
                             <img src="${chef.avatar}" class="w-16 h-16 rounded-full border-2 border-amber-600/50 object-cover p-0.5">
-                            <div class="absolute -bottom-1 -right-1 bg-amber-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">PRO</div>
+                            <div class="absolute -bottom-1 -right-1 bg-green-600 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">✓ VERIFIED</div>
                         </div>
                         <div>
                             <h3 class="font-cinzel text-lg text-white font-bold leading-tight">${chef.name}</h3>
@@ -246,7 +265,7 @@
                     
                     <div class="mt-6">
                         <button class="w-full bg-white/5 hover:bg-amber-700 hover:text-white text-gray-300 text-[10px] font-bold py-3 rounded-lg uppercase tracking-[0.2em] transition-all border border-white/5">
-                            View Menu
+                            View Dishes from this Kitchen
                         </button>
                     </div>
 
@@ -259,6 +278,64 @@
 
         init();
     </script>
+
+    <!-- Trust Snippet (Contextual) -->
+    <section class="py-16 px-6 border-t border-white/5 text-center">
+        <div class="max-w-2xl mx-auto">
+            <p class="text-gray-400 italic text-lg leading-relaxed mb-4">
+                "Gruhini supports home chefs with dignity, fair pricing, and verified kitchens."
+            </p>
+            <a href="about.html"
+                class="text-amber-500 text-sm font-bold tracking-widest uppercase border-b border-amber-500 pb-0.5 hover:text-amber-400 transition-colors">
+                Read Our Mission →
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[#0f0805] border-t border-amber-500/20 py-12 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
+                <div>
+                    <h4 class="font-cinzel text-amber-500 font-bold text-sm mb-4">Explore</h4>
+                    <ul class="space-y-2">
+                        <li><a href="index.html"
+                                class="text-gray-500 text-sm hover:text-white transition-colors">Home</a></li>
+                        <li><a href="menu.html"
+                                class="text-gray-500 text-sm hover:text-white transition-colors">Menu</a></li>
+                        <li><a href="about.html" class="text-gray-500 text-sm hover:text-white transition-colors">About
+                                Us</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-cinzel text-amber-500 font-bold text-sm mb-4">For Chefs</h4>
+                    <ul class="space-y-2">
+                        <li><span class="text-amber-400 text-sm">Become a Home Chef</span></li>
+                        <li><a href="login.html" class="text-gray-500 text-sm hover:text-white transition-colors">Seller
+                                Login</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-cinzel text-amber-500 font-bold text-sm mb-4">Support</h4>
+                    <ul class="space-y-2">
+                        <li><span class="text-gray-500 text-sm">Contact Us (Coming Soon)</span></li>
+                        <li><span class="text-gray-500 text-sm">FAQs (Coming Soon)</span></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-cinzel text-amber-500 font-bold text-sm mb-4">Legal</h4>
+                    <ul class="space-y-2">
+                        <li><span class="text-gray-500 text-sm">Terms (Coming Soon)</span></li>
+                        <li><span class="text-gray-500 text-sm">Privacy (Coming Soon)</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-white/10 pt-8 text-center">
+                <p class="font-cinzel italic text-sm text-amber-500/60">Gruhini — ghar jaisa khana, ghar ke log</p>
+                <p class="text-xs text-gray-600 mt-2">© 2026 Gruhini. Made with ❤️ in India.</p>
+            </div>
+        </div>
+    </footer>
 
 </body>
 

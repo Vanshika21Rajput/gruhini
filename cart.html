@@ -23,10 +23,31 @@
 
     <nav
         class="fixed top-0 w-full z-50 bg-white/95 border-b border-amber-200 px-6 py-4 flex justify-between items-center shadow-sm">
-        <a href="index.html" class="font-cinzel text-xl font-bold text-amber-800 tracking-widest">GRUHINI</a>
-        <a href="menu.html" class="text-xs font-bold uppercase tracking-widest hover:text-amber-600">Continue
-            Ordering</a>
+        <a href="index.html" class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full overflow-hidden border border-amber-300 shadow-sm">
+                <img src="public/logo.jpg" alt="Gruhini" class="w-full h-full object-cover">
+            </div>
+            <span class="font-cinzel text-xl font-bold text-amber-800 tracking-widest">GRUHINI</span>
+        </a>
+        <div class="flex items-center gap-4" id="navLinks"></div>
     </nav>
+
+    <script>
+            (function () {
+                const navLinks = document.getElementById('navLinks');
+                const linkClass = "text-xs font-bold uppercase tracking-widest text-gray-600 hover:text-amber-700 transition-colors";
+                const activeClass = "text-xs font-bold uppercase tracking-widest text-amber-700 border-b border-amber-700 pb-1";
+                const btnClass = "border border-amber-300 px-4 py-2 rounded-full text-amber-700 text-xs font-bold tracking-widest hover:bg-amber-50 transition-all uppercase";
+
+                navLinks.innerHTML = `
+                <a href="menu.html" class="${linkClass}">Menu</a>
+                <a href="sellers.html" class="${linkClass}">Our Kitchens</a>
+                <a href="about.html" class="${linkClass}">About</a>
+                <span class="${activeClass}">Cart</span>
+                <button onclick="localStorage.clear(); window.location.href='login.html'" class="${btnClass}">Logout</button>
+            `;
+            })();
+    </script>
 
     <div class="pt-32 pb-12 max-w-6xl mx-auto px-4">
         <h1 class="font-cinzel text-3xl text-amber-800 mb-8 border-b border-amber-200 pb-4">Your Plate</h1>
@@ -59,7 +80,8 @@
                     <div class="flex justify-between text-sm text-gray-600"><span>GST (5%)</span><span
                             id="tax">₹0</span></div>
                     <div class="flex justify-between text-sm text-green-600 font-bold">
-                        <span>Delivery</span><span>FREE</span></div>
+                        <span>Delivery</span><span>FREE</span>
+                    </div>
                 </div>
                 <div class="flex justify-between items-center mb-8"><span class="font-bold text-lg">To Pay</span><span
                         id="finalTotal" class="font-cinzel text-3xl text-amber-800 font-bold">₹0</span></div>
@@ -131,6 +153,56 @@
         }
         loadCart();
     </script>
+
+    <!-- Footer -->
+    <footer class="bg-[#0f0805] border-t border-amber-500/20 py-12 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
+                <div>
+                    <h4 class="font-cinzel text-amber-500 font-bold text-sm mb-4">Explore</h4>
+                    <ul class="space-y-2">
+                        <li><a href="index.html"
+                                class="text-gray-400 text-sm hover:text-white transition-colors">Home</a></li>
+                        <li><a href="menu.html"
+                                class="text-gray-400 text-sm hover:text-white transition-colors">Menu</a></li>
+                        <li><a href="sellers.html" class="text-gray-400 text-sm hover:text-white transition-colors">Our
+                                Kitchens</a></li>
+                        <li><a href="about.html" class="text-gray-400 text-sm hover:text-white transition-colors">About
+                                Us</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-cinzel text-amber-500 font-bold text-sm mb-4">For Chefs</h4>
+                    <ul class="space-y-2">
+                        <li><a href="sellers.html"
+                                class="text-gray-400 text-sm hover:text-white transition-colors">Become a Home Chef</a>
+                        </li>
+                        <li><a href="login.html" class="text-gray-400 text-sm hover:text-white transition-colors">Seller
+                                Login</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-cinzel text-amber-500 font-bold text-sm mb-4">Support</h4>
+                    <ul class="space-y-2">
+                        <li><span class="text-gray-500 text-sm">Contact Us (Coming Soon)</span></li>
+                        <li><span class="text-gray-500 text-sm">FAQs (Coming Soon)</span></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-cinzel text-amber-500 font-bold text-sm mb-4">Legal</h4>
+                    <ul class="space-y-2">
+                        <li><span class="text-gray-500 text-sm">Terms (Coming Soon)</span></li>
+                        <li><span class="text-gray-500 text-sm">Privacy (Coming Soon)</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-white/10 pt-8 text-center">
+                <p class="font-cinzel italic text-sm text-amber-500/60">Gruhini — ghar jaisa khana, ghar ke log</p>
+                <p class="text-xs text-gray-500 mt-2">© 2026 Gruhini. Made with ❤️ in India.</p>
+            </div>
+        </div>
+    </footer>
+
 </body>
 
 </html>

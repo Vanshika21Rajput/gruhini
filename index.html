@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gruhini – The Royal Experience</title>
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&family=Noto+Sans+Devanagari:wght@400;600&display=swap"
+        rel="stylesheet">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -31,30 +34,85 @@
     <script src="js/config.js"></script>
 
     <style>
-        body { background-color: #0f0805; color: #fff; overflow-x: hidden; }
-        
+        body {
+            background-color: #0f0805;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
         /* Hero Background */
-        .hero-bg { position: fixed; inset: 0; z-index: -1; background: url('public/background.jpg') center/cover no-repeat; opacity: 0.65; }
-        .hero-overlay { position: fixed; inset: 0; z-index: -1; background: linear-gradient(to bottom, rgba(5,2,1,0.1), #0f0805); }
-        
-        @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
-        .ticker-anim { animation: ticker 40s linear infinite; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .nav-glass { background: rgba(5, 2, 1, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(197, 160, 89, 0.2); }
+        .hero-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: url('public/background.jpg') center/cover no-repeat;
+            opacity: 0.65;
+        }
+
+        .hero-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: linear-gradient(to bottom, rgba(5, 2, 1, 0.1), #0f0805);
+        }
+
+        @keyframes ticker {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        .ticker-anim {
+            animation: ticker 40s linear infinite;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .nav-glass {
+            background: rgba(5, 2, 1, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(197, 160, 89, 0.2);
+        }
 
         /* --- ROLLER GEOMETRY (FIXED & BIGGER) --- */
         .thali-widget {
-            display: grid; grid-template-columns: 1fr 1.2fr; background: #1a0f0a; border: 1px solid rgba(197, 160, 89, 0.3);
-            border-radius: 40px; box-shadow: 0 30px 70px rgba(0,0,0,0.8); max-width: 1000px; margin: 0 auto; min-height: 500px; position: relative;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            background: #1a0f0a;
+            border: 1px solid rgba(197, 160, 89, 0.3);
+            border-radius: 40px;
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.8);
+            max-width: 1000px;
+            margin: 0 auto;
+            min-height: 500px;
+            position: relative;
         }
-        
+
         /* 🚨 FIX: Bigger size, perfect centering via transform */
         .plate-ring {
-            width: 360px; height: 360px; /* Bigger size */
-            border-radius: 50%; position: absolute;
-            top: 50%; left: 50%; 
+            width: 360px;
+            height: 360px;
+            /* Bigger size */
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
             /* Removed negative margins, using transform for centering */
-            transform: translate(-50%, -50%); 
+            transform: translate(-50%, -50%);
             border: 1px dashed rgba(197, 160, 89, 0.15);
             transition: transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
             transform-origin: center center;
@@ -62,75 +120,147 @@
 
         .katori {
             position: absolute;
-            top: 50%; left: 50%;
-            width: 75px; height: 75px;
-            margin-left: -37.5px; margin-top: -37.5px;
+            top: 50%;
+            left: 50%;
+            width: 75px;
+            height: 75px;
+            margin-left: -37.5px;
+            margin-top: -37.5px;
             z-index: 10;
             pointer-events: auto;
         }
 
         .katori-inner {
-            width: 100%; height: 100%;
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
             background: #000;
             border: 2px solid #8c6a38;
             overflow: hidden;
             transition: transform 0.35s ease, border-color 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.6);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.6);
         }
 
-        .katori-inner img { width: 100%; height: 100%; object-fit: cover; }
+        .katori-inner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
         .plate-center {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 150px; height: 150px; border-radius: 50%;
-            border: 4px solid #c5a059; overflow: hidden; box-shadow: 0 0 50px rgba(197, 160, 89, 0.3);
-            z-index: 20; background: #000; cursor: pointer;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid #c5a059;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(197, 160, 89, 0.3);
+            z-index: 20;
+            background: #000;
+            cursor: pointer;
         }
-        
-        @media(max-width: 900px) { 
-            .thali-widget { grid-template-columns: 1fr; } 
+
+        @media(max-width: 900px) {
+            .thali-widget {
+                grid-template-columns: 1fr;
+            }
+
             /* Adjusted for mobile, removed margins */
-            .plate-ring { width: 300px; height: 300px; margin: 0; } 
+            .plate-ring {
+                width: 300px;
+                height: 300px;
+                margin: 0;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <div class="hero-bg"></div>
     <div class="hero-overlay"></div>
 
-    <div class="fixed top-0 w-full z-50 bg-[#2c1810] text-[#eebb55] text-[10px] font-bold tracking-[2px] py-2 overflow-hidden border-b border-matte/30">
+    <div
+        class="fixed top-0 w-full z-50 bg-[#2c1810] text-[#eebb55] text-[10px] font-bold tracking-[2px] py-2 overflow-hidden border-b border-matte/30">
         <div class="ticker-anim whitespace-nowrap inline-block pl-[100%] font-cinzel">
-            ✦ Jaipur: Mrs. Joshi just soaked the Dal... ✦ Lucknow: Dum Biryani sealed in clay pot... ✦ Mumbai: Puran Poli on the tawa... ✦
+            ✦ Narmadapuram (MP): Traditional dal recipes, cooked the homestyle way ✦
+            Central India: Slow-cooked meals inspired by family kitchens ✦
+            Gruhini: Regional flavours, one home at a time ✦
         </div>
     </div>
 
-    <nav class="fixed top-10 w-full z-40 px-6 py-4 flex justify-between items-center transition-all duration-300" id="navbar">
+
+    <nav class="fixed top-10 w-full z-40 px-6 py-4 flex justify-between items-center transition-all duration-300"
+        id="navbar">
         <a href="index.html" class="flex items-center gap-3 group">
-            <div class="w-12 h-12 rounded-full overflow-hidden relative shadow-[0_0_15px_rgba(197,160,89,0.4)] group-hover:shadow-[0_0_25px_rgba(197,160,89,0.6)] transition-all duration-500 border border-gold-main/30">
-                <img src="public/logo.jpg" alt="Gruhini" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+            <div
+                class="w-12 h-12 rounded-full overflow-hidden relative shadow-[0_0_15px_rgba(197,160,89,0.4)] group-hover:shadow-[0_0_25px_rgba(197,160,89,0.6)] transition-all duration-500 border border-gold-main/30">
+                <img src="public/logo.jpg" alt="Gruhini"
+                    class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
                 <div class="absolute inset-0 bg-gradient-to-tr from-black/10 to-transparent pointer-events-none"></div>
             </div>
-            <span class="font-cinzel text-2xl font-bold text-gold-main tracking-widest drop-shadow-md group-hover:text-white transition-colors">GRUHINI</span>
+            <span
+                class="font-cinzel text-2xl font-bold text-gold-main tracking-widest drop-shadow-md group-hover:text-white transition-colors">GRUHINI</span>
         </a>
 
-        <div class="flex items-center gap-6">
-            <button onclick="window.location.href='cart.html'" class="text-gold-main text-xs font-bold tracking-widest uppercase hover:text-white transition-colors">Your Plate</button>
-            <a href="login.html" class="border border-gold-matte px-6 py-2 rounded-full text-gold-main text-xs font-bold tracking-widest hover:bg-gold-matte hover:text-white transition-all uppercase">Login</a>
+        <div class="flex items-center gap-6" id="navLinks">
+            <!-- Role-aware navigation injected by JS -->
         </div>
     </nav>
 
+    <script>
+            (function () {
+                const token = localStorage.getItem('authToken');
+                const role = localStorage.getItem('userRole');
+                const navLinks = document.getElementById('navLinks');
+
+                const linkClass = "text-xs font-bold uppercase tracking-widest text-gold-main/80 hover:text-white transition-colors";
+                const btnClass = "border border-gold-main/40 px-5 py-2 rounded-full text-gold-main text-xs font-bold tracking-widest hover:bg-gold-main/10 hover:text-white transition-all uppercase";
+
+                if (!token) {
+                    navLinks.innerHTML = `
+                    <a href="menu.html" class="${linkClass}">Menu</a>
+                    <a href="sellers.html" class="${linkClass}">Our Kitchens</a>
+                    <a href="about.html" class="${linkClass}">About</a>
+                    <a href="login.html" class="${btnClass}">Login</a>
+                `;
+                } else if (role === 'SELLER') {
+                    navLinks.innerHTML = `
+                    <a href="menu.html" class="${linkClass}">Menu</a>
+                    <a href="sellers.html" class="${linkClass}">Our Kitchens</a>
+                    <a href="about.html" class="${linkClass}">About</a>
+                    <a href="seller-dashboard.html" class="${btnClass}">Dashboard</a>
+                `;
+                } else {
+                    navLinks.innerHTML = `
+                    <a href="menu.html" class="${linkClass}">Menu</a>
+                    <a href="sellers.html" class="${linkClass}">Our Kitchens</a>
+                    <a href="about.html" class="${linkClass}">About</a>
+                    <a href="cart.html" class="${linkClass}">Cart</a>
+                    <button onclick="localStorage.clear(); window.location.href='login.html'" class="${btnClass}">Logout</button>
+                `;
+                }
+            })();
+    </script>
+
     <header class="min-h-screen flex flex-col items-center justify-center text-center px-4 relative pt-24">
-        <h1 class="font-hindi text-5xl md:text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-white to-gold-main mb-6 leading-[1.4] py-4 drop-shadow-2xl opacity-0 animate-[fadeIn_1s_ease-out_forwards]">
+        <h1
+            class="font-hindi text-5xl md:text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-white to-gold-main mb-6 leading-[1.4] py-4 drop-shadow-2xl opacity-0 animate-[fadeIn_1s_ease-out_forwards]">
             स्वाद जो दिल छू जाए<br>
-            <span class="text-3xl md:text-5xl block mt-2 font-playfair italic text-gold-rose font-normal tracking-wide">Ghar ka khana, Royal Andaaz.</span>
+            <span
+                class="text-3xl md:text-5xl block mt-2 font-playfair italic text-gold-rose font-normal tracking-wide">Ghar
+                ka khana, Royal Andaaz.</span>
         </h1>
-        <p class="text-gray-300 text-lg max-w-2xl mb-10 font-light tracking-wide opacity-0 animate-[fadeIn_1s_0.3s_forwards]">
+        <p
+            class="text-gray-300 text-lg max-w-2xl mb-10 font-light tracking-wide opacity-0 animate-[fadeIn_1s_0.3s_forwards]">
             Handmade meals by India's finest home chefs. No preservatives. Just love.
         </p>
-        <button onclick="window.location.href='menu.html'" class="bg-gradient-to-r from-gold-matte to-gold-main text-black px-10 py-4 rounded-full font-cinzel font-bold text-sm tracking-[3px] shadow-[0_0_30px_rgba(197,160,89,0.4)] hover:scale-105 transition-transform uppercase opacity-0 animate-[fadeIn_1s_0.6s_forwards]">
+        <button onclick="window.location.href='menu.html'"
+            class="bg-gradient-to-r from-gold-matte to-gold-main text-black px-10 py-4 rounded-full font-cinzel font-bold text-sm tracking-[3px] shadow-[0_0_30px_rgba(197,160,89,0.4)] hover:scale-105 transition-transform uppercase opacity-0 animate-[fadeIn_1s_0.6s_forwards]">
             Explore The Menu
         </button>
     </header>
@@ -153,17 +283,22 @@
                         <span id="chefLoc" class="text-xs text-gray-500 font-bold uppercase">--</span>
                     </div>
                 </div>
-                <h2 id="dishTitle" class="font-playfair text-4xl md:text-5xl text-white mb-4 leading-tight">Loading...</h2>
-                <p id="dishDesc" class="font-sans text-gray-400 text-sm leading-7 mb-10 border-l-2 border-gold-matte pl-6 italic max-w-md h-16 overflow-hidden">
-                    Fetching today's specials...
+                <h2 id="dishTitle" class="font-playfair text-4xl md:text-5xl text-white mb-4 leading-tight">Loading...
+                </h2>
+                <p id="dishDesc"
+                    class="font-sans text-gray-400 text-sm leading-7 mb-10 border-l-2 border-gold-matte pl-6 italic max-w-md h-16 overflow-hidden">
+                    Waking up the kitchen... this may take a moment.
                 </p>
                 <div class="flex items-center justify-between border-t border-white/10 pt-8">
                     <span id="dishPrice" class="font-cinzel text-4xl text-gold-main font-bold">--</span>
                     <div class="flex gap-3">
-                        <button onclick="rotateThali(-1)" class="w-12 h-12 rounded-full border border-gray-600 text-white hover:border-gold-main transition-colors text-xl flex items-center justify-center pb-1">&larr;</button>
-                        <button onclick="rotateThali(1)" class="w-12 h-12 rounded-full border border-gray-600 text-white hover:border-gold-main transition-colors text-xl flex items-center justify-center pb-1">&rarr;</button>
+                        <button onclick="rotateThali(-1)"
+                            class="w-12 h-12 rounded-full border border-gray-600 text-white hover:border-gold-main transition-colors text-xl flex items-center justify-center pb-1">&larr;</button>
+                        <button onclick="rotateThali(1)"
+                            class="w-12 h-12 rounded-full border border-gray-600 text-white hover:border-gold-main transition-colors text-xl flex items-center justify-center pb-1">&rarr;</button>
                     </div>
-                    <button onclick="goToProduct()" class="bg-gradient-to-r from-gold-matte to-gold-main text-black px-8 py-4 rounded-full font-bold text-xs uppercase tracking-[0.2em] hover:shadow-[0_0_20px_rgba(197,160,89,0.3)] transition-all">
+                    <button onclick="goToProduct()"
+                        class="bg-gradient-to-r from-gold-matte to-gold-main text-black px-8 py-4 rounded-full font-bold text-xs uppercase tracking-[0.2em] hover:shadow-[0_0_20px_rgba(197,160,89,0.3)] transition-all">
                         View Details
                     </button>
                 </div>
@@ -185,33 +320,60 @@
         let autoRotate;
 
         async function init() {
+            // Show loading state
+            document.getElementById('dishTitle').innerText = 'Loading...';
+            document.getElementById('dishDesc').innerText = 'Waking up the kitchen... first load may take up to 10 seconds.';
+
             try {
-                const response = await fetch(`${window.CONFIG.BASE_URL}/explore`);
+                // Try backend first with 10 second timeout (Render cold start)
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+                const response = await fetch(`${window.CONFIG.BASE_URL}/explore`, { signal: controller.signal });
+                clearTimeout(timeoutId);
+
                 if (response.ok) {
                     const data = await response.json();
-                    if (data.length > 0) { items = data.slice(0, 5); setupThali(); return; }
+                    if (data.length > 0) {
+                        items = data.slice(0, 5).map(i => ({
+                            ...i,
+                            title: i.title || i.name,
+                            desc: i.desc || i.description,
+                            img: i.img?.startsWith('http') ? i.img : `public/${i.img || 'placeholder.jpg'}`,
+                            avatar: i.avatar?.startsWith('http') ? i.avatar : `public/${i.avatar || 'placeholder.jpg'}`
+                        }));
+                        setupThali();
+                        return;
+                    }
                 }
-            } catch (e) { console.log("Backend offline."); }
+            } catch (e) {
+                console.log("Backend loading or offline, trying local data...");
+            }
 
+            // Fallback to local JSON
             try {
                 const res = await fetch('real-products.json');
                 if (res.ok) {
                     const data = await res.json();
                     items = data.slice(0, 5).map(i => ({
-                        ...i, title: i.title||i.name, desc: i.desc||i.description,
+                        ...i,
+                        title: i.title || i.name,
+                        desc: i.desc || i.description,
                         img: i.img ? (i.img.startsWith('http') ? i.img : `public/${i.img}`) : window.CONFIG.PLACEHOLDER,
                         avatar: i.avatar ? (i.avatar.startsWith('http') ? i.avatar : `public/${i.avatar}`) : window.CONFIG.PLACEHOLDER
                     }));
-                    setupThali();
                 }
-            } catch (e) { console.log("Local missing."); }
+            } catch (e) {
+                console.log("Local JSON also unavailable, using mock data.");
+            }
+
             setupThali();
         }
 
         function setupThali() {
             const plate = document.getElementById('plate');
             plate.innerHTML = '';
-            
+
             // 🚨 FIX: Responsive Radius for Bigger Ring
             const isMobile = window.innerWidth < 900;
             const r = isMobile ? 150 : 180; // 180px radius for 360px ring
@@ -219,18 +381,18 @@
             items.forEach((item, i) => {
                 const el = document.createElement('div');
                 el.className = 'katori';
-                
+
                 const ang = (360 / items.length) * i;
-                
+
                 // Position logic
                 el.style.transform = `rotate(${ang}deg) translate(${r}px) rotate(-${ang}deg)`;
 
                 el.innerHTML = `
                     <div class="katori-inner">
-                        <img src="${item.img||window.CONFIG.PLACEHOLDER}" onerror="this.src='${window.CONFIG.PLACEHOLDER}'">
+                        <img src="${item.img || window.CONFIG.PLACEHOLDER}" onerror="this.src='${window.CONFIG.PLACEHOLDER}'">
                     </div>
                 `;
-                
+
                 el.onclick = () => { updateUI(i); resetTimer(); };
                 plate.appendChild(el);
             });
@@ -246,10 +408,10 @@
 
             // 🚨 FIX: Ensure transform maintains center during rotation
             document.getElementById('plate').style.transform = `translate(-50%, -50%) rotate(-${(360 / items.length) * idx}deg)`;
-            
+
             const center = document.getElementById('centerImg');
             center.style.opacity = 0;
-            setTimeout(() => { center.src = item.img||window.CONFIG.PLACEHOLDER; center.style.opacity = 1; }, 200);
+            setTimeout(() => { center.src = item.img || window.CONFIG.PLACEHOLDER; center.style.opacity = 1; }, 200);
 
             document.getElementById('dishTitle').innerText = item.title;
             const safePrice = Number(String(item.price).replace(/[^0-9.]/g, '')) || 0;
@@ -257,7 +419,7 @@
             document.getElementById('dishDesc').innerText = item.desc;
             document.getElementById('chefName').innerText = item.chef;
             document.getElementById('chefLoc').innerText = item.loc;
-            document.getElementById('chefImg').src = item.avatar||window.CONFIG.PLACEHOLDER;
+            document.getElementById('chefImg').src = item.avatar || window.CONFIG.PLACEHOLDER;
 
             document.querySelectorAll('.katori-inner').forEach((k, i) => {
                 if (i === idx) {
@@ -281,9 +443,9 @@
         }
 
         function resetTimer() { clearInterval(autoRotate); autoRotate = setInterval(() => rotateThali(1), 5000); }
-        
-        function goToProduct() { 
-            if (items[currIdx]) window.open(`product.html?id=${items[currIdx].id}`, '_blank'); 
+
+        function goToProduct() {
+            if (items[currIdx]) window.open(`product.html?id=${items[currIdx].id}`, '_blank');
         }
 
         window.addEventListener('scroll', () => {
@@ -296,5 +458,68 @@
 
         init();
     </script>
+
+    <!-- Why Gruhini - Soft CTA -->
+    <section class="py-20 px-6 text-center">
+        <div class="max-w-2xl mx-auto">
+            <p class="font-playfair italic text-xl md:text-2xl text-gray-300 leading-relaxed mb-6">
+                From Narmadapuram's home kitchens to your plate.<br>
+                <span class="text-gold-main">Food made with trust, served with love.</span>
+            </p>
+            <a href="about.html"
+                class="inline-block text-gold-main text-sm font-bold tracking-widest uppercase border-b border-gold-main pb-1 hover:text-white hover:border-white transition-colors">
+                Read Our Story →
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[#0f0805] border-t border-gold-main/20 py-12 px-6 backdrop-blur-md">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
+                <div>
+                    <h4 class="font-cinzel text-gold-main font-bold text-sm mb-4">Explore</h4>
+                    <ul class="space-y-2">
+                        <li><a href="menu.html"
+                                class="text-gray-400 text-sm hover:text-white transition-colors">Menu</a></li>
+                        <li><a href="sellers.html" class="text-gray-400 text-sm hover:text-white transition-colors">Our
+                                Kitchens</a></li>
+                        <li><a href="about.html" class="text-gray-400 text-sm hover:text-white transition-colors">About
+                                Us</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-cinzel text-gold-main font-bold text-sm mb-4">For Chefs</h4>
+                    <ul class="space-y-2">
+                        <li><a href="sellers.html"
+                                class="text-gray-400 text-sm hover:text-white transition-colors">Become a Home Chef</a>
+                        </li>
+                        <li><a href="login.html" class="text-gray-400 text-sm hover:text-white transition-colors">Seller
+                                Login</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-cinzel text-gold-main font-bold text-sm mb-4">Support</h4>
+                    <ul class="space-y-2">
+                        <li><span class="text-gray-500 text-sm">Contact Us (Coming Soon)</span></li>
+                        <li><span class="text-gray-500 text-sm">FAQs (Coming Soon)</span></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-cinzel text-gold-main font-bold text-sm mb-4">Legal</h4>
+                    <ul class="space-y-2">
+                        <li><span class="text-gray-500 text-sm">Terms (Coming Soon)</span></li>
+                        <li><span class="text-gray-500 text-sm">Privacy (Coming Soon)</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-white/10 pt-8 text-center">
+                <p class="font-playfair italic text-sm text-gold-main/60">Gruhini — ghar jaisa khana, ghar ke log</p>
+                <p class="text-xs text-gray-500 mt-2">© 2026 Gruhini. Made with ❤️ in India.</p>
+            </div>
+        </div>
+    </footer>
+
 </body>
+
 </html>

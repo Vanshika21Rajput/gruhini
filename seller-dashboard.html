@@ -3,107 +3,415 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Gruhini - Seller</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gruhini - Seller Dashboard</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@400;700&display=swap"
         rel="stylesheet">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { theme: { extend: { colors: { amber: { 600: '#d97706', 700: '#b45309' }, royalDark: '#0f0805', glass: 'rgba(255, 255, 255, 0.05)' }, fontFamily: { cinzel: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] } } } }
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#FDF8F0',
+                        paper: '#FFFAF0',
+                        brown: { DEFAULT: '#2a160e', light: '#4a2c20', dark: '#1a0f0a' },
+                        amber: { 50: '#fffbeb', 100: '#fef3c7', 500: '#f59e0b', 600: '#d97706', 700: '#b45309', 800: '#92400e' },
+                        green: { 600: '#16a34a', 700: '#15803d' }
+                    },
+                    fontFamily: {
+                        cinzel: ['Cinzel', 'serif'],
+                        sans: ['Lato', 'sans-serif']
+                    }
+                }
+            }
+        }
     </script>
     <script src="js/config.js"></script>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #FDF8F0 0%, #fff8e8 100%);
+            min-height: 100vh;
+        }
+
+        .bg-kitchen {
+            background: linear-gradient(to bottom, rgba(253, 248, 240, 0.95), rgba(255, 248, 232, 0.97)),
+                url('public/kitchen-bg.png') center/cover no-repeat;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid rgba(42, 22, 14, 0.08);
+            box-shadow: 0 4px 20px rgba(42, 22, 14, 0.04);
+        }
+
+        .dish-card {
+            background: white;
+            border: 1px solid rgba(42, 22, 14, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .dish-card:hover {
+            box-shadow: 0 8px 30px rgba(42, 22, 14, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            background: #d1d5db;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: #16a34a;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(20px);
+        }
+
+        .status-pill {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-preparing {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-delivered {
+            background: #dcfce7;
+            color: #15803d;
+        }
+    </style>
 </head>
 
-<body class="bg-royalDark text-amber-50 font-sans antialiased min-h-screen">
-    <script>if (!localStorage.getItem('authToken') || localStorage.getItem('userRole') !== 'SELLER') window.location.href = 'login.html';</script>
+<body class="bg-kitchen font-sans antialiased">
 
+    <!-- Auth Check -->
+    <script>
+        if (!localStorage.getItem('authToken') || localStorage.getItem('userRole') !== 'SELLER') {
+            window.location.href = 'login.html';
+        }
+    </script>
+
+    <!-- Seller Dashboard Navbar (Separate Universe) -->
     <nav
-        class="fixed top-0 w-full z-50 bg-royalDark/95 border-b border-white/10 px-6 py-4 flex justify-between items-center backdrop-blur-md">
-        <div class="flex items-center gap-4"><a href="index.html"
-                class="font-cinzel text-xl font-bold text-amber-500 tracking-widest">GRUHINI</a><span
-                class="text-xs bg-amber-900/50 px-2 py-1 rounded border border-amber-700/50 text-amber-200">SELLER
-                HUB</span></div>
-        <button onclick="localStorage.clear(); window.location.href='login.html'"
-            class="text-xs text-red-400 font-bold uppercase tracking-widest">Logout</button>
+        class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-sm border-b border-brown/10 px-6 py-4 flex justify-between items-center shadow-sm">
+        <div class="flex items-center gap-4">
+            <a href="index.html"
+                class="font-cinzel text-xl font-bold text-brown tracking-widest hover:text-amber-700 transition-colors">GRUHINI</a>
+            <span
+                class="text-[10px] bg-amber-100 px-2 py-1 rounded-full border border-amber-200 text-amber-700 font-bold uppercase tracking-wider">Seller
+                Hub</span>
+        </div>
+        <div class="flex items-center gap-6">
+            <a href="#"
+                class="text-xs font-bold uppercase tracking-widest text-amber-700 border-b border-amber-700 pb-0.5">Dashboard</a>
+            <a href="#orders"
+                class="text-xs font-bold uppercase tracking-widest text-brown/50 hover:text-brown transition-colors">Orders</a>
+            <a href="#dishes"
+                class="text-xs font-bold uppercase tracking-widest text-brown/50 hover:text-brown transition-colors">Dishes</a>
+            <a href="#"
+                class="text-xs font-bold uppercase tracking-widest text-brown/50 hover:text-brown transition-colors">Payouts</a>
+            <button onclick="localStorage.clear(); window.location.href='login.html'"
+                class="text-xs font-bold uppercase tracking-widest text-red-500 hover:text-red-600 transition-colors">Logout</button>
+        </div>
     </nav>
 
-    <div class="pt-28 px-4 max-w-6xl mx-auto">
-        <div class="flex justify-between items-end mb-12">
-            <div>
-                <h1 class="font-cinzel text-4xl text-white mb-2">Manage Kitchen</h1>
-                <p class="text-gray-400 text-sm">Add dishes & manage stock.</p>
+    <!-- Main Content -->
+    <main class="pt-24 px-6 pb-16 max-w-6xl mx-auto">
+
+        <!-- Welcome Strip -->
+        <section class="mb-10">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <p class="text-sm text-brown/50 mb-1" id="greeting">Good evening,</p>
+                    <h1 class="font-cinzel text-3xl text-brown font-bold" id="sellerName">Home Chef 👩‍🍳</h1>
+                    <p class="text-sm text-green-600 font-medium mt-2" id="kitchenStatus">Your kitchen is open today</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <span
+                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wide bg-green-100 text-green-700 border border-green-200">
+                        <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Verified Kitchen
+                    </span>
+                    <span
+                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wide bg-amber-50 text-amber-700 border border-amber-200">
+                        📍 Home Kitchen
+                    </span>
+                </div>
             </div>
-            <button onclick="document.getElementById('modal').classList.remove('hidden')"
-                class="bg-amber-600 hover:bg-amber-500 text-white px-8 py-3 rounded-full font-bold text-sm tracking-widest uppercase shadow-lg">+
-                Add Dish</button>
-        </div>
+        </section>
 
-        <div id="productsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        </div>
-    </div>
+        <!-- Stats Grid -->
+        <section class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+            <div class="stat-card rounded-xl p-5">
+                <p class="text-[10px] text-brown/50 uppercase tracking-widest font-bold mb-1">Today's Earnings</p>
+                <p class="font-cinzel text-2xl text-brown font-bold" id="statEarnings">₹0</p>
+            </div>
+            <div class="stat-card rounded-xl p-5">
+                <p class="text-[10px] text-brown/50 uppercase tracking-widest font-bold mb-1">Orders Today</p>
+                <p class="font-cinzel text-2xl text-brown font-bold" id="statOrders">0</p>
+            </div>
+            <div class="stat-card rounded-xl p-5">
+                <p class="text-[10px] text-brown/50 uppercase tracking-widest font-bold mb-1">Active Dishes</p>
+                <p class="font-cinzel text-2xl text-brown font-bold" id="statDishes">0</p>
+            </div>
+            <div class="stat-card rounded-xl p-5">
+                <p class="text-[10px] text-brown/50 uppercase tracking-widest font-bold mb-1">Customer Rating</p>
+                <p class="font-cinzel text-2xl text-amber-600 font-bold">⭐ 4.8</p>
+            </div>
+        </section>
 
-    <div id="modal" class="fixed inset-0 z-[100] hidden">
-        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm"
-            onclick="document.getElementById('modal').classList.add('hidden')"></div>
+        <!-- Your Dishes (PRIMARY) -->
+        <section id="dishes" class="mb-10">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="font-cinzel text-xl text-brown font-bold">Your Dishes</h2>
+                <button onclick="document.getElementById('addModal').classList.remove('hidden')"
+                    class="bg-amber-600 hover:bg-amber-500 text-white px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg transition-all">
+                    + Add New Dish
+                </button>
+            </div>
+
+            <div id="dishesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <!-- Dishes loaded by JS -->
+            </div>
+            <div id="noDishes" class="hidden text-center py-12 text-brown/40">
+                <p class="text-lg mb-2">No dishes yet</p>
+                <p class="text-sm">Add your first dish to start receiving orders</p>
+            </div>
+        </section>
+
+        <!-- Orders Section (SECONDARY) -->
+        <section id="orders" class="mb-10">
+            <h2 class="font-cinzel text-xl text-brown font-bold mb-6">Recent Orders</h2>
+            <div id="ordersGrid" class="space-y-3">
+                <!-- Orders loaded by JS or sample -->
+                <div class="bg-white rounded-xl p-5 border border-brown/8 flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-lg bg-amber-100 flex items-center justify-center text-lg">🍛</div>
+                        <div>
+                            <p class="font-bold text-brown">Dal Makhani × 2</p>
+                            <p class="text-xs text-brown/50">15 mins ago · Rahul S.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="font-cinzel font-bold text-brown">₹598</span>
+                        <span class="status-pill status-preparing">Preparing</span>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-5 border border-brown/8 flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center text-lg">🥘</div>
+                        <div>
+                            <p class="font-bold text-brown">Paneer Thali × 1</p>
+                            <p class="text-xs text-brown/50">1 hour ago · Priya M.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="font-cinzel font-bold text-brown">₹299</span>
+                        <span class="status-pill status-delivered">Delivered</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Payouts Section (TRUST) -->
+        <section class="bg-white rounded-xl p-6 border border-brown/8">
+            <h2 class="font-cinzel text-lg text-brown font-bold mb-3">Payouts</h2>
+            <p class="text-brown/60 text-sm leading-relaxed">
+                Weekly payouts to your registered bank account every Monday. Your earnings are transferred directly — no
+                hidden deductions.
+            </p>
+            <div class="mt-4 pt-4 border-t border-brown/8 flex items-center justify-between">
+                <span class="text-sm text-brown/50">Next payout:</span>
+                <span class="font-bold text-green-600">Monday, 13 Jan</span>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Add Dish Modal -->
+    <div id="addModal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onclick="document.getElementById('addModal').classList.add('hidden')"></div>
         <div
-            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl bg-[#1a0f0a] border border-amber-900/30 rounded-3xl shadow-2xl p-8 max-h-[90vh] overflow-y-auto">
-            <h2 class="font-cinzel text-2xl text-amber-500 mb-6">Add New Dish</h2>
-            <form onsubmit="addDish(event)" class="space-y-6">
-                <div class="grid grid-cols-2 gap-6">
-                    <input type="text" name="name" required placeholder="Dish Name"
-                        class="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white">
-                    <input type="number" name="price" required placeholder="Price (₹)"
-                        class="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white">
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-white rounded-2xl shadow-2xl p-8 max-h-[90vh] overflow-y-auto">
+            <h2 class="font-cinzel text-2xl text-brown font-bold mb-6">Add New Dish</h2>
+            <form onsubmit="addDish(event)" class="space-y-5">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-widest text-brown/50 mb-2">Dish
+                        Name</label>
+                    <input type="text" name="name" required
+                        class="w-full border border-brown/20 rounded-lg p-3 text-brown focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        placeholder="e.g., Dal Makhani">
                 </div>
-                <textarea name="description" required rows="3" placeholder="Description"
-                    class="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white"></textarea>
-                <div class="grid grid-cols-2 gap-6">
-                    <select name="category" class="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white">
-                        <option value="Food">Food</option>
-                        <option value="Snacks">Snacks</option>
-                    </select>
-                    <input type="text" name="subcategory" placeholder="Sub-Cat"
-                        class="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white">
-                    <input type="number" name="stock" value="50"
-                        class="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white">
-                    <input type="text" name="deliverytime" value="45 mins"
-                        class="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-widest text-brown/50 mb-2">Price
+                            (₹)</label>
+                        <input type="number" name="price" required
+                            class="w-full border border-brown/20 rounded-lg p-3 text-brown focus:outline-none focus:ring-2 focus:ring-amber-500"
+                            placeholder="299">
+                    </div>
+                    <div>
+                        <label
+                            class="block text-xs font-bold uppercase tracking-widest text-brown/50 mb-2">Category</label>
+                        <select name="category"
+                            class="w-full border border-brown/20 rounded-lg p-3 text-brown focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            <option value="Thalis">Thalis</option>
+                            <option value="Snacks">Snacks</option>
+                            <option value="Desserts">Desserts</option>
+                            <option value="Crafts">Crafts</option>
+                        </select>
+                    </div>
                 </div>
-                <input type="file" name="image" required accept="image/*" class="w-full text-white text-sm">
-                <button type="submit" id="btn"
-                    class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-4 rounded-xl uppercase tracking-widest shadow-lg">Launch
-                    Product</button>
+                <div>
+                    <label
+                        class="block text-xs font-bold uppercase tracking-widest text-brown/50 mb-2">Description</label>
+                    <textarea name="description" required rows="3"
+                        class="w-full border border-brown/20 rounded-lg p-3 text-brown focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        placeholder="Describe your dish..."></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label
+                            class="block text-xs font-bold uppercase tracking-widest text-brown/50 mb-2">Stock</label>
+                        <input type="number" name="stock" value="50"
+                            class="w-full border border-brown/20 rounded-lg p-3 text-brown focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-widest text-brown/50 mb-2">Delivery
+                            Time</label>
+                        <input type="text" name="deliverytime" value="45 mins"
+                            class="w-full border border-brown/20 rounded-lg p-3 text-brown focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-widest text-brown/50 mb-2">Photo</label>
+                    <input type="file" name="image" accept="image/*" required
+                        class="w-full text-sm text-brown file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-amber-100 file:text-amber-700 hover:file:bg-amber-200">
+                </div>
+                <button type="submit" id="submitBtn"
+                    class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-4 rounded-xl uppercase tracking-widest shadow-lg transition-all">
+                    Add Dish
+                </button>
             </form>
         </div>
     </div>
 
     <script>
+        // Greeting based on time
+        (function () {
+            const hour = new Date().getHours();
+            let greeting = 'Good evening,';
+            if (hour < 12) greeting = 'Good morning,';
+            else if (hour < 17) greeting = 'Good afternoon,';
+            document.getElementById('greeting').textContent = greeting;
+
+            // Try to get seller name from localStorage or show default
+            const userName = localStorage.getItem('userName') || 'Home Chef';
+            document.getElementById('sellerName').textContent = userName + ' 👩‍🍳';
+        })();
+
+        // Load seller's products
         async function loadMyProducts() {
             try {
                 const res = await fetch(`${window.CONFIG.BASE_URL}/explore`);
                 if (res.ok) {
                     const data = await res.json();
-                    document.getElementById('productsGrid').innerHTML = data.map(p => `
-                        <div class="bg-glass border border-white/10 rounded-2xl overflow-hidden group hover:border-amber-500/50 transition-all relative">
-                            <div class="h-40 overflow-hidden"><img src="${p.image || window.CONFIG.PLACEHOLDER}" class="w-full h-full object-cover"></div>
-                            <div class="p-5">
-                                <h3 class="font-cinzel text-lg text-white font-bold">${p.name}</h3>
-                                <span class="font-cinzel text-xl text-amber-500">₹${p.price}</span>
+                    const grid = document.getElementById('dishesGrid');
+                    const noDishes = document.getElementById('noDishes');
+
+                    if (data.length === 0) {
+                        noDishes.classList.remove('hidden');
+                        document.getElementById('statDishes').textContent = '0';
+                        return;
+                    }
+
+                    document.getElementById('statDishes').textContent = data.length;
+
+                    grid.innerHTML = data.map(p => `
+                        <div class="dish-card rounded-xl overflow-hidden">
+                            <div class="h-36 overflow-hidden">
+                                <img src="${p.image || window.CONFIG.PLACEHOLDER}" class="w-full h-full object-cover">
                             </div>
-                        </div>`).join('');
+                            <div class="p-4">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="font-bold text-brown">${p.name}</h3>
+                                    <span class="font-cinzel text-lg text-amber-700 font-bold">₹${p.price}</span>
+                                </div>
+                                <p class="text-xs text-brown/50 mb-4 line-clamp-2">${p.description || 'Homemade with love'}</p>
+                                <div class="flex justify-between items-center pt-3 border-t border-brown/8">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs text-brown/50">Available</span>
+                                        <div class="toggle-switch ${p.stock > 0 ? 'active' : ''}" onclick="this.classList.toggle('active')"></div>
+                                    </div>
+                                    <button class="text-xs font-bold text-amber-600 hover:text-amber-700 uppercase tracking-wide">Edit</button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
                 }
-            } catch (e) { console.error(e); }
+            } catch (e) {
+                console.error(e);
+            }
         }
 
+        // Add new dish
         async function addDish(e) {
             e.preventDefault();
-            const btn = document.getElementById('btn');
-            btn.innerText = "Uploading..."; btn.disabled = true;
+            const btn = document.getElementById('submitBtn');
+            btn.textContent = 'Adding...';
+            btn.disabled = true;
 
             const form = new FormData(e.target);
             const jsonData = {
-                name: form.get('name'), description: form.get('description'), price: Number(form.get('price')),
-                category: form.get('category'), subcategory: form.get('subcategory'), stock: Number(form.get('stock')),
-                deliverytime: form.get('deliverytime'), discount: "0%", verified: true, rating: 4.5, badge: "New", status: "APPROVED", quantity: 1
+                name: form.get('name'),
+                description: form.get('description'),
+                price: Number(form.get('price')),
+                category: form.get('category'),
+                subcategory: form.get('category'),
+                stock: Number(form.get('stock')),
+                deliverytime: form.get('deliverytime'),
+                discount: "0%",
+                verified: true,
+                rating: 4.5,
+                badge: "New",
+                status: "APPROVED",
+                quantity: 1
             };
 
             const payload = new FormData();
@@ -117,15 +425,18 @@
                     body: payload
                 });
                 if (!res.ok) throw new Error(await res.text());
-                alert("Success!");
+                alert("Dish added successfully!");
                 window.location.reload();
             } catch (err) {
                 alert("Failed: " + err.message);
-                btn.innerText = "Launch Product"; btn.disabled = false;
+                btn.textContent = 'Add Dish';
+                btn.disabled = false;
             }
         }
+
         loadMyProducts();
     </script>
+
 </body>
 
 </html>

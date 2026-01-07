@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Gruhini - Ghar Ka Khana, Ghar Ke Log</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&family=Noto+Sans+Devanagari:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: { main: '#c5a059', matte: '#8c6a38', rose: '#e2b091' },
+                        royal: { dark: '#0f0805', brown: '#1a0f0a' }
+                    },
+                    fontFamily: {
+                        cinzel: ['Cinzel', 'serif'],
+                        playfair: ['Playfair Display', 'serif'],
+                        sans: ['Lato', 'sans-serif'],
+                        hindi: ['Noto Sans Devanagari', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="js/config.js"></script>
+
+    <style>
+        body {
+            background-color: #0f0805;
+            color: #fff;
+        }
+
+        /* Background Pattern */
+        .hero-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: url('public/background.jpg') center/cover no-repeat;
+            opacity: 0.3;
+        }
+
+        .hero-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: linear-gradient(to bottom, rgba(5, 2, 1, 0.7), #0f0805);
+        }
+
+        .nav-glass {
+            background: rgba(5, 2, 1, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(197, 160, 89, 0.2);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        .fade-in-delay-1 {
+            animation: fadeIn 1s 0.2s ease-out forwards;
+            opacity: 0;
+        }
+
+        .fade-in-delay-2 {
+            animation: fadeIn 1s 0.4s ease-out forwards;
+            opacity: 0;
+        }
+
+        .fade-in-delay-3 {
+            animation: fadeIn 1s 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        /* Decorative Line */
+        .gold-line {
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #c5a059, transparent);
+            margin: 0 auto;
+        }
+
+        /* Glass Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(197, 160, 89, 0.15);
+        }
+
+        /* Quote Style */
+        .quote-block {
+            position: relative;
+            padding-left: 24px;
+            border-left: 3px solid #c5a059;
+        }
+
+        .quote-block::before {
+            content: '"';
+            position: absolute;
+            top: -20px;
+            left: -10px;
+            font-family: 'Playfair Display', serif;
+            font-size: 80px;
+            color: rgba(197, 160, 89, 0.15);
+            line-height: 1;
+        }
+    </style>
+</head>
+
+<body class="antialiased min-h-screen">
+
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+
+    <!-- Navigation (Same as index.html) -->
+    <nav class="fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center nav-glass" id="navbar">
+        <a href="index.html" class="flex items-center gap-3 group">
+            <div
+                class="w-12 h-12 rounded-full overflow-hidden relative shadow-[0_0_15px_rgba(197,160,89,0.4)] group-hover:shadow-[0_0_25px_rgba(197,160,89,0.6)] transition-all duration-500 border border-gold-main/30">
+                <img src="public/logo.jpg" alt="Gruhini"
+                    class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                <div class="absolute inset-0 bg-gradient-to-tr from-black/10 to-transparent pointer-events-none"></div>
+            </div>
+            <span
+                class="font-cinzel text-2xl font-bold text-gold-main tracking-widest drop-shadow-md group-hover:text-white transition-colors">GRUHINI</span>
+        </a>
+
+        <div class="flex items-center gap-6" id="navLinks"></div>
+    </nav>
+
+    <script>
+            (function () {
+                const token = localStorage.getItem('authToken');
+                const role = localStorage.getItem('userRole');
+                const navLinks = document.getElementById('navLinks');
+
+                const linkClass = "text-xs font-bold uppercase tracking-widest text-gold-main/80 hover:text-white transition-colors";
+                const activeClass = "text-xs font-bold uppercase tracking-widest text-gold-main border-b border-gold-main pb-1";
+                const btnClass = "border border-gold-main/40 px-5 py-2 rounded-full text-gold-main text-xs font-bold tracking-widest hover:bg-gold-main/10 hover:text-white transition-all uppercase";
+
+                if (!token) {
+                    navLinks.innerHTML = `
+                    <a href="menu.html" class="${linkClass}">Menu</a>
+                    <a href="sellers.html" class="${linkClass}">Our Kitchens</a>
+                    <span class="${activeClass}">About</span>
+                    <a href="login.html" class="${btnClass}">Login</a>
+                `;
+                } else if (role === 'SELLER') {
+                    navLinks.innerHTML = `
+                    <a href="menu.html" class="${linkClass}">Menu</a>
+                    <a href="sellers.html" class="${linkClass}">Our Kitchens</a>
+                    <span class="${activeClass}">About</span>
+                    <a href="seller-dashboard.html" class="${btnClass}">Dashboard</a>
+                `;
+                } else {
+                    navLinks.innerHTML = `
+                    <a href="menu.html" class="${linkClass}">Menu</a>
+                    <a href="sellers.html" class="${linkClass}">Our Kitchens</a>
+                    <span class="${activeClass}">About</span>
+                    <a href="cart.html" class="${linkClass}">Cart</a>
+                    <button onclick="localStorage.clear(); window.location.href='login.html'" class="${btnClass}">Logout</button>
+                `;
+                }
+            })();
+    </script>
+
+    <!-- Hero Section -->
+    <section class="min-h-screen flex flex-col items-center justify-center text-center px-6 pt-20">
+        <div class="gold-line mb-8 fade-in"></div>
+        <h1
+            class="font-cinzel text-5xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-white to-gold-main mb-6 fade-in">
+            Gruhini
+        </h1>
+        <p class="font-hindi text-2xl md:text-4xl text-gold-rose mb-4 fade-in-delay-1">
+            घर का खाना — जब भरोसा सबसे ज़रूरी हो
+        </p>
+        <p class="font-sans text-gray-400 text-lg max-w-lg fade-in-delay-2">
+            Not food delivery. <span class="text-white font-medium">Food with accountability.</span>
+        </p>
+        <div class="gold-line mt-12 fade-in-delay-3"></div>
+    </section>
+
+    <!-- The Trust Section -->
+    <section class="py-24 px-6">
+        <div class="max-w-3xl mx-auto text-center">
+            <p class="font-cinzel text-xs uppercase tracking-[0.4em] text-gold-matte mb-12">The Truth We Know</p>
+
+            <div class="space-y-6 mb-16">
+                <p class="font-sans text-xl text-gray-400">You can compromise on taste.</p>
+                <p class="font-sans text-xl text-gray-400">You can compromise on variety.</p>
+                <p class="font-sans text-2xl text-white font-medium">But you cannot compromise on <span
+                        class="text-gold-main">trust</span>.</p>
+            </div>
+
+            <div class="glass-card rounded-3xl p-10 md:p-14">
+                <p class="font-playfair text-xl md:text-2xl text-gray-300 leading-relaxed mb-4">
+                    Gruhini exists because food is not a product.
+                </p>
+                <p class="font-playfair text-xl md:text-2xl text-gold-main font-semibold">
+                    It is a responsibility.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Question -->
+    <section class="py-20 px-6 relative">
+        <div
+            class="absolute inset-0 bg-gradient-to-b from-transparent via-gold-main/5 to-transparent pointer-events-none">
+        </div>
+        <div class="max-w-2xl mx-auto text-center relative">
+            <p class="font-cinzel text-xs uppercase tracking-[0.4em] text-gold-matte mb-8">The Question That Started It
+                All</p>
+            <p class="font-playfair text-2xl md:text-3xl text-gray-300 leading-relaxed mb-6">
+                We didn't start Gruhini to deliver food.
+            </p>
+            <p class="font-playfair text-2xl md:text-3xl text-gray-300 leading-relaxed mb-8">
+                We started it to answer one question:
+            </p>
+            <p class="font-hindi text-3xl md:text-5xl text-gold-main font-bold">
+                "यह किसने बनाया है?"
+            </p>
+        </div>
+    </section>
+
+    <!-- For Those Who Eat -->
+    <section class="py-24 px-6">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-16">
+                <p class="font-cinzel text-xs uppercase tracking-[0.4em] text-gold-matte mb-4">For Those Who Eat</p>
+                <div class="gold-line"></div>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <div class="glass-card rounded-2xl p-8 text-center hover:border-gold-main/40 transition-all">
+                    <div class="text-4xl mb-4">👩‍🍳</div>
+                    <p class="font-sans text-white font-medium">You know <span class="text-gold-main">who</span> cooked
+                        your food</p>
+                </div>
+                <div class="glass-card rounded-2xl p-8 text-center hover:border-gold-main/40 transition-all">
+                    <div class="text-4xl mb-4">🏠</div>
+                    <p class="font-sans text-white font-medium">You know <span class="text-gold-main">where</span> it
+                        was cooked</p>
+                </div>
+                <div class="glass-card rounded-2xl p-8 text-center hover:border-gold-main/40 transition-all">
+                    <div class="text-4xl mb-4">⏰</div>
+                    <p class="font-sans text-white font-medium">You know <span class="text-gold-main">when</span> it was
+                        prepared</p>
+                </div>
+            </div>
+
+            <p class="font-sans text-gray-500 text-center text-lg">
+                Not because it's trendy. <span class="text-gray-300">Because that's how Indian homes work.</span>
+            </p>
+        </div>
+    </section>
+
+    <!-- For Those Who Cook -->
+    <section class="py-24 px-6 bg-gradient-to-b from-royal-dark via-royal-brown/50 to-royal-dark">
+        <div class="max-w-3xl mx-auto">
+            <div class="text-center mb-16">
+                <p class="font-cinzel text-xs uppercase tracking-[0.4em] text-gold-matte mb-4">For Those Who Cook</p>
+                <div class="gold-line"></div>
+            </div>
+
+            <div class="quote-block mb-12 max-w-xl mx-auto">
+                <p class="font-playfair text-xl md:text-2xl text-gray-300 leading-relaxed">
+                    Gruhini treats home cooking as <span class="text-gold-main font-semibold">work</span>.
+                </p>
+                <p class="font-playfair text-xl text-gray-500 mt-2">Not as a side hustle.</p>
+            </div>
+
+            <div class="text-center mb-12">
+                <p class="font-sans text-2xl text-white font-medium mb-2">Your kitchen.</p>
+                <p class="font-sans text-2xl text-white font-medium mb-2">Your pace.</p>
+                <p class="font-sans text-2xl text-gold-main font-bold">Your respect.</p>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-4">
+                <span class="px-6 py-3 glass-card rounded-full text-sm text-gray-300">
+                    <span class="text-green-400 mr-2">●</span> Fair pricing, not bargaining
+                </span>
+                <span class="px-6 py-3 glass-card rounded-full text-sm text-gray-300">
+                    <span class="text-green-400 mr-2">●</span> Limited batches, not pressure
+                </span>
+                <span class="px-6 py-3 glass-card rounded-full text-sm text-gray-300">
+                    <span class="text-green-400 mr-2">●</span> Identity, not anonymity
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final Promise -->
+    <section class="py-32 px-6 text-center">
+        <div class="max-w-3xl mx-auto">
+            <p class="font-playfair text-3xl md:text-4xl text-white leading-relaxed mb-6">
+                Gruhini is not a marketplace.
+            </p>
+            <p
+                class="font-playfair text-3xl md:text-5xl text-transparent bg-clip-text bg-gradient-to-r from-gold-matte via-gold-main to-gold-rose font-bold">
+                It is a promise between two homes.
+            </p>
+            <div class="gold-line mt-12"></div>
+        </div>
+    </section>
+
+    <!-- CTAs -->
+    <section class="py-16 px-6 text-center border-t border-gold-main/10">
+        <div class="flex flex-col md:flex-row justify-center gap-6">
+            <a href="menu.html"
+                class="bg-gradient-to-r from-gold-matte to-gold-main text-black px-10 py-4 rounded-full font-cinzel font-bold text-sm tracking-[3px] shadow-[0_0_30px_rgba(197,160,89,0.3)] hover:scale-105 transition-transform uppercase">
+                Explore The Menu
+            </a>
+            <a href="sellers.html"
+                class="border-2 border-gold-matte/50 hover:border-gold-main text-gold-main px-10 py-4 rounded-full font-cinzel font-bold text-sm tracking-[3px] hover:shadow-[0_0_20px_rgba(197,160,89,0.2)] transition-all uppercase">
+                Become a Home Chef
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[#0f0805] border-t border-gold-main/20 py-12 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
+                <div>
+                    <h4 class="font-cinzel text-gold-main font-bold text-sm mb-4">Explore</h4>
+                    <ul class="space-y-2">
+                        <li><a href="index.html"
+                                class="text-gray-400 text-sm hover:text-white transition-colors">Home</a></li>
+                        <li><a href="menu.html"
+                                class="text-gray-400 text-sm hover:text-white transition-colors">Menu</a></li>
+                        <li><a href="sellers.html" class="text-gray-400 text-sm hover:text-white transition-colors">Our
+                                Kitchens</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-cinzel text-gold-main font-bold text-sm mb-4">For Chefs</h4>
+                    <ul class="space-y-2">
+                        <li><a href="sellers.html"
+                                class="text-gray-400 text-sm hover:text-white transition-colors">Become a Home Chef</a>
+                        </li>
+                        <li><a href="login.html" class="text-gray-400 text-sm hover:text-white transition-colors">Seller
+                                Login</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-cinzel text-gold-main font-bold text-sm mb-4">Support</h4>
+                    <ul class="space-y-2">
+                        <li><span class="text-gray-500 text-sm">Contact Us (Coming Soon)</span></li>
+                        <li><span class="text-gray-500 text-sm">FAQs (Coming Soon)</span></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-cinzel text-gold-main font-bold text-sm mb-4">Legal</h4>
+                    <ul class="space-y-2">
+                        <li><span class="text-gray-500 text-sm">Terms (Coming Soon)</span></li>
+                        <li><span class="text-gray-500 text-sm">Privacy (Coming Soon)</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-white/10 pt-8 text-center">
+                <p class="font-playfair italic text-sm text-gold-main/60">Gruhini — ghar jaisa khana, ghar ke log</p>
+                <p class="text-xs text-gray-500 mt-2">© 2026 Gruhini. Made with ❤️ in India.</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>
