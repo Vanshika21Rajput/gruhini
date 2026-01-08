@@ -215,35 +215,31 @@
                 const role = localStorage.getItem('userRole');
                 const navLinks = document.getElementById('navLinks');
 
-                const linkClass = "text-xs font-bold uppercase tracking-widest text-gold-main/80 hover:text-white transition-colors";
-                const activeClass = "text-xs font-bold uppercase tracking-widest text-gold-main border-b border-gold-main pb-1";
-                const btnClass = "border border-gold-main/40 px-5 py-2 rounded-full text-gold-main text-xs font-bold tracking-widest hover:bg-gold-main/10 hover:text-white transition-all uppercase";
+                // Mobile-optimized: smaller fonts, but ALL links visible
+                const linkClass = "text-[9px] sm:text-xs font-bold uppercase tracking-widest text-gold-main/80 hover:text-white transition-colors px-1 sm:px-2";
+                const activeClass = "text-[9px] sm:text-xs font-bold uppercase tracking-widest text-gold-main border-b border-gold-main pb-1 px-1 sm:px-2";
+                const btnClass = "border border-gold-main/40 px-3 sm:px-5 py-1.5 sm:py-2 rounded-full text-gold-main text-[9px] sm:text-xs font-bold tracking-widest hover:bg-gold-main/10 hover:text-white transition-all uppercase";
 
-                // Safe wrapper: secondary links hidden on mobile
-                const secondaryLinks = `
-                    <div class="hidden sm:flex items-center gap-4">
-                        <a href="menu.html" class="${linkClass}">Menu</a>
-                        <a href="sellers.html" class="${linkClass}">Our Kitchens</a>
-                        <span class="${activeClass}">About</span>
-                    </div>
+                // All links visible on all screens - trust-first UX
+                const navContent = `
+                    <a href="menu.html" class="${linkClass}">Menu</a>
+                    <a href="sellers.html" class="${linkClass}">Kitchens</a>
+                    <span class="${activeClass}">About</span>
                 `;
 
                 if (!token) {
                     navLinks.innerHTML = `
-                    ${secondaryLinks}
-                    <span class="${activeClass} sm:hidden">About</span>
+                    ${navContent}
                     <a href="login.html" class="${btnClass}">Login</a>
                 `;
                 } else if (role === 'SELLER') {
                     navLinks.innerHTML = `
-                    ${secondaryLinks}
-                    <span class="${activeClass} sm:hidden">About</span>
+                    ${navContent}
                     <a href="seller-dashboard.html" class="${btnClass}">Dashboard</a>
                 `;
                 } else {
                     navLinks.innerHTML = `
-                    ${secondaryLinks}
-                    <span class="${activeClass} sm:hidden">About</span>
+                    ${navContent}
                     <a href="cart.html" class="${linkClass}">Cart</a>
                     <button onclick="localStorage.clear(); window.location.href='login.html'" class="${btnClass}">Logout</button>
                 `;

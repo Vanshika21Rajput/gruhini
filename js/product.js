@@ -41,10 +41,10 @@ async function init() {
 
 // ============ DATA FETCHING ============
 async function fetchProductData(productId) {
-    // Try backend first
+    // Try backend first with 10-second timeout (Render cold start)
     try {
         const controller = new AbortController();
-        setTimeout(() => controller.abort(), 4000);
+        setTimeout(() => controller.abort(), 10000);
 
         const response = await fetch(`${window.CONFIG.BASE_URL}/product/${productId}`, {
             signal: controller.signal

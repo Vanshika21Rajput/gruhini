@@ -258,8 +258,28 @@
                 font-size: 2.5rem !important;
             }
 
-            .font-hindi span {
-                font-size: 1.25rem !important;
+            /* Fix roller overflow on very small phones */
+            .thali-widget {
+                max-width: 100%;
+                overflow: hidden;
+                min-height: 350px;
+            }
+
+            .plate-ring {
+                width: 200px;
+                height: 200px;
+            }
+
+            .plate-center {
+                width: 80px;
+                height: 80px;
+            }
+
+            .katori {
+                width: 40px;
+                height: 40px;
+                margin-left: -20px;
+                margin-top: -20px;
             }
         }
     </style>
@@ -304,34 +324,30 @@
                 const role = localStorage.getItem('userRole');
                 const navLinks = document.getElementById('navLinks');
 
-                const linkClass = "text-xs font-bold uppercase tracking-widest text-gold-main/80 hover:text-white transition-colors";
-                const btnClass = "border border-gold-main/40 px-5 py-2 rounded-full text-gold-main text-xs font-bold tracking-widest hover:bg-gold-main/10 hover:text-white transition-all uppercase";
+                // Mobile-optimized: smaller fonts, but ALL links visible
+                const linkClass = "text-[9px] sm:text-xs font-bold uppercase tracking-widest text-gold-main/80 hover:text-white transition-colors px-1 sm:px-2";
+                const btnClass = "border border-gold-main/40 px-3 sm:px-5 py-1.5 sm:py-2 rounded-full text-gold-main text-[9px] sm:text-xs font-bold tracking-widest hover:bg-gold-main/10 hover:text-white transition-all uppercase";
 
-                // Safe wrapper pattern: secondary links hidden on mobile
-                const secondaryLinks = `
-                    <div class="hidden sm:flex items-center gap-4">
-                        <a href="menu.html" class="${linkClass}">Menu</a>
-                        <a href="sellers.html" class="${linkClass}">Our Kitchens</a>
-                        <a href="about.html" class="${linkClass}">About</a>
-                    </div>
+                // All links visible on all screens - trust-first UX
+                const navContent = `
+                    <a href="menu.html" class="${linkClass}">Menu</a>
+                    <a href="sellers.html" class="${linkClass}">Kitchens</a>
+                    <a href="about.html" class="${linkClass}">About</a>
                 `;
 
                 if (!token) {
                     navLinks.innerHTML = `
-                    ${secondaryLinks}
-                    <a href="menu.html" class="${linkClass} sm:hidden">Menu</a>
+                    ${navContent}
                     <a href="login.html" class="${btnClass}">Login</a>
                 `;
                 } else if (role === 'SELLER') {
                     navLinks.innerHTML = `
-                    ${secondaryLinks}
-                    <a href="menu.html" class="${linkClass} sm:hidden">Menu</a>
+                    ${navContent}
                     <a href="seller-dashboard.html" class="${btnClass}">Dashboard</a>
                 `;
                 } else {
                     navLinks.innerHTML = `
-                    ${secondaryLinks}
-                    <a href="menu.html" class="${linkClass} sm:hidden">Menu</a>
+                    ${navContent}
                     <a href="cart.html" class="${linkClass}">Cart</a>
                     <button onclick="localStorage.clear(); window.location.href='login.html'" class="${btnClass}">Logout</button>
                 `;

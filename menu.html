@@ -73,6 +73,12 @@
                 height: 200px !important;
             }
         }
+
+        /* Fix mobile tab visibility */
+        .tab-btn {
+            min-width: 70px;
+            flex-shrink: 0;
+        }
     </style>
 </head>
 
@@ -110,35 +116,31 @@
                     const role = localStorage.getItem('userRole');
                     const navLinks = document.getElementById('navLinks');
 
-                    const linkClass = "text-xs font-bold uppercase tracking-widest text-white/70 hover:text-gold transition-colors";
-                    const activeClass = "text-xs font-bold uppercase tracking-widest text-gold border-b border-gold pb-1";
-                    const btnClass = "border border-gold/40 px-5 py-2 rounded-full text-gold text-xs font-bold tracking-widest hover:bg-gold/10 hover:text-white transition-all uppercase";
+                    // Mobile-optimized: smaller fonts, but ALL links visible
+                    const linkClass = "text-[9px] sm:text-xs font-bold uppercase tracking-widest text-white/70 hover:text-gold transition-colors px-1 sm:px-2";
+                    const activeClass = "text-[9px] sm:text-xs font-bold uppercase tracking-widest text-gold border-b border-gold pb-1 px-1 sm:px-2";
+                    const btnClass = "border border-gold/40 px-3 sm:px-5 py-1.5 sm:py-2 rounded-full text-gold text-[9px] sm:text-xs font-bold tracking-widest hover:bg-gold/10 hover:text-white transition-all uppercase";
 
-                    // Safe wrapper: secondary links hidden on mobile
-                    const secondaryLinks = `
-                        <div class="hidden sm:flex items-center gap-4">
-                            <span class="${activeClass}">Menu</span>
-                            <a href="sellers.html" class="${linkClass}">Our Kitchens</a>
-                            <a href="about.html" class="${linkClass}">About</a>
-                        </div>
+                    // All links visible on all screens - trust-first UX
+                    const navContent = `
+                        <span class="${activeClass}">Menu</span>
+                        <a href="sellers.html" class="${linkClass}">Kitchens</a>
+                        <a href="about.html" class="${linkClass}">About</a>
                     `;
 
                     if (!token) {
                         navLinks.innerHTML = `
-                        ${secondaryLinks}
-                        <span class="${activeClass} sm:hidden">Menu</span>
+                        ${navContent}
                         <a href="login.html" class="${btnClass}">Login</a>
                     `;
                     } else if (role === 'SELLER') {
                         navLinks.innerHTML = `
-                        ${secondaryLinks}
-                        <span class="${activeClass} sm:hidden">Menu</span>
+                        ${navContent}
                         <a href="seller-dashboard.html" class="${btnClass}">Dashboard</a>
                     `;
                     } else {
                         navLinks.innerHTML = `
-                        ${secondaryLinks}
-                        <span class="${activeClass} sm:hidden">Menu</span>
+                        ${navContent}
                         <a href="cart.html" class="${linkClass}">Cart</a>
                         <button onclick="localStorage.clear(); window.location.href='login.html'" class="${btnClass}">Logout</button>
                     `;
@@ -214,7 +216,10 @@
                 const safePrice = Number(String(item.price).replace(/[^0-9.]/g, '')) || 0;
                 const price = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 }).format(safePrice);
                 const img = item.image || item.img || window.CONFIG.PLACEHOLDER;
-                const chefAvatar = item.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(item.chef || 'Chef')}&background=d97706&color=fff&size=64`;
+                // Handle avatar paths: CDN URLs, relative paths, or fallback to UI Avatars
+                const chefAvatar = item.avatar
+                    ? (item.avatar.startsWith('http') ? item.avatar : `public/${item.avatar}`)
+                    : `https://ui-avatars.com/api/?name=${encodeURIComponent(item.chef || 'Chef')}&background=d97706&color=fff&size=64`;
 
                 return `
                 <div class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 group hover:-translate-y-2 border border-gray-100">

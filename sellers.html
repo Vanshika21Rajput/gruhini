@@ -123,33 +123,25 @@
 <body class="text-cream font-sans antialiased min-h-screen">
 
     <nav
-        class="fixed top-0 w-full z-50 bg-[#0f0805]/90 backdrop-blur-md border-b border-white/10 px-6 py-4 flex justify-between items-center">
-        <a href="index.html" class="flex items-center gap-3 group">
+        class="fixed top-0 w-full z-50 bg-[#0f0805]/90 backdrop-blur-md border-b border-white/10 px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
+        <a href="index.html" class="flex items-center gap-2 sm:gap-3 group">
             <div
-                class="w-10 h-10 rounded-full overflow-hidden relative shadow-[0_0_15px_rgba(197,160,89,0.3)] border border-amber-500/30">
+                class="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden relative shadow-[0_0_15px_rgba(197,160,89,0.3)] border border-amber-500/30">
                 <img src="public/logo.jpg" alt="Gruhini" class="w-full h-full object-cover">
             </div>
             <span
-                class="font-cinzel text-xl font-bold text-amber-500 tracking-widest group-hover:text-amber-400 transition-colors">GRUHINI</span>
+                class="font-cinzel text-base sm:text-xl font-bold text-amber-500 tracking-widest group-hover:text-amber-400 transition-colors">GRUHINI</span>
         </a>
-        <div class="flex items-center gap-4">
-            <!-- Safe wrapper: secondary links hidden on mobile -->
-            <div class="hidden sm:flex items-center gap-4">
-                <a href="index.html"
-                    class="text-[10px] uppercase tracking-widest font-bold text-gray-400 hover:text-cream transition-colors">Home</a>
-                <a href="menu.html"
-                    class="text-[10px] uppercase tracking-widest font-bold text-gray-400 hover:text-cream transition-colors">Menu</a>
-                <span
-                    class="text-[10px] uppercase tracking-widest font-bold text-amber-500 border-b border-amber-500 pb-0.5">Our
-                    Kitchens</span>
-                <a href="about.html"
-                    class="text-[10px] uppercase tracking-widest font-bold text-gray-400 hover:text-cream transition-colors">About</a>
-            </div>
-            <!-- Mobile: only show current page and main action -->
+        <div class="flex items-center gap-2 sm:gap-4">
+            <!-- All links visible on all screens - trust-first UX -->
+            <a href="menu.html"
+                class="text-[9px] sm:text-[10px] uppercase tracking-widest font-bold text-gray-400 hover:text-cream transition-colors px-1 sm:px-2">Menu</a>
             <span
-                class="sm:hidden text-[10px] uppercase tracking-widest font-bold text-amber-500 border-b border-amber-500 pb-0.5">Kitchens</span>
+                class="text-[9px] sm:text-[10px] uppercase tracking-widest font-bold text-amber-500 border-b border-amber-500 pb-0.5 px-1 sm:px-2">Kitchens</span>
+            <a href="about.html"
+                class="text-[9px] sm:text-[10px] uppercase tracking-widest font-bold text-gray-400 hover:text-cream transition-colors px-1 sm:px-2">About</a>
             <a href="login.html"
-                class="bg-amber-600 hover:bg-amber-500 px-4 py-2 rounded-full text-[10px] uppercase tracking-widest font-bold text-white transition-all">Login</a>
+                class="border border-amber-500/40 hover:bg-amber-500/20 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[9px] sm:text-[10px] uppercase tracking-widest font-bold text-amber-500 transition-all">Login</a>
         </div>
     </nav>
 
@@ -211,9 +203,9 @@
     </div>
 
     <script>
-        const CONFIG = {
-            BASE_URL: 'https://gruhini2.onrender.com'
-        };
+        // Use external config.js, fallback to render URL if not loaded
+        const BASE_URL = window.CONFIG?.BASE_URL || 'http://localhost:8080';
+        console.log('📡 Sellers page using backend:', BASE_URL);
 
         // SAFETY NET: Mock Data in case backend sleeps
         const MOCK_CHEFS = [
@@ -244,8 +236,12 @@
         async function init() {
             try {
                 // Fetch Sellers (Using explore endpoint to derive sellers)
-                const baseUrl = window.CONFIG?.BASE_URL || 'http://localhost:8080';
-                const response = await fetch(`${baseUrl}/explore`);
+                // 10-second timeout for Render cold start
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+                const response = await fetch(`${BASE_URL}/explore`, { signal: controller.signal });
+                clearTimeout(timeoutId);
 
                 if (!response.ok) throw new Error("Backend unavailable");
 
@@ -253,15 +249,18 @@
 
                 if (!data || data.length === 0) throw new Error("No data");
 
-                // Extract Unique Chefs
+                // Extract Unique Chefs with null-safe handling
                 const sellersMap = new Map();
                 data.forEach(item => {
-                    if (!sellersMap.has(item.chef)) {
-                        sellersMap.set(item.chef, {
-                            name: item.chef,
-                            loc: item.loc,
-                            avatar: item.avatar || `https://ui-avatars.com/api/?name=${item.chef}&background=d97706&color=fff`,
-                            rating: "4.8", // Hardcoded for consistency if missing
+                    const chefName = item.chef || 'Home Kitchen';
+                    if (!sellersMap.has(chefName)) {
+                        sellersMap.set(chefName, {
+                            name: chefName,
+                            loc: item.loc || 'India',
+                            avatar: item.avatar
+                                ? (item.avatar.startsWith('http') ? item.avatar : `public/${item.avatar}`)
+                                : `https://ui-avatars.com/api/?name=${encodeURIComponent(chefName)}&background=d97706&color=fff`,
+                            rating: "4.8",
                             specialty: item.name,
                             audio: item.audio
                         });
