@@ -16,6 +16,60 @@
         .hide-scroll::-webkit-scrollbar {
             display: none;
         }
+
+        /* Mobile Responsiveness */
+        @media(max-width: 768px) {
+            #navLinks {
+                gap: 0.5rem !important;
+            }
+
+            #navLinks a,
+            #navLinks span,
+            #navLinks button {
+                font-size: 8px !important;
+                padding: 5px 10px !important;
+            }
+
+            /* Stack columns on tablet */
+            .lg\\:grid-cols-3 {
+                grid-template-columns: 1fr !important;
+            }
+
+            /* Make bill section full width */
+            .sticky {
+                position: relative !important;
+                top: 0 !important;
+            }
+        }
+
+        @media(max-width: 640px) {
+
+            /* Simplified navbar */
+            #navLinks a[href="sellers.html"],
+            #navLinks a[href="about.html"] {
+                display: none;
+            }
+
+            nav span.font-cinzel {
+                font-size: 1rem !important;
+            }
+
+            nav a div:first-child {
+                width: 2.5rem !important;
+                height: 2.5rem !important;
+            }
+
+            /* Smaller padding */
+            .px-4 {
+                padding-left: 0.75rem !important;
+                padding-right: 0.75rem !important;
+            }
+
+            /* Smaller text */
+            h1.font-cinzel {
+                font-size: 1.5rem !important;
+            }
+        }
     </style>
 </head>
 

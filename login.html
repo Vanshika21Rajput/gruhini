@@ -13,6 +13,7 @@
         rel="stylesheet">
 
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <!-- Load external config FIRST -->
     <script src="js/config.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -24,7 +25,8 @@
                         royalBrown: '#2a160e',
                         royalGold: '#b45309',
                         cream: '#fffaf0',
-                        errorRed: '#dc2626'
+                        errorRed: '#dc2626',
+                        successGreen: '#16a34a'
                     },
                     fontFamily: {
                         cinzel: ['Cinzel', 'serif'],
@@ -130,7 +132,9 @@
             top: 50%;
             left: 30%;
             transform: translate(-50%, -50%);
-            width: 380px;
+            width: 400px;
+            max-height: 90vh;
+            overflow-y: auto;
             background-color: #ffffff;
             border: 1px solid #e7d5c0;
             box-shadow: 0 0 0 4px #fffaf0, 0 30px 60px -15px rgba(0, 0, 0, 0.6);
@@ -148,7 +152,7 @@
             border-radius: 8px;
             color: #1f2937;
             font-family: 'Lato', sans-serif;
-            font-size: 13px;
+            font-size: 14px;
             transition: all 0.2s;
         }
 
@@ -158,7 +162,11 @@
             outline: none;
         }
 
-        #btn-submit:active {
+        .input-group input.error {
+            border-color: #dc2626;
+        }
+
+        #btn-submit:active:not(:disabled) {
             transform: scale(0.98);
         }
 
@@ -175,6 +183,27 @@
             border: 1px solid #e5e7eb;
         }
 
+        .spinner {
+            border: 2px solid #f3f4f6;
+            border-top: 2px solid #b45309;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
         @media(max-width: 900px) {
             .split-left {
                 display: none;
@@ -187,7 +216,7 @@
             .auth-container {
                 left: 50%;
                 width: 90%;
-                max-width: 380px;
+                max-width: 400px;
             }
         }
     </style>
@@ -223,7 +252,8 @@
 
             <div class="relative flex py-1 items-center mb-4">
                 <div class="flex-grow border-t border-gray-200"></div>
-                <span class="flex-shrink-0 mx-3 text-gray-400 text-[9px] font-bold uppercase tracking-widest">Or Login
+                <span class="flex-shrink-0 mx-3 text-gray-400 text-[9px] font-bold uppercase tracking-widest">Or
+                    Continue
                     With Email</span>
                 <div class="flex-grow border-t border-gray-200"></div>
             </div>
@@ -245,14 +275,16 @@
                     <input type="email" id="email" placeholder="Email Address" required autocomplete="email">
                 </div>
                 <div class="input-group">
-                    <input type="password" id="password" placeholder="Password" required
-                        autocomplete="current-password">
+                    <input type="password" id="password" placeholder="Password (min 6 characters)" required
+                        autocomplete="current-password" minlength="6">
                 </div>
 
-                <p id="form-error" class="text-errorRed text-xs text-center font-bold hidden" role="alert"></p>
+                <div id="form-error"
+                    class="text-errorRed text-xs text-center font-semibold hidden bg-red-50 p-2 rounded-lg border border-red-200"
+                    role="alert"></div>
 
                 <button id="btn-submit" type="submit"
-                    class="w-full py-3 bg-gradient-to-r from-royalBrown to-[#4a2c20] text-white font-cinzel font-bold text-xs uppercase tracking-widest rounded-lg shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-70">
+                    class="w-full py-3 bg-gradient-to-r from-royalBrown to-[#4a2c20] text-white font-cinzel font-bold text-xs uppercase tracking-widest rounded-lg shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
                     Login
                 </button>
             </form>
@@ -267,17 +299,42 @@
     </main>
 
     <script>
+        // =====================================================
+        // CONFIGURATION - Uses external js/config.js if available
+        // =====================================================
         const CONFIG = {
+            // Fallback if external config not loaded
             BASE_URL: window.CONFIG?.BASE_URL || 'http://localhost:8080',
             GOOGLE_CLIENT_ID: "YOUR_GOOGLE_CLIENT_ID_HERE"
         };
 
+        console.log('🔧 Backend URL:', CONFIG.BASE_URL);
+
+        // =====================================================
+        // APPLICATION STATE
+        // =====================================================
         const AppState = {
-            view: 'login', role: 'customer', isLoading: false,
-            setRole(newRole) { this.role = newRole; UI.updateRoleToggle(newRole); UI.renderForm(); UI.clearError(); },
-            toggleMode() { this.view = this.view === 'login' ? 'register' : 'login'; UI.renderForm(); UI.clearError(); }
+            view: 'login',
+            role: 'customer',
+            isLoading: false,
+
+            setRole(newRole) {
+                this.role = newRole;
+                UI.updateRoleToggle(newRole);
+                UI.renderForm();
+                UI.clearError();
+            },
+
+            toggleMode() {
+                this.view = this.view === 'login' ? 'register' : 'login';
+                UI.renderForm();
+                UI.clearError();
+            }
         };
 
+        // =====================================================
+        // UI HANDLERS
+        // =====================================================
         const UI = {
             updateRoleToggle(role) {
                 const isSeller = role === 'seller';
@@ -285,6 +342,7 @@
                 document.getElementById('btn-customer').className = `flex-1 py-2 text-[10px] font-bold uppercase tracking-wider relative z-10 transition-colors ${isSeller ? 'text-gray-400' : 'text-royalBrown'}`;
                 document.getElementById('btn-seller').className = `flex-1 py-2 text-[10px] font-bold uppercase tracking-wider relative z-10 transition-colors ${isSeller ? 'text-royalBrown' : 'text-gray-400'}`;
             },
+
             renderForm() {
                 const isReg = AppState.view === 'register';
                 const isSeller = AppState.role === 'seller';
@@ -296,158 +354,362 @@
                 document.getElementById('footer-link').innerText = isReg ? "Login" : "Create Account";
 
                 if (isReg) {
-                    const ic = "w-full p-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:border-royalGold focus:outline-none text-sm";
+                    const ic = "w-full p-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:border-royalGold focus:outline-none text-sm transition-all";
                     let html = `<div class="input-group"><input type="text" id="name" placeholder="Full Name" required class="${ic}"></div>`;
-                    html += `<div class="input-group mt-3"><input type="tel" id="contact" placeholder="Phone Number" required class="${ic}"></div>`;
-                    if (isSeller) html += `<div class="input-group mt-3"><input type="text" id="businessName" placeholder="Kitchen Name" required class="${ic}"></div>`;
+                    html += `<div class="input-group mt-3"><input type="tel" id="contact" placeholder="Phone Number (10 digits)" required pattern="[0-9]{10}" class="${ic}"></div>`;
+                    if (isSeller) {
+                        html += `<div class="input-group mt-3"><input type="text" id="businessName" placeholder="Kitchen/Business Name" required class="${ic}"></div>`;
+                    }
                     extraDiv.innerHTML = html;
                 } else {
                     extraDiv.innerHTML = '';
                 }
             },
-            showError(msg) { const el = document.getElementById('form-error'); el.innerText = msg; el.classList.remove('hidden'); },
-            clearError() { document.getElementById('form-error').classList.add('hidden'); },
+
+            showError(msg) {
+                const el = document.getElementById('form-error');
+                el.innerHTML = `<strong>⚠️ Error:</strong> ${msg}`;
+                el.classList.remove('hidden');
+                el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            },
+
+            clearError() {
+                document.getElementById('form-error').classList.add('hidden');
+            },
+
             setLoading(loading) {
                 AppState.isLoading = loading;
                 const btn = document.getElementById('btn-submit');
-                btn.innerHTML = loading ? `<span class="animate-pulse">Processing...</span>` : (AppState.view === 'register' ? "Create Account" : "Login");
+                if (loading) {
+                    btn.innerHTML = `<span class="spinner"></span>Processing...`;
+                } else {
+                    btn.innerHTML = AppState.view === 'register' ? "Create Account" : "Login";
+                }
                 btn.disabled = loading;
             },
+
             showSuccessAndRedirect(role) {
                 document.getElementById('auth-section').style.display = 'none';
                 document.getElementById('success-section').classList.remove('hidden');
                 setTimeout(() => {
                     const redirect = localStorage.getItem('redirectAfterLogin');
-                    if (redirect) { localStorage.removeItem('redirectAfterLogin'); window.location.href = redirect; }
-                    else { window.location.href = role === 'SELLER' ? 'sellers.html' : 'index.html'; }
+                    if (redirect) {
+                        localStorage.removeItem('redirectAfterLogin');
+                        window.location.href = redirect;
+                    } else {
+                        window.location.href = role === 'SELLER' ? 'seller-dashboard.html' : 'index.html';
+                    }
                 }, 1500);
             }
         };
 
+        // =====================================================
+        // AUTH HANDLERS
+        // =====================================================
         const Handlers = {
             async handleAuth(e) {
                 e.preventDefault();
                 if (AppState.isLoading) return;
-                UI.clearError(); UI.setLoading(true);
+
+                UI.clearError();
+                UI.setLoading(true);
 
                 const email = document.getElementById('email').value.trim();
                 const password = document.getElementById('password').value;
 
+                // Basic validation
+                if (!email || !password) {
+                    UI.showError('Please fill in all required fields');
+                    UI.setLoading(false);
+                    return;
+                }
+
+                if (password.length < 6) {
+                    UI.showError('Password must be at least 6 characters');
+                    UI.setLoading(false);
+                    return;
+                }
+
                 try {
                     if (AppState.view === 'login') {
-                        // LOGIN: /logins expects { email, password, name }
-                        const res = await fetch(`${CONFIG.BASE_URL}/logins`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ email, password, name: email })
-                        });
-
-                        if (!res.ok) {
-                            const d = await res.json().catch(() => ({}));
-                            throw new Error(d.message || 'Invalid email or password');
-                        }
-
-                        const data = await res.json();
-                        localStorage.setItem('authToken', data.token);
-
-                        try {
-                            const p = JSON.parse(atob(data.token.split('.')[1]));
-                            localStorage.setItem('userName', p.sub || email);
-                            localStorage.setItem('userRole', p.roles?.includes('ROLE_SELLER') ? 'SELLER' : 'CUSTOMER');
-                        } catch (e) {
-                            localStorage.setItem('userName', email);
-                            localStorage.setItem('userRole', 'CUSTOMER');
-                        }
-                        UI.showSuccessAndRedirect(localStorage.getItem('userRole'));
-
+                        await this.handleLogin(email, password);
                     } else {
-                        // REGISTER
-                        const name = document.getElementById('name')?.value.trim();
-                        const contact = document.getElementById('contact')?.value.trim();
-                        if (!name || !contact) throw new Error('Please fill all fields');
-
-                        // Step 1: Register user - /register expects { name, email, password, contact }
-                        const regRes = await fetch(`${CONFIG.BASE_URL}/register`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ name, email, password, contact })
-                        });
-
-                        if (!regRes.ok) {
-                            const d = await regRes.json().catch(() => ({}));
-                            throw new Error(d.message || 'Registration failed');
-                        }
-
-                        // Step 2: If seller, also call /register-seller
-                        // sellerDto expects: { name, email, phone, businessName, categories }
-                        if (AppState.role === 'seller') {
-                            const businessName = document.getElementById('businessName')?.value.trim();
-                            if (!businessName) throw new Error('Please enter kitchen name');
-
-                            const sellerRes = await fetch(`${CONFIG.BASE_URL}/register-seller`, {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                    name: name,
-                                    email: email,
-                                    phone: contact,
-                                    businessName: businessName,
-                                    categories: ['Home Cooked']
-                                })
-                            });
-
-                            if (!sellerRes.ok) {
-                                const d = await sellerRes.json().catch(() => ({}));
-                                throw new Error(d.message || 'Seller registration failed');
-                            }
-                        }
-
-                        // Step 3: Auto-login
-                        const loginRes = await fetch(`${CONFIG.BASE_URL}/logins`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ email, password, name: email })
-                        });
-
-                        if (loginRes.ok) {
-                            const ld = await loginRes.json();
-                            localStorage.setItem('authToken', ld.token);
-                            localStorage.setItem('userName', name);
-                            localStorage.setItem('userRole', AppState.role.toUpperCase());
-                        }
-
-                        UI.showSuccessAndRedirect(AppState.role.toUpperCase());
+                        await this.handleRegister(email, password);
                     }
                 } catch (err) {
-                    console.error('Auth error:', err);
-                    UI.showError(err.message || 'Something went wrong');
+                    console.error('❌ Auth error:', err);
+                    UI.showError(err.message || 'Something went wrong. Please try again.');
                     UI.setLoading(false);
+                }
+            },
+
+            async handleLogin(email, password) {
+                console.log('🔐 Attempting login for:', email);
+
+                try {
+                    // =====================================================
+                    // LOGIN PAYLOAD - Backend expects: { email, password }
+                    // Some backends also accept 'name' field (ignored if not needed)
+                    // =====================================================
+                    const loginPayload = {
+                        email: email,
+                        password: password
+                    };
+
+                    console.log('📤 Sending login request to:', `${CONFIG.BASE_URL}/logins`);
+
+                    const response = await fetch(`${CONFIG.BASE_URL}/logins`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(loginPayload)
+                    });
+
+                    console.log('📥 Login response status:', response.status);
+
+                    if (!response.ok) {
+                        let errorMsg = 'Invalid email or password';
+                        try {
+                            const errorData = await response.json();
+                            console.log('❌ Error response:', errorData);
+                            errorMsg = errorData.message || errorData.error || errorMsg;
+                        } catch (e) {
+                            console.log('⚠️ Could not parse error response');
+                        }
+                        throw new Error(errorMsg);
+                    }
+
+                    const data = await response.json();
+                    console.log('✅ Login successful');
+
+                    // Store authentication data
+                    if (data.token) {
+                        localStorage.setItem('authToken', data.token);
+
+                        // Try to decode JWT to get user info
+                        try {
+                            const payload = JSON.parse(atob(data.token.split('.')[1]));
+                            console.log('👤 Token payload:', payload);
+
+                            localStorage.setItem('userName', payload.sub || payload.name || email.split('@')[0]);
+
+                            // Check if user has SELLER role
+                            const isSeller = payload.roles && Array.isArray(payload.roles) && payload.roles.includes('ROLE_SELLER');
+                            localStorage.setItem('userRole', isSeller ? 'SELLER' : 'CUSTOMER');
+
+                            UI.showSuccessAndRedirect(isSeller ? 'SELLER' : 'CUSTOMER');
+                        } catch (e) {
+                            console.warn('⚠️ Could not decode token, using defaults');
+                            localStorage.setItem('userName', email.split('@')[0]);
+                            localStorage.setItem('userRole', 'CUSTOMER');
+                            UI.showSuccessAndRedirect('CUSTOMER');
+                        }
+                    } else {
+                        throw new Error('No token received from server');
+                    }
+
+                } catch (err) {
+                    if (err.name === 'TypeError' && err.message.includes('fetch')) {
+                        throw new Error('Cannot connect to server. Please check if backend is running.');
+                    }
+                    throw err;
+                }
+            },
+
+            async handleRegister(email, password) {
+                const name = document.getElementById('name')?.value.trim();
+                const contact = document.getElementById('contact')?.value.trim();
+
+                // Validation
+                if (!name || !contact) {
+                    throw new Error('Please fill in all required fields');
+                }
+
+                if (!/^[0-9]{10}$/.test(contact)) {
+                    throw new Error('Please enter a valid 10-digit phone number');
+                }
+
+                if (AppState.role === 'seller') {
+                    const businessName = document.getElementById('businessName')?.value.trim();
+                    if (!businessName) {
+                        throw new Error('Please enter your kitchen/business name');
+                    }
+                }
+
+                console.log('📝 Starting registration for:', email);
+
+                try {
+                    // =====================================================
+                    // REGISTER PAYLOAD - Backend expects: { name, email, password, contact }
+                    // =====================================================
+                    const registerPayload = {
+                        name: name,
+                        email: email,
+                        password: password,
+                        contact: contact
+                    };
+
+                    console.log('📤 Sending registration request to:', `${CONFIG.BASE_URL}/register`);
+
+                    const regResponse = await fetch(`${CONFIG.BASE_URL}/register`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(registerPayload)
+                    });
+
+                    console.log('📥 Registration response status:', regResponse.status);
+
+                    if (!regResponse.ok) {
+                        let errorMsg = 'Registration failed';
+                        try {
+                            const errorData = await regResponse.json();
+                            console.log('❌ Registration error:', errorData);
+
+                            // Handle validation errors
+                            if (typeof errorData === 'object' && !errorData.message) {
+                                const errors = Object.values(errorData).join(', ');
+                                errorMsg = errors || errorMsg;
+                            } else {
+                                errorMsg = errorData.message || errorData.error || errorMsg;
+                            }
+                        } catch (e) {
+                            console.log('⚠️ Could not parse error response');
+                        }
+                        throw new Error(errorMsg);
+                    }
+
+                    console.log('✅ User registration successful');
+
+                    // Step 2: If seller, register as seller
+                    if (AppState.role === 'seller') {
+                        const businessName = document.getElementById('businessName').value.trim();
+
+                        // =====================================================
+                        // SELLER PAYLOAD - Backend expects: { name, email, phone, businessName, categories }
+                        // =====================================================
+                        const sellerPayload = {
+                            name: name,
+                            email: email,
+                            phone: contact,
+                            businessName: businessName,
+                            categories: ['Home Cooked', 'Indian Cuisine']
+                        };
+
+                        console.log('📤 Sending seller registration request to:', `${CONFIG.BASE_URL}/register-seller`);
+
+                        const sellerResponse = await fetch(`${CONFIG.BASE_URL}/register-seller`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify(sellerPayload)
+                        });
+
+                        console.log('📥 Seller registration response status:', sellerResponse.status);
+
+                        if (!sellerResponse.ok) {
+                            let errorMsg = 'Seller registration failed';
+                            try {
+                                const errorData = await sellerResponse.json();
+                                console.log('❌ Seller registration error:', errorData);
+                                errorMsg = errorData.message || errorData.error || errorMsg;
+                            } catch (e) {
+                                console.log('⚠️ Could not parse error response');
+                            }
+                            throw new Error(errorMsg);
+                        }
+
+                        console.log('✅ Seller registration successful');
+                    }
+
+                    // Step 3: Auto-login
+                    console.log('🔐 Auto-logging in...');
+                    await this.handleLogin(email, password);
+
+                } catch (err) {
+                    if (err.name === 'TypeError' && err.message.includes('fetch')) {
+                        throw new Error('Cannot connect to server. Please check if backend is running.');
+                    }
+                    throw err;
                 }
             },
 
             async handleGoogleResponse(response) {
                 try {
+                    console.log('🔐 Google login initiated');
                     const res = await fetch(`${CONFIG.BASE_URL}/google-login`, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ token: response.credential, role: AppState.role.toUpperCase() })
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            token: response.credential,
+                            role: AppState.role.toUpperCase()
+                        })
                     });
+
                     const data = await res.json();
-                    if (!res.ok) throw new Error(data.message || "Google Login Failed");
+                    if (!res.ok) {
+                        throw new Error(data.message || "Google Login Failed");
+                    }
+
                     localStorage.setItem('authToken', data.token);
                     localStorage.setItem('userRole', data.role);
                     localStorage.setItem('userName', data.name);
+
                     UI.showSuccessAndRedirect(data.role);
-                } catch (err) { UI.showError(err.message); }
+                } catch (err) {
+                    console.error('❌ Google login error:', err);
+                    UI.showError(err.message || 'Google login failed');
+                }
             }
         };
 
+        // =====================================================
+        // INITIALIZATION
+        // =====================================================
         window.onload = function () {
+            console.log('🚀 Page loaded, initializing...');
+            console.log('📡 Using backend:', CONFIG.BASE_URL);
+
             if (window.google) {
-                google.accounts.id.initialize({ client_id: CONFIG.GOOGLE_CLIENT_ID, callback: Handlers.handleGoogleResponse });
-                google.accounts.id.renderButton(document.getElementById("google-btn-wrapper"), { theme: "outline", size: "large", width: "280", shape: "pill" });
+                try {
+                    google.accounts.id.initialize({
+                        client_id: CONFIG.GOOGLE_CLIENT_ID,
+                        callback: Handlers.handleGoogleResponse
+                    });
+                    google.accounts.id.renderButton(
+                        document.getElementById("google-btn-wrapper"),
+                        {
+                            theme: "outline",
+                            size: "large",
+                            width: "280",
+                            shape: "pill"
+                        }
+                    );
+                    console.log('✅ Google Sign-In initialized');
+                } catch (e) {
+                    console.log('⚠️ Google Sign-In not configured');
+                }
             }
-        }
+        };
+
+        // Network connectivity check
+        window.addEventListener('online', () => {
+            console.log('✅ Network connected');
+        });
+
+        window.addEventListener('offline', () => {
+            console.log('❌ Network disconnected');
+            UI.showError('No internet connection. Please check your network.');
+        });
     </script>
 </body>
 

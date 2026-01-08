@@ -16,6 +16,63 @@
         .hide-scroll::-webkit-scrollbar {
             display: none;
         }
+
+        /* Mobile Responsiveness */
+        @media(max-width: 768px) {
+            .h-\[55vh\] {
+                height: 45vh !important;
+                min-height: 350px !important;
+            }
+
+            #navLinks {
+                gap: 0.5rem !important;
+            }
+
+            #navLinks a,
+            #navLinks span,
+            #navLinks button {
+                font-size: 8px !important;
+                padding: 5px 10px !important;
+            }
+
+            /* 2 column grid on tablets */
+            #menuGrid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 1rem !important;
+            }
+        }
+
+        @media(max-width: 640px) {
+            nav span.font-cinzel {
+                font-size: 1rem !important;
+            }
+
+            nav a div:first-child {
+                width: 2.5rem !important;
+                height: 2.5rem !important;
+            }
+
+            /* Single column grid on mobile */
+            #menuGrid {
+                grid-template-columns: 1fr !important;
+            }
+
+            /* Smaller hero */
+            .h-\[55vh\] {
+                height: 35vh !important;
+                min-height: 280px !important;
+            }
+
+            /* Smaller hero text */
+            h1.font-cinzel {
+                font-size: 1.5rem !important;
+            }
+
+            /* Card image smaller */
+            .h-60 {
+                height: 200px !important;
+            }
+        }
     </style>
 </head>
 
@@ -57,25 +114,31 @@
                     const activeClass = "text-xs font-bold uppercase tracking-widest text-gold border-b border-gold pb-1";
                     const btnClass = "border border-gold/40 px-5 py-2 rounded-full text-gold text-xs font-bold tracking-widest hover:bg-gold/10 hover:text-white transition-all uppercase";
 
+                    // Safe wrapper: secondary links hidden on mobile
+                    const secondaryLinks = `
+                        <div class="hidden sm:flex items-center gap-4">
+                            <span class="${activeClass}">Menu</span>
+                            <a href="sellers.html" class="${linkClass}">Our Kitchens</a>
+                            <a href="about.html" class="${linkClass}">About</a>
+                        </div>
+                    `;
+
                     if (!token) {
                         navLinks.innerHTML = `
-                        <span class="${activeClass}">Menu</span>
-                        <a href="sellers.html" class="${linkClass}">Our Kitchens</a>
-                        <a href="about.html" class="${linkClass}">About</a>
+                        ${secondaryLinks}
+                        <span class="${activeClass} sm:hidden">Menu</span>
                         <a href="login.html" class="${btnClass}">Login</a>
                     `;
                     } else if (role === 'SELLER') {
                         navLinks.innerHTML = `
-                        <span class="${activeClass}">Menu</span>
-                        <a href="sellers.html" class="${linkClass}">Our Kitchens</a>
-                        <a href="about.html" class="${linkClass}">About</a>
+                        ${secondaryLinks}
+                        <span class="${activeClass} sm:hidden">Menu</span>
                         <a href="seller-dashboard.html" class="${btnClass}">Dashboard</a>
                     `;
                     } else {
                         navLinks.innerHTML = `
-                        <span class="${activeClass}">Menu</span>
-                        <a href="sellers.html" class="${linkClass}">Our Kitchens</a>
-                        <a href="about.html" class="${linkClass}">About</a>
+                        ${secondaryLinks}
+                        <span class="${activeClass} sm:hidden">Menu</span>
                         <a href="cart.html" class="${linkClass}">Cart</a>
                         <button onclick="localStorage.clear(); window.location.href='login.html'" class="${btnClass}">Logout</button>
                     `;

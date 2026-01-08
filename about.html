@@ -124,6 +124,67 @@
             color: rgba(197, 160, 89, 0.15);
             line-height: 1;
         }
+
+        /* Mobile Responsiveness */
+        @media(max-width: 768px) {
+            .hero-bg {
+                background-position: center center;
+                background-attachment: scroll;
+            }
+
+            #navLinks {
+                gap: 0.5rem !important;
+            }
+
+            #navLinks a,
+            #navLinks span,
+            #navLinks button {
+                font-size: 8px !important;
+                padding: 6px 10px !important;
+            }
+
+            .editorial-line,
+            .pause-line {
+                max-width: 100%;
+                padding: 0 1rem;
+            }
+
+            .glass-card {
+                padding: 1.5rem !important;
+            }
+        }
+
+        @media(max-width: 640px) {
+
+            nav span.font-cinzel,
+            nav span.tracking-widest {
+                font-size: 1rem !important;
+            }
+
+            nav a div:first-child {
+                width: 2.5rem !important;
+                height: 2.5rem !important;
+            }
+
+            section {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+
+            .quote-block::before {
+                font-size: 50px;
+            }
+
+            .flex-wrap {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .flex-wrap>span {
+                width: 100%;
+                text-align: center;
+            }
+        }
     </style>
 </head>
 
@@ -158,25 +219,31 @@
                 const activeClass = "text-xs font-bold uppercase tracking-widest text-gold-main border-b border-gold-main pb-1";
                 const btnClass = "border border-gold-main/40 px-5 py-2 rounded-full text-gold-main text-xs font-bold tracking-widest hover:bg-gold-main/10 hover:text-white transition-all uppercase";
 
+                // Safe wrapper: secondary links hidden on mobile
+                const secondaryLinks = `
+                    <div class="hidden sm:flex items-center gap-4">
+                        <a href="menu.html" class="${linkClass}">Menu</a>
+                        <a href="sellers.html" class="${linkClass}">Our Kitchens</a>
+                        <span class="${activeClass}">About</span>
+                    </div>
+                `;
+
                 if (!token) {
                     navLinks.innerHTML = `
-                    <a href="menu.html" class="${linkClass}">Menu</a>
-                    <a href="sellers.html" class="${linkClass}">Our Kitchens</a>
-                    <span class="${activeClass}">About</span>
+                    ${secondaryLinks}
+                    <span class="${activeClass} sm:hidden">About</span>
                     <a href="login.html" class="${btnClass}">Login</a>
                 `;
                 } else if (role === 'SELLER') {
                     navLinks.innerHTML = `
-                    <a href="menu.html" class="${linkClass}">Menu</a>
-                    <a href="sellers.html" class="${linkClass}">Our Kitchens</a>
-                    <span class="${activeClass}">About</span>
+                    ${secondaryLinks}
+                    <span class="${activeClass} sm:hidden">About</span>
                     <a href="seller-dashboard.html" class="${btnClass}">Dashboard</a>
                 `;
                 } else {
                     navLinks.innerHTML = `
-                    <a href="menu.html" class="${linkClass}">Menu</a>
-                    <a href="sellers.html" class="${linkClass}">Our Kitchens</a>
-                    <span class="${activeClass}">About</span>
+                    ${secondaryLinks}
+                    <span class="${activeClass} sm:hidden">About</span>
                     <a href="cart.html" class="${linkClass}">Cart</a>
                     <button onclick="localStorage.clear(); window.location.href='login.html'" class="${btnClass}">Logout</button>
                 `;

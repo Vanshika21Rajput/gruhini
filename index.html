@@ -171,9 +171,95 @@
 
             /* Adjusted for mobile, removed margins */
             .plate-ring {
-                width: 300px;
-                height: 300px;
+                width: 280px;
+                height: 280px;
                 margin: 0;
+            }
+
+            .plate-center {
+                width: 120px;
+                height: 120px;
+            }
+
+            .katori {
+                width: 60px;
+                height: 60px;
+                margin-left: -30px;
+                margin-top: -30px;
+            }
+        }
+
+        /* Mobile-first responsive fixes */
+        @media(max-width: 768px) {
+
+            /* Navbar */
+            #navLinks {
+                gap: 0.75rem !important;
+            }
+
+            #navLinks a,
+            #navLinks button {
+                font-size: 8px !important;
+                padding: 6px 10px !important;
+            }
+
+            /* Hero section */
+            .hero-bg {
+                background-position: center center;
+                background-attachment: scroll;
+            }
+        }
+
+        @media(max-width: 640px) {
+
+            /* Smaller logo text */
+            nav span.font-cinzel {
+                font-size: 1.25rem !important;
+            }
+
+            nav a div:first-child {
+                width: 2.5rem !important;
+                height: 2.5rem !important;
+            }
+
+            /* Thali widget mobile */
+            .thali-widget {
+                min-height: 400px;
+                border-radius: 24px;
+                margin: 0 1rem;
+            }
+
+            .plate-ring {
+                width: 240px;
+                height: 240px;
+            }
+
+            .plate-center {
+                width: 100px;
+                height: 100px;
+            }
+
+            .katori {
+                width: 50px;
+                height: 50px;
+                margin-left: -25px;
+                margin-top: -25px;
+            }
+        }
+
+        /* Very small phones - ticker elegance */
+        @media (max-width: 480px) {
+            .ticker-anim {
+                font-size: 9px;
+            }
+
+            /* Hero text smaller */
+            .font-hindi {
+                font-size: 2.5rem !important;
+            }
+
+            .font-hindi span {
+                font-size: 1.25rem !important;
             }
         }
     </style>
@@ -221,25 +307,31 @@
                 const linkClass = "text-xs font-bold uppercase tracking-widest text-gold-main/80 hover:text-white transition-colors";
                 const btnClass = "border border-gold-main/40 px-5 py-2 rounded-full text-gold-main text-xs font-bold tracking-widest hover:bg-gold-main/10 hover:text-white transition-all uppercase";
 
+                // Safe wrapper pattern: secondary links hidden on mobile
+                const secondaryLinks = `
+                    <div class="hidden sm:flex items-center gap-4">
+                        <a href="menu.html" class="${linkClass}">Menu</a>
+                        <a href="sellers.html" class="${linkClass}">Our Kitchens</a>
+                        <a href="about.html" class="${linkClass}">About</a>
+                    </div>
+                `;
+
                 if (!token) {
                     navLinks.innerHTML = `
-                    <a href="menu.html" class="${linkClass}">Menu</a>
-                    <a href="sellers.html" class="${linkClass}">Our Kitchens</a>
-                    <a href="about.html" class="${linkClass}">About</a>
+                    ${secondaryLinks}
+                    <a href="menu.html" class="${linkClass} sm:hidden">Menu</a>
                     <a href="login.html" class="${btnClass}">Login</a>
                 `;
                 } else if (role === 'SELLER') {
                     navLinks.innerHTML = `
-                    <a href="menu.html" class="${linkClass}">Menu</a>
-                    <a href="sellers.html" class="${linkClass}">Our Kitchens</a>
-                    <a href="about.html" class="${linkClass}">About</a>
+                    ${secondaryLinks}
+                    <a href="menu.html" class="${linkClass} sm:hidden">Menu</a>
                     <a href="seller-dashboard.html" class="${btnClass}">Dashboard</a>
                 `;
                 } else {
                     navLinks.innerHTML = `
-                    <a href="menu.html" class="${linkClass}">Menu</a>
-                    <a href="sellers.html" class="${linkClass}">Our Kitchens</a>
-                    <a href="about.html" class="${linkClass}">About</a>
+                    ${secondaryLinks}
+                    <a href="menu.html" class="${linkClass} sm:hidden">Menu</a>
                     <a href="cart.html" class="${linkClass}">Cart</a>
                     <button onclick="localStorage.clear(); window.location.href='login.html'" class="${btnClass}">Logout</button>
                 `;
@@ -256,11 +348,13 @@
                 ka khana, Royal Andaaz.</span>
         </h1>
         <p
-            class="text-gray-300 text-lg max-w-2xl mb-10 font-light tracking-wide opacity-0 animate-[fadeIn_1s_0.3s_forwards]">
-            Handmade meals by India's finest home chefs. No preservatives. Just love.
+            class="text-gray-300 text-base sm:text-lg max-w-2xl mb-6 sm:mb-10 font-light tracking-wide opacity-0 animate-[fadeIn_1s_0.3s_forwards] px-4">
+            <span class="hidden sm:inline">Handmade meals by India's finest home chefs. No preservatives. Just
+                love.</span>
+            <span class="sm:hidden">Handmade meals from trusted home kitchens.</span>
         </p>
         <button onclick="window.location.href='menu.html'"
-            class="bg-gradient-to-r from-gold-matte to-gold-main text-black px-10 py-4 rounded-full font-cinzel font-bold text-sm tracking-[3px] shadow-[0_0_30px_rgba(197,160,89,0.4)] hover:scale-105 transition-transform uppercase opacity-0 animate-[fadeIn_1s_0.6s_forwards]">
+            class="mt-4 sm:mt-0 bg-gradient-to-r from-gold-matte to-gold-main text-black px-8 sm:px-10 py-3 sm:py-4 rounded-full font-cinzel font-bold text-xs sm:text-sm tracking-[2px] sm:tracking-[3px] shadow-[0_0_30px_rgba(197,160,89,0.4)] hover:scale-105 transition-transform uppercase opacity-0 animate-[fadeIn_1s_0.6s_forwards]">
             Explore The Menu
         </button>
     </header>
@@ -442,7 +536,11 @@
             resetTimer();
         }
 
-        function resetTimer() { clearInterval(autoRotate); autoRotate = setInterval(() => rotateThali(1), 5000); }
+        function resetTimer() {
+            clearInterval(autoRotate);
+            const isMobile = window.innerWidth < 640;
+            autoRotate = setInterval(() => rotateThali(1), isMobile ? 7000 : 5000);
+        }
 
         function goToProduct() {
             if (items[currIdx]) window.open(`product.html?id=${items[currIdx].id}`, '_blank');

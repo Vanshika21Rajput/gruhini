@@ -65,6 +65,58 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
+
+        /* Mobile Responsiveness */
+        @media(max-width: 768px) {
+            nav .flex.items-center.gap-4 {
+                gap: 0.5rem !important;
+            }
+
+            nav .flex.items-center.gap-4 a,
+            nav .flex.items-center.gap-4 span {
+                font-size: 7px !important;
+                padding: 5px 8px !important;
+            }
+
+            /* Smaller hero text */
+            h1.font-hindi {
+                font-size: 2.5rem !important;
+            }
+
+            /* 2 column grid on tablets, 1 on mobile */
+            #sellersGrid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+
+        @media(max-width: 640px) {
+
+            /* Smaller logo */
+            nav span.font-cinzel {
+                font-size: 1rem !important;
+            }
+
+            nav a div.w-10 {
+                width: 2rem !important;
+                height: 2rem !important;
+            }
+
+            /* Single column grid */
+            #sellersGrid {
+                grid-template-columns: 1fr !important;
+            }
+
+            /* Smaller hero */
+            h1.font-hindi {
+                font-size: 2rem !important;
+            }
+
+            /* Kitchen stories smaller */
+            .h-72,
+            .h-96 {
+                height: 200px !important;
+            }
+        }
     </style>
 </head>
 
@@ -81,15 +133,21 @@
                 class="font-cinzel text-xl font-bold text-amber-500 tracking-widest group-hover:text-amber-400 transition-colors">GRUHINI</span>
         </a>
         <div class="flex items-center gap-4">
-            <a href="index.html"
-                class="text-[10px] uppercase tracking-widest font-bold text-gray-400 hover:text-cream transition-colors">Home</a>
-            <a href="menu.html"
-                class="text-[10px] uppercase tracking-widest font-bold text-gray-400 hover:text-cream transition-colors">Menu</a>
+            <!-- Safe wrapper: secondary links hidden on mobile -->
+            <div class="hidden sm:flex items-center gap-4">
+                <a href="index.html"
+                    class="text-[10px] uppercase tracking-widest font-bold text-gray-400 hover:text-cream transition-colors">Home</a>
+                <a href="menu.html"
+                    class="text-[10px] uppercase tracking-widest font-bold text-gray-400 hover:text-cream transition-colors">Menu</a>
+                <span
+                    class="text-[10px] uppercase tracking-widest font-bold text-amber-500 border-b border-amber-500 pb-0.5">Our
+                    Kitchens</span>
+                <a href="about.html"
+                    class="text-[10px] uppercase tracking-widest font-bold text-gray-400 hover:text-cream transition-colors">About</a>
+            </div>
+            <!-- Mobile: only show current page and main action -->
             <span
-                class="text-[10px] uppercase tracking-widest font-bold text-amber-500 border-b border-amber-500 pb-0.5">Our
-                Kitchens</span>
-            <a href="about.html"
-                class="text-[10px] uppercase tracking-widest font-bold text-gray-400 hover:text-cream transition-colors">About</a>
+                class="sm:hidden text-[10px] uppercase tracking-widest font-bold text-amber-500 border-b border-amber-500 pb-0.5">Kitchens</span>
             <a href="login.html"
                 class="bg-amber-600 hover:bg-amber-500 px-4 py-2 rounded-full text-[10px] uppercase tracking-widest font-bold text-white transition-all">Login</a>
         </div>
