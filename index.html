@@ -247,7 +247,7 @@
             }
         }
 
-        /* Very small phones - ticker elegance */
+        /* Very small phones - comprehensive mobile fixes */
         @media (max-width: 480px) {
             .ticker-anim {
                 font-size: 9px;
@@ -255,31 +255,90 @@
 
             /* Hero text smaller */
             .font-hindi {
-                font-size: 2.5rem !important;
+                font-size: 2.25rem !important;
+            }
+
+            /* Navbar - horizontal scroll instead of overflow hidden */
+            nav {
+                padding-left: 12px !important;
+                padding-right: 12px !important;
+            }
+
+            #navLinks {
+                gap: 4px !important;
+                flex-wrap: nowrap !important;
+            }
+
+            #navLinks a,
+            #navLinks button {
+                font-size: 7px !important;
+                padding: 4px 6px !important;
+                white-space: nowrap;
             }
 
             /* Fix roller overflow on very small phones */
             .thali-widget {
                 max-width: 100%;
-                overflow: hidden;
-                min-height: 350px;
+                overflow: visible;
+                min-height: auto;
+                margin: 0 8px;
             }
 
             .plate-ring {
-                width: 200px;
-                height: 200px;
+                width: 180px;
+                height: 180px;
             }
 
             .plate-center {
-                width: 80px;
-                height: 80px;
+                width: 70px;
+                height: 70px;
             }
 
             .katori {
-                width: 40px;
-                height: 40px;
-                margin-left: -20px;
-                margin-top: -20px;
+                width: 35px;
+                height: 35px;
+                margin-left: -17px;
+                margin-top: -17px;
+            }
+
+            /* Right panel - product details */
+            .thali-widget>div:last-child {
+                padding: 16px !important;
+            }
+
+            .thali-widget h2 {
+                font-size: 1.5rem !important;
+            }
+
+            .thali-widget p.italic {
+                font-size: 12px !important;
+                height: auto !important;
+                max-height: 50px;
+            }
+
+            /* Price and buttons row - stack on mobile */
+            .thali-widget .flex.items-center.justify-between {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .thali-widget .flex.items-center.justify-between>span {
+                font-size: 1.75rem !important;
+            }
+
+            /* Arrow buttons smaller */
+            .thali-widget .flex.items-center.justify-between button.w-12 {
+                width: 36px !important;
+                height: 36px !important;
+                font-size: 14px !important;
+            }
+
+            /* View Details button - full width on mobile */
+            .thali-widget .flex.items-center.justify-between>button:last-child {
+                width: 100%;
+                margin-top: 8px;
+                padding: 12px 16px !important;
+                font-size: 10px !important;
             }
         }
     </style>

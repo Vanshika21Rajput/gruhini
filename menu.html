@@ -72,12 +72,39 @@
             .h-60 {
                 height: 200px !important;
             }
+
+            /* Tab buttons smaller on mobile */
+            .tab-btn {
+                padding: 10px 16px !important;
+                font-size: 10px !important;
+            }
         }
 
         /* Fix mobile tab visibility */
         .tab-btn {
-            min-width: 70px;
+            min-width: 65px;
             flex-shrink: 0;
+        }
+
+        /* Ensure All tab is always visible first */
+        @media (max-width: 480px) {
+
+            /* Tab buttons even smaller */
+            .tab-btn {
+                padding: 8px 12px !important;
+                font-size: 9px !important;
+                min-width: 55px;
+            }
+
+            /* Tab container scroll snap */
+            .hide-scroll {
+                scroll-snap-type: x mandatory;
+                scroll-padding-left: 16px;
+            }
+
+            .tab-btn:first-child {
+                scroll-snap-align: start;
+            }
         }
     </style>
 </head>
