@@ -304,7 +304,7 @@
         // =====================================================
         const CONFIG = {
             // Fallback if external config not loaded
-            BASE_URL: window.CONFIG?.BASE_URL || 'http://localhost:8080',
+            BASE_URL: window.CONFIG?.BASE_URL || 'http://gruhini2.onrender.com',
             GOOGLE_CLIENT_ID: "YOUR_GOOGLE_CLIENT_ID_HERE"
         };
 
@@ -447,10 +447,7 @@
                 console.log('🔐 Attempting login for:', email);
 
                 try {
-                    // =====================================================
-                    // LOGIN PAYLOAD - Backend expects: { email, password }
-                    // Some backends also accept 'name' field (ignored if not needed)
-                    // =====================================================
+
                     const loginPayload = {
                         email: email,
                         password: password
@@ -481,38 +478,52 @@
                         throw new Error(errorMsg);
                     }
 
+
                     const data = await response.json();
-                    console.log('✅ Login successful');
+                    console.log('✅ Login successful', data);
 
                     // Store authentication data
                     if (data.token) {
                         localStorage.setItem('authToken', data.token);
 
-                        // Try to decode JWT to get user info
-                        try {
-                            const payload = JSON.parse(atob(data.token.split('.')[1]));
-                            console.log('👤 Token payload:', payload);
+                        // Use role/name from response (new backend) or decode JWT (fallback)
+                        let userName = data.name || email.split('@')[0];
+                        let userRole = 'CUSTOMER';
 
-                            localStorage.setItem('userName', payload.sub || payload.name || email.split('@')[0]);
-
-                            // Check if user has SELLER role
-                            const isSeller = payload.roles && Array.isArray(payload.roles) && payload.roles.includes('ROLE_SELLER');
-                            localStorage.setItem('userRole', isSeller ? 'SELLER' : 'CUSTOMER');
-
-                            UI.showSuccessAndRedirect(isSeller ? 'SELLER' : 'CUSTOMER');
-                        } catch (e) {
-                            console.warn('⚠️ Could not decode token, using defaults');
-                            localStorage.setItem('userName', email.split('@')[0]);
-                            localStorage.setItem('userRole', 'CUSTOMER');
-                            UI.showSuccessAndRedirect('CUSTOMER');
+                        // Check direct role from response
+                        if (data.role === 'SELLER' || (data.roles && data.roles.includes('ROLE_SELLER'))) {
+                            userRole = 'SELLER';
                         }
+
+                        // Fallback: try to decode JWT
+                        if (!data.role && !data.roles) {
+                            try {
+                                const payload = JSON.parse(atob(data.token.split('.')[1]));
+                                console.log('👤 Token payload:', payload);
+                                userName = payload.sub || payload.name || userName;
+                                if (payload.roles && Array.isArray(payload.roles) && payload.roles.includes('ROLE_SELLER')) {
+                                    userRole = 'SELLER';
+                                }
+                            } catch (e) {
+                                console.warn('⚠️ Could not decode token');
+                            }
+                        }
+
+                        localStorage.setItem('userName', userName);
+                        localStorage.setItem('userRole', userRole);
+                        console.log('👤 User:', userName, 'Role:', userRole);
+
+                        UI.showSuccessAndRedirect(userRole);
                     } else {
                         throw new Error('No token received from server');
                     }
 
                 } catch (err) {
+                    console.error('❌ Login fetch error:', err);
+                    console.error('❌ Attempted URL:', `${CONFIG.BASE_URL}/logins`);
+
                     if (err.name === 'TypeError' && err.message.includes('fetch')) {
-                        throw new Error('Cannot connect to server. Please check if backend is running.');
+                        throw new Error(`Cannot connect to ${CONFIG.BASE_URL}. Check if backend is running and CORS is enabled.`);
                     }
                     throw err;
                 }
@@ -541,9 +552,7 @@
                 console.log('📝 Starting registration for:', email);
 
                 try {
-                    // =====================================================
-                    // REGISTER PAYLOAD - Backend expects: { name, email, password, contact }
-                    // =====================================================
+
                     const registerPayload = {
                         name: name,
                         email: email,
@@ -586,12 +595,11 @@
                     console.log('✅ User registration successful');
 
                     // Step 2: If seller, register as seller
+
                     if (AppState.role === 'seller') {
                         const businessName = document.getElementById('businessName').value.trim();
 
-                        // =====================================================
-                        // SELLER PAYLOAD - Backend expects: { name, email, phone, businessName, categories }
-                        // =====================================================
+
                         const sellerPayload = {
                             name: name,
                             email: email,
@@ -633,8 +641,11 @@
                     await this.handleLogin(email, password);
 
                 } catch (err) {
+                    console.error('❌ Register fetch error:', err);
+                    console.error('❌ Attempted URL:', `${CONFIG.BASE_URL}/register`);
+
                     if (err.name === 'TypeError' && err.message.includes('fetch')) {
-                        throw new Error('Cannot connect to server. Please check if backend is running.');
+                        throw new Error(`Cannot connect to ${CONFIG.BASE_URL}. Check if backend is running and CORS is enabled.`);
                     }
                     throw err;
                 }

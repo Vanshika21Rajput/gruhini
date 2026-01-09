@@ -24,4 +24,7 @@ public interface ProductRepo extends JpaRepository<product,String> {
     boolean existsByname(String s);
 
     product findByname(String s);
+
+    // Find all products by seller
+    java.util.List<product> findAllBySeller(com.example.Gruhani.models.Seller seller);
 }

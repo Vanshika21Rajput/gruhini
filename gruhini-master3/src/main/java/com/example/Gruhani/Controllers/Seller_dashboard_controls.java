@@ -78,4 +78,75 @@ public class Seller_dashboard_controls {
             return ResponseEntity.badRequest().body(response);
         }
     }
+
+    // GET seller's dishes for dashboard
+    @PreAuthorize("hasRole('SELLER')")
+    @GetMapping("/seller/dishes")
+    public ResponseEntity<?> getSellerDishes() {
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            UserDetails user = (UserDetails) auth.getPrincipal();
+            Seller seller = sr.findByuser_email(user.getUsername());
+            
+            if (seller == null) {
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Seller not found"));
+            }
+
+            // Get all products for this seller
+            java.util.List<product> dishes = prepo.findAllBySeller(seller);
+            
+            // Convert to response format
+            java.util.List<Map<String, Object>> dishList = dishes.stream().map(p -> {
+                Map<String, Object> dish = new HashMap<>();
+                dish.put("id", p.getId());
+                dish.put("name", p.getName());
+                dish.put("price", p.getPrice());
+                dish.put("category", p.getCategory());
+                dish.put("image", p.getImage());
+                dish.put("available", "APPROVED".equalsIgnoreCase(p.getStatus()));
+                dish.put("rating", p.getRating());
+                return dish;
+            }).collect(java.util.stream.Collectors.toList());
+
+            return ResponseEntity.ok(dishList);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(Map.of("success", false, "message", e.getMessage()));
+        }
+    }
+
+    // GET seller stats for dashboard
+    @PreAuthorize("hasRole('SELLER')")
+    @GetMapping("/seller/stats")
+    public ResponseEntity<?> getSellerStats() {
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            UserDetails user = (UserDetails) auth.getPrincipal();
+            Seller seller = sr.findByuser_email(user.getUsername());
+            
+            if (seller == null) {
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Seller not found"));
+            }
+
+            java.util.List<product> dishes = prepo.findAllBySeller(seller);
+
+            Map<String, Object> stats = new HashMap<>();
+            stats.put("activeDishes", dishes.size());
+            stats.put("todayEarning", "₹0"); // Would need Order model
+            stats.put("todayOrders", 0);
+            stats.put("weeklyEarning", "₹0");
+            stats.put("monthlyEarning", "₹0");
+            stats.put("rating", 4.8);
+            stats.put("repeatCustomers", "67%");
+            stats.put("kitchenOpen", true);
+            stats.put("sellerName", seller.getBusinessName());
+
+            return ResponseEntity.ok(stats);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(Map.of("success", false, "message", e.getMessage()));
+        }
+    }
 }

@@ -1,15 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gruhini - Our Kitchens</title>
+    <title>Gruhini – हमारी रसोइयाँ</title>
+    <meta name="description" content="असली घर की रसोई से, असली प्यार से बना खाना। सत्यापित होम किचन से ऑर्डर करें।">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Playfair+Display:ital,wght@0,500;1,500&family=Lato:wght@400;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap"
         rel="stylesheet">
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -18,13 +19,12 @@
             theme: {
                 extend: {
                     colors: {
-                        amber: { 50: '#fffbeb', 100: '#fef3c7', 600: '#d97706', 700: '#b45309', 800: '#92400e', 900: '#78350f' },
-                        royalDark: '#0f0805',
-                        cream: '#FDF8F0'
+                        royal: { dark: '#0f0805', brown: '#1a0f0a' },
+                        gold: { main: '#c5a059', DEFAULT: '#d97706' }
                     },
                     fontFamily: {
-                        serif: ['Playfair Display', 'serif'],
                         cinzel: ['Cinzel', 'serif'],
+                        serif: ['Playfair Display', 'serif'],
                         sans: ['Lato', 'sans-serif'],
                         hindi: ['Noto Sans Devanagari', 'sans-serif']
                     }
@@ -35,364 +35,480 @@
     <script src="js/config.js"></script>
 
     <style>
-        /* Ambient Background */
         body {
-            background-color: #0f0805;
-            background-image:
-                radial-gradient(circle at 50% 0%, rgba(180, 83, 9, 0.15), transparent 60%),
+            background: radial-gradient(circle at top, rgba(217, 119, 6, 0.08), transparent 50%),
                 linear-gradient(to bottom, #0f0805, #1a0f0a);
+            min-height: 100vh;
         }
 
-        /* Audio Player Styling */
-        audio {
-            height: 36px;
-            width: 100%;
-            border-radius: 99px;
-            margin-top: 10px;
-        }
-
-        audio::-webkit-media-controls-panel {
-            background-color: #fffbeb;
-        }
-
-        audio::-webkit-media-controls-play-button {
-            background-color: #d97706;
-            border-radius: 50%;
-        }
-
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
+        .glass {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        /* Mobile Responsiveness */
-        @media(max-width: 768px) {
-            nav .flex.items-center.gap-4 {
-                gap: 0.5rem !important;
+        .seller-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .seller-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(217, 119, 6, 0.5);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
             }
 
-            nav .flex.items-center.gap-4 a,
-            nav .flex.items-center.gap-4 span {
-                font-size: 7px !important;
-                padding: 5px 8px !important;
-            }
-
-            /* Smaller hero text */
-            h1.font-hindi {
-                font-size: 2.5rem !important;
-            }
-
-            /* 2 column grid on tablets, 1 on mobile */
-            #sellersGrid {
-                grid-template-columns: repeat(2, 1fr) !important;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
 
-        @media(max-width: 640px) {
+        @keyframes pulse-glow {
 
-            /* Smaller logo */
-            nav span.font-cinzel {
-                font-size: 1rem !important;
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.4);
             }
 
-            nav a div.w-10 {
-                width: 2rem !important;
-                height: 2rem !important;
+            50% {
+                box-shadow: 0 0 20px 5px rgba(217, 119, 6, 0.2);
             }
+        }
 
-            /* Single column grid */
-            #sellersGrid {
-                grid-template-columns: 1fr !important;
-            }
+        .animate-in {
+            animation: fadeIn 0.6s ease forwards;
+            opacity: 0;
+        }
 
-            /* Smaller hero */
-            h1.font-hindi {
+        .trust-chip {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.05));
+            border: 1px solid rgba(16, 185, 129, 0.25);
+        }
+
+        .featured-badge {
+            animation: pulse-glow 2s infinite;
+        }
+
+        .story-card {
+            background: linear-gradient(135deg, rgba(217, 119, 6, 0.1), rgba(217, 119, 6, 0.02));
+            border: 1px solid rgba(217, 119, 6, 0.2);
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 640px) {
+            .hero-title {
                 font-size: 2rem !important;
             }
 
-            /* Kitchen stories smaller */
-            .h-72,
-            .h-96 {
-                height: 200px !important;
+            .section-gap {
+                padding-left: 1rem;
+                padding-right: 1rem;
             }
         }
     </style>
 </head>
 
-<body class="text-cream font-sans antialiased min-h-screen">
+<body class="text-white font-sans">
 
+    <!-- NAVBAR -->
     <nav
-        class="fixed top-0 w-full z-50 bg-[#0f0805]/90 backdrop-blur-md border-b border-white/10 px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
+        class="fixed top-0 w-full z-50 px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center bg-royal-dark/90 backdrop-blur-md border-b border-gold-main/10">
         <a href="index.html" class="flex items-center gap-2 sm:gap-3 group">
             <div
-                class="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden relative shadow-[0_0_15px_rgba(197,160,89,0.3)] border border-amber-500/30">
+                class="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden shadow-[0_0_15px_rgba(197,160,89,0.4)] border border-gold-main/30">
                 <img src="public/logo.jpg" alt="Gruhini" class="w-full h-full object-cover">
             </div>
-            <span
-                class="font-cinzel text-base sm:text-xl font-bold text-amber-500 tracking-widest group-hover:text-amber-400 transition-colors">GRUHINI</span>
+            <span class="font-cinzel text-lg sm:text-xl font-bold text-gold-main tracking-widest">GRUHINI</span>
         </a>
-        <div class="flex items-center gap-2 sm:gap-4">
-            <!-- All links visible on all screens - trust-first UX -->
-            <a href="menu.html"
-                class="text-[9px] sm:text-[10px] uppercase tracking-widest font-bold text-gray-400 hover:text-cream transition-colors px-1 sm:px-2">Menu</a>
-            <span
-                class="text-[9px] sm:text-[10px] uppercase tracking-widest font-bold text-amber-500 border-b border-amber-500 pb-0.5 px-1 sm:px-2">Kitchens</span>
-            <a href="about.html"
-                class="text-[9px] sm:text-[10px] uppercase tracking-widest font-bold text-gray-400 hover:text-cream transition-colors px-1 sm:px-2">About</a>
-            <a href="login.html"
-                class="border border-amber-500/40 hover:bg-amber-500/20 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[9px] sm:text-[10px] uppercase tracking-widest font-bold text-amber-500 transition-all">Login</a>
-        </div>
+        <div class="flex items-center gap-2 sm:gap-4" id="navLinks"></div>
     </nav>
 
-    <div class="relative pt-40 pb-20 px-6 text-center border-b border-white/5">
-        <h1
-            class="font-hindi text-5xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-amber-200 to-amber-600 mb-6 opacity-0 animate-[fadeIn_1s_forwards]">
-            रसोई के उस्ताद
+    <script>
+            (function () {
+                const token = localStorage.getItem('authToken');
+                const navLinks = document.getElementById('navLinks');
+                const linkClass = "text-[10px] sm:text-xs font-bold uppercase tracking-widest text-gold-main/80 hover:text-white transition-colors px-1 sm:px-2";
+                const activeClass = "text-[10px] sm:text-xs font-bold uppercase tracking-widest text-white border-b border-gold-main pb-0.5 px-1 sm:px-2";
+                const btnClass = "border border-gold-main/40 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-gold-main text-[10px] sm:text-xs font-bold tracking-widest hover:bg-gold-main/10 transition-all uppercase";
+
+                if (!token) {
+                    navLinks.innerHTML = `
+                    <a href="menu.html" class="${linkClass}">Menu</a>
+                    <span class="${activeClass}">Kitchens</span>
+                    <a href="about.html" class="${linkClass}">About</a>
+                    <a href="login.html" class="${btnClass}">Login</a>
+                `;
+                } else {
+                    navLinks.innerHTML = `
+                    <a href="menu.html" class="${linkClass}">Menu</a>
+                    <span class="${activeClass}">Kitchens</span>
+                    <a href="cart.html" class="${btnClass}">🛒 Cart</a>
+                `;
+                }
+            })();
+    </script>
+
+    <!-- HERO -->
+    <section class="pt-24 sm:pt-28 pb-8 sm:pb-12 text-center px-4">
+        <div class="inline-block trust-chip px-4 py-1.5 rounded-full mb-4">
+            <span class="text-[10px] sm:text-xs text-green-400 font-bold uppercase tracking-widest">🏡 Verified Home
+                Kitchens Only</span>
+        </div>
+        <h1 class="font-hindi text-3xl sm:text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-amber-200 to-gold mb-3 sm:mb-4 pt-2 pb-1"
+            style="line-height: 1.6;">
+            असली घर की रसोइयाँ
         </h1>
-        <p
-            class="font-cinzel text-xs md:text-sm text-gray-400 tracking-[0.4em] uppercase opacity-0 animate-[fadeIn_1s_0.3s_forwards] mb-4">
-            Meet The Hands Behind The Taste
+        <p class="font-serif italic text-gray-400 max-w-xl mx-auto text-sm md:text-base mb-6">
+            हर रसोई एक कहानी है। हर खाना, घर जैसा।
         </p>
-        <p class="text-sm text-amber-500/80 opacity-0 animate-[fadeIn_1s_0.5s_forwards]">
-            Verified home kitchens you can trust.
-        </p>
-    </div>
 
-    <div class="max-w-7xl mx-auto px-4 pb-24">
+        <!-- Quick CTA -->
+        <a href="menu.html"
+            class="inline-flex items-center gap-2 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white font-bold py-2.5 sm:py-3 px-6 sm:px-8 rounded-full text-xs sm:text-sm transition-all shadow-lg hover:shadow-xl">
+            <span class="font-hindi">आज का मेनू देखें</span>
+            <span>→</span>
+        </a>
+    </section>
 
-        <section class="mb-24 opacity-0 animate-[fadeIn_1s_0.6s_forwards]">
-            <div class="flex items-center gap-4 mb-8 justify-center">
-                <div class="h-px bg-gradient-to-r from-transparent via-amber-900 to-transparent w-24"></div>
-                <h2 class="font-cinzel text-lg text-amber-500 tracking-widest uppercase">Kitchen Stories</h2>
-                <div class="h-px bg-gradient-to-r from-transparent via-amber-900 to-transparent w-24"></div>
+    <!-- LIVE STATS TICKER -->
+    <section class="max-w-5xl mx-auto px-4 mb-8 sm:mb-10">
+        <div class="glass rounded-2xl p-4 sm:p-6 flex flex-wrap justify-center gap-4 sm:gap-8 md:gap-12">
+            <div class="text-center min-w-[80px]">
+                <div id="statKitchens" class="text-2xl sm:text-3xl font-bold text-gold">0</div>
+                <div class="text-[9px] sm:text-[10px] text-gray-400 uppercase tracking-widest font-hindi">जाँची गई
+                    रसोइयाँ</div>
             </div>
-
-            <div
-                class="relative w-full h-72 md:h-96 rounded-[30px] overflow-hidden group border border-amber-900/30 shadow-2xl">
-                <img src="https://images.unsplash.com/photo-1556910103-1c02745a30bf?q=80&w=2000&auto=format&fit=crop"
-                    class="w-full h-full object-cover opacity-40 filter blur-sm transition-all duration-1000 group-hover:scale-105 group-hover:blur-md group-hover:opacity-30">
-
-                <div class="absolute inset-0 flex flex-col items-center justify-center">
-                    <div
-                        class="w-16 h-16 bg-amber-600/20 rounded-full flex items-center justify-center backdrop-blur-md border border-amber-500/40 mb-6 group-hover:scale-110 transition-transform">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-amber-400" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                        </svg>
-                    </div>
-                    <h3 class="font-serif text-3xl md:text-4xl text-white font-bold mb-3 tracking-wide">Live Kitchens
-                    </h3>
-                    <p
-                        class="font-sans text-[10px] text-amber-200 tracking-[0.3em] uppercase border border-amber-500/30 px-6 py-2 rounded-full bg-black/40 backdrop-blur-sm">
-                        Coming Soon
-                    </p>
+            <div class="text-center min-w-[80px]">
+                <div id="statDishes" class="text-2xl sm:text-3xl font-bold text-gold">0</div>
+                <div class="text-[9px] sm:text-[10px] text-gray-400 uppercase tracking-widest font-hindi">व्यंजन उपलब्ध
                 </div>
             </div>
-        </section>
+            <div class="text-center min-w-[80px]">
+                <div class="text-2xl sm:text-3xl font-bold text-green-400">100%</div>
+                <div class="text-[9px] sm:text-[10px] text-gray-400 uppercase tracking-widest font-hindi">घर पर सत्यापित
+                </div>
+            </div>
+            <div class="text-center min-w-[80px]">
+                <div class="text-2xl sm:text-3xl font-bold text-amber-400">0</div>
+                <div class="text-[9px] sm:text-[10px] text-gray-400 uppercase tracking-widest font-hindi">ऑर्डर वापस
+                </div>
+            </div>
+        </div>
+    </section>
 
-        <div id="loading" class="text-center py-10">
-            <div class="text-4xl animate-spin mb-4 opacity-50">⏳</div>
-            <p class="font-cinzel text-amber-600 text-xs tracking-widest animate-pulse">Locating Chefs...</p>
+    <!-- TRUST PHILOSOPHY -->
+    <section class="max-w-4xl mx-auto px-4 mb-10 sm:mb-14">
+        <div class="story-card rounded-2xl p-5 sm:p-6 text-center">
+            <div class="text-3xl mb-3">🙏</div>
+            <p class="font-hindi text-gray-200 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto">
+                हम सीमित संख्या में <span class="text-gold font-bold">घर पर जाँची गई</span> रसोइयों के साथ काम करते हैं।
+                <br class="hidden sm:block">
+                <span class="text-gray-400">गुणवत्ता हमारी प्राथमिकता है — संख्या नहीं।</span>
+            </p>
+        </div>
+    </section>
+
+    <!-- WHAT MAKES US DIFFERENT -->
+    <section class="max-w-5xl mx-auto px-4 mb-10 sm:mb-14">
+        <h2 class="text-center text-gray-500 text-xs uppercase tracking-widest mb-6 font-hindi">हम अलग क्यों हैं</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+            <div class="glass rounded-xl p-4 text-center">
+                <div class="text-2xl sm:text-3xl mb-2">🏡</div>
+                <h4 class="font-hindi text-xs sm:text-sm font-bold text-white mb-1">घर पर जाँच</h4>
+                <p class="text-[10px] text-gray-400 font-hindi">हर रसोई हमारी टीम खुद देखती है</p>
+            </div>
+            <div class="glass rounded-xl p-4 text-center">
+                <div class="text-2xl sm:text-3xl mb-2">🌿</div>
+                <h4 class="font-hindi text-xs sm:text-sm font-bold text-white mb-1">ताज़ी सामग्री</h4>
+                <p class="text-[10px] text-gray-400 font-hindi">रोज़ाना ताज़ा खरीदी जाती है</p>
+            </div>
+            <div class="glass rounded-xl p-4 text-center">
+                <div class="text-2xl sm:text-3xl mb-2">🍳</div>
+                <h4 class="font-hindi text-xs sm:text-sm font-bold text-white mb-1">छोटे बैच</h4>
+                <p class="text-[10px] text-gray-400 font-hindi">सीमित मात्रा, बेहतर स्वाद</p>
+            </div>
+            <div class="glass rounded-xl p-4 text-center">
+                <div class="text-2xl sm:text-3xl mb-2">🚫</div>
+                <h4 class="font-hindi text-xs sm:text-sm font-bold text-white mb-1">बासी नहीं</h4>
+                <p class="text-[10px] text-gray-400 font-hindi">गर्म किया हुआ खाना नहीं</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- KITCHEN STORIES SECTION -->
+    <section class="max-w-5xl mx-auto px-4 mb-10 sm:mb-14">
+        <h2 class="text-center text-gray-400 text-sm sm:text-base mb-6 flex items-center justify-center gap-3">
+            <span class="w-8 sm:w-12 h-px bg-gradient-to-r from-transparent to-gold/50"></span>
+            <span class="font-hindi font-bold text-white">👩‍🍳 रसोई की कहानियाँ</span>
+            <span class="w-8 sm:w-12 h-px bg-gradient-to-l from-transparent to-gold/50"></span>
+        </h2>
+
+        <div id="storiesSection" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Stories will be populated by JS -->
+        </div>
+    </section>
+
+    <!-- SELLERS GRID -->
+    <section class="max-w-6xl mx-auto px-4 pb-10 sm:pb-14">
+        <h2 class="text-center text-gray-400 text-sm sm:text-base mb-6 sm:mb-8 flex items-center justify-center gap-3">
+            <span class="w-8 sm:w-12 h-px bg-gradient-to-r from-transparent to-gold/50"></span>
+            <span class="font-hindi font-bold text-white">🏠 हमारी रसोइयाँ</span>
+            <span class="w-8 sm:w-12 h-px bg-gradient-to-l from-transparent to-gold/50"></span>
+        </h2>
+
+        <div id="loading" class="text-center py-12 sm:py-16 text-gray-400 font-hindi">
+            <div class="w-10 h-10 border-4 border-gold/30 border-t-gold rounded-full animate-spin mx-auto mb-4"></div>
+            रसोइयाँ लोड हो रही हैं...
         </div>
 
-        <div id="sellersGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
-        </div>
+        <div id="grid" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6"></div>
 
-    </div>
+        <div id="empty" class="hidden text-center py-16">
+            <div class="text-5xl mb-4">👨‍🍳</div>
+            <p class="text-gray-400 font-hindi">अभी कोई रसोई उपलब्ध नहीं है</p>
+        </div>
+    </section>
+
+    <!-- SOCIAL PROOF -->
+    <section class="max-w-4xl mx-auto px-4 pb-10 sm:pb-14">
+        <div class="glass rounded-2xl p-5 sm:p-6 text-center">
+            <div class="text-2xl mb-3">💬</div>
+            <p class="font-hindi text-gray-300 text-sm italic mb-2">
+                "बहुत दिनों बाद ऐसा खाना खाया जो मम्मी के हाथ जैसा लगा।"
+            </p>
+            <p class="text-[10px] text-gray-500 uppercase tracking-widest">— एक खुश ग्राहक, बैंगलोर</p>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-white/10 py-8 sm:py-10">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <p class="font-hindi text-sm text-gold/80 mb-2">घर जैसा खाना, घर के लोग</p>
+            <p class="text-xs text-gray-500 mb-4">Gruhini — Where every meal tells a story</p>
+            <div class="flex justify-center gap-4 text-xs text-gray-600">
+                <a href="about.html" class="hover:text-gold transition">About</a>
+                <span>•</span>
+                <a href="menu.html" class="hover:text-gold transition">Menu</a>
+                <span>•</span>
+                <a href="login.html" class="hover:text-gold transition">Login</a>
+            </div>
+            <p class="mt-4 text-[10px] text-gray-600">© 2026 Gruhini · Made with ❤️ in India</p>
+        </div>
+    </footer>
 
     <script>
-        // Use external config.js, fallback to render URL if not loaded
-        const BASE_URL = window.CONFIG?.BASE_URL || 'http://localhost:8080';
-        console.log('📡 Sellers page using backend:', BASE_URL);
+        const BASE_URL = window.CONFIG?.BASE_URL || 'https://gruhini2.onrender.com';
 
-        // SAFETY NET: Mock Data in case backend sleeps
-        const MOCK_CHEFS = [
+        // Kitchen stories data
+        const kitchenStories = [
             {
-                name: "Mrs. Joshi",
-                loc: "Civil Lines, Jaipur",
-                rating: "4.9",
-                specialty: "Rajasthani Thali",
-                avatar: "https://randomuser.me/api/portraits/women/11.jpg"
+                name: "नीलम जोशी",
+                quote: "मैं 15 साल से अपने बच्चों के लिए यही खाना बनाती हूँ। अब वही प्यार आप तक पहुँचाना चाहती हूँ।",
+                specialty: "राजस्थानी थाली"
             },
             {
-                name: "Anjali's Kitchen",
-                loc: "Indiranagar, Bangalore",
-                rating: "4.7",
-                specialty: "Shahi Paneer",
-                avatar: "https://randomuser.me/api/portraits/women/24.jpg"
-            },
-            {
-                name: "Chef Rameshwar",
-                loc: "Old City, Hyderabad",
-                rating: "4.8",
-                specialty: "Hyderabadi Biryani",
-                avatar: "https://randomuser.me/api/portraits/men/32.jpg"
+                name: "मंजू विजयवर्गीय",
+                quote: "मेरी माँ ने मुझे सिखाया था कि खाना सिर्फ पेट नहीं भरता, दिल भी भरता है।",
+                specialty: "मध्य प्रदेश के व्यंजन"
             }
         ];
 
-        // --- 1. INITIALIZATION ---
-        async function init() {
+        function renderStories() {
+            const container = document.getElementById('storiesSection');
+            container.innerHTML = kitchenStories.map((story, i) => `
+                <div class="story-card rounded-xl p-5 animate-in" style="animation-delay: ${i * 100}ms">
+                    <p class="font-hindi text-gray-300 text-sm italic mb-3">"${story.quote}"</p>
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-white text-sm">${story.name}</span>
+                        <span class="text-[10px] text-gold uppercase tracking-widest">${story.specialty}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function loadSellers() {
             try {
-                // Fetch Sellers (Using explore endpoint to derive sellers)
-                // 10-second timeout for Render cold start
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 10000);
+                const timeout = setTimeout(() => controller.abort(), 10000);
+                const res = await fetch(`${BASE_URL}/explore`, { signal: controller.signal });
+                clearTimeout(timeout);
 
-                const response = await fetch(`${BASE_URL}/explore`, { signal: controller.signal });
-                clearTimeout(timeoutId);
-
-                if (!response.ok) throw new Error("Backend unavailable");
-
-                const data = await response.json();
-
-                if (!data || data.length === 0) throw new Error("No data");
-
-                // Extract Unique Chefs with null-safe handling
-                const sellersMap = new Map();
-                data.forEach(item => {
-                    const chefName = item.chef || 'Home Kitchen';
-                    if (!sellersMap.has(chefName)) {
-                        sellersMap.set(chefName, {
-                            name: chefName,
-                            loc: item.loc || 'India',
-                            avatar: item.avatar
-                                ? (item.avatar.startsWith('http') ? item.avatar : `public/${item.avatar}`)
-                                : `https://ui-avatars.com/api/?name=${encodeURIComponent(chefName)}&background=d97706&color=fff`,
-                            rating: "4.8",
-                            specialty: item.name,
-                            audio: item.audio
-                        });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.length > 0) {
+                        processData(data);
+                        return;
                     }
-                });
-
-                renderSellers(Array.from(sellersMap.values()));
-
+                }
+                throw new Error('Backend empty');
             } catch (e) {
-                console.warn("Backend sleeping or empty. Loading Mock Chefs.", e);
-                renderSellers(MOCK_CHEFS);
+                console.warn('Using local data:', e.message);
+                loadFallback();
             }
         }
 
-        // --- 2. RENDER LOGIC ---
-        function renderSellers(sellers) {
-            const grid = document.getElementById('sellersGrid');
+        async function loadFallback() {
+            try {
+                const res = await fetch('real-products.json');
+                if (res.ok) {
+                    const data = await res.json();
+                    processData(data);
+                    return;
+                }
+            } catch (e) {
+                console.error('No data');
+            }
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('empty').classList.remove('hidden');
+        }
+
+        function processData(products) {
+            const sellersMap = new Map();
+
+            products.forEach(item => {
+                const name = item.chef || item.seller?.businessName;
+                if (!name) return;
+
+                if (!sellersMap.has(name)) {
+                    sellersMap.set(name, {
+                        name: name,
+                        loc: item.loc || item.seller?.location || 'Home Kitchen',
+                        avatar: item.avatar || item.seller?.avatar,
+                        specialty: item.category || 'Home Cooked',
+                        dishCount: 0,
+                        topDish: null,
+                        topDishes: []
+                    });
+                }
+                const seller = sellersMap.get(name);
+                seller.dishCount++;
+                if (!seller.topDish) seller.topDish = item;
+                if (seller.topDishes.length < 3) {
+                    seller.topDishes.push({ name: item.title || item.name, img: item.img || item.image });
+                }
+            });
+
+            document.getElementById('statKitchens').textContent = sellersMap.size;
+            document.getElementById('statDishes').textContent = products.length;
+
+            render([...sellersMap.values()]);
+        }
+
+        function render(sellers) {
+            const grid = document.getElementById('grid');
             document.getElementById('loading').classList.add('hidden');
             grid.classList.remove('hidden');
+            grid.innerHTML = '';
 
-            sellers.forEach((chef, index) => {
+            if (sellers.length === 0) {
+                document.getElementById('empty').classList.remove('hidden');
+                return;
+            }
+
+            sellers.forEach((seller, i) => {
+                const avatarUrl = getAvatarUrl(seller.avatar, seller.name);
+                const topDishImg = seller.topDish ? getImageUrl(seller.topDish.img || seller.topDish.image) : '';
+
+                const dishThumbs = seller.topDishes.slice(0, 3).map(d => {
+                    const imgUrl = getImageUrl(d.img);
+                    return imgUrl ? `<img src="${imgUrl}" alt="${d.name}" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg object-cover border border-white/10" onerror="this.style.display='none'">` : '';
+                }).join('');
+
                 const card = document.createElement('div');
-
-                // Glassmorphism Card Style
-                card.className = `glass-card rounded-2xl p-6 hover:bg-white/5 transition-all duration-300 animate-[fadeIn_0.5s_ease-out_forwards] border-t border-white/5 hover:-translate-y-1 hover:shadow-xl hover:shadow-amber-900/20`;
-                card.style.animationDelay = `${index * 100}ms`;
-                card.style.opacity = '0';
-
-                // Voice Note Logic
-                let audioHtml = '';
-                if (chef.audio) {
-                    audioHtml = `
-                        <div class="mt-6 pt-4 border-t border-white/5">
-                            <div class="flex items-center gap-2 mb-2">
-                                <span class="text-[10px] font-bold text-amber-500 uppercase tracking-wider">Chef's Voice</span>
-                                <span class="text-sm animate-pulse">🎙️</span>
-                            </div>
-                            <audio controls src="${chef.audio}"></audio>
-                        </div>
-                    `;
-                }
+                card.className = 'seller-card glass rounded-2xl overflow-hidden cursor-pointer animate-in';
+                card.style.animationDelay = `${i * 100}ms`;
 
                 card.innerHTML = `
-                    <div class="flex items-start gap-5">
-                        <div class="relative">
-                            <img src="${chef.avatar}" class="w-16 h-16 rounded-full border-2 border-amber-600/50 object-cover p-0.5">
-                            <div class="absolute -bottom-1 -right-1 bg-green-600 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">✓ VERIFIED</div>
+                    <!-- Top Dish Banner -->
+                    ${topDishImg ? `
+                    <div class="h-32 sm:h-40 relative overflow-hidden">
+                        <img src="${topDishImg}" alt="Top dish" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                        <div class="absolute bottom-3 left-4 right-4">
+                            <div class="inline-block bg-amber-600 text-white text-[9px] font-bold px-2 py-1 rounded-full mb-1">
+                                🔥 आज का विशेष
+                            </div>
+                            <p class="text-white text-sm font-bold truncate">${seller.topDish.title || seller.topDish.name}</p>
                         </div>
-                        <div>
-                            <h3 class="font-cinzel text-lg text-white font-bold leading-tight">${chef.name}</h3>
-                            <p class="text-[10px] text-gray-400 uppercase tracking-widest mt-1">📍 ${chef.loc || 'Home Kitchen'}</p>
-                            <div class="flex items-center gap-2 mt-2">
-                                <span class="text-amber-400 text-xs font-bold">⭐ ${chef.rating}</span>
-                                <span class="text-gray-600 text-[10px]">•</span>
-                                <span class="text-gray-400 text-xs italic line-clamp-1">Expert in ${chef.specialty}</span>
+                    </div>
+                    ` : ''}
+                    
+                    <div class="p-4 sm:p-5">
+                        <!-- Chef Info -->
+                        <div class="flex items-start gap-3 sm:gap-4 mb-4">
+                            <img src="${avatarUrl}" alt="${seller.name}" 
+                                class="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover border-2 border-gold/40 flex-shrink-0"
+                                onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(seller.name)}&background=d97706&color=fff'">
+                            <div class="flex-1 min-w-0">
+                                <h3 class="font-cinzel text-base sm:text-lg text-white truncate">${seller.name}</h3>
+                                <p class="text-[9px] sm:text-[10px] text-gray-400 uppercase tracking-widest mb-2">📍 ${seller.loc}</p>
+                                <div class="trust-chip inline-flex items-center gap-1 px-2 py-0.5 rounded-full">
+                                    <span class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
+                                    <span class="text-[8px] sm:text-[9px] text-green-400 font-bold uppercase">जाँची गई</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <div class="mt-6">
-                        <button class="w-full bg-white/5 hover:bg-amber-700 hover:text-white text-gray-300 text-[10px] font-bold py-3 rounded-lg uppercase tracking-[0.2em] transition-all border border-white/5">
-                            View Dishes from this Kitchen
+
+                        <!-- What makes different chips -->
+                        <div class="flex flex-wrap gap-1.5 mb-4">
+                            <span class="text-[8px] sm:text-[9px] bg-white/5 text-gray-400 px-2 py-1 rounded-full">🌿 ताज़ी सामग्री</span>
+                            <span class="text-[8px] sm:text-[9px] bg-white/5 text-gray-400 px-2 py-1 rounded-full">🚫 No Reheating</span>
+                            <span class="text-[8px] sm:text-[9px] bg-white/5 text-gray-400 px-2 py-1 rounded-full">🍳 छोटे बैच</span>
+                        </div>
+
+                        <!-- Activity + Stats -->
+                        <div class="flex items-center justify-between mb-4 border-t border-white/5 pt-3">
+                            <div class="flex items-center gap-1.5 text-amber-400/80 text-[10px] sm:text-xs font-hindi">
+                                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                                आज खाना बना रही हैं
+                            </div>
+                            <span class="text-[10px] sm:text-xs text-gray-400 font-hindi">${seller.dishCount} व्यंजन</span>
+                        </div>
+
+                        <!-- Dish previews -->
+                        ${dishThumbs ? `<div class="flex gap-1 mb-4">${dishThumbs}</div>` : ''}
+
+                        <!-- CTA -->
+                        <button class="w-full text-[9px] sm:text-[10px] tracking-[0.1em] uppercase py-2.5 sm:py-3 bg-gradient-to-r from-amber-600/20 to-amber-700/20 hover:from-amber-600/40 hover:to-amber-700/40 border border-gold/30 rounded-xl transition font-bold text-gold flex items-center justify-center gap-2">
+                            <span class="font-hindi">प्रोफ़ाइल देखें</span>
+                            <span>→</span>
                         </button>
                     </div>
-
-                    ${audioHtml} 
                 `;
+
+                card.onclick = () => {
+                    window.location.href = `seller-profile.html?seller=${encodeURIComponent(seller.name)}`;
+                };
 
                 grid.appendChild(card);
             });
         }
 
-        init();
+        function getAvatarUrl(avatar, name) {
+            if (!avatar) return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=d97706&color=fff&size=200&bold=true`;
+            if (avatar.startsWith('http')) return avatar;
+            const encodedPath = avatar.split('/').map(part => encodeURIComponent(part)).join('/');
+            return `public/${encodedPath}`;
+        }
+
+        function getImageUrl(img) {
+            if (!img) return '';
+            if (img.startsWith('http')) return img;
+            const encodedPath = img.split('/').map(part => encodeURIComponent(part)).join('/');
+            return `public/${encodedPath}`;
+        }
+
+        // Initialize
+        renderStories();
+        loadSellers();
     </script>
-
-    <!-- Trust Snippet (Contextual) -->
-    <section class="py-16 px-6 border-t border-white/5 text-center">
-        <div class="max-w-2xl mx-auto">
-            <p class="text-gray-400 italic text-lg leading-relaxed mb-4">
-                "Gruhini supports home chefs with dignity, fair pricing, and verified kitchens."
-            </p>
-            <a href="about.html"
-                class="text-amber-500 text-sm font-bold tracking-widest uppercase border-b border-amber-500 pb-0.5 hover:text-amber-400 transition-colors">
-                Read Our Mission →
-            </a>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-[#0f0805] border-t border-amber-500/20 py-12 px-6">
-        <div class="max-w-6xl mx-auto">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
-                <div>
-                    <h4 class="font-cinzel text-amber-500 font-bold text-sm mb-4">Explore</h4>
-                    <ul class="space-y-2">
-                        <li><a href="index.html"
-                                class="text-gray-500 text-sm hover:text-white transition-colors">Home</a></li>
-                        <li><a href="menu.html"
-                                class="text-gray-500 text-sm hover:text-white transition-colors">Menu</a></li>
-                        <li><a href="about.html" class="text-gray-500 text-sm hover:text-white transition-colors">About
-                                Us</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-cinzel text-amber-500 font-bold text-sm mb-4">For Chefs</h4>
-                    <ul class="space-y-2">
-                        <li><span class="text-amber-400 text-sm">Become a Home Chef</span></li>
-                        <li><a href="login.html" class="text-gray-500 text-sm hover:text-white transition-colors">Seller
-                                Login</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-cinzel text-amber-500 font-bold text-sm mb-4">Support</h4>
-                    <ul class="space-y-2">
-                        <li><span class="text-gray-500 text-sm">Contact Us (Coming Soon)</span></li>
-                        <li><span class="text-gray-500 text-sm">FAQs (Coming Soon)</span></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-cinzel text-amber-500 font-bold text-sm mb-4">Legal</h4>
-                    <ul class="space-y-2">
-                        <li><span class="text-gray-500 text-sm">Terms (Coming Soon)</span></li>
-                        <li><span class="text-gray-500 text-sm">Privacy (Coming Soon)</span></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="border-t border-white/10 pt-8 text-center">
-                <p class="font-cinzel italic text-sm text-amber-500/60">Gruhini — ghar jaisa khana, ghar ke log</p>
-                <p class="text-xs text-gray-600 mt-2">© 2026 Gruhini. Made with ❤️ in India.</p>
-            </div>
-        </div>
-    </footer>
 
 </body>
 

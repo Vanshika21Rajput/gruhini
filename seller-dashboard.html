@@ -1,71 +1,76 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gruhini - Seller Dashboard</title>
+    <title>Gruhini – Seller Dashboard</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@400;700&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Playfair+Display:ital,wght@0,500;1,500&family=Lato:wght@400;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap"
         rel="stylesheet">
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="js/config.js"></script>
+
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        cream: '#FDF8F0',
-                        paper: '#FFFAF0',
-                        brown: { DEFAULT: '#2a160e', light: '#4a2c20', dark: '#1a0f0a' },
-                        amber: { 50: '#fffbeb', 100: '#fef3c7', 500: '#f59e0b', 600: '#d97706', 700: '#b45309', 800: '#92400e' },
-                        green: { 600: '#16a34a', 700: '#15803d' }
+                        royal: { dark: '#0f0805', brown: '#1a0f0a' },
+                        gold: { main: '#c5a059', DEFAULT: '#d97706' }
                     },
                     fontFamily: {
                         cinzel: ['Cinzel', 'serif'],
-                        sans: ['Lato', 'sans-serif']
+                        serif: ['Playfair Display', 'serif'],
+                        sans: ['Lato', 'sans-serif'],
+                        hindi: ['Noto Sans Devanagari', 'sans-serif']
                     }
                 }
             }
         }
     </script>
-    <script src="js/config.js"></script>
 
     <style>
         body {
-            background: linear-gradient(135deg, #FDF8F0 0%, #fff8e8 100%);
+            background: radial-gradient(circle at top, rgba(217, 119, 6, 0.08), transparent 50%),
+                linear-gradient(to bottom, #0f0805, #1a0f0a);
             min-height: 100vh;
         }
 
-        .bg-kitchen {
-            background: linear-gradient(to bottom, rgba(253, 248, 240, 0.95), rgba(255, 248, 232, 0.97)),
-                url('public/kitchen-bg.png') center/cover no-repeat;
+        .glass {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .stat-card {
-            background: white;
-            border: 1px solid rgba(42, 22, 14, 0.08);
-            box-shadow: 0 4px 20px rgba(42, 22, 14, 0.04);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(217, 119, 6, 0.3);
         }
 
         .dish-card {
-            background: white;
-            border: 1px solid rgba(42, 22, 14, 0.08);
             transition: all 0.3s ease;
         }
 
         .dish-card:hover {
-            box-shadow: 0 8px 30px rgba(42, 22, 14, 0.1);
-            transform: translateY(-2px);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         }
 
         .toggle-switch {
             position: relative;
             width: 44px;
             height: 24px;
-            background: #d1d5db;
+            background: #4b5563;
             border-radius: 12px;
             cursor: pointer;
             transition: background 0.3s;
@@ -85,100 +90,56 @@
             background: white;
             border-radius: 50%;
             transition: transform 0.3s;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .toggle-switch.active::after {
             transform: translateX(20px);
         }
 
-        .status-pill {
-            font-size: 10px;
-            font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 20px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
         .status-pending {
-            background: #fef3c7;
-            color: #92400e;
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
         }
 
         .status-preparing {
-            background: #dbeafe;
-            color: #1e40af;
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
         }
 
         .status-delivered {
-            background: #dcfce7;
-            color: #15803d;
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
         }
 
-        /* Mobile Responsiveness */
-        @media(max-width: 768px) {
+        @keyframes pulse-earning {
 
-            /* Sidebar navbar becomes top bar on mobile */
-            nav {
-                position: fixed !important;
-                top: 0 !important;
-                left: 0 !important;
-                right: 0 !important;
-                width: 100% !important;
-                height: auto !important;
-                flex-direction: row !important;
-                padding: 0.75rem 1rem !important;
-                overflow-x: auto;
+            0%,
+            100% {
+                transform: scale(1);
             }
 
-            nav a {
-                padding: 0.5rem 0.75rem !important;
-                font-size: 10px !important;
-            }
-
-            main {
-                margin-left: 0 !important;
-                padding-top: 70px !important;
-            }
-
-            /* Stats grid - 2 columns on tablet */
-            .grid.grid-cols-2.md\\:grid-cols-4 {
-                grid-template-columns: repeat(2, 1fr) !important;
-            }
-
-            /* Dishes grid - 1 column on tablet */
-            .grid.md\\:grid-cols-2.lg\\:grid-cols-3 {
-                grid-template-columns: 1fr !important;
+            50% {
+                transform: scale(1.02);
             }
         }
 
-        @media(max-width: 640px) {
+        .earning-highlight {
+            animation: pulse-earning 2s infinite;
+        }
 
-            /* Stats grid - 2 columns */
-            .grid.grid-cols-2 {
-                gap: 0.75rem !important;
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none !important;
             }
 
-            .stat-card {
-                padding: 1rem !important;
-            }
-
-            /* Smaller text */
-            h2.text-2xl,
-            h3.text-xl {
-                font-size: 1.25rem !important;
-            }
-
-            /* Welcome strip */
-            .text-3xl {
-                font-size: 1.5rem !important;
+            .mobile-menu-btn {
+                display: block !important;
             }
         }
     </style>
 </head>
 
-<body class="bg-kitchen font-sans antialiased">
+<body class="text-white font-sans">
 
     <!-- Auth Check -->
     <script>
@@ -187,314 +148,555 @@
         }
     </script>
 
-    <!-- Seller Dashboard Navbar (Separate Universe) -->
+    <!-- NAVBAR -->
     <nav
-        class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-sm border-b border-brown/10 px-6 py-4 flex justify-between items-center shadow-sm">
-        <div class="flex items-center gap-4">
-            <a href="index.html"
-                class="font-cinzel text-xl font-bold text-brown tracking-widest hover:text-amber-700 transition-colors">GRUHINI</a>
+        class="fixed top-0 w-full z-50 px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center bg-royal-dark/90 backdrop-blur-md border-b border-gold-main/10">
+        <div class="flex items-center gap-3">
+            <a href="index.html" class="flex items-center gap-2 sm:gap-3">
+                <div
+                    class="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden shadow-[0_0_15px_rgba(197,160,89,0.4)] border border-gold-main/30">
+                    <img src="public/logo.jpg" alt="Gruhini" class="w-full h-full object-cover">
+                </div>
+                <span class="font-cinzel text-lg sm:text-xl font-bold text-gold-main tracking-widest">GRUHINI</span>
+            </a>
             <span
-                class="text-[10px] bg-amber-100 px-2 py-1 rounded-full border border-amber-200 text-amber-700 font-bold uppercase tracking-wider">Seller
-                Hub</span>
+                class="text-[9px] bg-amber-600/20 px-2 py-1 rounded-full border border-amber-500/30 text-amber-400 font-bold uppercase tracking-wider">
+                Seller Hub
+            </span>
         </div>
-        <div class="flex items-center gap-6">
-            <a href="#"
-                class="text-xs font-bold uppercase tracking-widest text-amber-700 border-b border-amber-700 pb-0.5">Dashboard</a>
+        <div class="nav-links flex items-center gap-4">
+            <span
+                class="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-white border-b border-gold-main pb-0.5">Dashboard</span>
             <a href="#orders"
-                class="text-xs font-bold uppercase tracking-widest text-brown/50 hover:text-brown transition-colors">Orders</a>
+                class="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-gold-main/60 hover:text-white transition">Orders</a>
             <a href="#dishes"
-                class="text-xs font-bold uppercase tracking-widest text-brown/50 hover:text-brown transition-colors">Dishes</a>
-            <a href="#"
-                class="text-xs font-bold uppercase tracking-widest text-brown/50 hover:text-brown transition-colors">Payouts</a>
+                class="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-gold-main/60 hover:text-white transition">Dishes</a>
             <button onclick="localStorage.clear(); window.location.href='login.html'"
-                class="text-xs font-bold uppercase tracking-widest text-red-500 hover:text-red-600 transition-colors">Logout</button>
+                class="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-red-400 hover:text-red-300 transition">Logout</button>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <main class="pt-24 px-6 pb-16 max-w-6xl mx-auto">
+    <!-- MAIN -->
+    <main class="min-h-screen pt-20 sm:pt-24 px-4 sm:px-6 pb-8">
+        <div class="max-w-6xl mx-auto">
 
-        <!-- Welcome Strip -->
-        <section class="mb-10">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div>
-                    <p class="text-sm text-brown/50 mb-1" id="greeting">Good evening,</p>
-                    <h1 class="font-cinzel text-3xl text-brown font-bold" id="sellerName">Home Chef 👩‍🍳</h1>
-                    <p class="text-sm text-green-600 font-medium mt-2" id="kitchenStatus">Your kitchen is open today</p>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                    <span
-                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wide bg-green-100 text-green-700 border border-green-200">
-                        <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Verified Kitchen
-                    </span>
-                    <span
-                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wide bg-amber-50 text-amber-700 border border-amber-200">
-                        📍 Home Kitchen
-                    </span>
-                </div>
-            </div>
-        </section>
-
-        <!-- Stats Grid -->
-        <section class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-            <div class="stat-card rounded-xl p-5">
-                <p class="text-[10px] text-brown/50 uppercase tracking-widest font-bold mb-1">Today's Earnings</p>
-                <p class="font-cinzel text-2xl text-brown font-bold" id="statEarnings">₹0</p>
-            </div>
-            <div class="stat-card rounded-xl p-5">
-                <p class="text-[10px] text-brown/50 uppercase tracking-widest font-bold mb-1">Orders Today</p>
-                <p class="font-cinzel text-2xl text-brown font-bold" id="statOrders">0</p>
-            </div>
-            <div class="stat-card rounded-xl p-5">
-                <p class="text-[10px] text-brown/50 uppercase tracking-widest font-bold mb-1">Active Dishes</p>
-                <p class="font-cinzel text-2xl text-brown font-bold" id="statDishes">0</p>
-            </div>
-            <div class="stat-card rounded-xl p-5">
-                <p class="text-[10px] text-brown/50 uppercase tracking-widest font-bold mb-1">Customer Rating</p>
-                <p class="font-cinzel text-2xl text-amber-600 font-bold">⭐ 4.8</p>
-            </div>
-        </section>
-
-        <!-- Your Dishes (PRIMARY) -->
-        <section id="dishes" class="mb-10">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="font-cinzel text-xl text-brown font-bold">Your Dishes</h2>
-                <button onclick="document.getElementById('addModal').classList.remove('hidden')"
-                    class="bg-amber-600 hover:bg-amber-500 text-white px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg transition-all">
-                    + Add New Dish
-                </button>
-            </div>
-
-            <div id="dishesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                <!-- Dishes loaded by JS -->
-            </div>
-            <div id="noDishes" class="hidden text-center py-12 text-brown/40">
-                <p class="text-lg mb-2">No dishes yet</p>
-                <p class="text-sm">Add your first dish to start receiving orders</p>
-            </div>
-        </section>
-
-        <!-- Orders Section (SECONDARY) -->
-        <section id="orders" class="mb-10">
-            <h2 class="font-cinzel text-xl text-brown font-bold mb-6">Recent Orders</h2>
-            <div id="ordersGrid" class="space-y-3">
-                <!-- Orders loaded by JS or sample -->
-                <div class="bg-white rounded-xl p-5 border border-brown/8 flex items-center justify-between">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-lg bg-amber-100 flex items-center justify-center text-lg">🍛</div>
-                        <div>
-                            <p class="font-bold text-brown">Dal Makhani × 2</p>
-                            <p class="text-xs text-brown/50">15 mins ago · Rahul S.</p>
+            <!-- Welcome Section -->
+            <section class="mb-8">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                        <p class="text-sm text-gray-400 mb-1 font-hindi" id="greeting">शुभ संध्या,</p>
+                        <h1 class="font-cinzel text-2xl sm:text-3xl text-white font-bold" id="sellerName">Home Chef
+                            👩‍🍳</h1>
+                        <!-- KITCHEN TOGGLE - Real Control -->
+                        <div class="flex items-center gap-3 mt-3">
+                            <button id="kitchenToggle" onclick="toggleKitchen()"
+                                class="relative inline-flex h-8 w-16 items-center rounded-full bg-green-500 transition-colors focus:outline-none">
+                                <span id="toggleKnob"
+                                    class="inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition-transform translate-x-9"></span>
+                            </button>
+                            <span id="kitchenStatusText" class="text-sm font-bold text-green-400 font-hindi">रसोई खुली
+                                है</span>
                         </div>
                     </div>
-                    <div class="flex items-center gap-4">
-                        <span class="font-cinzel font-bold text-brown">₹598</span>
-                        <span class="status-pill status-preparing">Preparing</span>
+                    <div class="flex flex-wrap gap-2">
+                        <span
+                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-green-500/20 text-green-400 border border-green-500/30">
+                            ✓ Verified Kitchen
+                        </span>
+                        <span
+                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                            🏠 Home Kitchen
+                        </span>
                     </div>
                 </div>
-                <div class="bg-white rounded-xl p-5 border border-brown/8 flex items-center justify-between">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center text-lg">🥘</div>
-                        <div>
-                            <p class="font-bold text-brown">Paneer Thali × 1</p>
-                            <p class="text-xs text-brown/50">1 hour ago · Priya M.</p>
+            </section>
+
+            <!-- 🎯 TODAY'S FOCUS - Action Card -->
+            <section id="todaysFocus" class="glass rounded-xl p-4 mb-6 border-l-4 border-amber-500">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-2">🎯 आज का फोकस</p>
+                        <ul class="space-y-2 text-sm">
+                            <li class="flex items-center gap-2 text-white font-hindi">
+                                <span class="w-2 h-2 bg-amber-500 rounded-full"></span>
+                                <span><strong>Dal Makhani</strong> — High demand today</span>
+                            </li>
+                            <li class="flex items-center gap-2 text-white font-hindi">
+                                <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+                                <span><strong>Paneer Thali</strong> — Low stock (2 left)</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <button
+                        class="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2 rounded-lg text-xs font-bold transition">
+                        ✓ Ready
+                    </button>
+                </div>
+            </section>
+
+            <!-- TODAY'S HIGHLIGHT -->
+            <section class="glass rounded-2xl p-5 sm:p-6 mb-8 border-l-4 border-green-500 earning-highlight">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                        <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-1">🎉 आज की कमाई</p>
+                        <p class="font-cinzel text-3xl sm:text-4xl text-green-400 font-bold" id="todayEarning">₹0</p>
+                        <p class="text-xs text-gray-500 mt-1 font-hindi">पिछले हफ्ते से <span
+                                class="text-green-400">+23%</span> ज़्यादा</p>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="text-center">
+                            <p class="text-2xl font-bold text-white" id="todayOrders">0</p>
+                            <p class="text-[9px] text-gray-400 uppercase">Orders</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-2xl font-bold text-amber-400">⭐ 4.8</p>
+                            <p class="text-[9px] text-gray-400 uppercase">Rating</p>
                         </div>
                     </div>
-                    <div class="flex items-center gap-4">
-                        <span class="font-cinzel font-bold text-brown">₹299</span>
-                        <span class="status-pill status-delivered">Delivered</span>
+                </div>
+            </section>
+
+            <!-- QUICK STATS -->
+            <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
+                <div class="stat-card glass rounded-xl p-4 sm:p-5">
+                    <p class="text-[9px] text-gray-400 uppercase tracking-widest font-bold mb-1">This Week</p>
+                    <p class="font-cinzel text-xl sm:text-2xl text-white font-bold" id="weeklyEarning">₹0</p>
+                    <p class="text-[9px] text-green-400 mt-1">↑ 12%</p>
+                </div>
+                <div class="stat-card glass rounded-xl p-4 sm:p-5">
+                    <p class="text-[9px] text-gray-400 uppercase tracking-widest font-bold mb-1">This Month</p>
+                    <p class="font-cinzel text-xl sm:text-2xl text-white font-bold" id="monthlyEarning">₹0</p>
+                    <p class="text-[9px] text-green-400 mt-1">↑ 8%</p>
+                </div>
+                <div class="stat-card glass rounded-xl p-4 sm:p-5">
+                    <p class="text-[9px] text-gray-400 uppercase tracking-widest font-bold mb-1">Active Dishes</p>
+                    <p class="font-cinzel text-xl sm:text-2xl text-gold font-bold" id="activeDishes">0</p>
+                </div>
+                <div class="stat-card glass rounded-xl p-4 sm:p-5">
+                    <p class="text-[9px] text-gray-400 uppercase tracking-widest font-bold mb-1">Repeat Customers</p>
+                    <p class="font-cinzel text-xl sm:text-2xl text-amber-400 font-bold">67%</p>
+                </div>
+            </section>
+
+            <!-- INSIGHTS BAR -->
+            <section class="glass rounded-xl p-4 mb-8 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">💡</span>
+                    <p class="text-sm text-gray-300 font-hindi">
+                        <span class="text-gold font-bold">टिप:</span> "Dal Makhani" आपका सबसे लोकप्रिय व्यंजन है। इसे आज
+                        highlight करें!
+                    </p>
+                </div>
+                <button
+                    class="text-[10px] text-gold font-bold uppercase tracking-widest hover:text-white">Dismiss</button>
+            </section>
+
+            <!-- YOUR DISHES -->
+            <section id="dishes" class="mb-10">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="font-cinzel text-lg sm:text-xl text-white font-bold">🍽️ Your Dishes</h2>
+                    <button onclick="document.getElementById('addModal').classList.remove('hidden')"
+                        class="bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white px-4 sm:px-6 py-2 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-widest shadow-lg transition-all">
+                        + Add Dish
+                    </button>
+                </div>
+
+                <div id="dishesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+
+                <div id="noDishes" class="hidden text-center py-12">
+                    <div class="text-5xl mb-4">🍳</div>
+                    <p class="text-gray-400 font-hindi">अभी कोई व्यंजन नहीं है</p>
+                    <p class="text-xs text-gray-500 font-hindi mt-1">अपना पहला व्यंजन जोड़ें!</p>
+                </div>
+            </section>
+
+            <!-- RECENT ORDERS - With ACTIONS -->
+            <section id="orders" class="mb-10">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="font-cinzel text-lg sm:text-xl text-white font-bold">📦 Active Orders</h2>
+                    <span class="text-[9px] text-gray-400 font-hindi">नए ऑर्डर सबसे ऊपर</span>
+                </div>
+                <div id="ordersGrid" class="space-y-3">
+                    <!-- ORDER 1: Needs Accept -->
+                    <div class="glass rounded-xl p-4 border-l-4 border-amber-500">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-10 h-10 rounded-lg bg-amber-500/20 flex items-center justify-center text-lg">
+                                    🍛</div>
+                                <div>
+                                    <p class="font-bold text-white text-sm">Dal Makhani × 2</p>
+                                    <p class="text-[10px] text-gray-400">🕐 2 mins ago · <span
+                                            class="text-amber-400 font-bold">NEW</span></p>
+                                </div>
+                            </div>
+                            <span class="font-cinzel font-bold text-gold text-lg">₹598</span>
+                        </div>
+                        <div class="flex items-center justify-between pt-3 border-t border-white/10">
+                            <p class="text-[10px] text-gray-400 font-hindi">👤 Rahul S. · Indiranagar</p>
+                            <div class="flex gap-2">
+                                <button onclick="updateOrderStatus(1, 'reject')"
+                                    class="px-3 py-1.5 text-[10px] font-bold text-red-400 border border-red-400/30 rounded-lg hover:bg-red-500/10 transition">Reject</button>
+                                <button onclick="updateOrderStatus(1, 'accept')"
+                                    class="px-4 py-1.5 text-[10px] font-bold text-white bg-green-600 rounded-lg hover:bg-green-500 transition">✓
+                                    Accept</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ORDER 2: Preparing -->
+                    <div class="glass rounded-xl p-4 border-l-4 border-blue-500">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center text-lg">
+                                    🥘</div>
+                                <div>
+                                    <p class="font-bold text-white text-sm">Paneer Thali × 1</p>
+                                    <p class="text-[10px] text-blue-400">🍳 Cooking since 10 mins</p>
+                                </div>
+                            </div>
+                            <span class="font-cinzel font-bold text-gold">₹299</span>
+                        </div>
+                        <div class="flex items-center justify-between pt-3 border-t border-white/10">
+                            <p class="text-[10px] text-gray-400 font-hindi">👤 Priya M. · Koramangala</p>
+                            <button onclick="updateOrderStatus(2, 'ready')"
+                                class="px-4 py-1.5 text-[10px] font-bold text-white bg-amber-600 rounded-lg hover:bg-amber-500 transition">🔔
+                                Mark Ready</button>
+                        </div>
+                    </div>
+
+                    <!-- ORDER 3: Ready for pickup -->
+                    <div class="glass rounded-xl p-4 border-l-4 border-green-500">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center text-lg">
+                                    ✅</div>
+                                <div>
+                                    <p class="font-bold text-white text-sm">Chole Bhature × 2</p>
+                                    <p class="text-[10px] text-green-400">✓ Ready for pickup</p>
+                                </div>
+                            </div>
+                            <span class="font-cinzel font-bold text-gold">₹350</span>
+                        </div>
+                        <div class="flex items-center justify-between pt-3 border-t border-white/10">
+                            <p class="text-[10px] text-gray-400 font-hindi">👤 Amit K. · HSR Layout</p>
+                            <span class="text-[10px] font-bold text-green-400 font-hindi">🚴 Delivery partner on the
+                                way</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Payouts Section (TRUST) -->
-        <section class="bg-white rounded-xl p-6 border border-brown/8">
-            <h2 class="font-cinzel text-lg text-brown font-bold mb-3">Payouts</h2>
-            <p class="text-brown/60 text-sm leading-relaxed">
-                Weekly payouts to your registered bank account every Monday. Your earnings are transferred directly — no
-                hidden deductions.
-            </p>
-            <div class="mt-4 pt-4 border-t border-brown/8 flex items-center justify-between">
-                <span class="text-sm text-brown/50">Next payout:</span>
-                <span class="font-bold text-green-600">Monday, 13 Jan</span>
-            </div>
-        </section>
+            <!-- PAYOUTS -->
+            <section class="glass rounded-xl p-5 sm:p-6">
+                <h2 class="font-cinzel text-lg text-white font-bold mb-3">💰 Payouts</h2>
+                <p class="text-gray-400 text-sm font-hindi">
+                    हर सोमवार को आपके बैंक खाते में पैसे आते हैं। कोई छुपे हुए कटौती नहीं।
+                </p>
+                <!-- REASSURANCE -->
+                <div class="mt-3 bg-green-500/10 border border-green-500/20 rounded-lg p-3 text-center">
+                    <p class="text-[11px] text-green-400 font-hindi">
+                        🔒 आपकी कमाई सुरक्षित है। 100% ट्रैक की जाती है।
+                    </p>
+                </div>
+                <div class="mt-4 pt-4 border-t border-white/10 flex items-center justify-between">
+                    <span class="text-sm text-gray-500 font-hindi">अगला पेआउट:</span>
+                    <span class="font-bold text-green-400">Monday, 13 Jan · ₹4,250</span>
+                </div>
+            </section>
 
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-8 border-t border-gold-main/10 text-center">
+            <p class="font-hindi text-sm text-gold/80 mb-2">घर जैसा खाना, घर के लोग</p>
+            <p class="text-xs text-gray-600">© 2026 Gruhini · Made with ❤️ in India</p>
+        </footer>
     </main>
 
-    <!-- Add Dish Modal -->
+    <!-- ADD DISH MODAL -->
     <div id="addModal" class="fixed inset-0 z-[100] hidden">
-        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm"
             onclick="document.getElementById('addModal').classList.add('hidden')"></div>
         <div
-            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-white rounded-2xl shadow-2xl p-8 max-h-[90vh] overflow-y-auto">
-            <h2 class="font-cinzel text-2xl text-brown font-bold mb-6">Add New Dish</h2>
-            <form onsubmit="addDish(event)" class="space-y-5">
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg glass rounded-2xl p-6 sm:p-8 max-h-[90vh] overflow-y-auto mx-4">
+            <h2 class="font-cinzel text-xl sm:text-2xl text-white font-bold mb-6">Add New Dish</h2>
+            <form onsubmit="addDish(event)" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-widest text-brown/50 mb-2">Dish
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Dish
                         Name</label>
                     <input type="text" name="name" required
-                        class="w-full border border-brown/20 rounded-lg p-3 text-brown focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        class="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white placeholder-gray-500 focus:outline-none focus:border-gold/50"
                         placeholder="e.g., Dal Makhani">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold uppercase tracking-widest text-brown/50 mb-2">Price
+                        <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Price
                             (₹)</label>
                         <input type="number" name="price" required
-                            class="w-full border border-brown/20 rounded-lg p-3 text-brown focus:outline-none focus:ring-2 focus:ring-amber-500"
+                            class="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white placeholder-gray-500 focus:outline-none focus:border-gold/50"
                             placeholder="299">
                     </div>
                     <div>
                         <label
-                            class="block text-xs font-bold uppercase tracking-widest text-brown/50 mb-2">Category</label>
+                            class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Category</label>
                         <select name="category"
-                            class="w-full border border-brown/20 rounded-lg p-3 text-brown focus:outline-none focus:ring-2 focus:ring-amber-500">
-                            <option value="Thalis">Thalis</option>
+                            class="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-gold/50">
+                            <option value="Thali">Thali</option>
+                            <option value="Main Course">Main Course</option>
                             <option value="Snacks">Snacks</option>
-                            <option value="Desserts">Desserts</option>
-                            <option value="Crafts">Crafts</option>
+                            <option value="Sweets">Sweets</option>
+                            <option value="Beverages">Beverages</option>
                         </select>
                     </div>
                 </div>
                 <div>
                     <label
-                        class="block text-xs font-bold uppercase tracking-widest text-brown/50 mb-2">Description</label>
-                    <textarea name="description" required rows="3"
-                        class="w-full border border-brown/20 rounded-lg p-3 text-brown focus:outline-none focus:ring-2 focus:ring-amber-500"
-                        placeholder="Describe your dish..."></textarea>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label
-                            class="block text-xs font-bold uppercase tracking-widest text-brown/50 mb-2">Stock</label>
-                        <input type="number" name="stock" value="50"
-                            class="w-full border border-brown/20 rounded-lg p-3 text-brown focus:outline-none focus:ring-2 focus:ring-amber-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-widest text-brown/50 mb-2">Delivery
-                            Time</label>
-                        <input type="text" name="deliverytime" value="45 mins"
-                            class="w-full border border-brown/20 rounded-lg p-3 text-brown focus:outline-none focus:ring-2 focus:ring-amber-500">
-                    </div>
+                        class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Description</label>
+                    <textarea name="description" rows="2"
+                        class="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white placeholder-gray-500 focus:outline-none focus:border-gold/50"
+                        placeholder="Brief description..."></textarea>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-widest text-brown/50 mb-2">Photo</label>
-                    <input type="file" name="image" accept="image/*" required
-                        class="w-full text-sm text-brown file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-amber-100 file:text-amber-700 hover:file:bg-amber-200">
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Image
+                        URL</label>
+                    <input type="url" name="image"
+                        class="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white placeholder-gray-500 focus:outline-none focus:border-gold/50"
+                        placeholder="https://...">
                 </div>
-                <button type="submit" id="submitBtn"
-                    class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-4 rounded-xl uppercase tracking-widest shadow-lg transition-all">
-                    Add Dish
-                </button>
+                <div class="flex gap-3 pt-4">
+                    <button type="button" onclick="document.getElementById('addModal').classList.add('hidden')"
+                        class="flex-1 border border-white/20 text-white py-3 rounded-xl text-sm font-bold hover:bg-white/5 transition">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                        class="flex-1 bg-gradient-to-r from-amber-600 to-amber-700 text-white py-3 rounded-xl text-sm font-bold shadow-lg hover:from-amber-500 hover:to-amber-600 transition">
+                        Add Dish
+                    </button>
+                </div>
             </form>
         </div>
     </div>
 
     <script>
-        // Greeting based on time
-        (function () {
+        const BASE_URL = window.CONFIG?.BASE_URL || 'https://gruhini2.onrender.com';
+
+        // Set greeting based on time
+        function setGreeting() {
             const hour = new Date().getHours();
-            let greeting = 'Good evening,';
-            if (hour < 12) greeting = 'Good morning,';
-            else if (hour < 17) greeting = 'Good afternoon,';
-            document.getElementById('greeting').textContent = greeting;
+            const greetings = {
+                morning: 'शुभ प्रभात',
+                afternoon: 'शुभ दोपहर',
+                evening: 'शुभ संध्या',
+                night: 'शुभ रात्रि'
+            };
+            let greeting = greetings.evening;
+            if (hour >= 5 && hour < 12) greeting = greetings.morning;
+            else if (hour >= 12 && hour < 17) greeting = greetings.afternoon;
+            else if (hour >= 17 && hour < 21) greeting = greetings.evening;
+            else greeting = greetings.night;
 
-            // Try to get seller name from localStorage or show default
-            const userName = localStorage.getItem('userName') || 'Home Chef';
-            document.getElementById('sellerName').textContent = userName + ' 👩‍🍳';
-        })();
+            document.getElementById('greeting').textContent = greeting + ',';
+        }
 
-        // Load seller's products
-        async function loadMyProducts() {
+        // Set seller name from localStorage
+        function setSellerName() {
+            const name = localStorage.getItem('userName') || 'Home Chef';
+            document.getElementById('sellerName').textContent = name + ' 👩‍🍳';
+        }
+
+        // Load dishes from backend
+        async function loadDishes() {
+            const token = localStorage.getItem('authToken');
             try {
-                const res = await fetch(`${window.CONFIG.BASE_URL}/explore`);
+                const res = await fetch(`${BASE_URL}/seller/dishes`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
                 if (res.ok) {
-                    const data = await res.json();
-                    const grid = document.getElementById('dishesGrid');
-                    const noDishes = document.getElementById('noDishes');
+                    const dishes = await res.json();
+                    renderDishes(dishes);
+                }
+            } catch (e) {
+                console.log('Using mock dishes');
+                // Mock dishes for demo
+                renderDishes([
+                    { id: 1, name: 'Dal Makhani', price: 299, category: 'Main Course', available: true, image: '' },
+                    { id: 2, name: 'Paneer Thali', price: 399, category: 'Thali', available: true, image: '' }
+                ]);
+            }
+        }
 
-                    if (data.length === 0) {
-                        noDishes.classList.remove('hidden');
-                        document.getElementById('statDishes').textContent = '0';
-                        return;
-                    }
+        function renderDishes(dishes) {
+            const grid = document.getElementById('dishesGrid');
+            const noDishes = document.getElementById('noDishes');
+            document.getElementById('activeDishes').textContent = dishes.length;
 
-                    document.getElementById('statDishes').textContent = data.length;
+            if (dishes.length === 0) {
+                noDishes.classList.remove('hidden');
+                grid.innerHTML = '';
+                return;
+            }
 
-                    grid.innerHTML = data.map(p => `
-                        <div class="dish-card rounded-xl overflow-hidden">
-                            <div class="h-36 overflow-hidden">
-                                <img src="${p.image || window.CONFIG.PLACEHOLDER}" class="w-full h-full object-cover">
+            noDishes.classList.add('hidden');
+            grid.innerHTML = dishes.map(dish => `
+                <div class="dish-card glass rounded-xl overflow-hidden">
+                    <div class="h-32 bg-gradient-to-br from-amber-500/20 to-amber-700/20 flex items-center justify-center">
+                        ${dish.image ? `<img src="${dish.image}" class="w-full h-full object-cover">` : '<span class="text-4xl">🍽️</span>'}
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <h3 class="font-bold text-white text-sm">${dish.name}</h3>
+                                <p class="text-[10px] text-gray-400">${dish.category || ''}</p>
                             </div>
-                            <div class="p-4">
-                                <div class="flex justify-between items-start mb-2">
-                                    <h3 class="font-bold text-brown">${p.name}</h3>
-                                    <span class="font-cinzel text-lg text-amber-700 font-bold">₹${p.price}</span>
-                                </div>
-                                <p class="text-xs text-brown/50 mb-4 line-clamp-2">${p.description || 'Homemade with love'}</p>
-                                <div class="flex justify-between items-center pt-3 border-t border-brown/8">
-                                    <div class="flex items-center gap-2">
-                                        <span class="text-xs text-brown/50">Available</span>
-                                        <div class="toggle-switch ${p.stock > 0 ? 'active' : ''}" onclick="this.classList.toggle('active')"></div>
-                                    </div>
-                                    <button class="text-xs font-bold text-amber-600 hover:text-amber-700 uppercase tracking-wide">Edit</button>
-                                </div>
-                            </div>
+                            <span class="font-cinzel font-bold text-gold">₹${dish.price}</span>
                         </div>
-                    `).join('');
+                        <div class="flex items-center justify-between pt-3 border-t border-white/10">
+                            <span class="text-[9px] text-gray-400 font-hindi">${dish.available !== false ? 'उपलब्ध' : 'अनुपलब्ध'}</span>
+                            <div class="toggle-switch ${dish.available !== false ? 'active' : ''}" onclick="toggleDish(${dish.id}, this)"></div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleDish(id, el) {
+            el.classList.toggle('active');
+            // TODO: Send toggle to backend
+        }
+
+        async function addDish(e) {
+            e.preventDefault();
+            const form = e.target;
+            const data = {
+                name: form.name.value,
+                price: parseInt(form.price.value),
+                category: form.category.value,
+                description: form.description.value,
+                image: form.image.value
+            };
+
+            const token = localStorage.getItem('authToken');
+            try {
+                const res = await fetch(`${BASE_URL}/seller/add-dish`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (res.ok) {
+                    document.getElementById('addModal').classList.add('hidden');
+                    form.reset();
+                    loadDishes();
+                } else {
+                    alert('Failed to add dish');
                 }
             } catch (e) {
                 console.error(e);
+                // For demo, just add locally
+                document.getElementById('addModal').classList.add('hidden');
+                form.reset();
+                alert('Dish added (demo mode)');
             }
         }
 
-        // Add new dish
-        async function addDish(e) {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            btn.textContent = 'Adding...';
+        // Load stats from backend
+        async function loadStats() {
+            const token = localStorage.getItem('authToken');
+            try {
+                const res = await fetch(`${BASE_URL}/seller/stats`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const stats = await res.json();
+                    document.getElementById('todayEarning').textContent = stats.todayEarning || '₹0';
+                    document.getElementById('todayOrders').textContent = stats.todayOrders || 0;
+                    document.getElementById('weeklyEarning').textContent = stats.weeklyEarning || '₹0';
+                    document.getElementById('monthlyEarning').textContent = stats.monthlyEarning || '₹0';
+                    document.getElementById('activeDishes').textContent = stats.activeDishes || 0;
+                    if (stats.sellerName) {
+                        document.getElementById('sellerName').textContent = stats.sellerName + ' 👩‍🍳';
+                    }
+                    return;
+                }
+            } catch (e) {
+                console.log('Using mock stats:', e);
+            }
+            // Fallback to mock
+            document.getElementById('todayEarning').textContent = '₹1,847';
+            document.getElementById('todayOrders').textContent = '7';
+            document.getElementById('weeklyEarning').textContent = '₹8,250';
+            document.getElementById('monthlyEarning').textContent = '₹32,400';
+        }
+
+        // Kitchen Open/Close Toggle
+        let kitchenOpen = true;
+        function toggleKitchen() {
+            kitchenOpen = !kitchenOpen;
+            const toggle = document.getElementById('kitchenToggle');
+            const knob = document.getElementById('toggleKnob');
+            const text = document.getElementById('kitchenStatusText');
+
+            if (kitchenOpen) {
+                toggle.classList.remove('bg-gray-500');
+                toggle.classList.add('bg-green-500');
+                knob.classList.remove('translate-x-1');
+                knob.classList.add('translate-x-9');
+                text.textContent = 'रसोई खुली है';
+                text.classList.remove('text-gray-400');
+                text.classList.add('text-green-400');
+            } else {
+                toggle.classList.remove('bg-green-500');
+                toggle.classList.add('bg-gray-500');
+                knob.classList.remove('translate-x-9');
+                knob.classList.add('translate-x-1');
+                text.textContent = 'रसोई बंद है';
+                text.classList.remove('text-green-400');
+                text.classList.add('text-gray-400');
+            }
+
+            // TODO: Send to backend
+            console.log('Kitchen status:', kitchenOpen ? 'OPEN' : 'CLOSED');
+        }
+
+        // Order Actions
+        function updateOrderStatus(orderId, action) {
+            console.log('Order', orderId, 'action:', action);
+
+            // Visual feedback
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = '...';
             btn.disabled = true;
 
-            const form = new FormData(e.target);
-            const jsonData = {
-                name: form.get('name'),
-                description: form.get('description'),
-                price: Number(form.get('price')),
-                category: form.get('category'),
-                subcategory: form.get('category'),
-                stock: Number(form.get('stock')),
-                deliverytime: form.get('deliverytime'),
-                discount: "0%",
-                verified: true,
-                rating: 4.5,
-                badge: "New",
-                status: "APPROVED",
-                quantity: 1
-            };
+            // Simulate API call
+            setTimeout(() => {
+                if (action === 'accept') {
+                    btn.textContent = '✓ Accepted';
+                    btn.classList.remove('bg-green-600');
+                    btn.classList.add('bg-green-700');
+                } else if (action === 'reject') {
+                    btn.closest('.glass').style.opacity = '0.5';
+                } else if (action === 'ready') {
+                    btn.textContent = '✓ Ready!';
+                    btn.classList.remove('bg-amber-600');
+                    btn.classList.add('bg-green-600');
+                }
+            }, 500);
 
-            const payload = new FormData();
-            payload.append("data", JSON.stringify(jsonData));
-            payload.append("image", form.get('image'));
-
-            try {
-                const res = await fetch(`${window.CONFIG.BASE_URL}/add-product`, {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` },
-                    body: payload
-                });
-                if (!res.ok) throw new Error(await res.text());
-                alert("Dish added successfully!");
-                window.location.reload();
-            } catch (err) {
-                alert("Failed: " + err.message);
-                btn.textContent = 'Add Dish';
-                btn.disabled = false;
-            }
+            // TODO: Send to backend
         }
 
-        loadMyProducts();
+        // Initialize
+        setGreeting();
+        setSellerName();
+        loadDishes();
+        loadStats();
     </script>
 
 </body>

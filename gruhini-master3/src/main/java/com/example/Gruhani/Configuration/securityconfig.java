@@ -34,11 +34,7 @@ public class securityconfig {
 private userdetailsServices userDetailsService;
 @Autowired
 jwtfilter jf;
-@Bean
-public UserDetailsService userDetailsService()
-{
-    return new userdetailsServices();
-}
+// UserDetailsService bean removed - Spring auto-manages single instance
 
 
     @Autowired
@@ -51,16 +47,11 @@ public UserDetailsService userDetailsService()
         return hs.csrf(o->o.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(h->h.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .logout(logout -> logout
-                    .logoutUrl("/logout")
-                    .logoutSuccessUrl("/logins")
-                  )
-
-                .authorizeHttpRequests(o->o.requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll().requestMatchers("/logins","/register","/register-seller").permitAll()
-                 ///logins","/register","/home","/api/**","/register-seller","/seller-login","/view-pending","/get-all-products","/add-product","/got-message","/upload"
+                // Logout removed - not useful for stateless JWT auth (frontend just clears token)
+                .authorizeHttpRequests(o->o.requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+                    .requestMatchers("/logins","/register","/register-seller","/explore","/health","/google-login").permitAll()
                     .anyRequest().authenticated())
                 .addFilterBefore(jf, UsernamePasswordAuthenticationFilter.class)
-
                 .build();
     }
 
@@ -68,13 +59,12 @@ public UserDetailsService userDetailsService()
     public CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
+        // Allow all origins for now (credentials disabled for stateless JWT)
+        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowCredentials(true);
-
-// Optional: Allow exposing headers if needed (e.g., Authorization)
-// configuration.setExposedHeaders(Arrays.asList("Authorization"));
+        configuration.setAllowCredentials(false); // Must be false when using * origins
+        configuration.setExposedHeaders(Arrays.asList("Authorization"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

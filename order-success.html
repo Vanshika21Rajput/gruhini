@@ -1,28 +1,282 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 
 <head>
     <meta charset="UTF-8">
-    <title>Order Placed!</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Lato&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gruhini – ऑर्डर सफल! 🎉</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Playfair+Display:ital,wght@0,500;1,500&family=Lato:wght@400;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="js/config.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        royal: { dark: '#0f0805', brown: '#1a0f0a' },
+                        gold: { main: '#c5a059', DEFAULT: '#d97706' }
+                    },
+                    fontFamily: {
+                        cinzel: ['Cinzel', 'serif'],
+                        serif: ['Playfair Display', 'serif'],
+                        sans: ['Lato', 'sans-serif'],
+                        hindi: ['Noto Sans Devanagari', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background: radial-gradient(circle at top, rgba(16, 185, 129, 0.15), transparent 50%),
+                linear-gradient(to bottom, #0f0805, #1a0f0a);
+            min-height: 100vh;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        @keyframes confetti {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .confetti {
+            position: fixed;
+            top: -10px;
+            width: 10px;
+            height: 10px;
+            opacity: 0;
+            animation: confetti 3s ease-in-out forwards;
+        }
+
+        @keyframes pulse-success {
+
+            0%,
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+            }
+
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 30px 10px rgba(16, 185, 129, 0.2);
+            }
+        }
+
+        .success-badge {
+            animation: pulse-success 2s infinite;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-up {
+            animation: slideUp 0.6s ease forwards;
+            opacity: 0;
+        }
+    </style>
 </head>
 
-<body class="bg-[#FDF8F0] flex flex-col items-center justify-center min-h-screen text-center px-4">
-    <div class="text-6xl mb-4">🎉</div>
-    <h1 class="font-cinzel text-4xl text-[#d97706] mb-2">Order Confirmed!</h1>
-    <p class="text-gray-600 font-sans mb-8">The kitchen has received your request.</p>
-    <p class="text-xs text-gray-400 mb-8 uppercase tracking-widest">Order ID: <span id="oid"
-            class="text-gray-800 font-bold">--</span></p>
-    <a href="index.html"
-        class="bg-[#d97706] text-white px-8 py-3 rounded-full font-bold uppercase tracking-widest shadow-lg">Back
-        Home</a>
+<body class="text-white font-sans">
+
+    <!-- Confetti particles -->
+    <div id="confettiContainer"></div>
+
+    <!-- NAVBAR -->
+    <nav
+        class="fixed top-0 w-full z-50 px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center bg-royal-dark/90 backdrop-blur-md border-b border-green-500/20">
+        <a href="index.html" class="flex items-center gap-2 sm:gap-3 group">
+            <div
+                class="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden shadow-[0_0_15px_rgba(16,185,129,0.4)] border border-green-500/30">
+                <img src="public/logo.jpg" alt="Gruhini" class="w-full h-full object-cover">
+            </div>
+            <span class="font-cinzel text-lg sm:text-xl font-bold text-green-400 tracking-widest">GRUHINI</span>
+        </a>
+        <a href="menu.html"
+            class="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-green-400 hover:text-white transition-colors">
+            Order More →
+        </a>
+    </nav>
+
+    <!-- MAIN -->
+    <main class="min-h-screen pt-24 sm:pt-28 px-4 sm:px-6 pb-8 flex flex-col items-center justify-center">
+        <div class="max-w-md w-full mx-auto text-center">
+
+            <!-- Success Icon -->
+            <div
+                class="success-badge w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gradient-to-br from-green-500 to-green-600 mx-auto mb-6 flex items-center justify-center shadow-lg animate-up">
+                <span class="text-4xl sm:text-5xl">✓</span>
+            </div>
+
+            <!-- Main Message -->
+            <h1 class="font-hindi text-2xl sm:text-3xl font-bold text-white mb-2 animate-up"
+                style="animation-delay: 0.1s;">
+                ऑर्डर सफल! 🎉
+            </h1>
+            <p class="text-gray-400 font-hindi mb-8 animate-up" style="animation-delay: 0.15s;">
+                आपका खाना तैयार हो रहा है
+            </p>
+
+            <!-- Order Details Card -->
+            <div class="glass rounded-2xl p-6 mb-6 text-left animate-up" style="animation-delay: 0.2s;">
+                <h3 class="font-cinzel text-sm text-green-400 mb-4 uppercase tracking-widest">Order Details</h3>
+
+                <div class="space-y-3 mb-4 pb-4 border-b border-white/10">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-400">Order ID</span>
+                        <span id="orderId" class="text-white font-mono text-xs bg-white/10 px-2 py-0.5 rounded">—</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-400">Payment ID</span>
+                        <span id="paymentId"
+                            class="text-white font-mono text-xs bg-white/10 px-2 py-0.5 rounded">—</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-400">Amount Paid</span>
+                        <span id="amount" class="text-green-400 font-bold">₹0</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-400">Time</span>
+                        <span id="orderTime" class="text-white">—</span>
+                    </div>
+                </div>
+
+                <!-- Delivery Estimate -->
+                <div class="bg-green-500/10 border border-green-500/20 rounded-xl p-4 text-center">
+                    <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-1">Estimated Delivery</p>
+                    <p class="font-hindi text-lg font-bold text-white">30-45 मिनट</p>
+                    <p class="text-[10px] text-gray-500 font-hindi mt-1">🚴 डिलीवरी पार्टनर जल्द ही निकलेगा</p>
+                </div>
+            </div>
+
+            <!-- Kitchen Info -->
+            <div class="glass rounded-xl p-4 mb-6 text-center animate-up" style="animation-delay: 0.25s;">
+                <p class="text-xs text-gray-400 font-hindi">
+                    👩‍🍳 आपका खाना प्यार से बन रहा है
+                </p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="space-y-3 animate-up" style="animation-delay: 0.3s;">
+                <a href="menu.html"
+                    class="block w-full bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white font-bold py-3 rounded-xl text-sm font-hindi shadow-lg transition-all">
+                    🍽️ और ऑर्डर करें
+                </a>
+
+                <button onclick="shareOrder()"
+                    class="block w-full border border-white/20 hover:bg-white/5 text-white py-3 rounded-xl text-sm font-hindi transition-all">
+                    📤 शेयर करें
+                </button>
+
+                <a href="index.html" class="block w-full text-gray-400 hover:text-white py-2 text-xs transition-all">
+                    ← होम पर जाएं
+                </a>
+            </div>
+
+            <!-- Support -->
+            <div class="mt-8 text-center animate-up" style="animation-delay: 0.35s;">
+                <p class="text-[10px] text-gray-500">
+                    कोई समस्या? <a href="mailto:support@gruhini.com"
+                        class="text-gold hover:text-white">support@gruhini.com</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-auto pt-8 text-center">
+            <p class="font-hindi text-sm text-green-400/60 mb-1">धन्यवाद! 🙏</p>
+            <p class="text-xs text-gray-600">© 2026 Gruhini · घर जैसा खाना, घर के लोग</p>
+        </footer>
+    </main>
+
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        document.getElementById('oid').innerText = urlParams.get('oid') || "GEN-" + Math.floor(Math.random() * 10000);
-        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+        // Get URL params
+        const params = new URLSearchParams(window.location.search);
+        const orderId = params.get('oid') || 'N/A';
+        const paymentId = params.get('pid') || 'N/A';
+        const amount = params.get('amount') || '0';
+
+        // Populate order details
+        document.getElementById('orderId').textContent = orderId.slice(0, 20) + (orderId.length > 20 ? '...' : '');
+        document.getElementById('paymentId').textContent = paymentId.slice(0, 20) + (paymentId.length > 20 ? '...' : '');
+        document.getElementById('amount').textContent = `₹${amount}`;
+        document.getElementById('orderTime').textContent = new Date().toLocaleTimeString('hi-IN', { hour: '2-digit', minute: '2-digit' });
+
+        // Confetti effect
+        function createConfetti() {
+            const container = document.getElementById('confettiContainer');
+            const colors = ['#10b981', '#d97706', '#f59e0b', '#ef4444', '#8b5cf6'];
+
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                container.appendChild(confetti);
+            }
+
+            // Clean up after animation
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+
+        // Share function
+        function shareOrder() {
+            const shareText = `🎉 मैंने Gruhini से घर का खाना ऑर्डर किया! Order ID: ${orderId}`;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Gruhini Order',
+                    text: shareText,
+                    url: window.location.origin
+                }).catch(console.log);
+            } else {
+                // Fallback: copy to clipboard
+                navigator.clipboard.writeText(shareText).then(() => {
+                    alert('Copied to clipboard!');
+                });
+            }
+        }
+
+        // Clear cart from localStorage after successful order
+        // (optional - depends on your cart implementation)
+
+        // Initialize
+        createConfetti();
     </script>
+
 </body>
 
 </html>
