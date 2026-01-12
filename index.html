@@ -285,20 +285,20 @@
             }
 
             .plate-ring {
-                width: 180px;
-                height: 180px;
+                width: 250px;
+                height: 250px;
             }
 
             .plate-center {
-                width: 70px;
-                height: 70px;
+                width: 100px;
+                height: 100px;
             }
 
             .katori {
-                width: 35px;
-                height: 35px;
-                margin-left: -17px;
-                margin-top: -17px;
+                width: 55px;
+                height: 55px;
+                margin-left: -27.5px;
+                margin-top: -27.5px;
             }
 
             /* Right panel - product details */
@@ -488,6 +488,19 @@
         let currIdx = 0;
         let autoRotate;
 
+        // Pick one product from each unique chef for variety (max 5)
+        function pickOnePerChef(products) {
+            const chefMap = new Map();
+            products.forEach(p => {
+                const chef = p.chef || p.seller?.businessName || 'Unknown';
+                if (!chefMap.has(chef)) {
+                    chefMap.set(chef, p);
+                }
+            });
+            // Take up to 5 unique chefs
+            return Array.from(chefMap.values()).slice(0, 5);
+        }
+
         async function init() {
             // Show loading state
             document.getElementById('dishTitle').innerText = 'Loading...';
@@ -504,7 +517,8 @@
                 if (response.ok) {
                     const data = await response.json();
                     if (data.length > 0) {
-                        items = data.slice(0, 5).map(i => ({
+                        // Pick one product from each unique chef for variety
+                        items = pickOnePerChef(data).map(i => ({
                             ...i,
                             title: i.title || i.name,
                             desc: i.desc || i.description,
@@ -524,7 +538,8 @@
                 const res = await fetch('real-products.json');
                 if (res.ok) {
                     const data = await res.json();
-                    items = data.slice(0, 5).map(i => ({
+                    // Pick one product from each unique chef for variety
+                    items = pickOnePerChef(data).map(i => ({
                         ...i,
                         title: i.title || i.name,
                         desc: i.desc || i.description,
