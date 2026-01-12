@@ -279,16 +279,87 @@
             </section>
 
             <!-- INSIGHTS BAR -->
-            <section class="glass rounded-xl p-4 mb-8 flex flex-wrap items-center justify-between gap-4">
+            <section class="glass rounded-xl p-4 mb-6 flex flex-wrap items-center justify-between gap-4">
                 <div class="flex items-center gap-2">
                     <span class="text-xl">💡</span>
                     <p class="text-sm text-gray-300 font-hindi">
-                        <span class="text-gold font-bold">टिप:</span> "Dal Makhani" आपका सबसे लोकप्रिय व्यंजन है। इसे आज
-                        highlight करें!
+                        <span class="text-gold font-bold">टिप:</span> <span id="insightText">आपके व्यंजन लोकप्रिय
+                            हैं!</span>
                     </p>
                 </div>
                 <button
                     class="text-[10px] text-gold font-bold uppercase tracking-widest hover:text-white">Dismiss</button>
+            </section>
+
+            <!-- 📊 WEEKLY EARNINGS GRAPH -->
+            <section class="glass rounded-xl p-5 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-cinzel text-sm text-white font-bold">📊 Weekly Earnings</h3>
+                    <span class="text-[9px] text-gray-400 uppercase tracking-widest" id="graphLabel">Last 7 Days</span>
+                </div>
+                <div id="earningsGraph" class="flex items-end justify-between gap-2 h-32">
+                    <!-- Graph bars will be populated by JS -->
+                    <div class="text-center text-gray-500 w-full py-8 font-hindi text-sm">
+                        📈 ऑर्डर आने पर ग्राफ दिखेगा
+                    </div>
+                </div>
+            </section>
+
+            <!-- 🏆 TOP SELLER BADGE + ACHIEVEMENTS -->
+            <section class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+                <!-- Top Seller Badge -->
+                <div id="topSellerBadge" class="glass rounded-xl p-5 border-2 border-amber-500/20 hidden">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="w-16 h-16 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-3xl shadow-lg">
+                            🏆
+                        </div>
+                        <div>
+                            <p class="text-amber-400 font-bold text-sm uppercase tracking-widest">Top Performer</p>
+                            <p class="font-cinzel text-xl text-white font-bold" id="topSellerRank">Top 10%</p>
+                            <p class="text-[10px] text-gray-400 font-hindi">इस हफ्ते के टॉप सेलर में!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Achievements -->
+                <div class="glass rounded-xl p-5">
+                    <h3 class="font-cinzel text-sm text-white font-bold mb-4">🎖️ Achievements</h3>
+                    <div id="achievementsGrid" class="grid grid-cols-3 gap-2">
+                        <!-- Populated by JS based on real data -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- 💬 CUSTOMER REVIEWS -->
+            <section class="glass rounded-xl p-5 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-cinzel text-sm text-white font-bold">💬 Customer Love</h3>
+                    <span class="text-[9px] text-gray-400 uppercase tracking-widest">Recent Reviews</span>
+                </div>
+                <div id="reviewsSection" class="space-y-3">
+                    <div class="text-center py-6 text-gray-500 font-hindi text-sm">
+                        ⏳ Reviews coming soon...
+                    </div>
+                </div>
+            </section>
+
+            <!-- ⚡ QUICK ACTIONS -->
+            <section class="glass rounded-xl p-4 mb-8">
+                <div class="flex flex-wrap justify-center gap-3">
+                    <button onclick="document.getElementById('addModal').classList.remove('hidden')"
+                        class="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-amber-600/20 border border-amber-500/30 text-amber-400 text-xs font-bold hover:bg-amber-600/30 transition">
+                        📸 Add New Dish
+                    </button>
+                    <a href="seller-profile.html"
+                        class="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-blue-600/20 border border-blue-500/30 text-blue-400 text-xs font-bold hover:bg-blue-600/30 transition">
+                        👤 View My Profile
+                    </a>
+                    <button onclick="alert('💰 Payouts feature coming soon!')"
+                        class="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-green-600/20 border border-green-500/30 text-green-400 text-xs font-bold hover:bg-green-600/30 transition">
+                        💰 View Payouts
+                    </button>
+                </div>
             </section>
 
             <!-- YOUR DISHES -->
@@ -614,24 +685,95 @@
                 });
                 if (res.ok) {
                     const stats = await res.json();
+
+                    // Basic stats
                     document.getElementById('todayEarning').textContent = stats.todayEarning || '₹0';
                     document.getElementById('todayOrders').textContent = stats.todayOrders || 0;
                     document.getElementById('weeklyEarning').textContent = stats.weeklyEarning || '₹0';
                     document.getElementById('monthlyEarning').textContent = stats.monthlyEarning || '₹0';
                     document.getElementById('activeDishes').textContent = stats.activeDishes || 0;
+
                     if (stats.sellerName) {
                         document.getElementById('sellerName').textContent = stats.sellerName + ' 👩‍🍳';
                     }
+
+                    // Populate Achievements based on REAL data
+                    populateAchievements(stats);
+
+                    // Show Top Seller Badge if qualified
+                    if (stats.rating >= 4.5 || stats.activeDishes >= 5) {
+                        document.getElementById('topSellerBadge').classList.remove('hidden');
+                        document.getElementById('topSellerRank').textContent = stats.rating >= 4.8 ? 'Top 5%' : 'Top 10%';
+                    }
+
+                    // Update insight text based on real data
+                    if (stats.activeDishes > 0) {
+                        document.getElementById('insightText').textContent =
+                            `आपके ${stats.activeDishes} व्यंजन अभी उपलब्ध हैं। Keep going!`;
+                    }
+
                     return;
                 }
             } catch (e) {
-                console.log('Using mock stats:', e);
+                console.log('Stats load error:', e);
             }
-            // Fallback to mock
-            document.getElementById('todayEarning').textContent = '₹1,847';
-            document.getElementById('todayOrders').textContent = '7';
-            document.getElementById('weeklyEarning').textContent = '₹8,250';
-            document.getElementById('monthlyEarning').textContent = '₹32,400';
+            // Show empty state for new sellers
+            document.getElementById('todayEarning').textContent = '₹0';
+            document.getElementById('todayOrders').textContent = '0';
+            document.getElementById('weeklyEarning').textContent = '₹0';
+            document.getElementById('monthlyEarning').textContent = '₹0';
+            document.getElementById('insightText').textContent = 'पहला व्यंजन जोड़ें और कमाई शुरू करें!';
+            populateAchievements({ activeDishes: 0, rating: 0, todayOrders: 0 });
+        }
+
+        // Populate achievements based on REAL backend data
+        function populateAchievements(stats) {
+            const grid = document.getElementById('achievementsGrid');
+            const achievements = [];
+
+            // Only show achievements the seller has ACTUALLY earned
+            if (stats.activeDishes >= 1) {
+                achievements.push({ icon: '🍳', label: 'First Dish', earned: true });
+            } else {
+                achievements.push({ icon: '🍳', label: 'First Dish', earned: false });
+            }
+
+            if (stats.activeDishes >= 5) {
+                achievements.push({ icon: '📋', label: '5 Dishes', earned: true });
+            } else {
+                achievements.push({ icon: '📋', label: '5 Dishes', earned: false });
+            }
+
+            if (stats.rating >= 4.5) {
+                achievements.push({ icon: '⭐', label: '4.5+ Rating', earned: true });
+            } else {
+                achievements.push({ icon: '⭐', label: '4.5+ Rating', earned: false });
+            }
+
+            if (stats.todayOrders >= 1) {
+                achievements.push({ icon: '📦', label: 'First Order', earned: true });
+            } else {
+                achievements.push({ icon: '📦', label: 'First Order', earned: false });
+            }
+
+            if (stats.kitchenOpen) {
+                achievements.push({ icon: '✅', label: 'Kitchen Open', earned: true });
+            } else {
+                achievements.push({ icon: '🔒', label: 'Kitchen Closed', earned: false });
+            }
+
+            if (stats.activeDishes >= 10) {
+                achievements.push({ icon: '🏆', label: 'Pro Chef', earned: true });
+            } else {
+                achievements.push({ icon: '🏆', label: 'Pro Chef', earned: false });
+            }
+
+            grid.innerHTML = achievements.map(a => `
+                <div class="text-center p-2 rounded-lg ${a.earned ? 'bg-amber-500/20 border border-amber-500/30' : 'bg-gray-800/50 border border-gray-700/30 opacity-50'}">
+                    <div class="text-2xl mb-1">${a.icon}</div>
+                    <p class="text-[8px] ${a.earned ? 'text-amber-400' : 'text-gray-500'} uppercase tracking-wide font-bold">${a.label}</p>
+                </div>
+            `).join('');
         }
 
         // Kitchen Open/Close Toggle

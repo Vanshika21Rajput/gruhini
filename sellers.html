@@ -39,6 +39,28 @@
             background: radial-gradient(circle at top, rgba(217, 119, 6, 0.08), transparent 50%),
                 linear-gradient(to bottom, #0f0805, #1a0f0a);
             min-height: 100vh;
+            position: relative;
+        }
+
+        /* Background image overlay - traditional chulha kitchen */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: url('public/kitchen-chulha-bg.jpg') center/cover no-repeat;
+            opacity: 0.30;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        /* Dark gradient overlay for text readability */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(15, 8, 5, 0.6), rgba(15, 8, 5, 0.85));
+            z-index: -1;
+            pointer-events: none;
         }
 
         .glass {
@@ -242,6 +264,19 @@
         </div>
     </section>
 
+    <!-- FEATURED CHEF SPOTLIGHT - DYNAMIC -->
+    <section id="featuredSellerSection" class="max-w-5xl mx-auto px-4 mb-10 sm:mb-14 hidden">
+        <h2 class="text-center text-gray-400 text-sm sm:text-base mb-6 flex items-center justify-center gap-3">
+            <span class="w-8 sm:w-12 h-px bg-gradient-to-r from-transparent to-gold/50"></span>
+            <span class="font-hindi font-bold text-white">⭐ आज की फीचर्ड रसोई</span>
+            <span class="w-8 sm:w-12 h-px bg-gradient-to-l from-transparent to-gold/50"></span>
+        </h2>
+
+        <div id="featuredSellerCard" class="glass rounded-2xl p-6 sm:p-8 border-2 border-gold/30 featured-badge">
+            <!-- Populated dynamically by JS -->
+        </div>
+    </section>
+
     <!-- KITCHEN STORIES SECTION -->
     <section class="max-w-5xl mx-auto px-4 mb-10 sm:mb-14">
         <h2 class="text-center text-gray-400 text-sm sm:text-base mb-6 flex items-center justify-center gap-3">
@@ -306,28 +341,84 @@
     <script>
         const BASE_URL = window.CONFIG?.BASE_URL || 'https://gruhini2.onrender.com';
 
-        // Kitchen stories data
-        const kitchenStories = [
-            {
-                name: "नीलम जोशी",
-                quote: "मैं 15 साल से अपने बच्चों के लिए यही खाना बनाती हूँ। अब वही प्यार आप तक पहुँचाना चाहती हूँ।",
-                specialty: "राजस्थानी थाली"
-            },
-            {
-                name: "मंजू विजयवर्गीय",
-                quote: "मेरी माँ ने मुझे सिखाया था कि खाना सिर्फ पेट नहीं भरता, दिल भी भरता है।",
-                specialty: "मध्य प्रदेश के व्यंजन"
-            }
-        ];
+        // Global sellers data for dynamic rendering
+        let loadedSellers = [];
 
-        function renderStories() {
+        // Render Featured Seller (first seller with most dishes OR random)
+        function renderFeaturedSeller(sellers) {
+            if (!sellers || sellers.length === 0) return;
+
+            // Pick the seller with most dishes or first one
+            const featured = sellers.reduce((best, s) =>
+                (s.dishCount > (best.dishCount || 0)) ? s : best, sellers[0]);
+
+            const section = document.getElementById('featuredSellerSection');
+            const card = document.getElementById('featuredSellerCard');
+
+            const avatarUrl = featured.avatar ||
+                `https://ui-avatars.com/api/?name=${encodeURIComponent(featured.name)}&background=8c6a38&color=fff&size=150`;
+
+            const years = featured.yearsExperience || 1;
+            const bio = featured.bio || 'घर का खाना, प्यार से बना। हमारी रसोई में आपका स्वागत है।';
+            const categories = featured.categories || ['Home Cooked'];
+
+            card.innerHTML = `
+    <div class="flex flex-col md:flex-row items-center gap-6">
+        <div class="relative">
+            <img src="${avatarUrl}" alt="${featured.name}"
+                class="w-28 h-28 md:w-36 md:h-36 rounded-full object-cover border-4 border-gold/50 shadow-xl"
+                onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(featured.name)}&background=8c6a38&color=fff&size=150'">
+            ${featured.isApproved ? `
+            <div
+                class="absolute -bottom-2 -right-2 bg-green-500 text-white text-[8px] font-bold px-2 py-1 rounded-full">
+                ✓ VERIFIED
+            </div>` : ''}
+        </div>
+        <div class="flex-1 text-center md:text-left">
+            <h3 class="font-cinzel text-xl sm:text-2xl text-white font-bold mb-1">${featured.name}</h3>
+            <p class="text-gold text-sm mb-3">🏆 ${years}+ Years · ${featured.dishCount} Dishes · ${featured.location}
+            </p>
+            <p class="font-hindi text-gray-300 text-sm mb-4 italic">"${bio}"</p>
+            <div class="flex flex-wrap gap-2 justify-center md:justify-start">
+                ${categories.slice(0, 3).map(cat =>
+                `<span
+                    class="bg-amber-500/20 text-amber-400 text-[10px] font-bold px-3 py-1 rounded-full">${cat}</span>`
+            ).join('')}
+            </div>
+        </div>
+        <a href="seller-profile.html?seller=${encodeURIComponent(featured.name)}"
+            class="bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white font-bold py-3 px-6 rounded-full text-sm transition-all shadow-lg">
+            Profile देखें →
+        </a>
+    </div>
+    `;
+
+            section.classList.remove('hidden');
+        }
+
+        // Render Kitchen Stories from sellers bio data
+        function renderStories(sellers) {
             const container = document.getElementById('storiesSection');
-            container.innerHTML = kitchenStories.map((story, i) => `
+
+            if (!sellers || sellers.length === 0) {
+                container.innerHTML = `<p class="text-center text-gray-500 font-hindi col-span-2">जल्द ही और कहानियाँ आएंगी...</p>`;
+                return;
+            }
+
+            // Take first 4 sellers who have bio
+            const stories = sellers.filter(s => s.bio).slice(0, 4);
+
+            if (stories.length === 0) {
+                container.innerHTML = `<p class="text-center text-gray-500 font-hindi col-span-2">जल्द ही और कहानियाँ आएंगी...</p>`;
+                return;
+            }
+
+            container.innerHTML = stories.map((seller, i) => `
                 <div class="story-card rounded-xl p-5 animate-in" style="animation-delay: ${i * 100}ms">
-                    <p class="font-hindi text-gray-300 text-sm italic mb-3">"${story.quote}"</p>
+                    <p class="font-hindi text-gray-300 text-sm italic mb-3">"${seller.bio}"</p>
                     <div class="flex items-center justify-between">
-                        <span class="font-bold text-white text-sm">${story.name}</span>
-                        <span class="text-[10px] text-gold uppercase tracking-widest">${story.specialty}</span>
+                        <span class="font-bold text-white text-sm">${seller.name}</span>
+                        <span class="text-[10px] text-gold uppercase tracking-widest">${seller.categories?.[0] || 'Home Cooked'}</span>
                     </div>
                 </div>
             `).join('');
@@ -391,34 +482,27 @@
                 seller.dishCount++;
                 if (!seller.topDish) seller.topDish = item;
                 if (seller.topDishes.length < 3) {
-                    seller.topDishes.push({ name: item.title || item.name, img: item.img || item.image });
+                    seller.topDishes.push({
+                        name: item.title || item.name, img: item.img ||
+                            item.image
+                    });
                 }
-            });
-
-            document.getElementById('statKitchens').textContent = sellersMap.size;
-            document.getElementById('statDishes').textContent = products.length;
-
-            render([...sellersMap.values()]);
-        }
-
-        function render(sellers) {
+            }); document.getElementById('statKitchens').textContent = sellersMap.size;
+            document.getElementById('statDishes').textContent = products.length; render([...sellersMap.values()]);
+        } function
+            render(sellers) {
             const grid = document.getElementById('grid');
-            document.getElementById('loading').classList.add('hidden');
-            grid.classList.remove('hidden');
-            grid.innerHTML = '';
-
-            if (sellers.length === 0) {
-                document.getElementById('empty').classList.remove('hidden');
-                return;
-            }
-
+            document.getElementById('loading').classList.add('hidden'); grid.classList.remove('hidden'); grid.innerHTML = '';
+            if (sellers.length === 0) { document.getElementById('empty').classList.remove('hidden'); return; }
             sellers.forEach((seller, i) => {
                 const avatarUrl = getAvatarUrl(seller.avatar, seller.name);
                 const topDishImg = seller.topDish ? getImageUrl(seller.topDish.img || seller.topDish.image) : '';
 
                 const dishThumbs = seller.topDishes.slice(0, 3).map(d => {
                     const imgUrl = getImageUrl(d.img);
-                    return imgUrl ? `<img src="${imgUrl}" alt="${d.name}" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg object-cover border border-white/10" onerror="this.style.display='none'">` : '';
+                    return imgUrl ? `< img src = "${imgUrl}" alt = "${d.name}"
+            class= "w-8 h-8 sm:w-10 sm:h-10 rounded-lg object-cover border border-white/10"
+            onerror = "this.style.display='none'" > ` : '';
                 }).join('');
 
                 const card = document.createElement('div');
@@ -426,65 +510,70 @@
                 card.style.animationDelay = `${i * 100}ms`;
 
                 card.innerHTML = `
-                    <!-- Top Dish Banner -->
-                    ${topDishImg ? `
-                    <div class="h-32 sm:h-40 relative overflow-hidden">
-                        <img src="${topDishImg}" alt="Top dish" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                        <div class="absolute bottom-3 left-4 right-4">
-                            <div class="inline-block bg-amber-600 text-white text-[9px] font-bold px-2 py-1 rounded-full mb-1">
-                                🔥 आज का विशेष
-                            </div>
-                            <p class="text-white text-sm font-bold truncate">${seller.topDish.title || seller.topDish.name}</p>
+        <!-- Top Dish Banner -->
+        ${topDishImg ? `
+        <div class="h-32 sm:h-40 relative overflow-hidden">
+            <img src="${topDishImg}" alt="Top dish" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+            <div class="absolute bottom-3 left-4 right-4">
+                <div class="inline-block bg-amber-600 text-white text-[9px] font-bold px-2 py-1 rounded-full mb-1">
+                    🔥 आज का विशेष
+                </div>
+                <p class="text-white text-sm font-bold truncate">${seller.topDish.title || seller.topDish.name}</p>
+            </div>
+        </div>
+        ` : ''}
+
+        <div class="p-4 sm:p-5">
+            <!-- Chef Info -->
+            <div class="flex items-start gap-3 sm:gap-4 mb-4">
+                <img src="${avatarUrl}" alt="${seller.name}"
+                    class="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover border-2 border-gold/40 flex-shrink-0"
+                    onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(seller.name)}&background=d97706&color=fff'">
+                    <div class="flex-1 min-w-0">
+                        <h3 class="font-cinzel text-base sm:text-lg text-white truncate">${seller.name}</h3>
+                        <p class="text-[9px] sm:text-[10px] text-gray-400 uppercase tracking-widest mb-2">📍 ${seller.loc}
+                        </p>
+                        <div class="trust-chip inline-flex items-center gap-1 px-2 py-0.5 rounded-full">
+                            <span class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
+                            <span class="text-[8px] sm:text-[9px] text-green-400 font-bold uppercase">जाँची गई</span>
                         </div>
                     </div>
-                    ` : ''}
-                    
-                    <div class="p-4 sm:p-5">
-                        <!-- Chef Info -->
-                        <div class="flex items-start gap-3 sm:gap-4 mb-4">
-                            <img src="${avatarUrl}" alt="${seller.name}" 
-                                class="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover border-2 border-gold/40 flex-shrink-0"
-                                onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(seller.name)}&background=d97706&color=fff'">
-                            <div class="flex-1 min-w-0">
-                                <h3 class="font-cinzel text-base sm:text-lg text-white truncate">${seller.name}</h3>
-                                <p class="text-[9px] sm:text-[10px] text-gray-400 uppercase tracking-widest mb-2">📍 ${seller.loc}</p>
-                                <div class="trust-chip inline-flex items-center gap-1 px-2 py-0.5 rounded-full">
-                                    <span class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
-                                    <span class="text-[8px] sm:text-[9px] text-green-400 font-bold uppercase">जाँची गई</span>
-                                </div>
-                            </div>
-                        </div>
+            </div>
 
-                        <!-- What makes different chips -->
-                        <div class="flex flex-wrap gap-1.5 mb-4">
-                            <span class="text-[8px] sm:text-[9px] bg-white/5 text-gray-400 px-2 py-1 rounded-full">🌿 ताज़ी सामग्री</span>
-                            <span class="text-[8px] sm:text-[9px] bg-white/5 text-gray-400 px-2 py-1 rounded-full">🚫 No Reheating</span>
-                            <span class="text-[8px] sm:text-[9px] bg-white/5 text-gray-400 px-2 py-1 rounded-full">🍳 छोटे बैच</span>
-                        </div>
+            <!-- What makes different chips -->
+            <div class="flex flex-wrap gap-1.5 mb-4">
+                <span class="text-[8px] sm:text-[9px] bg-white/5 text-gray-400 px-2 py-1 rounded-full">🌿 ताज़ी
+                    सामग्री</span>
+                <span class="text-[8px] sm:text-[9px] bg-white/5 text-gray-400 px-2 py-1 rounded-full">🚫 No
+                    Reheating</span>
+                <span class="text-[8px] sm:text-[9px] bg-white/5 text-gray-400 px-2 py-1 rounded-full">🍳 छोटे
+                    बैच</span>
+            </div>
 
-                        <!-- Activity + Stats -->
-                        <div class="flex items-center justify-between mb-4 border-t border-white/5 pt-3">
-                            <div class="flex items-center gap-1.5 text-amber-400/80 text-[10px] sm:text-xs font-hindi">
-                                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                                आज खाना बना रही हैं
-                            </div>
-                            <span class="text-[10px] sm:text-xs text-gray-400 font-hindi">${seller.dishCount} व्यंजन</span>
-                        </div>
+            <!-- Activity + Stats -->
+            <div class="flex items-center justify-between mb-4 border-t border-white/5 pt-3">
+                <div class="flex items-center gap-1.5 text-amber-400/80 text-[10px] sm:text-xs font-hindi">
+                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                    आज खाना बना रही हैं
+                </div>
+                <span class="text-[10px] sm:text-xs text-gray-400 font-hindi">${seller.dishCount} व्यंजन</span>
+            </div>
 
-                        <!-- Dish previews -->
-                        ${dishThumbs ? `<div class="flex gap-1 mb-4">${dishThumbs}</div>` : ''}
+            <!-- Dish previews -->
+            ${dishThumbs ? `<div class="flex gap-1 mb-4">${dishThumbs}</div>` : ''}
 
-                        <!-- CTA -->
-                        <button class="w-full text-[9px] sm:text-[10px] tracking-[0.1em] uppercase py-2.5 sm:py-3 bg-gradient-to-r from-amber-600/20 to-amber-700/20 hover:from-amber-600/40 hover:to-amber-700/40 border border-gold/30 rounded-xl transition font-bold text-gold flex items-center justify-center gap-2">
-                            <span class="font-hindi">प्रोफ़ाइल देखें</span>
-                            <span>→</span>
-                        </button>
-                    </div>
-                `;
+            <!-- CTA -->
+            <button
+                class="w-full text-[9px] sm:text-[10px] tracking-[0.1em] uppercase py-2.5 sm:py-3 bg-gradient-to-r from-amber-600/20 to-amber-700/20 hover:from-amber-600/40 hover:to-amber-700/40 border border-gold/30 rounded-xl transition font-bold text-gold flex items-center justify-center gap-2">
+                <span class="font-hindi">प्रोफ़ाइल देखें</span>
+                <span>→</span>
+            </button>
+        </div>
+        `;
 
                 card.onclick = () => {
-                    window.location.href = `seller-profile.html?seller=${encodeURIComponent(seller.name)}`;
+                    window.location.href = `seller - profile.html ? seller = ${encodeURIComponent(seller.name)} `;
                 };
 
                 grid.appendChild(card);
@@ -505,8 +594,26 @@
             return `public/${encodedPath}`;
         }
 
+        // Fetch sellers data for dynamic sections (Featured Seller, Kitchen Stories)
+        async function loadDynamicSections() {
+            try {
+                const res = await fetch(`${BASE_URL}/sellers`);
+                if (res.ok) {
+                    const sellers = await res.json();
+                    loadedSellers = sellers;
+                    renderFeaturedSeller(sellers);
+                    renderStories(sellers);
+                    return;
+                }
+            } catch (e) {
+                console.log('Sellers endpoint not available:', e.message);
+            }
+            // Fallback: Show empty state for stories
+            renderStories([]);
+        }
+
         // Initialize
-        renderStories();
+        loadDynamicSections();
         loadSellers();
     </script>
 

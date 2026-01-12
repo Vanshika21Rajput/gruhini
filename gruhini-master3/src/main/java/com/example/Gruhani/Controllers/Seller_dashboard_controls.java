@@ -141,8 +141,46 @@ public class Seller_dashboard_controls {
             stats.put("repeatCustomers", "67%");
             stats.put("kitchenOpen", true);
             stats.put("sellerName", seller.getBusinessName());
+            
+            // NEW: Include profile fields
+            stats.put("bio", seller.getBio() != null ? seller.getBio() : "");
+            stats.put("yearsExperience", seller.getYearsExperience() != null ? seller.getYearsExperience() : 0);
+            stats.put("avatar", seller.getAvatar() != null ? seller.getAvatar() : "");
+            stats.put("location", seller.getLocation() != null ? seller.getLocation() : "Home Kitchen");
 
             return ResponseEntity.ok(stats);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(Map.of("success", false, "message", e.getMessage()));
+        }
+    }
+
+    // GET all sellers for public listing
+    @GetMapping("/sellers")
+    public ResponseEntity<?> getAllSellers() {
+        try {
+            java.util.List<Seller> sellers = sr.findAll();
+            
+            java.util.List<Map<String, Object>> sellerList = sellers.stream().map(s -> {
+                Map<String, Object> seller = new HashMap<>();
+                seller.put("id", s.getId());
+                seller.put("name", s.getBusinessName());
+                seller.put("bio", s.getBio() != null ? s.getBio() : "घर का खाना, प्यार से बना");
+                seller.put("yearsExperience", s.getYearsExperience() != null ? s.getYearsExperience() : 1);
+                seller.put("avatar", s.getAvatar());
+                seller.put("location", s.getLocation() != null ? s.getLocation() : "Home Kitchen");
+                seller.put("categories", s.getCategories());
+                seller.put("isApproved", s.getApproved());
+                
+                // Get dish count
+                java.util.List<product> dishes = prepo.findAllBySeller(s);
+                seller.put("dishCount", dishes.size());
+                
+                return seller;
+            }).collect(java.util.stream.Collectors.toList());
+
+            return ResponseEntity.ok(sellerList);
 
         } catch (Exception e) {
             e.printStackTrace();

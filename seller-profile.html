@@ -38,6 +38,28 @@
             background: radial-gradient(circle at top, rgba(217, 119, 6, 0.08), transparent 50%),
                 linear-gradient(to bottom, #0f0805, #1a0f0a);
             min-height: 100vh;
+            position: relative;
+        }
+
+        /* Background image - kitchen thali */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: url('public/kitchen-thali-bg.jpg') center/cover no-repeat;
+            opacity: 0.20;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        /* Dark overlay for readability */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(15, 8, 5, 0.5), rgba(15, 8, 5, 0.9));
+            z-index: -1;
+            pointer-events: none;
         }
 
         .glass {
@@ -355,19 +377,40 @@
         const urlParams = new URLSearchParams(window.location.search);
         const sellerParam = urlParams.get('seller');
 
-        // Kitchen stories (can be moved to backend later)
-        const kitchenStories = {
-            'Neelam Joshi': 'मैं 15 साल से अपने बच्चों के लिए यही खाना बनाती हूँ। राजस्थान की पारंपरिक रेसिपी, माँ से सीखी — अब वही प्यार आप तक।',
-            'Manju Vijayvargiye': 'मेरी माँ ने मुझे सिखाया था कि खाना सिर्फ पेट नहीं भरता, दिल भी भरता है। यही सोच लेकर आगे बढ़ी।',
-            'Sakshi Tolani': 'बेकिंग मेरा जुनून है। हर केक में उतना ही प्यार है जितना मैं अपने परिवार के लिए डालती हूँ।',
-            'Dolly Aunty': 'हाथ से बनी चीज़ों में एक अलग ही आत्मा होती है। मैं हर प्रोडक्ट में अपना दिल लगाती हूँ।'
-        };
+        // Dynamic seller data from backend
+        let sellerDetails = {};
 
         if (!sellerParam) {
             document.getElementById('loadingState').classList.add('hidden');
             document.getElementById('notFoundState').classList.remove('hidden');
         } else {
+            // Fetch seller details from /sellers endpoint
+            fetchSellerDetails();
             loadSellerData(sellerParam);
+        }
+
+        async function fetchSellerDetails() {
+            const BASE_URL = window.CONFIG?.BASE_URL || 'https://gruhini2.onrender.com';
+            try {
+                const res = await fetch(`${BASE_URL}/sellers`);
+                if (res.ok) {
+                    const sellers = await res.json();
+                    // Find matching seller by name
+                    const match = sellers.find(s => s.name === sellerParam);
+                    if (match) {
+                        sellerDetails = match;
+                        // Update dynamic fields if already loaded
+                        if (sellerDetails.bio) {
+                            document.getElementById('kitchenStory').textContent = `"${sellerDetails.bio}"`;
+                        }
+                        if (sellerDetails.yearsExperience) {
+                            document.getElementById('yearsExp').textContent = `${sellerDetails.yearsExperience}+`;
+                        }
+                    }
+                }
+            } catch (e) {
+                console.log('Could not fetch seller details:', e.message);
+            }
         }
 
         async function loadSellerData(sellerName) {
@@ -431,9 +474,13 @@
             document.getElementById('orderCTA').href = `menu.html?chef=${encodeURIComponent(info.name)}`;
             document.title = `${info.name} – Gruhini`;
 
-            // Kitchen story
-            const story = kitchenStories[info.name] || `"मैं कई सालों से अपने परिवार के लिए यही खाना बनाती हूँ। अब वही प्यार और स्वाद आप तक पहुँचाना चाहती हूँ।"`;
+            // Kitchen story - use dynamic data from sellerDetails if available
+            const story = sellerDetails.bio || 'मैं कई सालों से अपने परिवार के लिए यही खाना बनाती हूँ। अब वही प्यार और स्वाद आप तक पहुँचाना चाहती हूँ।';
             document.getElementById('kitchenStory').textContent = `"${story}"`;
+
+            // Years experience - use dynamic data
+            const years = sellerDetails.yearsExperience || 1;
+            document.getElementById('yearsExp').textContent = `${years}+`;
 
             // Today's special (first product)
             if (first) {

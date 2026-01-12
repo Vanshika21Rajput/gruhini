@@ -80,4 +80,42 @@ public class Seller {
     public void setCategories(List<String> categories) {
         this.categories = categories;
     }
+
+    // NEW FIELDS for dynamic seller profiles
+    String bio;
+    Integer yearsExperience;
+    String avatar;
+    String location;
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public Integer getYearsExperience() {
+        return yearsExperience;
+    }
+
+    public void setYearsExperience(Integer yearsExperience) {
+        this.yearsExperience = yearsExperience;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
 }

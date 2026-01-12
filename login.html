@@ -304,7 +304,7 @@
         // =====================================================
         const CONFIG = {
             // Fallback if external config not loaded
-            BASE_URL: window.CONFIG?.BASE_URL || 'http://gruhini2.onrender.com',
+            BASE_URL: window.CONFIG?.BASE_URL || 'https://gruhini2.onrender.com',
             GOOGLE_CLIENT_ID: "YOUR_GOOGLE_CLIENT_ID_HERE"
         };
 
@@ -721,6 +721,27 @@
             console.log('❌ Network disconnected');
             UI.showError('No internet connection. Please check your network.');
         });
+
+        // =====================================================
+        // AUTO-SELECT ROLE/MODE FROM URL PARAMS
+        // =====================================================
+        (function () {
+            const params = new URLSearchParams(window.location.search);
+            const mode = params.get('mode');
+            const role = params.get('role');
+
+            if (role === 'seller') {
+                AppState.role = 'seller';
+                UI.updateRoleToggle('seller');
+            }
+
+            if (mode === 'register') {
+                AppState.view = 'register';
+                UI.renderForm();
+            }
+
+            console.log('🔧 URL params - mode:', mode, 'role:', role);
+        })();
     </script>
 </body>
 
