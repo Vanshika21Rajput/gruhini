@@ -285,20 +285,20 @@
             }
 
             .plate-ring {
-                width: 250px;
-                height: 250px;
+                width: 220px;
+                height: 220px;
             }
 
             .plate-center {
-                width: 100px;
-                height: 100px;
+                width: 90px;
+                height: 90px;
             }
 
             .katori {
-                width: 55px;
-                height: 55px;
-                margin-left: -27.5px;
-                margin-top: -27.5px;
+                width: 50px;
+                height: 50px;
+                margin-left: -25px;
+                margin-top: -25px;
             }
 
             /* Right panel - product details */
@@ -488,7 +488,8 @@
         let currIdx = 0;
         let autoRotate;
 
-        // Pick one product from each unique chef for variety (max 5)
+        // Pick one product from each unique chef for variety
+        // Mobile = 4 katoris, Desktop = 5 katoris
         function pickOnePerChef(products) {
             const chefMap = new Map();
             products.forEach(p => {
@@ -497,8 +498,10 @@
                     chefMap.set(chef, p);
                 }
             });
-            // Take up to 5 unique chefs
-            return Array.from(chefMap.values()).slice(0, 5);
+            // Mobile (< 900px) = 4 items, Desktop = 5 items
+            const isMobile = window.innerWidth < 900;
+            const maxItems = isMobile ? 4 : 5;
+            return Array.from(chefMap.values()).slice(0, maxItems);
         }
 
         async function init() {
