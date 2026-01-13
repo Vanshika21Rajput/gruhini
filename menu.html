@@ -323,14 +323,48 @@
 
         async function addToCart(id, btn) {
             const token = localStorage.getItem('authToken');
-            if (!token) { window.location.href = 'login.html'; return; }
+            if (!token) {
+                localStorage.setItem('redirectAfterLogin', window.location.href);
+                window.location.href = 'login.html';
+                return;
+            }
             const originalText = btn.innerHTML;
             btn.innerHTML = "Adding..."; btn.classList.add("opacity-70");
             try {
-                await fetch(`${window.CONFIG.BASE_URL}/add-to-cart`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify({ productid: id, quantity: 1 }) });
-                btn.innerHTML = "Added ✓"; btn.classList.replace("bg-gray-900", "bg-green-600"); btn.classList.replace("group-hover:bg-amber-800", "hover:bg-green-700");
-                setTimeout(() => { btn.innerHTML = originalText; btn.classList.replace("bg-green-600", "bg-gray-900"); btn.classList.replace("hover:bg-green-700", "group-hover:bg-amber-800"); btn.classList.remove("opacity-70"); }, 1500);
-            } catch (e) { btn.innerHTML = "Err"; }
+                const res = await fetch(`${window.CONFIG.BASE_URL}/add-to-cart`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ productid: id, quantity: 1 })
+                });
+
+                if (!res.ok) {
+                    const errorData = await res.json().catch(() => ({}));
+                    console.error('Add to cart failed:', res.status, errorData);
+                    throw new Error(errorData.message || 'Failed to add');
+                }
+
+                btn.innerHTML = "Added ✓";
+                btn.classList.replace("bg-gray-900", "bg-green-600");
+                btn.classList.replace("group-hover:bg-amber-800", "hover:bg-green-700");
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.classList.replace("bg-green-600", "bg-gray-900");
+                    btn.classList.replace("hover:bg-green-700", "group-hover:bg-amber-800");
+                    btn.classList.remove("opacity-70");
+                }, 1500);
+            } catch (e) {
+                console.error('Add to cart error:', e);
+                btn.innerHTML = "Error";
+                btn.classList.replace("bg-gray-900", "bg-red-600");
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.classList.replace("bg-red-600", "bg-gray-900");
+                    btn.classList.remove("opacity-70");
+                }, 2000);
+            }
         }
 
         function normalize(c) { return (c || "").toLowerCase().trim(); }

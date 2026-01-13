@@ -432,6 +432,10 @@
 
                 try {
                     if (AppState.view === 'login') {
+                        // If seller tab is selected, pre-set the role
+                        if (AppState.role === 'seller') {
+                            localStorage.setItem('userRole', 'SELLER');
+                        }
                         await this.handleLogin(email, password);
                     } else {
                         await this.handleRegister(email, password);
@@ -488,9 +492,10 @@
 
                         // Use role/name from response (new backend) or decode JWT (fallback)
                         let userName = data.name || email.split('@')[0];
-                        let userRole = 'CUSTOMER';
+                        // Check if role was pre-set (during seller registration) or from localStorage
+                        let userRole = localStorage.getItem('userRole') || 'CUSTOMER';
 
-                        // Check direct role from response
+                        // Check direct role from response (if backend sends it)
                         if (data.role === 'SELLER' || (data.roles && data.roles.includes('ROLE_SELLER'))) {
                             userRole = 'SELLER';
                         }
@@ -636,8 +641,14 @@
                         console.log('✅ Seller registration successful');
                     }
 
-                    // Step 3: Auto-login
+                    // Step 3: Auto-login (with role hint for sellers)
                     console.log('🔐 Auto-logging in...');
+
+                    // If seller, pre-set the role so redirect works correctly
+                    if (AppState.role === 'seller') {
+                        localStorage.setItem('userRole', 'SELLER');
+                    }
+
                     await this.handleLogin(email, password);
 
                 } catch (err) {
