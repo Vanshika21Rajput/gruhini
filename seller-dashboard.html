@@ -36,9 +36,29 @@
 
     <style>
         body {
-            background: radial-gradient(circle at top, rgba(217, 119, 6, 0.08), transparent 50%),
-                linear-gradient(to bottom, #0f0805, #1a0f0a);
             min-height: 100vh;
+            position: relative;
+        }
+
+        .hero-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('public/background.jpg') center center / cover no-repeat;
+            z-index: -2;
+        }
+
+        .hero-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top, rgba(217, 119, 6, 0.08), transparent 50%),
+                linear-gradient(to bottom, rgba(15, 8, 5, 0.92), rgba(26, 15, 10, 0.95));
+            z-index: -1;
         }
 
         .glass {
@@ -141,6 +161,10 @@
 
 <body class="text-white font-sans">
 
+    <!-- Background -->
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+
     <!-- Auth Check -->
     <script>
         if (!localStorage.getItem('authToken') || localStorage.getItem('userRole') !== 'SELLER') {
@@ -216,21 +240,10 @@
                 <div class="flex items-start justify-between gap-4">
                     <div>
                         <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-2">🎯 आज का फोकस</p>
-                        <ul class="space-y-2 text-sm">
-                            <li class="flex items-center gap-2 text-white font-hindi">
-                                <span class="w-2 h-2 bg-amber-500 rounded-full"></span>
-                                <span><strong>Dal Makhani</strong> — High demand today</span>
-                            </li>
-                            <li class="flex items-center gap-2 text-white font-hindi">
-                                <span class="w-2 h-2 bg-red-500 rounded-full"></span>
-                                <span><strong>Paneer Thali</strong> — Low stock (2 left)</span>
-                            </li>
+                        <ul id="focusList" class="space-y-2 text-sm">
+                            <li class="text-gray-500 font-hindi text-sm">dishes add करें to see trending!</li>
                         </ul>
                     </div>
-                    <button
-                        class="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2 rounded-lg text-xs font-bold transition">
-                        ✓ Ready
-                    </button>
                 </div>
             </section>
 
@@ -240,8 +253,7 @@
                     <div>
                         <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-1">🎉 आज की कमाई</p>
                         <p class="font-cinzel text-3xl sm:text-4xl text-green-400 font-bold" id="todayEarning">₹0</p>
-                        <p class="text-xs text-gray-500 mt-1 font-hindi">पिछले हफ्ते से <span
-                                class="text-green-400">+23%</span> ज़्यादा</p>
+                        <p class="text-xs text-gray-500 mt-1 font-hindi" id="earningComparison">अभी कोई order नहीं</p>
                     </div>
                     <div class="flex gap-4">
                         <div class="text-center">
@@ -249,7 +261,7 @@
                             <p class="text-[9px] text-gray-400 uppercase">Orders</p>
                         </div>
                         <div class="text-center">
-                            <p class="text-2xl font-bold text-amber-400">⭐ 4.8</p>
+                            <p class="text-2xl font-bold text-amber-400" id="avgRating">⭐ --</p>
                             <p class="text-[9px] text-gray-400 uppercase">Rating</p>
                         </div>
                     </div>
@@ -261,12 +273,12 @@
                 <div class="stat-card glass rounded-xl p-4 sm:p-5">
                     <p class="text-[9px] text-gray-400 uppercase tracking-widest font-bold mb-1">This Week</p>
                     <p class="font-cinzel text-xl sm:text-2xl text-white font-bold" id="weeklyEarning">₹0</p>
-                    <p class="text-[9px] text-green-400 mt-1">↑ 12%</p>
+                    <p class="text-[9px] text-gray-500 mt-1" id="weeklyChange">No data</p>
                 </div>
                 <div class="stat-card glass rounded-xl p-4 sm:p-5">
                     <p class="text-[9px] text-gray-400 uppercase tracking-widest font-bold mb-1">This Month</p>
                     <p class="font-cinzel text-xl sm:text-2xl text-white font-bold" id="monthlyEarning">₹0</p>
-                    <p class="text-[9px] text-green-400 mt-1">↑ 8%</p>
+                    <p class="text-[9px] text-gray-500 mt-1" id="monthlyChange">No data</p>
                 </div>
                 <div class="stat-card glass rounded-xl p-4 sm:p-5">
                     <p class="text-[9px] text-gray-400 uppercase tracking-widest font-bold mb-1">Active Dishes</p>
@@ -274,7 +286,7 @@
                 </div>
                 <div class="stat-card glass rounded-xl p-4 sm:p-5">
                     <p class="text-[9px] text-gray-400 uppercase tracking-widest font-bold mb-1">Repeat Customers</p>
-                    <p class="font-cinzel text-xl sm:text-2xl text-amber-400 font-bold">67%</p>
+                    <p class="font-cinzel text-xl sm:text-2xl text-amber-400 font-bold" id="repeatCustomers">--</p>
                 </div>
             </section>
 
@@ -588,14 +600,12 @@
                 if (res.ok) {
                     const dishes = await res.json();
                     renderDishes(dishes);
+                } else {
+                    renderDishes([]);
                 }
             } catch (e) {
-                console.log('Using mock dishes');
-                // Mock dishes for demo
-                renderDishes([
-                    { id: 1, name: 'Dal Makhani', price: 299, category: 'Main Course', available: true, image: '' },
-                    { id: 2, name: 'Paneer Thali', price: 399, category: 'Thali', available: true, image: '' }
-                ]);
+                console.log('Could not load dishes');
+                renderDishes([]);
             }
         }
 

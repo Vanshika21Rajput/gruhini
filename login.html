@@ -432,9 +432,12 @@
 
                 try {
                     if (AppState.view === 'login') {
-                        // If seller tab is selected, pre-set the role
+                        // IMPORTANT: Clear old role first, then set based on current tab
+                        localStorage.removeItem('userRole');
                         if (AppState.role === 'seller') {
                             localStorage.setItem('userRole', 'SELLER');
+                        } else {
+                            localStorage.setItem('userRole', 'CUSTOMER');
                         }
                         await this.handleLogin(email, password);
                     } else {
