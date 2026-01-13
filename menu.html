@@ -171,7 +171,10 @@
                         const initials = userName.charAt(0).toUpperCase();
                         navLinks.innerHTML = `
                         ${navContent}
-                        <a href="cart.html" class="${linkClass}">Cart</a>
+                        <a href="cart.html" class="${linkClass} relative flex items-center">
+                            Cart
+                            <span id="cartCountBadge" class="hidden absolute -top-2 -right-3 bg-red-600 text-white text-[8px] w-4 h-4 flex items-center justify-center rounded-full border border-royal-dark font-bold shadow-sm">0</span>
+                        </a>
                         <div class="relative" id="userProfileWrapper">
                             <button id="userProfileBtn" class="flex items-center gap-2 px-2 py-1 rounded-full hover:bg-white/10 transition-all">
                                 <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-white text-xs font-bold shadow-lg border border-amber-400/30">
@@ -208,7 +211,23 @@
                                 </div>
                             </div>
                         </div>
+                        </div>
                     `;
+
+                        // Fetch Cart Count (Premium Feature)
+                        fetch(`${window.CONFIG.BASE_URL}/get-cart`, {
+                            headers: { 'Authorization': `Bearer ${token}` }
+                        }).then(res => res.json())
+                            .then(data => {
+                                if (data && Array.isArray(data) && data.length > 0) {
+                                    const badge = document.getElementById('cartCountBadge');
+                                    if (badge) {
+                                        badge.innerText = data.length;
+                                        badge.classList.remove('hidden');
+                                    }
+                                }
+                            }).catch(e => console.log('Cart fetch error', e));
+
                         setTimeout(() => {
                             const btn = document.getElementById('userProfileBtn');
                             const dropdown = document.getElementById('userDropdown');

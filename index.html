@@ -414,7 +414,10 @@
 
                     navLinks.innerHTML = `
                     ${navContent}
-                    <a href="cart.html" class="${linkClass}">Cart</a>
+                    <a href="cart.html" class="${linkClass} relative flex items-center">
+                        Cart
+                        <span id="cartCountBadge" class="hidden absolute -top-2 -right-3 bg-red-600 text-white text-[8px] w-4 h-4 flex items-center justify-center rounded-full border border-royal-dark font-bold shadow-sm">0</span>
+                    </a>
                     
                     <!-- User Profile Dropdown -->
                     <div class="relative" id="userProfileWrapper">
@@ -455,7 +458,22 @@
                             </div>
                         </div>
                     </div>
+                    </div>
                 `;
+
+                    // Fetch Cart Count (Premium Feature)
+                    fetch(`${window.CONFIG.BASE_URL}/get-cart`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    }).then(res => res.json())
+                        .then(data => {
+                            if (data && Array.isArray(data) && data.length > 0) {
+                                const badge = document.getElementById('cartCountBadge');
+                                if (badge) {
+                                    badge.innerText = data.length;
+                                    badge.classList.remove('hidden');
+                                }
+                            }
+                        }).catch(e => console.log('Cart fetch error', e));
 
                     // Toggle dropdown
                     setTimeout(() => {
