@@ -1,6 +1,6 @@
 window.CONFIG = {
     // 🔴 Production backend URL (Render deployment)
-    BASE_URL: 'https://gruhini2.onrender.com',
+    BASE_URL: 'https://gruhinibackend.onrender.com',
 
     // 🔴 CHANGE THIS to your Razorpay Key ID
     RAZORPAY_KEY: "rzp_test_YOUR_KEY_HERE",
