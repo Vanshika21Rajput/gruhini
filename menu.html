@@ -346,6 +346,10 @@
                     ? (item.avatar.startsWith('http') ? item.avatar : `public/${item.avatar}`)
                     : `https://ui-avatars.com/api/?name=${encodeURIComponent(item.chef || 'Chef')}&background=d97706&color=fff&size=64`;
 
+                const safeName = (item.name || item.title || 'Delicious Dish').replace(/'/g, "\\'");
+                const safeChef = (item.chef || 'Home Chef').replace(/'/g, "\\'");
+                const safeImage = item.image || item.img || "";
+
                 return `
                 <div class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 group hover:-translate-y-2 border border-gray-100">
                     <div class="h-60 overflow-hidden relative cursor-pointer" onclick="window.open('product.html?id=${item.id}', '_blank')">
@@ -356,7 +360,7 @@
                         <div class="absolute top-3 right-3 bg-white/90 backdrop-blur text-[10px] font-bold px-2 py-1 rounded text-amber-900 shadow-sm uppercase tracking-wide">
                             ${item.time || 'Fresh'}
                         </div>
-                        <button onclick="event.stopPropagation(); toggleFavorite('${item.id}', '${item.name.replace(/'/g, "\\'")}', '${item.image || ""}', ${item.price}, '${item.chef.replace(/'/g, "\\'")}', this)" 
+                        <button onclick="event.stopPropagation(); toggleFavorite('${item.id}', '${safeName}', '${safeImage}', ${safePrice}, '${safeChef}', this)" 
                             class="absolute top-3 left-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur shadow-sm flex items-center justify-center hover:scale-110 transition-transform cursor-pointer z-10 group/fav border border-gray-100">
                             <div class="text-sm transform group-active/fav:scale-75 transition-transform">🤍</div>
                         </button>
