@@ -14,7 +14,7 @@ import java.util.UUID;
 public class sellerDto {
 @NotBlank
     String name;
-@Email(message="Email must be in valid format dear                                                                                                                                                                                       ")
+@Email(message="Email must be in valid format  ")
      String email;
 @Size(min=10)
       String phone;

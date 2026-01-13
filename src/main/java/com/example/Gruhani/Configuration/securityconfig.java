@@ -34,11 +34,6 @@ public class securityconfig {
 private userdetailsServices userDetailsService;
 @Autowired
 jwtfilter jf;
-@Bean
-public UserDetailsService userDetailsService()
-{
-    return new userdetailsServices();
-}
 
 
     @Autowired
@@ -51,12 +46,9 @@ public UserDetailsService userDetailsService()
         return hs.csrf(o->o.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(h->h.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .logout(logout -> logout
-                    .logoutUrl("/logout")
-                    .logoutSuccessUrl("/logins")
-                  )
 
-                .authorizeHttpRequests(o->o.requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll().requestMatchers("/logins","/register","/register-seller").permitAll()
+
+                .authorizeHttpRequests(o->o.requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll().requestMatchers("/logins","/register","/register-seller","/explore").permitAll()
                  ///logins","/register","/home","/api/**","/register-seller","/seller-login","/view-pending","/get-all-products","/add-product","/got-message","/upload"
                     .anyRequest().authenticated())
                 .addFilterBefore(jf, UsernamePasswordAuthenticationFilter.class)
@@ -68,10 +60,10 @@ public UserDetailsService userDetailsService()
     public CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedOrigins(Arrays.asList("https://gruhini-app1.onrender.com"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowCredentials(true);
+        configuration.setAllowCredentials(false);
 
 // Optional: Allow exposing headers if needed (e.g., Authorization)
 // configuration.setExposedHeaders(Arrays.asList("Authorization"));

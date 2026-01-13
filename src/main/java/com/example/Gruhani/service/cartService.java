@@ -33,12 +33,12 @@ public class cartService {
     @Autowired
     CartItemRepository cartItemRepository;
     @Transactional
-    public ResponseEntity<String> addtocarts(List<Object> l,  AddtoCartDto addtocart)
+    public ResponseEntity<String> addtocarts(Long userid,  AddtoCartDto addtocart)
     {
-               Long u_id= (Long) l.get(2);
+
                Cart cart;
-               Cart cart1=cartRepo.findByu_id(u_id);
-        Users user=ur.findById(u_id).orElseThrow(()->new RuntimeException("no  user found"));
+               Cart cart1=cartRepo.findByu_id(userid);
+        Users user=ur.findById(userid).orElseThrow(()->new RuntimeException("no  user found"));
                if(cart1==null)
                {
                    cart=new Cart();

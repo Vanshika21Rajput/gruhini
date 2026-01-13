@@ -2,7 +2,9 @@ package com.example.Gruhani.service;
 
 import com.example.Gruhani.Repositories.UserRepo;
 import com.example.Gruhani.models.Users;
+import com.example.Gruhani.models.jwtClaims;
 import com.example.Gruhani.models.userdetails;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -31,15 +33,16 @@ public class authutil {
 
     public String generateToken(userdetails u)
     {
-
         Users user=ur.findByemail(u.getUsername());
-        Map<String ,Object>mp=new HashMap<>();
-        mp.put("roles", u.getAuthorities());
-        mp.put("user_id",user.getId());
         List<String> roles = u.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList();
+        jwtClaims jwtClaims=new jwtClaims();
+        jwtClaims.setRoles(roles);
+        jwtClaims.setUser_id(user.getId());
+        Map<String,Object>mp=new HashMap<>();
+        mp.put("jwtClaims",jwtClaims );
         return Jwts.builder().setSubject(u.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .claims(mp)
@@ -49,15 +52,13 @@ public class authutil {
 
     }
 
-    public List<Object> validatetoken(String headauth) {
+    public jwtClaims validatetoken(String headauth) {
         Claims c=Jwts.parser().
                 verifyWith(getskey()).build().parseSignedClaims(headauth).getPayload();
 
-        List<String>roles=c.get("roles",List.class);
-        List<Object>l=new ArrayList<>();
-        l.add(c.getSubject());
-        l.add(roles);
-        l.add(c.get("user_id",Long.class));
-        return l ;
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.convertValue(c.get("jwtClaims"), jwtClaims.class);
+
+
     }
 }

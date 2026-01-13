@@ -4,10 +4,10 @@ import com.example.Gruhani.models.Order;
 import com.example.Gruhani.models.product;
 import jakarta.persistence.*;
 import org.springframework.stereotype.Component;
-
 import java.math.BigInteger;
+
+
 @Entity
-@Component
 public class OrderItem {
     @Id
      @GeneratedValue(strategy=GenerationType.AUTO)

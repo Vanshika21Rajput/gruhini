@@ -7,12 +7,13 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.validator.constraints.ISBN;
 import org.springframework.stereotype.Component;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Table(name="Orders")
-@Component
+
 public class Order {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
@@ -21,15 +22,40 @@ public class Order {
     List<OrderItem> orderItemList;
     @Enumerated(EnumType.STRING)
     OrderStatus orderStatus;
-    String DeliveryTime;
+    String deliveryTime;
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="user_id")
     Users user;
+    @Column(nullable = false)
     LocalDateTime placedAt;
+    @Column(nullable = false)
     String deliveryAddress;
-    int OrderValue;
+    @Column(nullable = false)
+    BigInteger orderValue;
 
     String message;
+    @ManyToOne
+    @JoinColumn(name="sellerOfOrder")
+    Seller seller;
+    int otp;
+
+    public int getOtp() {
+        return otp;
+    }
+
+    public void setOtp(int otp) {
+        this.otp = otp;
+    }
+
+    public Seller getSeller() {
+        return seller;
+    }
+
+    public void setSeller(Seller seller) {
+        this.seller = seller;
+    }
+
+
 
     public String getMessage() {
         return message;
@@ -71,21 +97,8 @@ public class Order {
         this.user = user;
     }
 
-    public String getDeliveryTime() {
-        return DeliveryTime;
-    }
 
-    public void setDeliveryTime(String deliveryTime) {
-        DeliveryTime = deliveryTime;
-    }
 
-    public Users getU() {
-        return user;
-    }
-
-    public void setU(Users u) {
-        this.user = u;
-    }
 
     public LocalDateTime getPlacedAt() {
         return placedAt;
@@ -103,13 +116,20 @@ public class Order {
         this.deliveryAddress = deliveryAddress;
     }
 
-    public int getOrderValue() {
-        return OrderValue;
+
+    public String getDeliveryTime() {
+        return deliveryTime;
     }
 
-    public void setOrderValue(int orderValue) {
-        OrderValue = orderValue;
+    public void setDeliveryTime(String deliveryTime) {
+        this.deliveryTime = deliveryTime;
     }
 
+    public BigInteger getOrderValue() {
+        return orderValue;
+    }
 
+    public void setOrderValue(BigInteger orderValue) {
+        this.orderValue = orderValue;
+    }
 }

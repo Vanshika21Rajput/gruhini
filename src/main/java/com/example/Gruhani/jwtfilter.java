@@ -2,6 +2,7 @@ package com.example.Gruhani;
 
 import com.example.Gruhani.Repositories.UserRepo;
 import com.example.Gruhani.models.Users;
+import com.example.Gruhani.models.jwtClaims;
 import com.example.Gruhani.models.userdetails;
 import com.example.Gruhani.models.userdetailsServices;
 import com.example.Gruhani.service.authutil;
@@ -69,8 +70,9 @@ public class jwtfilter extends OncePerRequestFilter {
         if(headauth!=null && headauth.startsWith("Bearer ") )
         {
                String s=headauth.split("Bearer ")[1];
-                List<Object> l=a.validatetoken(s);//validate and get username from token
-                 userdetails u= (userdetails) us.loadUserByUsername((String) l.get(0));
+                jwtClaims jwtclaims=a.validatetoken(s);//validate and get username from token
+                                    Users user=ur.findById(jwtclaims.getUser_id()).get();
+                 userdetails u= (userdetails) us.loadUserByUsername(user.getEmail());
                  if(u!=null && SecurityContextHolder.getContext().getAuthentication()==null)
                  {
                      SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(u,null,u.getAuthorities()));

@@ -1,5 +1,7 @@
 package com.example.Gruhani.Controllers;
 
+import com.example.Gruhani.Package.InsufficientStockException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -25,7 +27,15 @@ public class GlobalExeptionHandler {
                 ));
         return ResponseEntity.badRequest().body(errors);
     }
-
+ @ExceptionHandler(InsufficientStockException.class)
+    public ResponseEntity<?> insufficientstock(InsufficientStockException ex)
+ {
+     return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+         "success", false,
+         "errorCode", "INSUFFICIENT_STOCK",
+         "message", ex.getMessage()
+ ));
+ }
 
 
 

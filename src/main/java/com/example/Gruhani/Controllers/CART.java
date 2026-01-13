@@ -3,6 +3,7 @@ package com.example.Gruhani.Controllers;
 import com.example.Gruhani.Repositories.CartRepo;
 import com.example.Gruhani.dtos.AddtoCartDto;
 import com.example.Gruhani.models.Cart;
+import com.example.Gruhani.models.jwtClaims;
 import com.example.Gruhani.service.authutil;
 import com.example.Gruhani.service.cartService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,8 +39,8 @@ public class CART {
                     .body("Missing or invalid Authorization header");
         }
               String actualtoken=header.substring(7);
-              List<Object> l=at.validatetoken(actualtoken);
-                 return cartserv.addtocarts(l,dto);
+              jwtClaims jwtclaims=at.validatetoken(actualtoken);
+                 return cartserv.addtocarts(jwtclaims.getUser_id(),dto);
 
     }
     @GetMapping("/get-cart")
