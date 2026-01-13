@@ -43,7 +43,7 @@ public class authutil {
         return Jwts.builder().setSubject(u.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .claims(mp)
-                .expiration(new Date(System.currentTimeMillis()+10*60*1000))
+                .expiration(new Date(System.currentTimeMillis()+10*60*60*1000))
                 .signWith(getskey())
                 .compact();
 

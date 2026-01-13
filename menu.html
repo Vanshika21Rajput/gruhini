@@ -194,14 +194,11 @@
                                     <a href="cart.html" class="flex items-center gap-3 px-4 py-2.5 text-white/80 hover:text-white hover:bg-amber-500/10 transition-all text-xs">
                                         <span>🛒</span> My Cart
                                     </a>
-                                    <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-white/80 hover:text-white hover:bg-amber-500/10 transition-all text-xs">
+                                    <a href="orders.html" class="flex items-center gap-3 px-4 py-2.5 text-white/80 hover:text-white hover:bg-amber-500/10 transition-all text-xs">
                                         <span>📦</span> Previous Orders
                                     </a>
-                                    <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-white/80 hover:text-white hover:bg-amber-500/10 transition-all text-xs">
+                                    <a href="favorites.html" class="flex items-center gap-3 px-4 py-2.5 text-white/80 hover:text-white hover:bg-amber-500/10 transition-all text-xs">
                                         <span>❤️</span> Favorites
-                                    </a>
-                                    <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-white/80 hover:text-white hover:bg-amber-500/10 transition-all text-xs">
-                                        <span>⚙️</span> Settings
                                     </a>
                                 </div>
                                 <div class="border-t border-white/10 py-2">
@@ -359,6 +356,10 @@
                         <div class="absolute top-3 right-3 bg-white/90 backdrop-blur text-[10px] font-bold px-2 py-1 rounded text-amber-900 shadow-sm uppercase tracking-wide">
                             ${item.time || 'Fresh'}
                         </div>
+                        <button onclick="event.stopPropagation(); toggleFavorite('${item.id}', '${item.name.replace(/'/g, "\\'")}', '${item.image || ""}', ${item.price}, '${item.chef.replace(/'/g, "\\'")}', this)" 
+                            class="absolute top-3 left-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur shadow-sm flex items-center justify-center hover:scale-110 transition-transform cursor-pointer z-10 group/fav border border-gray-100">
+                            <div class="text-sm transform group-active/fav:scale-75 transition-transform">🤍</div>
+                        </button>
                     </div>
                     
                     <div class="p-6">
@@ -414,6 +415,15 @@
                 btn.innerHTML = "Added ✓";
                 btn.classList.replace("bg-gray-900", "bg-green-600");
                 btn.classList.replace("group-hover:bg-amber-800", "hover:bg-green-700");
+
+                // Update badge
+                const badge = document.getElementById('cartCountBadge');
+                if (badge) {
+                    const current = parseInt(badge.innerText) || 0;
+                    badge.innerText = current + 1;
+                    badge.classList.remove('hidden');
+                }
+
                 setTimeout(() => {
                     btn.innerHTML = originalText;
                     btn.classList.replace("bg-green-600", "bg-gray-900");
@@ -429,6 +439,41 @@
                     btn.classList.replace("bg-red-600", "bg-gray-900");
                     btn.classList.remove("opacity-70");
                 }, 2000);
+            }
+        }
+
+        async function toggleFavorite(dishId, dishName, dishImage, dishPrice, chefName, btn) {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Optimistic UI update
+            const icon = btn.querySelector('div');
+            const isFav = icon.innerText === '❤️';
+            icon.innerText = isFav ? '🤍' : '❤️';
+
+            try {
+                const endpoint = isFav ? '/remove-favorite' : '/add-favorite';
+                await fetch(`${window.CONFIG.BASE_URL}${endpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        dishId,
+                        dishName,
+                        dishImage,
+                        dishPrice,
+                        chefName
+                    })
+                });
+            } catch (e) {
+                console.error('Fav error', e);
+                // Revert on error
+                icon.innerText = isFav ? '❤️' : '🤍';
             }
         }
 
