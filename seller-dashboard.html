@@ -400,75 +400,13 @@
                     <span class="text-[9px] text-gray-400 font-hindi">नए ऑर्डर सबसे ऊपर</span>
                 </div>
                 <div id="ordersGrid" class="space-y-3">
-                    <!-- ORDER 1: Needs Accept -->
-                    <div class="glass rounded-xl p-4 border-l-4 border-amber-500">
-                        <div class="flex items-center justify-between mb-3">
-                            <div class="flex items-center gap-3">
-                                <div
-                                    class="w-10 h-10 rounded-lg bg-amber-500/20 flex items-center justify-center text-lg">
-                                    🍛</div>
-                                <div>
-                                    <p class="font-bold text-white text-sm">Dal Makhani × 2</p>
-                                    <p class="text-[10px] text-gray-400">🕐 2 mins ago · <span
-                                            class="text-amber-400 font-bold">NEW</span></p>
-                                </div>
-                            </div>
-                            <span class="font-cinzel font-bold text-gold text-lg">₹598</span>
-                        </div>
-                        <div class="flex items-center justify-between pt-3 border-t border-white/10">
-                            <p class="text-[10px] text-gray-400 font-hindi">👤 Rahul S. · Indiranagar</p>
-                            <div class="flex gap-2">
-                                <button onclick="updateOrderStatus(1, 'reject')"
-                                    class="px-3 py-1.5 text-[10px] font-bold text-red-400 border border-red-400/30 rounded-lg hover:bg-red-500/10 transition">Reject</button>
-                                <button onclick="updateOrderStatus(1, 'accept')"
-                                    class="px-4 py-1.5 text-[10px] font-bold text-white bg-green-600 rounded-lg hover:bg-green-500 transition">✓
-                                    Accept</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ORDER 2: Preparing -->
-                    <div class="glass rounded-xl p-4 border-l-4 border-blue-500">
-                        <div class="flex items-center justify-between mb-3">
-                            <div class="flex items-center gap-3">
-                                <div
-                                    class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center text-lg">
-                                    🥘</div>
-                                <div>
-                                    <p class="font-bold text-white text-sm">Paneer Thali × 1</p>
-                                    <p class="text-[10px] text-blue-400">🍳 Cooking since 10 mins</p>
-                                </div>
-                            </div>
-                            <span class="font-cinzel font-bold text-gold">₹299</span>
-                        </div>
-                        <div class="flex items-center justify-between pt-3 border-t border-white/10">
-                            <p class="text-[10px] text-gray-400 font-hindi">👤 Priya M. · Koramangala</p>
-                            <button onclick="updateOrderStatus(2, 'ready')"
-                                class="px-4 py-1.5 text-[10px] font-bold text-white bg-amber-600 rounded-lg hover:bg-amber-500 transition">🔔
-                                Mark Ready</button>
-                        </div>
-                    </div>
-
-                    <!-- ORDER 3: Ready for pickup -->
-                    <div class="glass rounded-xl p-4 border-l-4 border-green-500">
-                        <div class="flex items-center justify-between mb-3">
-                            <div class="flex items-center gap-3">
-                                <div
-                                    class="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center text-lg">
-                                    ✅</div>
-                                <div>
-                                    <p class="font-bold text-white text-sm">Chole Bhature × 2</p>
-                                    <p class="text-[10px] text-green-400">✓ Ready for pickup</p>
-                                </div>
-                            </div>
-                            <span class="font-cinzel font-bold text-gold">₹350</span>
-                        </div>
-                        <div class="flex items-center justify-between pt-3 border-t border-white/10">
-                            <p class="text-[10px] text-gray-400 font-hindi">👤 Amit K. · HSR Layout</p>
-                            <span class="text-[10px] font-bold text-green-400 font-hindi">🚴 Delivery partner on the
-                                way</span>
-                        </div>
-                    </div>
+                    <!-- Orders will be populated from backend -->
+                </div>
+                <!-- Empty State -->
+                <div id="noOrders" class="text-center py-12">
+                    <div class="text-5xl mb-4">📭</div>
+                    <p class="text-gray-400 font-hindi">अभी कोई ऑर्डर नहीं</p>
+                    <p class="text-xs text-gray-500 font-hindi mt-1">ऑर्डर आने पर यहाँ दिखेंगे!</p>
                 </div>
             </section>
 
@@ -486,7 +424,7 @@
                 </div>
                 <div class="mt-4 pt-4 border-t border-white/10 flex items-center justify-between">
                     <span class="text-sm text-gray-500 font-hindi">अगला पेआउट:</span>
-                    <span class="font-bold text-green-400">Monday, 13 Jan · ₹4,250</span>
+                    <span class="font-bold text-gray-400" id="nextPayout">कोई pending नहीं</span>
                 </div>
             </section>
 
