@@ -424,6 +424,14 @@
             `).join('');
         }
 
+        // MOCK_DATA fallback when all sources fail
+        const MOCK_DATA = [
+            { id: "1", title: "Dal Bati Churma", price: "₹350", chef: "Neelam Joshi", loc: "Indore, MP", desc: "Authentic Rajasthani", img: "Neelam Joshi/Daal Bhati Churma.jpeg", avatar: "Neelam Joshi/Owner pic.png", category: "Thalis" },
+            { id: "2", title: "Mini Dry Samosa", price: "₹120", chef: "Manju Vijayvargiye", loc: "Bhopal, MP", desc: "Crispy dry samosas", img: "Manju vijayvargiye/Chote Samose.jpeg", avatar: "Manju vijayvargiye/OWNER PIC.jpeg", category: "Snacks" },
+            { id: "3", title: "Mawa Slice Cake", price: "₹250", chef: "Sakshi Tolani", loc: "Pune, MH", desc: "Rich Parsi-style cake", img: "Sakshi Tolani/Sakshi Tolani/Mawa Slice Cakes as Gifts.jpeg", avatar: "Sakshi Tolani/Sakshi Tolani/Owner pic.jpeg", category: "Desserts" },
+            { id: "4", title: "Herbal Bath Soap", price: "₹120", chef: "Dolly Aunty", loc: "Mumbai, MH", desc: "Handmade organic", img: "dolly aunty/herbal soap.jpeg", avatar: "dolly aunty/Owner pic.jpeg", category: "Crafts" }
+        ];
+
         async function loadSellers() {
             try {
                 const controller = new AbortController();
@@ -450,14 +458,17 @@
                 const res = await fetch('real-products.json');
                 if (res.ok) {
                     const data = await res.json();
-                    processData(data);
-                    return;
+                    if (data && data.length > 0) {
+                        processData(data);
+                        return;
+                    }
                 }
             } catch (e) {
-                console.error('No data');
+                console.warn('Local JSON failed, using MOCK_DATA');
             }
-            document.getElementById('loading').classList.add('hidden');
-            document.getElementById('empty').classList.remove('hidden');
+            // Ultimate fallback: use inline MOCK_DATA
+            console.log('Using inline MOCK_DATA as fallback');
+            processData(MOCK_DATA);
         }
 
         function processData(products) {

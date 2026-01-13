@@ -213,6 +213,16 @@
     <script>
         let allItems = [];
 
+        // MOCK_DATA fallback when all sources fail
+        const MOCK_DATA = [
+            { id: "neelam-dal-bati", title: "Dal Bati Churma", price: "₹350", chef: "Neelam Joshi", loc: "Indore, MP", desc: "Authentic Rajasthani Dal Bati cooked on cow dung cakes.", img: "public/Neelam Joshi/Daal Bhati Churma.jpeg", avatar: "Neelam Joshi/Owner pic.png", category: "Thalis", time: "4hrs" },
+            { id: "neelam-thali", title: "Sampoorna Veg Thali", price: "₹280", chef: "Neelam Joshi", loc: "Indore, MP", desc: "Complete meal with Rice, Kadhi, Aloo Sabji, Salad, and Roti.", img: "public/Neelam Joshi/Thali (Rice, Kadhi , Salad , Aloo sabji, Roti).jpeg", avatar: "Neelam Joshi/Owner pic.png", category: "Thalis", time: "Lunch" },
+            { id: "manju-samosa", title: "Mini Dry Samosa", price: "₹120", chef: "Manju Vijayvargiye", loc: "Bhopal, MP", desc: "Crispy, dry mini samosas perfect for evening tea.", img: "public/Manju vijayvargiye/Chote Samose.jpeg", avatar: "Manju vijayvargiye/OWNER PIC.jpeg", category: "Snacks", time: "Fresh" },
+            { id: "manju-gulab", title: "Desi Ghee Gulab Jamun", price: "₹299", chef: "Manju Vijayvargiye", loc: "Bhopal, MP", desc: "Soft khoya dumplings in rose sugar syrup.", img: "public/Manju vijayvargiye/Gulab Jamun.jpeg", avatar: "Manju vijayvargiye/OWNER PIC.jpeg", category: "Desserts", time: "Warm" },
+            { id: "sakshi-mawa-cake", title: "Mawa Slice Cake", price: "₹250", chef: "Sakshi Tolani", loc: "Pune, MH", desc: "Rich, dense Parsi-style cake loaded with mawa and butter.", img: "public/Sakshi Tolani/Sakshi Tolani/Mawa Slice Cakes as Gifts.jpeg", avatar: "Sakshi Tolani/Sakshi Tolani/Owner pic.jpeg", category: "Desserts", time: "Baked" },
+            { id: "dolly-soap", title: "Herbal Bath Soap", price: "₹120", chef: "Dolly Aunty", loc: "Mumbai, MH", desc: "Handmade organic soap with natural herbs.", img: "public/dolly aunty/herbal soap.jpeg", avatar: "dolly aunty/Owner pic.jpeg", category: "Crafts", time: "Handmade" }
+        ];
+
         async function init() {
             try {
                 try {
@@ -220,16 +230,38 @@
                     const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 sec timeout for Render cold start
                     const res = await fetch(`${window.CONFIG.BASE_URL}/explore`, { signal: controller.signal });
                     clearTimeout(timeoutId);
-                    if (res.ok) allItems = await res.json();
-                    else throw new Error();
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data && data.length > 0) {
+                            allItems = data;
+                        } else {
+                            throw new Error('Backend empty');
+                        }
+                    } else throw new Error('Backend failed');
                 } catch (e) {
-                    const localRes = await fetch('real-products.json');
-                    const localData = await localRes.json();
-                    allItems = localData.map(i => ({ ...i, image: i.img?.startsWith('http') ? i.img : "public/" + i.img }));
+                    console.warn('Backend unavailable, trying local JSON:', e.message);
+                    try {
+                        const localRes = await fetch('real-products.json');
+                        if (localRes.ok) {
+                            const localData = await localRes.json();
+                            if (localData && localData.length > 0) {
+                                allItems = localData.map(i => ({ ...i, image: i.img?.startsWith('http') ? i.img : "public/" + i.img }));
+                            } else {
+                                throw new Error('Local JSON empty');
+                            }
+                        } else {
+                            throw new Error('Local JSON failed');
+                        }
+                    } catch (e2) {
+                        console.warn('Local JSON also failed, using MOCK_DATA:', e2.message);
+                        allItems = MOCK_DATA;
+                    }
                 }
                 render(allItems);
             } catch (err) {
-                document.getElementById('loading').innerText = "Kitchen Closed";
+                console.error('All sources failed:', err);
+                allItems = MOCK_DATA;
+                render(allItems);
             }
         }
 
