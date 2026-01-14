@@ -13,6 +13,8 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;700&family=Noto+Sans+Devanagari:wght@400;600&display=swap"
         rel="stylesheet">
+    <!-- Professional Vector Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="js/config.js"></script>
     <script>
@@ -146,12 +148,13 @@
                 if (orders.length === 0) {
                     container.innerHTML = `
                         <div class="text-center py-20 glass rounded-2xl border border-white/5">
-                            <div class="text-5xl mb-6 opacity-30">📜</div>
+                            <div class="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-6"><i data-lucide="scroll" class="w-10 h-10 text-gray-500"></i></div>
                             <h2 class="text-xl text-gold-main font-cinzel mb-2">No Past Feasts</h2>
                             <p class="text-gray-400 font-sans text-sm mb-6 max-w-xs mx-auto">Your scroll is empty. Order freshly prepared meals to begin your story.</p>
                             <a href="menu.html" class="inline-block px-8 py-3 bg-gradient-to-r from-gold-matte to-gold-main text-black font-bold text-xs uppercase tracking-widest rounded-full hover:scale-105 transition-transform shadow-lg shadow-gold-main/20">Explore The Menu</a>
                         </div>
                     `;
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
                     return;
                 }
 
@@ -213,6 +216,9 @@
 
         loadOrders();
     </script>
+
+    <!-- Initialize Lucide Icons -->
+    <script>if (typeof lucide !== 'undefined') lucide.createIcons();</script>
 </body>
 
 </html>

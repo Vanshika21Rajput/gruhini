@@ -8,17 +8,54 @@
     <link rel="preload" href="public/background.jpg" as="image" type="image/jpeg">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Lato:wght@400;700&display=swap"
         rel="stylesheet">
+    <!-- Professional Vector Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = { theme: { extend: { colors: { amber: { 600: '#d97706', 800: '#92400e' }, cream: '#FDF8F0', gold: '#c5a059' }, fontFamily: { cinzel: ['Cinzel', 'serif'], sans: ['Lato', 'sans-serif'] } } } }
     </script>
     <script src="js/config.js"></script>
     <style>
+        /* ========== GLOBAL PROFESSIONAL POLISH ========== */
+        /* PREMIUM HINDI FONT & ICON ALIGNMENT */
+        .font-hindi {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            font-weight: 500;
+            line-height: 1.8;
+            letter-spacing: 0.02em;
+        }
+
+        [data-lucide] {
+            vertical-align: middle;
+            margin-top: -2px;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        ::selection {
+            background: rgba(212, 175, 55, 0.3);
+            color: #FDF8F0;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Cinzel', serif;
+            line-height: 1.2;
+        }
+
         .hide-scroll::-webkit-scrollbar {
             display: none;
         }
 
-        /* Mobile Responsiveness */
         @media(max-width: 768px) {
             .h-\[55vh\] {
                 height: 45vh !important;
@@ -36,7 +73,6 @@
                 padding: 5px 10px !important;
             }
 
-            /* 2 column grid on tablets */
             #menuGrid {
                 grid-template-columns: repeat(2, 1fr) !important;
                 gap: 1rem !important;
@@ -53,51 +89,42 @@
                 height: 2.5rem !important;
             }
 
-            /* Single column grid on mobile */
             #menuGrid {
                 grid-template-columns: 1fr !important;
             }
 
-            /* Smaller hero */
             .h-\[55vh\] {
                 height: 35vh !important;
                 min-height: 280px !important;
             }
 
-            /* Smaller hero text */
             h1.font-cinzel {
                 font-size: 1.5rem !important;
             }
 
-            /* Card image smaller */
             .h-60 {
                 height: 200px !important;
             }
 
-            /* Tab buttons smaller on mobile */
             .tab-btn {
                 padding: 10px 16px !important;
                 font-size: 10px !important;
             }
         }
 
-        /* Fix mobile tab visibility */
         .tab-btn {
             min-width: 65px;
             flex-shrink: 0;
         }
 
-        /* Ensure All tab is always visible first */
         @media (max-width: 480px) {
 
-            /* Tab buttons even smaller */
             .tab-btn {
                 padding: 8px 12px !important;
                 font-size: 9px !important;
                 min-width: 55px;
             }
 
-            /* Tab container scroll snap */
             .hide-scroll {
                 scroll-snap-type: x mandatory;
                 scroll-padding-left: 16px;
@@ -145,12 +172,10 @@
                     const userName = localStorage.getItem('userName') || 'User';
                     const navLinks = document.getElementById('navLinks');
 
-                    // Mobile-optimized: smaller fonts, but ALL links visible
                     const linkClass = "text-[9px] sm:text-xs font-bold uppercase tracking-widest text-white/70 hover:text-gold transition-colors px-1 sm:px-2";
                     const activeClass = "text-[9px] sm:text-xs font-bold uppercase tracking-widest text-gold border-b border-gold pb-1 px-1 sm:px-2";
                     const btnClass = "border border-gold/40 px-3 sm:px-5 py-1.5 sm:py-2 rounded-full text-gold text-[9px] sm:text-xs font-bold tracking-widest hover:bg-gold/10 hover:text-white transition-all uppercase";
 
-                    // All links visible on all screens - trust-first UX
                     const navContent = `
                         <span class="${activeClass}">Menu</span>
                         <a href="sellers.html" class="${linkClass}">Kitchens</a>
@@ -192,18 +217,18 @@
                                 </div>
                                 <div class="py-2">
                                     <a href="cart.html" class="flex items-center gap-3 px-4 py-2.5 text-white/80 hover:text-white hover:bg-amber-500/10 transition-all text-xs">
-                                        <span>🛒</span> My Cart
+                                        <i data-lucide="shopping-cart" class="w-4 h-4"></i> My Cart
                                     </a>
                                     <a href="orders.html" class="flex items-center gap-3 px-4 py-2.5 text-white/80 hover:text-white hover:bg-amber-500/10 transition-all text-xs">
-                                        <span>📦</span> Previous Orders
+                                        <i data-lucide="package" class="w-4 h-4"></i> Previous Orders
                                     </a>
                                     <a href="favorites.html" class="flex items-center gap-3 px-4 py-2.5 text-white/80 hover:text-white hover:bg-amber-500/10 transition-all text-xs">
-                                        <span>❤️</span> Favorites
+                                        <i data-lucide="heart" class="w-4 h-4"></i> Favorites
                                     </a>
                                 </div>
                                 <div class="border-t border-white/10 py-2">
                                     <button onclick="localStorage.clear(); window.location.href='login.html'" class="flex items-center gap-3 px-4 py-2.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all text-xs w-full">
-                                        <span>🚪</span> Logout
+                                        <i data-lucide="log-out" class="w-4 h-4"></i> Logout
                                     </button>
                                 </div>
                             </div>
@@ -211,7 +236,6 @@
                         </div>
                     `;
 
-                        // Fetch Cart Count (Premium Feature)
                         fetch(`${window.CONFIG.BASE_URL}/get-cart`, {
                             headers: { 'Authorization': `Bearer ${token}` }
                         }).then(res => res.json())
@@ -245,7 +269,6 @@
     </div>
 
     <div class="relative z-10 -mt-16 mb-12">
-        <!-- Scroll hint gradient on right -->
         <div
             class="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-[#faf6f1] to-transparent pointer-events-none z-10 sm:hidden">
         </div>
@@ -260,6 +283,20 @@
                 class="tab-btn px-8 py-3 rounded-full bg-white border border-gray-200 text-gray-600 text-xs font-bold uppercase hover:bg-amber-50 hover:text-amber-800 transition-all shadow-md">Desserts</button>
             <button id="btn-Crafts" onclick="filter('Crafts')"
                 class="tab-btn px-8 py-3 rounded-full bg-white border border-gray-200 text-gray-600 text-xs font-bold uppercase hover:bg-amber-50 hover:text-amber-800 transition-all shadow-md">Crafts</button>
+        </div>
+
+        <!-- 🕉️ TYOHAR (VRAT) TOGGLE - Cultural Filter -->
+        <div class="flex items-center justify-center mt-4 gap-3">
+            <span class="text-[10px] uppercase font-bold text-gray-400 tracking-widest">Standard Menu</span>
+            <button id="vratToggle" onclick="toggleVratMode()"
+                class="relative w-14 h-7 bg-gray-300 rounded-full transition-colors duration-300 focus:outline-none shadow-inner border border-gray-200">
+                <div id="vratKnob"
+                    class="absolute left-1 top-1 w-5 h-5 bg-white rounded-full transition-transform duration-300 shadow-md">
+                </div>
+            </button>
+            <span class="text-[10px] uppercase font-bold text-amber-700 tracking-widest flex items-center gap-1">
+                <i data-lucide="flower-2" class="w-3 h-3"></i> Vrat / Upwas
+            </span>
         </div>
     </div>
 
@@ -341,7 +378,6 @@
                 const safePrice = Number(String(item.price).replace(/[^0-9.]/g, '')) || 0;
                 const price = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 }).format(safePrice);
                 const img = item.image || item.img || window.CONFIG.PLACEHOLDER;
-                // Handle avatar paths: CDN URLs, relative paths, or fallback to UI Avatars
                 const chefAvatar = item.avatar
                     ? (item.avatar.startsWith('http') ? item.avatar : `public/${item.avatar}`)
                     : `https://ui-avatars.com/api/?name=${encodeURIComponent(item.chef || 'Chef')}&background=d97706&color=fff&size=64`;
@@ -349,6 +385,39 @@
                 const safeName = (item.name || item.title || 'Delicious Dish').replace(/'/g, "\\'");
                 const safeChef = (item.chef || 'Home Chef').replace(/'/g, "\\'");
                 const safeImage = item.image || item.img || "";
+
+                // 🏷️ INGREDIENT BADGES - Auto-generate from description
+                const descLower = ((item.desc || item.description || '') + ' ' + (item.name || item.title || '')).toLowerCase();
+                const badges = [];
+                if (descLower.includes('ghee') || descLower.includes('desi')) badges.push({ text: 'Desi Ghee', color: 'bg-green-100 text-green-700 border-green-200' });
+                if (descLower.includes('handmade') || descLower.includes('hand made')) badges.push({ text: 'Handmade', color: 'bg-amber-100 text-amber-700 border-amber-200' });
+                if (descLower.includes('vrat') || descLower.includes('falahari') || descLower.includes('upwas')) badges.push({ text: 'Vrat Special', color: 'bg-purple-100 text-purple-700 border-purple-200' });
+                if (descLower.includes('organic') || descLower.includes('natural')) badges.push({ text: 'Organic', color: 'bg-lime-100 text-lime-700 border-lime-200' });
+                const badgeHtml = badges.slice(0, 2).map(b => `<span class="text-[8px] font-bold px-1.5 py-0.5 rounded border ${b.color} uppercase">${b.text}</span>`).join('');
+
+                // 📍 SMART ORIGIN STAMP - Category + Location aware
+                const loc = (item.loc || '').toLowerCase();
+                const cat = (item.category || '').toLowerCase();
+                const city = loc.includes('indore') ? 'Indore' : loc.includes('bhopal') ? 'Bhopal' : loc.includes('pune') ? 'Pune' : loc.includes('mumbai') ? 'Mumbai' : '';
+
+                let originLabel = '';
+                if (city) {
+                    // Smart labels based on product category
+                    if (cat.includes('craft') || cat.includes('art') || cat.includes('soap') || cat.includes('decor')) {
+                        originLabel = `HANDCRAFTED · ${city.toUpperCase()}`;
+                    } else if (cat.includes('snack') || cat.includes('namkeen') || cat.includes('pickle')) {
+                        originLabel = city === 'Indore' ? 'INDORI SWAD' : city === 'Bhopal' ? 'BHOPALI SNACKS' : `${city.toUpperCase()} MUNCHIES`;
+                    } else if (cat.includes('sweet') || cat.includes('dessert') || cat.includes('mithai')) {
+                        originLabel = `${city.toUpperCase()} MITHAI`;
+                    } else if (cat.includes('thali') || cat.includes('meal')) {
+                        originLabel = city === 'Indore' ? 'INDORI ZAYKA' : city === 'Bhopal' ? 'BHOPALI DAAWAT' : `${city.toUpperCase()} SPECIAL`;
+                    } else {
+                        // Default: Generic origin
+                        originLabel = `FROM ${city.toUpperCase()}`;
+                    }
+                }
+
+                const originStamp = originLabel ? `<div class="absolute bottom-2 left-2 bg-black/80 text-white text-[8px] font-bold px-2 py-1 rounded border border-amber-500/50 flex items-center gap-1"><i data-lucide="map-pin" class="w-2 h-2"></i> ${originLabel}</div>` : '';
 
                 return `
                 <div class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 group hover:-translate-y-2 border border-gray-100">
@@ -362,8 +431,9 @@
                         </div>
                         <button onclick="event.stopPropagation(); toggleFavorite('${item.id}', '${safeName}', '${safeImage}', ${safePrice}, '${safeChef}', this)" 
                             class="absolute top-3 left-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur shadow-sm flex items-center justify-center hover:scale-110 transition-transform cursor-pointer z-10 group/fav border border-gray-100">
-                            <div class="text-sm transform group-active/fav:scale-75 transition-transform">🤍</div>
+                            <i data-lucide="heart" class="w-4 h-4 text-gray-400 group-hover/fav:text-red-500 transition-colors"></i>
                         </button>
+                        ${originStamp}
                     </div>
                     
                     <div class="p-6">
@@ -371,6 +441,9 @@
                             <h3 class="font-cinzel text-lg text-gray-900 font-bold leading-tight truncate pr-2">${item.name || item.title}</h3>
                             <span class="text-amber-600 text-xs font-bold bg-amber-50 px-2 py-1 rounded border border-amber-100">${item.category || 'Veg'}</span>
                         </div>
+                        
+                        <!-- Ingredient Badges -->
+                        ${badgeHtml ? `<div class="flex flex-wrap gap-1 mb-2">${badgeHtml}</div>` : ''}
                         
                         <!-- Chef Info with Avatar -->
                         <div class="flex items-center gap-2 mb-3">
@@ -389,6 +462,9 @@
                     </div>
                 </div>
             `}).join('');
+
+            // Re-initialize Lucide icons for dynamic content
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
         async function addToCart(id, btn) {
@@ -412,13 +488,13 @@
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
+                    credentials: 'include',
                     body: JSON.stringify({ productid: id, quantity: 1 })
                 });
 
                 console.log('📥 Response status:', res.status);
 
                 if (!res.ok) {
-                    // Handle 403 specifically - likely expired token
                     if (res.status === 403) {
                         console.error('🔒 403 Forbidden - Token likely expired');
                         localStorage.removeItem('authToken');
@@ -509,11 +585,142 @@
             const target = document.getElementById(`btn-${cat}`);
             if (target) target.className = activeClass;
 
+            // Reset Vrat mode
+            if (isVratMode) toggleVratMode();
+
             if (cat === 'All') render(allItems);
             else render(allItems.filter(i => normalize(i.category) === normalize(cat)));
         }
+
+        // 🕉️ TYOHAR (VRAT) TOGGLE - Cultural Filter
+        let isVratMode = false;
+        function toggleVratMode() {
+            isVratMode = !isVratMode;
+            const btn = document.getElementById('vratToggle');
+            const knob = document.getElementById('vratKnob');
+            const header = document.querySelector('h1.font-cinzel');
+
+            if (isVratMode) {
+                // Active state
+                btn.classList.replace('bg-gray-300', 'bg-amber-500');
+                btn.classList.replace('border-gray-200', 'border-amber-600');
+                knob.classList.add('translate-x-7');
+                knob.classList.replace('bg-white', 'bg-amber-100');
+
+                // Filter for Vrat/Falahari items
+                const vratItems = allItems.filter(item => {
+                    const txt = ((item.name || item.title || '') + ' ' + (item.desc || item.description || '')).toLowerCase();
+                    return txt.includes('vrat') || txt.includes('falahari') || txt.includes('sabudana') || txt.includes('upwas') || txt.includes('kuttu');
+                });
+
+                if (vratItems.length > 0) {
+                    render(vratItems);
+                    if (header) header.innerText = "🙏 Shuddh Falahari Menu";
+                } else {
+                    render([]);
+                    if (header) header.innerText = "🙏 Vrat Menu Coming Soon";
+                }
+            } else {
+                // Reset state
+                btn.classList.replace('bg-amber-500', 'bg-gray-300');
+                btn.classList.replace('border-amber-600', 'border-gray-200');
+                knob.classList.remove('translate-x-7');
+                knob.classList.replace('bg-amber-100', 'bg-white');
+
+                render(allItems);
+                if (header) header.innerText = "The Royal Menu";
+            }
+        }
+
+        // 🔍 SMART SEARCH
+        function toggleSearch() {
+            const overlay = document.getElementById('searchOverlay');
+            if (overlay.classList.contains('hidden')) {
+                overlay.classList.remove('hidden');
+                setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+                document.getElementById('searchInput').focus();
+            } else {
+                overlay.classList.add('opacity-0');
+                setTimeout(() => overlay.classList.add('hidden'), 300);
+            }
+        }
+
+        function liveSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const resultsContainer = document.getElementById('searchResults');
+
+            if (query.length < 2) {
+                resultsContainer.innerHTML = '<p class="text-gray-500 text-sm">Type at least 2 characters...</p>';
+                return;
+            }
+
+            const matches = allItems.filter(item => {
+                const searchable = ((item.name || item.title || '') + ' ' + (item.chef || '') + ' ' + (item.desc || item.description || '') + ' ' + (item.loc || '')).toLowerCase();
+                return searchable.includes(query);
+            }).slice(0, 6);
+
+            if (matches.length === 0) {
+                resultsContainer.innerHTML = '<p class="text-gray-400 text-center py-8">No dishes found for "' + query + '"</p>';
+                return;
+            }
+
+            resultsContainer.innerHTML = matches.map(item => {
+                const img = item.image || item.img || 'public/placeholder.jpg';
+                const price = Number(String(item.price).replace(/[^0-9.]/g, '')) || 0;
+                return `
+                    <a href="product.html?id=${item.id}" class="flex items-center gap-4 p-4 bg-white/5 rounded-xl hover:bg-amber-500/10 transition-all border border-transparent hover:border-amber-500/30">
+                        <img src="${img}" class="w-16 h-16 rounded-lg object-cover">
+                        <div class="flex-1">
+                            <h4 class="font-cinzel text-white font-bold">${item.name || item.title}</h4>
+                            <p class="text-xs text-gray-400">By ${item.chef || 'Home Chef'} · ${item.loc || ''}</p>
+                        </div>
+                        <span class="font-cinzel text-amber-500 font-bold">₹${price}</span>
+                    </a>
+                `;
+            }).join('');
+
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
         init();
     </script>
+
+    <!-- 🔍 SMART SEARCH Floating Button -->
+    <button onclick="toggleSearch()"
+        class="fixed bottom-24 right-6 z-40 bg-amber-600 text-white w-14 h-14 rounded-full shadow-[0_0_30px_rgba(212,175,55,0.4)] flex items-center justify-center hover:scale-110 transition-transform hover:bg-amber-500 lg:bottom-6">
+        <i data-lucide="search" class="w-6 h-6"></i>
+    </button>
+
+    <!-- 🔍 SMART SEARCH Overlay -->
+    <div id="searchOverlay"
+        class="fixed inset-0 bg-[#0f0805]/98 backdrop-blur-xl z-50 hidden opacity-0 transition-opacity duration-300">
+        <div class="max-w-2xl mx-auto pt-20 px-6">
+            <div class="flex justify-between items-center mb-6">
+                <span class="text-gray-400 text-xs uppercase tracking-widest">Search</span>
+                <button onclick="toggleSearch()" class="text-gray-400 hover:text-white flex items-center gap-2 text-xs">
+                    <i data-lucide="x" class="w-4 h-4"></i> ESC
+                </button>
+            </div>
+            <div class="relative">
+                <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500"></i>
+                <input type="text" id="searchInput" onkeyup="liveSearch()"
+                    placeholder="What are you craving? (e.g. 'Dal', 'Spicy', 'Neelam')"
+                    class="w-full bg-white/5 border border-amber-500/30 text-xl text-white py-4 pl-12 pr-4 rounded-xl focus:outline-none focus:border-amber-500 placeholder-gray-600 font-serif">
+            </div>
+            <div class="flex gap-3 mt-6">
+                <span class="text-xs text-gray-500 uppercase tracking-widest">Trending:</span>
+                <button onclick="document.getElementById('searchInput').value='thali';liveSearch()"
+                    class="text-xs text-amber-500 border border-amber-500/30 px-3 py-1 rounded-full hover:bg-amber-500 hover:text-black transition-all">Thali</button>
+                <button onclick="document.getElementById('searchInput').value='sweets';liveSearch()"
+                    class="text-xs text-amber-500 border border-amber-500/30 px-3 py-1 rounded-full hover:bg-amber-500 hover:text-black transition-all">Sweets</button>
+                <button onclick="document.getElementById('searchInput').value='snacks';liveSearch()"
+                    class="text-xs text-amber-500 border border-amber-500/30 px-3 py-1 rounded-full hover:bg-amber-500 hover:text-black transition-all">Snacks</button>
+            </div>
+            <div id="searchResults" class="mt-8 space-y-3 max-h-[60vh] overflow-y-auto">
+                <p class="text-gray-500 text-sm">Type to search dishes, chefs, or locations...</p>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer class="bg-[#0f0805] border-t border-amber-500/20 py-12 px-6">
@@ -557,10 +764,41 @@
             </div>
             <div class="border-t border-white/10 pt-8 text-center">
                 <p class="font-cinzel italic text-sm text-amber-500/60">Gruhini — ghar jaisa khana, ghar ke log</p>
-                <p class="text-xs text-gray-500 mt-2">© 2026 Gruhini. Made with ❤️ in India.</p>
+                <p class="text-xs text-gray-500 mt-2 flex items-center justify-center gap-1">© 2026 Gruhini. Made with
+                    <i data-lucide="heart" class="w-3 h-3 text-red-500 fill-red-500"></i> in India.
+                </p>
             </div>
         </div>
     </footer>
+
+    <!-- Mobile Bottom Navigation (Food App UX Pattern) -->
+    <nav class="fixed bottom-0 left-0 right-0 z-50 bg-[#0f0805]/95 backdrop-blur-xl border-t border-gold/20 py-2 px-4 lg:hidden"
+        id="mobileBottomNav">
+        <div class="flex justify-around items-center max-w-sm mx-auto">
+            <a href="index.html"
+                class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-gold transition-colors">
+                <i data-lucide="home" class="w-5 h-5"></i>
+                <span class="text-[9px] font-bold uppercase tracking-wide">Home</span>
+            </a>
+            <a href="menu.html" class="flex flex-col items-center gap-0.5 text-gold">
+                <i data-lucide="utensils" class="w-5 h-5"></i>
+                <span class="text-[9px] font-bold uppercase tracking-wide">Menu</span>
+            </a>
+            <a href="cart.html"
+                class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-gold transition-colors relative">
+                <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                <span class="text-[9px] font-bold uppercase tracking-wide">Cart</span>
+            </a>
+            <a href="orders.html"
+                class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-gold transition-colors">
+                <i data-lucide="package" class="w-5 h-5"></i>
+                <span class="text-[9px] font-bold uppercase tracking-wide">Orders</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Initialize Lucide Icons -->
+    <script>if (typeof lucide !== 'undefined') lucide.createIcons();</script>
 
 </body>
 

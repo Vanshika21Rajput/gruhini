@@ -1,0 +1,87 @@
+<!-- 🏠 GRUHINI NAVBAR COMPONENT -->
+<nav class="fixed top-0 w-full z-50 px-4 md:px-6 py-3 flex justify-between items-center nav-glass" id="mainNavbar">
+    <a href="index.html" class="flex items-center gap-3 group">
+        <div
+            class="w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden relative shadow-[0_0_15px_rgba(197,160,89,0.4)] group-hover:shadow-[0_0_25px_rgba(197,160,89,0.6)] transition-all duration-500 border border-gold-main/30">
+            <img src="public/Logo.png" alt="Gruhini"
+                class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+        </div>
+        <span
+            class="font-cinzel text-lg md:text-xl font-bold text-gold-main tracking-widest group-hover:text-white transition-colors duration-300">GRUHINI</span>
+    </a>
+    <div class="flex items-center gap-4 md:gap-6" id="navLinks">
+        <!-- Dynamically populated by initializeNav() -->
+    </div>
+</nav>
+
+<script>
+    function initializeNav() {
+        const token = localStorage.getItem('authToken');
+        const role = localStorage.getItem('userRole');
+        const navLinks = document.getElementById('navLinks');
+        if (!navLinks) return;
+
+        const linkClass = "text-xs font-bold uppercase tracking-widest text-gold-main/80 hover:text-white transition-colors";
+        const btnClass = "border border-gold-main/40 px-5 py-2 rounded-full text-gold-main text-xs font-bold tracking-widest hover:bg-gold-main/10 hover:text-white transition-all uppercase";
+
+        if (!token) {
+            navLinks.innerHTML = `
+            <a href="menu.html" class="${linkClass} hidden md:block">Menu</a>
+            <a href="sellers.html" class="${linkClass} hidden md:block">Our Kitchens</a>
+            <a href="about.html" class="${linkClass} hidden md:block">About</a>
+            <a href="login.html" class="${btnClass}">Login</a>
+        `;
+        } else if (role === 'SELLER') {
+            navLinks.innerHTML = `
+            <a href="menu.html" class="${linkClass} hidden md:block">Menu</a>
+            <a href="sellers.html" class="${linkClass} hidden md:block">Our Kitchens</a>
+            <a href="about.html" class="${linkClass} hidden md:block">About</a>
+            <a href="seller-dashboard.html" class="${btnClass}">Dashboard</a>
+        `;
+        } else {
+            navLinks.innerHTML = `
+            <a href="menu.html" class="${linkClass} hidden md:block">Menu</a>
+            <a href="sellers.html" class="${linkClass} hidden md:block">Our Kitchens</a>
+            <a href="about.html" class="${linkClass} hidden md:block">About</a>
+            <a href="cart.html" class="${linkClass} flex items-center gap-1 relative">
+                <span class="hidden sm:inline">Cart</span>
+                <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                <span id="cartCountBadge" class="hidden absolute -top-2 -right-2 bg-red-500 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center"></span>
+            </a>
+            <div class="relative">
+                <button id="userProfileBtn" class="w-9 h-9 rounded-full bg-gold-main/20 border border-gold-main/40 flex items-center justify-center hover:bg-gold-main/30 transition-colors">
+                    <i data-lucide="user" class="w-4 h-4 text-gold-main"></i>
+                </button>
+                <div id="userDropdown" class="hidden absolute right-0 top-12 w-48 bg-[#1a0f0a] border border-gold-main/20 rounded-xl shadow-2xl py-2 z-50">
+                    <a href="cart.html" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:bg-gold-main/10 hover:text-white transition-colors">
+                        <i data-lucide="shopping-cart" class="w-4 h-4 text-gold-main"></i> My Cart
+                    </a>
+                    <a href="orders.html" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:bg-gold-main/10 hover:text-white transition-colors">
+                        <i data-lucide="package" class="w-4 h-4 text-gold-main"></i> Previous Orders
+                    </a>
+                    <a href="favorites.html" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:bg-gold-main/10 hover:text-white transition-colors">
+                        <i data-lucide="heart" class="w-4 h-4 text-gold-main"></i> Favorites
+                    </a>
+                    <hr class="border-gold-main/10 my-1">
+                    <button onclick="localStorage.clear(); window.location.href='login.html'" class="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors">
+                        <i data-lucide="log-out" class="w-4 h-4"></i> Logout
+                    </button>
+                </div>
+            </div>
+        `;
+
+            // Dropdown toggle
+            setTimeout(() => {
+                const btn = document.getElementById('userProfileBtn');
+                const dropdown = document.getElementById('userDropdown');
+                if (btn && dropdown) {
+                    btn.addEventListener('click', (e) => { e.stopPropagation(); dropdown.classList.toggle('hidden'); });
+                    document.addEventListener('click', () => { dropdown.classList.add('hidden'); });
+                }
+            }, 100);
+        }
+
+        // Re-initialize Lucide icons
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+</script>
