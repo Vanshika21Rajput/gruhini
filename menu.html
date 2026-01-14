@@ -398,9 +398,14 @@
                 window.location.href = 'login.html';
                 return;
             }
+
             const originalText = btn.innerHTML;
             btn.innerHTML = "Adding..."; btn.classList.add("opacity-70");
+
             try {
+                console.log('🛒 Adding to cart:', id);
+                console.log('🔑 Token present:', token ? 'Yes (' + token.substring(0, 20) + '...)' : 'No');
+
                 const res = await fetch(`${window.CONFIG.BASE_URL}/add-to-cart`, {
                     method: 'POST',
                     headers: {
@@ -410,7 +415,20 @@
                     body: JSON.stringify({ productid: id, quantity: 1 })
                 });
 
+                console.log('📥 Response status:', res.status);
+
                 if (!res.ok) {
+                    // Handle 403 specifically - likely expired token
+                    if (res.status === 403) {
+                        console.error('🔒 403 Forbidden - Token likely expired');
+                        localStorage.removeItem('authToken');
+                        localStorage.removeItem('userName');
+                        localStorage.removeItem('userRole');
+                        alert('Your session has expired. Please login again.');
+                        window.location.href = 'login.html';
+                        return;
+                    }
+
                     const errorData = await res.json().catch(() => ({}));
                     console.error('Add to cart failed:', res.status, errorData);
                     throw new Error(errorData.message || 'Failed to add');
