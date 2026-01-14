@@ -82,3 +82,37 @@
         </a>
     </div>
 </nav>
+
+<!-- Mobile Bottom Nav Active State Script -->
+<script>
+    (function () {
+        // Get current page from URL
+        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+
+        // Map pages to nav data attributes
+        const pageNavMap = {
+            'index.html': 'home',
+            '': 'home', // root also maps to home
+            'menu.html': 'menu',
+            'cart.html': 'cart',
+            'orders.html': 'orders'
+        };
+
+        const activeNav = pageNavMap[currentPage];
+
+        if (activeNav) {
+            // Remove active state from all nav items
+            document.querySelectorAll('#mobileBottomNav a').forEach(link => {
+                link.classList.remove('text-gold-main', 'text-gold');
+                link.classList.add('text-gray-400', 'hover:text-gold-main', 'transition-colors');
+            });
+
+            // Add active state to current nav item
+            const activeLink = document.querySelector(`#mobileBottomNav a[data-nav="${activeNav}"]`);
+            if (activeLink) {
+                activeLink.classList.remove('text-gray-400', 'hover:text-gold-main', 'transition-colors');
+                activeLink.classList.add('text-gold-main');
+            }
+        }
+    })();
+</script>

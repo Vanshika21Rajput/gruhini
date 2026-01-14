@@ -827,9 +827,23 @@
                     document.getElementById('monthlyEarning').textContent = stats.monthlyEarning || '₹0';
                     document.getElementById('activeDishes').textContent = stats.activeDishes || 0;
 
-                    if (stats.sellerName) {
-                        document.getElementById('sellerName').textContent = stats.sellerName + ' 👩‍🍳';
+                    // Smart Name Display Logic
+                    let displayName = stats.sellerName || localStorage.getItem('userName') || 'Home Chef';
+
+                    // If display name is an email, clean it up
+                    if (displayName.includes('@')) {
+                        // Try to find a better name in localStorage
+                        const localName = localStorage.getItem('userName');
+                        if (localName && !localName.includes('@')) {
+                            displayName = localName;
+                        } else {
+                            // Fallback: Use part before @ and capitalize
+                            displayName = displayName.split('@')[0];
+                            displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1); // Capitalize first letter
+                        }
                     }
+
+                    document.getElementById('sellerName').textContent = displayName + ' 👩‍🍳';
 
                     // Populate Achievements based on REAL data
                     populateAchievements(stats);
