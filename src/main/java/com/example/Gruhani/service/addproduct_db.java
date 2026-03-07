@@ -2,9 +2,7 @@ package com.example.Gruhani.service;
 
 import com.example.Gruhani.Repositories.ProductRepo;
 import com.example.Gruhani.Repositories.SellerRepo;
-import com.example.Gruhani.dtos.productdto;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.*;
 import org.apache.lucene.index.*;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;

@@ -8,18 +8,14 @@ import com.example.Gruhani.dtos.AddtoCartDto;
 import com.example.Gruhani.models.Cart;
 import com.example.Gruhani.models.CartItem;
 import com.example.Gruhani.models.Users;
-import com.example.Gruhani.models.product;
+import com.example.Gruhani.models.Product;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 @Service
 public class cartService {
@@ -37,7 +33,7 @@ public class cartService {
     {
 
                Cart cart;
-               Cart cart1=cartRepo.findByu_id(userid);
+               Cart cart1=cartRepo.findByu_id(userid).get();
         Users user=ur.findById(userid).orElseThrow(()->new RuntimeException("no  user found"));
                if(cart1==null)
                {
@@ -64,7 +60,7 @@ public class cartService {
 
         } else {
 
-                product pduct = pr.findByid(addtocart.getProductid()).orElseThrow(()->new RuntimeException("no product found"));
+                Product pduct = pr.findByid(addtocart.getProductid()).orElseThrow(()->new RuntimeException("no product found"));
             System.out.println("Product ID from request = " + addtocart.getProductid());
 
             toaddedinCart=new CartItem();

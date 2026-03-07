@@ -1,84 +1,46 @@
 package com.example.Gruhani.models;
 
+import com.example.Gruhani.Enums.Role;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "Users", schema = "public")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Users {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    Long id;
-    @OneToMany(mappedBy = "user")
-    List<Order> orderList;
-    String name;
-    @Column(unique = true)
-    String email;
-    String contact;
-    String password;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
+    private List<Order> orderList=new ArrayList<>();
+    @NotEmpty(message = "Enter valid name")
+    @Column(nullable = false)
+    private String name;
+    @Email(message="EMAIL NOT VALID")
+    @Column(unique = true,nullable = false)
+    private String email;
+    @Size(min=10,max=10,message = "Enter valid mobile number")
+    private String contact;
+    @Size(min=8,message = "Password size should be 8 characters minimum")
+    @Column(nullable = false)
+    private String password;
+    @Enumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.EAGER)
+    private Set<Role> role=new HashSet<>();
+    private String address;
+    @OneToOne(mappedBy = "user",fetch=FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
+    private Cart cart;
 
-    Set<String> role;
-    String address;
-    @OneToOne(mappedBy = "u",fetch=FetchType.LAZY,cascade = CascadeType.ALL)
-    Cart cart;
-
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getContact() {
-        return contact;
-    }
-
-    public void setContact(String contact) {
-        this.contact = contact;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Set<String> getRole() {
-        return role;
-    }
-
-    public void setRole(Set<String> role) {
-        this.role = role;
-    }
-
-    public void setid(Long string) {
-        this.id=string;
-    }
-
-    public Long getId() {
-        return id;
-    }
 }

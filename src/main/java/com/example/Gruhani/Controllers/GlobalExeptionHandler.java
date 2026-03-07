@@ -1,6 +1,7 @@
 package com.example.Gruhani.Controllers;
 
 import com.example.Gruhani.Package.InsufficientStockException;
+import com.example.Gruhani.Package.ProductNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -28,15 +29,26 @@ public class GlobalExeptionHandler {
         return ResponseEntity.badRequest().body(errors);
     }
  @ExceptionHandler(InsufficientStockException.class)
-    public ResponseEntity<?> insufficientstock(InsufficientStockException ex)
- {
+    public ResponseEntity<?> insufficientstock(InsufficientStockException ex) {
      return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
-         "success", false,
-         "errorCode", "INSUFFICIENT_STOCK",
-         "message", ex.getMessage()
- ));
+             "success", false,
+             "errorCode", "INSUFFICIENT_STOCK",
+             "message", ex.getMessage()
+     ));
+ }
+   @ExceptionHandler(ProductNotFoundException.class)
+     public ResponseEntity<?> productNotFound(ProductNotFoundException ex)
+     {
+         return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+                 "success", false,
+                 "errorCode", "Product Not Found",
+                 "message", ex.getMessage()
+         ));
+
+
+     }
  }
 
 
 
-}
+

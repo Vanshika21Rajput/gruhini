@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 
 
 public class userdetails implements UserDetails {
-   String username;
-   String pass;
+   private String username;
+   private String pass;
     Set<String>s;
 
     public userdetails(String user, String pass, Set<String>r)

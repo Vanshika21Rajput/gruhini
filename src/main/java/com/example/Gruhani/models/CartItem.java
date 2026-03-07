@@ -1,60 +1,36 @@
 package com.example.Gruhani.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@Table(name="cartItems")
 public class CartItem {
-    @ManyToOne( fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id")
-    product p;
+
     @Id
-     @GeneratedValue(strategy = GenerationType.AUTO)
-    Long  id;
-    @ManyToOne
+     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long  id;
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="cart_id") //by default it references primary key column but you can use "referencedColumn=column_name"
-    Cart c;
-    int quantity;
-    BigInteger priceAtAddTime;
+    private Cart cart;
+    @ManyToOne( fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private Product product;
+    @Min(value = 1,message ="Atleast one unit must be selected")
+    @Column(nullable = false)
+    private int quantity;
+    @Min(value = 0,message ="No negative price allowed")
+    @Column(nullable = false)
+   private BigDecimal priceAtAddTime;
 
-    public product getP() {
-        return p;
-    }
 
-    public void setP(product p) {
-        this.p = p;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Cart getC() {
-        return c;
-    }
-
-    public void setC(Cart c) {
-        this.c = c;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public BigInteger getPriceAtAddTime() {
-        return priceAtAddTime;
-    }
-
-    public void setPriceAtAddTime(BigInteger priceAtAddTime) {
-        this.priceAtAddTime = priceAtAddTime;
-    }
 }

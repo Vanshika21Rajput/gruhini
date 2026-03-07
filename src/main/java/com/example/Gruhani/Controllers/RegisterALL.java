@@ -1,20 +1,21 @@
 package com.example.Gruhani.Controllers;
 
 
+import com.example.Gruhani.Package.UserNotFoundException;
 import com.example.Gruhani.Repositories.SellerRepo;
 import com.example.Gruhani.Repositories.UserRepo;
 import com.example.Gruhani.dtos.sellerDto;
 import com.example.Gruhani.dtos.userDto;
 import com.example.Gruhani.models.Seller;
 import com.example.Gruhani.models.Users;
+import com.example.Gruhani.service.usernameFromContext;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,6 +28,8 @@ public class RegisterALL {
     SellerRepo srepo;
     @Autowired
     UserRepo ur;
+    @Autowired
+    usernameFromContext usernamefromContext;
 
 @Autowired
     BCryptPasswordEncoder bcp;
@@ -80,7 +83,7 @@ public class RegisterALL {
         System.out.print("inside-sller");
         System.out.print("seller-mail"+sd.getEmail());
 
-      Users us=ur.findByemail(sd.getEmail());
+      Users us=ur.findByemail(sd.getEmail()).get();
         System.out.print("user-seller"+us.getEmail());
 
         Seller seller=new Seller();
@@ -110,6 +113,20 @@ public class RegisterALL {
 
                 )
         ));
+
+    }
+    @GetMapping("/delete-user/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable Long id)
+    {
+
+        Users user = ur.findById(id)
+                .orElseThrow(() ->
+                        new UserNotFoundException("Check if you are registered before deleting account")
+                );
+
+
+        ur.deleteById(user.getId());
+       return ResponseEntity.ok("Successfully Deleted User Account");
 
     }
 

@@ -1,85 +1,42 @@
 package com.example.Gruhani.models;
+import com.example.Gruhani.Enums.Category;
 import jakarta.persistence.*;
-import net.minidev.json.annotate.JsonIgnore;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "seller", schema = "public")
+@Table(name = "Seller")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Seller {
     @GeneratedValue(
-            strategy = GenerationType.AUTO)
+            strategy = GenerationType.IDENTITY)
     @Id
-    Long id;
-    String address;
-    String contactNo;
-    Boolean isApproved;
-    String BusinessName;
+    private Long id;
+    private String address;
+    @Column(nullable = false)
+    private String contactNo;
+    Boolean isApproved=false;
+    @Column(nullable = false)
+    private String businessName;
     @JoinColumn(name="user_id")
-    @OneToOne
-    Users user;
-
+    @OneToOne(fetch = FetchType.LAZY)
+   private Users user;
 
 
     @OneToMany(mappedBy = "seller",fetch=FetchType.LAZY,orphanRemoval = true,cascade = CascadeType.ALL)
-    List<product> pr;
-     List<String> categories;
+    private List<Product> products=new ArrayList<>();
 
-    public Users getUser() {
-        return user;
-    }
+    @ElementCollection
+    @Enumerated(EnumType.STRING)
+     private List<Category> categories=new ArrayList<>();
 
-    public void setUser(Users user) {
-        this.user = user;
-    }
-
-    public String getBusinessName() {
-        return BusinessName;
-    }
-
-    public void setBusinessName(String businessName) {
-        BusinessName = businessName;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    int totalOrderCount=0;
 
 
-
-    public Boolean getApproved() {
-        return isApproved;
-    }
-
-    public void setApproved(Boolean approved) {
-        isApproved = approved;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getContactNo() {
-        return contactNo;
-    }
-
-    public void setContactNo(String contactNo) {
-        this.contactNo = contactNo;
-    }
-
-    public List<String> getCategories() {
-        return categories;
-    }
-
-    public void setCategories(List<String> categories) {
-        this.categories = categories;
-    }
 }

@@ -5,8 +5,8 @@ package com.example.Gruhani.Controllers;
 
 import com.example.Gruhani.Repositories.ProductRepo;
 import com.example.Gruhani.Repositories.SellerRepo;
-import com.example.Gruhani.dtos.productdto;
-import com.example.Gruhani.models.product;
+import com.example.Gruhani.dtos.ProductDto;
+import com.example.Gruhani.models.Product;
 
 
 
@@ -66,12 +66,12 @@ public class HomePage {
 */
     @GetMapping("/explore")
     public ResponseEntity<?> method() {
-        List<product> l = prepo.findAllBystatus("approved");
+        List<Product> l = prepo.findAllBystatus("approved");
         Map<String, Object> response = new HashMap<>();
         //here in response the product dto attributes will be mapped and sent to frontend
-        List<productdto>s= l.stream()
+        List<ProductDto>s= l.stream()
                 .map(product -> {
-                    productdto dto = new productdto();
+                    ProductDto dto = new ProductDto();
                     BeanUtils.copyProperties(product, dto);
                     return dto;
                 })

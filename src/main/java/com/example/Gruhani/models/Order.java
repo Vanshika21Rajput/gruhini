@@ -1,8 +1,13 @@
 package com.example.Gruhani.models;
 
 import com.example.Gruhani.Enums.OrderStatus;
-import com.example.Gruhani.dtos.OrderItem;
+import com.example.Gruhani.models.OrderItem;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.validator.constraints.ISBN;
 import org.springframework.stereotype.Component;
@@ -12,124 +17,43 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name="Orders")
-
+@Table(name = "orders", indexes = {
+        @Index(name = "idx_order_seller_id", columnList = "seller_id"),
+        @Index(name = "idx_order_user_id", columnList = "user_id"),
+        @Index(name = "idx_order_status", columnList = "orderStatus")
+})
+@Getter
+@Setter
+@NoArgsConstructor
 public class Order {
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private  Long id;
-    @OneToMany(mappedBy = "order",fetch=FetchType.LAZY)
-    List<OrderItem> orderItemList;
+    @OneToMany(mappedBy = "order",fetch=FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<OrderItem> orderItemList;
     @Enumerated(EnumType.STRING)
-    OrderStatus orderStatus;
-    String deliveryTime;
-    @ManyToOne(fetch=FetchType.LAZY)
+   private OrderStatus orderStatus;
+    private String deliveryTime;
+    @ManyToOne(fetch=FetchType.LAZY,cascade = CascadeType.PERSIST)
     @JoinColumn(name="user_id")
     Users user;
     @Column(nullable = false)
     LocalDateTime placedAt;
     @Column(nullable = false)
-    String deliveryAddress;
+    private String deliveryAddress;
     @Column(nullable = false)
     BigInteger orderValue;
 
-    String message;
+    private String message;
     @ManyToOne
     @JoinColumn(name="sellerOfOrder")
     Seller seller;
-    int otp;
-
-    public int getOtp() {
-        return otp;
-    }
-
-    public void setOtp(int otp) {
-        this.otp = otp;
-    }
-
-    public Seller getSeller() {
-        return seller;
-    }
-
-    public void setSeller(Seller seller) {
-        this.seller = seller;
-    }
+    @Size(min=6,max=6)
+    String hashedOtp;
+    @NotNull
+    LocalDateTime expiration;
+    Boolean OtpVerified=false;
 
 
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public List<OrderItem> getOrderItemList() {
-        return orderItemList;
-    }
-
-    public void setOrderItemList(List<OrderItem> orderItemList) {
-        this.orderItemList = orderItemList;
-    }
-
-    public OrderStatus getOrderStatus() {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public Users getUser() {
-        return user;
-    }
-
-    public void setUser(Users user) {
-        this.user = user;
-    }
-
-
-
-
-    public LocalDateTime getPlacedAt() {
-        return placedAt;
-    }
-
-    public void setPlacedAt(LocalDateTime placedAt) {
-        this.placedAt = placedAt;
-    }
-
-    public String getDeliveryAddress() {
-        return deliveryAddress;
-    }
-
-    public void setDeliveryAddress(String deliveryAddress) {
-        this.deliveryAddress = deliveryAddress;
-    }
-
-
-    public String getDeliveryTime() {
-        return deliveryTime;
-    }
-
-    public void setDeliveryTime(String deliveryTime) {
-        this.deliveryTime = deliveryTime;
-    }
-
-    public BigInteger getOrderValue() {
-        return orderValue;
-    }
-
-    public void setOrderValue(BigInteger orderValue) {
-        this.orderValue = orderValue;
-    }
 }

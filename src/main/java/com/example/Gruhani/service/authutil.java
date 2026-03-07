@@ -2,7 +2,7 @@ package com.example.Gruhani.service;
 
 import com.example.Gruhani.Repositories.UserRepo;
 import com.example.Gruhani.models.Users;
-import com.example.Gruhani.models.jwtClaims;
+import com.example.Gruhani.models.JwtClaims;
 import com.example.Gruhani.models.userdetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
@@ -33,12 +33,14 @@ public class authutil {
 
     public String generateToken(userdetails u)
     {
-        Users user=ur.findByemail(u.getUsername());
+        Users user = ur.findByemail(u.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + u.getUsername()));
+
         List<String> roles = u.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList();
-        jwtClaims jwtClaims=new jwtClaims();
+        JwtClaims jwtClaims=new JwtClaims();
         jwtClaims.setRoles(roles);
         jwtClaims.setUser_id(user.getId());
         Map<String,Object>mp=new HashMap<>();
@@ -52,12 +54,12 @@ public class authutil {
 
     }
 
-    public jwtClaims validatetoken(String headauth) {
+    public JwtClaims validatetoken(String headauth) {
         Claims c=Jwts.parser().
                 verifyWith(getskey()).build().parseSignedClaims(headauth).getPayload();
 
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.convertValue(c.get("jwtClaims"), jwtClaims.class);
+        return mapper.convertValue(c.get("jwtClaims"), JwtClaims.class);
 
 
     }

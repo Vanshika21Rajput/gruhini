@@ -2,8 +2,8 @@ package com.example.Gruhani.Controllers;
 
 
 import com.example.Gruhani.Repositories.ProductRepo;
-import com.example.Gruhani.dtos.productdto;
-import com.example.Gruhani.models.product;
+import com.example.Gruhani.dtos.ProductDto;
+import com.example.Gruhani.models.Product;
 import com.google.api.gax.core.FixedCredentialsProvider;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.vision.v1.*;
@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
 
@@ -32,7 +31,7 @@ public class image_to_cart {
 
         @CrossOrigin("https://grihini-1.onrender.com")
         @PostMapping("/upload")
-        public ResponseEntity<List<productdto>> methew(@RequestParam("file") MultipartFile file) throws IOException {
+        public ResponseEntity<List<ProductDto>> methew(@RequestParam("file") MultipartFile file) throws IOException {
             // 👇 Load credentials from resources folder (works in JAR on Render)
             GoogleCredentials credentials;
             try (InputStream credentialsStream = getClass().getResourceAsStream("/credentials.json")) {
@@ -62,20 +61,20 @@ public class image_to_cart {
                 System.out.println(extractedText);
 
                 String[] arr = extractedText.split("\\r?\\n");
-                List<product> l = new ArrayList<>();
+                List<Product> l = new ArrayList<>();
 
                 for (String name : arr) {
                     System.out.println("inside loop: " + name);
                     if (prepo.existsByname(name)) {
-                        product p = prepo.findByname(name);
+                        Product p = prepo.findByname(name);
                         System.out.println("Matched: " + p);
                         l.add(p);
                     }
                 }
 
-                List<productdto> dtoList = l.stream()
+                List<ProductDto> dtoList = l.stream()
                         .map(entity -> {
-                            productdto dto = new productdto();
+                            ProductDto dto = new ProductDto();
                             BeanUtils.copyProperties(entity, dto);
                             return dto;
                         })

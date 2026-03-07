@@ -4,7 +4,7 @@ import com.example.Gruhani.Enums.OrderStatus;
 import com.example.Gruhani.Repositories.OrderRepository;
 import com.example.Gruhani.Repositories.ProductRepo;
 import com.example.Gruhani.Repositories.UserRepo;
-import com.example.Gruhani.dtos.OrderItem;
+import com.example.Gruhani.models.OrderItem;
 import com.example.Gruhani.dtos.orderReceiveDto;
 import com.example.Gruhani.dtos.orderResponseDto;
 import com.example.Gruhani.models.*;
@@ -18,9 +18,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.random.RandomGenerator;
 
 @Service
 public class orderService {
@@ -32,6 +30,8 @@ public class orderService {
     ProductRepo productRepo;
     @Autowired
     OrderRepository orderRepository;
+    @Autowired
+    usernameFromContext usernameFromContext;
 
 
 
@@ -60,11 +60,9 @@ public class orderService {
         if (list.isEmpty()) {
             throw new IllegalArgumentException("Cart cannot be empty");
         }
-        String s=req.getHeader("Authorization");
-        String jwt=s.substring(7);
-       jwtClaims jwtclaims=auth.validatetoken(jwt);
 
-        Optional<Users> users= Optional.ofNullable(userRepo.findById(jwtclaims.getUser_id()).orElseThrow(() -> new RuntimeException("User Not Found")));
+String username=usernameFromContext.fetchUsername();
+        Optional<Users> users= Optional.ofNullable(userRepo.findByemail(username).orElseThrow(() -> new RuntimeException("User Not Found")));
         order.setUser(users.get());
         order.setDeliveryTime("3-4 Days");
         order.setDeliveryAddress(receiveDto.getDeliveryAddress());
@@ -87,14 +85,14 @@ return  new orderResponseDto(order.getId(),order.getOrderValue(),order.getPlaced
 
     private void decreaseStock(List<OrderItem> list) {
         for (OrderItem orderItem : list) {
-            product p=orderItem.getP();
+            Product p=orderItem.getP();
              p.setStock(p.getStock()-orderItem.getQuantity());
         }
     }
 
-    private boolean validateStock(product p,int quantity)
+    private boolean validateStock(Product p, int quantity)
 {
-    product product1=productRepo.findById(p.getId()).get();
+    Product product1=productRepo.findById(p.getId()).get();
     if(quantity>product1.getStock())
     {
 return false;
@@ -105,7 +103,7 @@ return false;
         BigInteger total= BigInteger.valueOf(0);
         for(CartItem i:cartItemList)
         {
-            product p=productRepo.findById(i.getP().getId()).get();
+            Product p=productRepo.findById(i.getP().getId()).get();
             if(validateStock(p,i.getQuantity()))
             {
                 BigInteger price = p.getPrice();
