@@ -5,6 +5,7 @@ import com.example.Gruhani.Enums.ProductStatus;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.minidev.asm.ConvertDate;
 
 import java.math.BigDecimal;
 
@@ -26,9 +27,10 @@ public class ProductDto {
    Double discount;
     Boolean verified=false;
     int quantity;
-
+     String message;
      String deliveryTime;
      String badge;
+     Long Sellerid;
 
 
 }

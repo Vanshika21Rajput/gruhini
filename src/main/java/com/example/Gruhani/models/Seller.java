@@ -18,7 +18,7 @@ public class Seller {
             strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
-    private String address;
+    private Address address;
     @Column(nullable = false)
     private String contactNo;
     Boolean isApproved=false;

@@ -32,12 +32,27 @@ public class AdminController {
     @GetMapping("/view-pending")
     public ResponseEntity<?> view_pending() {
 
-        List<Product> l = productRepo.findAllBystatus(ProductStatus.PENDING);
+        List<Product> l = productRepo.findAllByStatus(ProductStatus.PENDING);
 
         List<ProductDto>productdtos= l.stream()
                 .map(product -> {
                     ProductDto dto = new ProductDto();
-                    BeanUtils.copyProperties(product, dto);
+                    dto.setId(product.getId());
+                    dto.setName(product.getName());
+                    dto.setPrice(product.getPrice());
+                    dto.setCategory(product.getCategory());
+                    dto.setSubcategory(product.getSubcategory());
+                    dto.setDescription(product.getDescription());
+                    dto.setStock(product.getStock());
+                    dto.setStatus(product.getStatus());
+                    dto.setRating(product.getRating());
+                    dto.setDiscount(product.getDiscount());
+                    dto.setVerified(product.getVerified());
+                    dto.setDeliveryTime(product.getDeliveryTime());
+                    dto.setBadge(product.getBadge());
+                    // quantity has no matching field in Product — set default or remove from DTO
+                    dto.setQuantity(0);
+                    dto.setSellerid(product.getSeller().getId());
                     return dto;
                 })
                 .collect(Collectors.toList());
@@ -49,16 +64,18 @@ public class AdminController {
     @PostMapping("/accept-item")
     public ResponseEntity<String> accept_item(@RequestBody SelectedProductsbyAdmin selected) {
         List<Long> selectedProducts = selected.getSelectedProducts();
-        productRepo.batchUpdateStatus(ProductStatus.APPROVED,selectedProducts);
-
-
+        productRepo.batchUpdateStatus(ProductStatus.APPROVED,selectedProducts,selected.getMessage());
         return ResponseEntity.ok().body("ok");
     }
 
     @PostMapping("/reject-item")
-    public ResponseEntity<String> reject_item(@RequestBody SelectedProductsbyAdmin sb) {
-        List<Long> selectedProducts = sb.getSelectedProducts();
-           productRepo.batchUpdateStatus(ProductStatus.REJECTED,selectedProducts);
+    public ResponseEntity<String> reject_item(@RequestBody SelectedProductsbyAdmin selected) {
+
+        List<Long> selectedProducts = selected.getSelectedProducts();
+        if (selected == null || selectedProducts.isEmpty()) {
+            return ResponseEntity.badRequest().body("No products selected");
+        }
+           productRepo.batchUpdateStatus(ProductStatus.REJECTED,selectedProducts,selected.getMessage());
 
         return ResponseEntity.ok().body("ok");
     }
@@ -70,7 +87,20 @@ public class AdminController {
         Product product = productRepo.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found: " + id));
                    ProductDto dto = new ProductDto();
-                    BeanUtils.copyProperties(product, dto);
+        dto.setId(product.getId());
+        dto.setName(product.getName());
+        dto.setPrice(product.getPrice());
+        dto.setCategory(product.getCategory());
+        dto.setSubcategory(product.getSubcategory());
+        dto.setDescription(product.getDescription());
+        dto.setStock(product.getStock());
+        dto.setStatus(product.getStatus());
+        dto.setRating(product.getRating());
+        dto.setDiscount(product.getDiscount());
+        dto.setVerified(product.getVerified());
+        dto.setDeliveryTime(product.getDeliveryTime());
+        dto.setBadge(product.getBadge());
+
         return ResponseEntity.ok(dto);
     }
     }

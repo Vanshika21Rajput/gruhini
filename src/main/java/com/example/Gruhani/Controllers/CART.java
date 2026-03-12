@@ -24,8 +24,6 @@ import java.util.Map;
 public class CART {
 
     @Autowired
-    authutil at;
-    @Autowired
     cartService cartserv;
     @Autowired
     CartRepo cartRepo;
@@ -51,14 +49,14 @@ public class CART {
       try {
           String username = usernameFromContext.fetchUsername();
           Cart cart = cartserv.getCartbyUsername(username);
-          for (var cartItem : cart.getL()) {
-              if (cartItem.getP() != null) {
+          for (var cartItem : cart.getCartItems()) {
+              if (cartItem.getProduct() != null) {
                   Map<String, Object> item = new HashMap<>();
-                  item.put("productid", cartItem.getP().getId());
-                  item.put("productname", cartItem.getP().getName());
-                  item.put("chefname", cartItem.getP().getSeller().getUser().getName());
+                  item.put("productid", cartItem.getProduct().getId());
+                  item.put("productname", cartItem.getProduct().getName());
+                  item.put("chefname", cartItem.getProduct().getSeller().getUser().getName());
                   item.put("price", cartItem.getPriceAtAddTime());
-                  item.put("image", cartItem.getP().getImage());
+                  item.put("image", cartItem.getProduct().getImage());
                   item.put("quantity", cartItem.getQuantity());
                   items.add(item);
               }
@@ -79,18 +77,17 @@ public class CART {
         String username= usernameFromContext.fetchUsername();
                           Users user=userRepo.findByemail(username).orElseThrow(()->new RuntimeException("user not found"));
 
-        Cart cart = cartRepo.findByu_id(user.getId())
+        Cart cart = cartRepo.findByUser_Id(user.getId())
                 .orElseThrow(() -> new RuntimeException("Cart not found"));
 
-        boolean removed = cart.getL().removeIf(
+
+        boolean removed = cart.getCartItems().removeIf(
                 item -> item.getId().equals(id)//removal of cartitem from cart makes it orphan and hence is auto deleted by JPA in DB
         );
 
         if (!removed) {
             throw new RuntimeException("Cart item not found");
         }
-
-        cart.setUpdadtedAt(LocalDateTime.now());
         cartRepo.save(cart);
         return ResponseEntity.ok("Product Deleted Successfully");
     }

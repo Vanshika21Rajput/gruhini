@@ -1,28 +1,20 @@
 package com.example.Gruhani.dtos;
 
+import com.example.Gruhani.models.Address;
 import com.example.Gruhani.models.CartItem;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Component
+@Getter
+@Setter
+@NoArgsConstructor
 public class orderReceiveDto {
-    List<CartItem> cartItemList;
-    String deliveryAddress;
+    private Address address;
 
-    public List<CartItem> getCartItemList() {
-        return cartItemList;
-    }
-
-    public void setCartItemList(List<CartItem> cartItemList) {
-        this.cartItemList = cartItemList;
-    }
-
-    public String getDeliveryAddress() {
-        return deliveryAddress;
-    }
-
-    public void setDeliveryAddress(String deliveryAddress) {
-        this.deliveryAddress = deliveryAddress;
-    }
 }

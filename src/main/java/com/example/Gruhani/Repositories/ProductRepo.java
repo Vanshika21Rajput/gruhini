@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @Repository
 public interface ProductRepo extends JpaRepository<Product,Long> {
-    List<Product> findAllBystatus(ProductStatus productStatus);
+    List<Product> findAllByStatus(ProductStatus productStatus);
 
 
 

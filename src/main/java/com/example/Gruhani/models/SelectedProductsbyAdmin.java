@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class SelectedProductsbyAdmin {
     private List<Long> selectedProducts=new ArrayList<>();
-
+    private String message;
 
 
 }

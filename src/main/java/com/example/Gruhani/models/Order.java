@@ -12,6 +12,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.validator.constraints.ISBN;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,9 +41,7 @@ public class Order {
     @Column(nullable = false)
     LocalDateTime placedAt;
     @Column(nullable = false)
-    private String deliveryAddress;
-    @Column(nullable = false)
-    BigInteger orderValue;
+    BigDecimal orderValue;
 
     private String message;
     @ManyToOne
@@ -53,6 +52,9 @@ public class Order {
     @NotNull
     LocalDateTime expiration;
     Boolean OtpVerified=false;
+    @ManyToOne
+    @JoinColumn(name = "address_id")
+    private Address deliveryAddress;
 
 
 

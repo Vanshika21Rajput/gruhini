@@ -1,5 +1,7 @@
 package com.example.Gruhani.service;
 
+import com.example.Gruhani.Package.InvalidCart;
+import com.example.Gruhani.Package.ProductNotFoundException;
 import com.example.Gruhani.Repositories.CartItemRepository;
 import com.example.Gruhani.Repositories.CartRepo;
 import com.example.Gruhani.Repositories.ProductRepo;
@@ -21,7 +23,7 @@ import java.util.Optional;
 public class cartService {
 
     @Autowired
-    ProductRepo pr;
+    ProductRepo productRepo;
     @Autowired
     UserRepo ur;
     @Autowired
@@ -29,62 +31,64 @@ public class cartService {
     @Autowired
     CartItemRepository cartItemRepository;
     @Transactional
-    public ResponseEntity<String> addtocarts(Long userid,  AddtoCartDto addtocart)
-    {
+    public ResponseEntity<String> addtocarts(Long userid, AddtoCartDto addtocart) {
 
-               Cart cart;
-               Cart cart1=cartRepo.findByu_id(userid).get();
-        Users user=ur.findById(userid).orElseThrow(()->new RuntimeException("no  user found"));
-               if(cart1==null)
-               {
-                   cart=new Cart();
-                   cart.setL(new ArrayList<>());
-                   cart.setU(user);
-                   cartRepo.save(cart);
+        Users user = ur.findById(userid)
+                .orElseThrow(() -> new RuntimeException("No user found"));
 
-               }
-               else {
-                   cart=cart1;
-               }
+        Cart cart = cartRepo.findByUser_Id(userid)
+                .orElseGet(() -> {
+                    Cart newCart = new Cart();
+                    newCart.setUser(user);
+                    newCart.setCartItems(new ArrayList<>());
+                    return cartRepo.save(newCart);
+                });
 
-               cart.setUpdadtedAt(LocalDateTime.now());
+        Product product = productRepo.findById(addtocart.getProductid())
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
+
+        if(!cart.getCartItems().isEmpty()) {
+
+            Long existingSellerId = cart.getCartItems()
+                    .get(0)
+                    .getProduct()
+                    .getSeller()
+                    .getId();
+
+            Long newSellerId = product.getSeller().getId();
+
+            if (!existingSellerId.equals(newSellerId)) {
+                return ResponseEntity.badRequest()
+                        .body("Cart can only contain items from one seller.");
+            }
+        }
 
         Optional<CartItem> existingItem =
                 cartItemRepository.findByC_idAndP_id(cart.getId(), addtocart.getProductid());
 
-        CartItem toaddedinCart;
         if (existingItem.isPresent()) {
+
             CartItem item = existingItem.get();
-            item.setQuantity(item.getQuantity() + 1);
-            toaddedinCart=item;
+            item.setQuantity(item.getQuantity() + addtocart.getQuantity());
 
         } else {
 
-                Product pduct = pr.findByid(addtocart.getProductid()).orElseThrow(()->new RuntimeException("no product found"));
-            System.out.println("Product ID from request = " + addtocart.getProductid());
+            CartItem cartItem = new CartItem();
+            cartItem.setCart(cart);
+            cartItem.setProduct(product);
+            cartItem.setPriceAtAddTime(product.getPrice());
+            cartItem.setQuantity(addtocart.getQuantity());
 
-            toaddedinCart=new CartItem();
-                toaddedinCart.setC(cart);
-                toaddedinCart.setP(pduct);
-                toaddedinCart.setPriceAtAddTime(pduct.getPrice());
-                toaddedinCart.setQuantity(addtocart.getQuantity());
-                cart.getL().add(toaddedinCart);
-
-
-
+            cart.getCartItems().add(cartItem);
         }
+
         cartRepo.save(cart);
 
-
-return ResponseEntity.ok("product successfully added to plate !");
-
-
-
-
+        return ResponseEntity.ok("Product successfully added to cart");
     }
 
 
     public Cart getCartbyUsername(String username) {
-        return cartRepo.findCartandRelatedFields(username);
+        return cartRepo.findCartWithItems(username).orElseThrow(()->new InvalidCart("Cart Doesn't Exist"));
     }
 }

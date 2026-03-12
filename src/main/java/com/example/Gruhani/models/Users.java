@@ -39,8 +39,8 @@ public class Users {
     @Enumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Role> role=new HashSet<>();
-    private String address;
     @OneToOne(mappedBy = "user",fetch=FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
     private Cart cart;
-
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Address> addresses = new ArrayList<>();
 }

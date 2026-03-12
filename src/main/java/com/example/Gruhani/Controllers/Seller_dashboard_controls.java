@@ -66,6 +66,6 @@ public class Seller_dashboard_controls {
             response.put("success", true);
             return ResponseEntity.ok(response);
     }
-    //
+    //uodate the product enpot mut be added
 
 }

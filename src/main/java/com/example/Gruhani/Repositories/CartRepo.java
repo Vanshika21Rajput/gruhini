@@ -12,14 +12,16 @@ import java.util.Optional;
 public interface CartRepo extends JpaRepository<Cart, Long> {
 
 
-    Optional<Cart> findById(Long aLong);
+    Optional<Cart> findByUser_Id(Long userId);
 
-    Optional<Cart> findByu_id(Long uId);
+    Optional<Cart> findByUser_Email(String email);
 
-   Cart findByu_email(String username);
-
-   @Query("""
-           Select distinct  c from Cart c JOIN FETCH c.l ci JOIN FETCH ci.p where c.u.email= :email
-           """)
-    Cart findCartandRelatedFields(@Param("email") String username);
+    @Query("""
+        SELECT DISTINCT c FROM Cart c 
+        JOIN FETCH c.cartItems ci 
+        JOIN FETCH ci.product 
+        WHERE c.user.email = :email
+    """)
+    Optional<Cart> findCartWithItems(@Param("email") String email);
 }
+
