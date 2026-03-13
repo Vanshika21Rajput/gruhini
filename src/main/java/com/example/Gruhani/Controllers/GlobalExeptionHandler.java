@@ -1,9 +1,7 @@
 package com.example.Gruhani.Controllers;
 
-import com.example.Gruhani.Package.InsufficientStockException;
-import com.example.Gruhani.Package.InvalidCart;
-import com.example.Gruhani.Package.ProductNotFoundException;
-import com.example.Gruhani.Package.StockNotAvailable;
+import com.example.Gruhani.Package.*;
+import jakarta.persistence.OptimisticLockException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -68,6 +66,25 @@ public class GlobalExeptionHandler {
 
 
         }
+    @ExceptionHandler(InvalidOrder.class)
+    public ResponseEntity<?> Invalidorder(InvalidOrder ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+                "success", false,
+                "errorCode", "Order Not Valid",
+                "message", ex.getMessage()
+        ));
+    }
+        @ExceptionHandler(  OptimisticLockException.class)
+        public ResponseEntity<?> Lock( OptimisticLockException ex)
+        {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+                    "success", false,
+                    "errorCode", "RETRY ODERING",
+                    "message", ex.getMessage()
+            ));
+
+
+    }
 
 
     }

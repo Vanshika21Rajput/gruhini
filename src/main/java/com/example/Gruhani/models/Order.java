@@ -35,7 +35,7 @@ public class Order {
     @Enumerated(EnumType.STRING)
    private OrderStatus orderStatus;
     private String deliveryTime;
-    @ManyToOne(fetch=FetchType.LAZY,cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="user_id")
     Users user;
     @Column(nullable = false)

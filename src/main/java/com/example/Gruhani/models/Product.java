@@ -55,6 +55,8 @@ public class Product {
     private Seller seller;
 
     String message;
+    @Version
+    private Long version;
 
 
 
