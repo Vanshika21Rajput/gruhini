@@ -1,4 +1,9 @@
 package com.example.Gruhani.models;
 
-public class SellerOrderSummary {
+public interface SellerOrderSummary {
+    Long getSellerId();
+    String getBusinessName();
+    String getSellerName();
+    Long getTotalOrders();
+
 }

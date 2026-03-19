@@ -11,7 +11,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
-public class sellerDto {
+public class SellerDto {
 @NotBlank
     String name;
 @Email(message="Email must be in valid format  ")

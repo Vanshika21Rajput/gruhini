@@ -30,8 +30,7 @@ public class RegisterALL {
     UserRepo ur;
     @Autowired
     usernameFromContext usernamefromContext;
-
-@Autowired
+ @Autowired
     BCryptPasswordEncoder bcp;
 
 // REGISTER USER

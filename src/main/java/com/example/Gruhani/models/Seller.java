@@ -18,6 +18,8 @@ public class Seller {
             strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id")
     private Address address;
     @Column(nullable = false)
     private String contactNo;
@@ -35,6 +37,8 @@ public class Seller {
     @ElementCollection
     @Enumerated(EnumType.STRING)
      private List<Category> categories=new ArrayList<>();
+    @OneToMany(mappedBy = "seller",fetch=FetchType.LAZY,orphanRemoval = true,cascade = CascadeType.ALL)
+    private List<Order> orders=new ArrayList<>();
 
     int totalOrderCount=0;
 

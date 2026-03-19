@@ -25,7 +25,7 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
-public class orderService {
+public class OrderService {
 
     @Autowired
     UserRepo userRepo;
@@ -245,7 +245,6 @@ public class orderService {
     public  List<OrderUserResponseDto>viewOrderToSeller(String orderStatus)
     {
         String username=usernameFromContext.fetchUsername();
-        Users users=userRepo.findByemail(username).orElseThrow(()->new UserNotFoundException("USER NOT FOUND"));
         List<Order> orders=new ArrayList<>();
         Seller seller = sellerRepo.findByuser_email(username);
         if (seller == null) {
@@ -267,6 +266,27 @@ public class orderService {
         }
         List<OrderUserResponseDto>orderUserResponses=touserResponseDto(orders);
          return orderUserResponses;
+
+    }
+    public  List<OrderUserResponseDto>viewSellerOrderToAdmin(Long id,String orderStatus)
+    {
+        List<Order> orders=new ArrayList<>();
+        if(orderStatus==null)
+        {
+            orders=  orderRepository.findBySellerId(id);
+        }
+        else {
+            try {
+                orders = orderRepository.findBySellerIdAndOrderStatus(
+                        id,
+                        OrderStatus.valueOf(orderStatus.toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                throw new InvalidOrder("Invalid status: " + orderStatus);
+            }
+
+        }
+        List<OrderUserResponseDto>orderUserResponses=touserResponseDto(orders);
+        return orderUserResponses;
 
     }
 

@@ -38,6 +38,8 @@ public class Order {
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="user_id")
     Users user;
+
+
     @Column(nullable = false)
     LocalDateTime placedAt;
     @Column(nullable = false)

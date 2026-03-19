@@ -1,22 +1,20 @@
 package com.example.Gruhani.Controllers;
 
-import com.example.Gruhani.Enums.ProductStatus;
-import com.example.Gruhani.Package.ProductNotFoundException;
 import com.example.Gruhani.Repositories.ProductRepo;
 import com.example.Gruhani.Repositories.SellerRepo;
+import com.example.Gruhani.dtos.OrderUserResponseDto;
 import com.example.Gruhani.dtos.ProductDto;
-import com.example.Gruhani.models.Idclass;
+import com.example.Gruhani.dtos.SellerDetailsDto;
 import com.example.Gruhani.models.SelectedProductsbyAdmin;
-import com.example.Gruhani.models.Product;
-import com.example.Gruhani.service.addproduct_db;
-import org.springframework.beans.BeanUtils;
+import com.example.Gruhani.models.SellerOrderSummary;
+import com.example.Gruhani.service.AdminService;
+import com.example.Gruhani.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/admin")
@@ -26,83 +24,100 @@ public class AdminController {
     SellerRepo sr;
     @Autowired
     ProductRepo productRepo;
-
-
+    @Autowired
+    AdminService adminService;
+    @Autowired
+    OrderService orderService;
     //PENDING REQUESTS FOR PRODUCT APPROVAL
     @GetMapping("/view-pending")
-    public ResponseEntity<?> view_pending() {
-
-        List<Product> l = productRepo.findAllByStatus(ProductStatus.PENDING);
-
-        List<ProductDto>productdtos= l.stream()
-                .map(product -> {
-                    ProductDto dto = new ProductDto();
-                    dto.setId(product.getId());
-                    dto.setName(product.getName());
-                    dto.setPrice(product.getPrice());
-                    dto.setCategory(product.getCategory());
-                    dto.setSubcategory(product.getSubcategory());
-                    dto.setDescription(product.getDescription());
-                    dto.setStock(product.getStock());
-                    dto.setStatus(product.getStatus());
-                    dto.setRating(product.getRating());
-                    dto.setDiscount(product.getDiscount());
-                    dto.setVerified(product.getVerified());
-                    dto.setDeliveryTime(product.getDeliveryTime());
-                    dto.setBadge(product.getBadge());
-                    // quantity has no matching field in Product — set default or remove from DTO
-                    dto.setQuantity(0);
-                    dto.setSellerid(product.getSeller().getId());
-                    return dto;
-                })
-                .collect(Collectors.toList());
-
+    public ResponseEntity<?> viewPending() {
+        List<ProductDto>productdtos= adminService.viewPending();
         return ResponseEntity.ok().body(productdtos);
     }
 
 
     @PostMapping("/accept-item")
-    public ResponseEntity<String> accept_item(@RequestBody SelectedProductsbyAdmin selected) {
-        List<Long> selectedProducts = selected.getSelectedProducts();
-        productRepo.batchUpdateStatus(ProductStatus.APPROVED,selectedProducts,selected.getMessage());
+    public ResponseEntity<String> acceptItem(@RequestBody SelectedProductsbyAdmin selected) {
+        if(selected==null)
+        {
+            return ResponseEntity.badRequest().body("Could not Process the request");
+        }
+         adminService.acceptItem(selected);
         return ResponseEntity.ok().body("ok");
     }
 
     @PostMapping("/reject-item")
-    public ResponseEntity<String> reject_item(@RequestBody SelectedProductsbyAdmin selected) {
-
-        List<Long> selectedProducts = selected.getSelectedProducts();
-        if (selected == null || selectedProducts.isEmpty()) {
+    public ResponseEntity<String> rejectItem(@RequestBody SelectedProductsbyAdmin selected) {
+        if (selected == null ) {
             return ResponseEntity.badRequest().body("No products selected");
         }
-           productRepo.batchUpdateStatus(ProductStatus.REJECTED,selectedProducts,selected.getMessage());
-
+       adminService.rejectItem(selected);
         return ResponseEntity.ok().body("ok");
     }
     //VIEW ORDER BY SELLER group by selller ids so that admin can see the stats
 
     @GetMapping("/products/{id}")
-    public ResponseEntity<?> View_single_product(@PathVariable("id")Long id)
+    public ResponseEntity<?> viewSingleProduct(@PathVariable("id")Long id)
     {
-        Product product = productRepo.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Product not found: " + id));
-                   ProductDto dto = new ProductDto();
-        dto.setId(product.getId());
-        dto.setName(product.getName());
-        dto.setPrice(product.getPrice());
-        dto.setCategory(product.getCategory());
-        dto.setSubcategory(product.getSubcategory());
-        dto.setDescription(product.getDescription());
-        dto.setStock(product.getStock());
-        dto.setStatus(product.getStatus());
-        dto.setRating(product.getRating());
-        dto.setDiscount(product.getDiscount());
-        dto.setVerified(product.getVerified());
-        dto.setDeliveryTime(product.getDeliveryTime());
-        dto.setBadge(product.getBadge());
-
-        return ResponseEntity.ok(dto);
+       ProductDto productDto=adminService.viewSingleProduct(id);
+       return ResponseEntity.ok().body(productDto);
     }
+    @GetMapping("/products-viewAll")
+    public ResponseEntity<?> viewAll()
+    {
+        List<ProductDto> productDto=adminService.viewAllProducts();
+        return ResponseEntity.ok().body(productDto);
+    }
+    @GetMapping("/Sellers-viewAll")
+    public ResponseEntity<?> viewAllSellers()
+    {
+        List<SellerDetailsDto>sellerDetailsDtos= adminService.searchAllSeller();
+        return ResponseEntity.ok().body(sellerDetailsDtos);
+    }
+    @DeleteMapping("/delete-product")
+    public ResponseEntity<?> deleteProducts(@RequestBody SelectedProductsbyAdmin selectedProductsbyAdmin)
+    {
+        if(selectedProductsbyAdmin==null)
+        {
+            return ResponseEntity.badRequest().body("NO PRODUCTS SELECTED");
+        }
+        adminService.deleteProducts(selectedProductsbyAdmin.getSelectedProducts());
+        return ResponseEntity.ok("SUCCESSFULLY DELETED THE SELECTED PRODUCTS");
+
+    }
+
+    @DeleteMapping("/delete-seller/{id}")
+    public ResponseEntity<?> deleteSeller(@PathVariable("id")Long id)
+    {
+          adminService.deleteSeller(id);
+          return ResponseEntity.ok("SUCCESSFULLY DELETED THE SELLER");
+
+    }
+    @GetMapping("/view-seller/{id}")
+    public ResponseEntity<?> viewSeller(@PathVariable("id")Long id)
+    {
+        SellerDetailsDto sellerDetailsDto=adminService.searchSeller(id);
+        return ResponseEntity.ok(sellerDetailsDto);
+
+    }
+    @GetMapping("/view-orders")
+    public ResponseEntity<?> viewOrders(@RequestParam(required = false) String orderStatus)
+    {
+            List<SellerOrderSummary>sellerOrderSummaries=adminService.getSellerOrderSummary(orderStatus);
+            return ResponseEntity.ok(sellerOrderSummaries);
+    }
+    @GetMapping("/view-orders/seller/{id}")
+    public ResponseEntity<?> viewOrders(@PathVariable("id")Long id,@RequestParam(required = false)String Status)
+    {
+              List<OrderUserResponseDto>sellerOrders=orderService.viewSellerOrderToAdmin(id,Status);
+              return ResponseEntity.ok(sellerOrders);
+    }
+
+
+
+
+
+
     }
 
 

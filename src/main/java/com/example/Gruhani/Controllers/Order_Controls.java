@@ -1,26 +1,21 @@
 package com.example.Gruhani.Controllers;
 
 import com.example.Gruhani.Repositories.UserRepo;
+import com.example.Gruhani.dtos.OrderUserResponseDto;
 import com.example.Gruhani.dtos.orderReceiveDto;
-import com.example.Gruhani.dtos.orderResponseDto;
-import com.example.Gruhani.models.CartItem;
-import com.example.Gruhani.models.Order;
-import com.example.Gruhani.models.Users;
+
+import com.example.Gruhani.dtos.OrderSellerResponseDto;
 import com.example.Gruhani.service.authutil;
-import com.example.Gruhani.service.orderService;
+import com.example.Gruhani.service.OrderService;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static org.apache.commons.lang3.StringUtils.substring;
 
@@ -31,12 +26,12 @@ public class Order_Controls {
 @Autowired
     UserRepo userRepo;
 @Autowired
-orderService orderService;
+OrderService orderService;
 
 
 
     @PostMapping("/place-order")
-    public ResponseEntity<orderResponseDto> placingOrder(@RequestBody orderReceiveDto receiveDto, HttpServletRequest request)
+    public ResponseEntity<OrderSellerResponseDto> placingOrder(@RequestBody orderReceiveDto receiveDto, HttpServletRequest request)
     {
   //NOTIFICATIONS ARE REMAINING TO BE SENT -user ko otp bhejo and selller ko info ki order aaya hai
        return ResponseEntity.ok().body(orderService.processOrder(receiveDto,request));
@@ -47,7 +42,6 @@ orderService orderService;
     {
         try
         {
-
             orderService.cancelOrder(id);
         } catch (OptimisticLockException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
@@ -58,9 +52,26 @@ orderService orderService;
                 "OrderId", id,
                 "OrderStatus", "CANCELLED"
         ));
-
+    }
+    @GetMapping("/view-order-user")
+    public ResponseEntity<?> viewUserOrders(@RequestParam(required = false) String orderStatus)
+    {
+           List<OrderSellerResponseDto> sellerResponses=orderService.viewOrdersToUser(orderStatus);
+        return ResponseEntity.status(200).body(Map.of(
+                "success", true,
+                "Seller-Details",sellerResponses
+        ));
     }
 
+    @GetMapping("/view-order-seller")
+    public ResponseEntity<?> viewSellerOrders(@RequestParam(required = false)String orderStatus)
+    {
+       List<OrderUserResponseDto> orderUserResponseDtos=orderService.viewOrderToSeller(orderStatus);
+        return ResponseEntity.status(200).body(Map.of(
+                "success", true,
+                "User details",orderUserResponseDtos
+        ));
+    }
 
     
 }

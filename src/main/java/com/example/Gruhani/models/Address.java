@@ -4,14 +4,13 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 public class Address {
-    @Id
+@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     String addressLine;
@@ -19,7 +18,7 @@ public class Address {
     String state;
     String city;
     @ManyToOne
-
+    @JoinColumn(name = "user_id")
     Users user;
 
 

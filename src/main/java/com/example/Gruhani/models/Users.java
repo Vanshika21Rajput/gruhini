@@ -43,4 +43,6 @@ public class Users {
     private Cart cart;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Address> addresses = new ArrayList<>();
+    @Column(name = "profile_image_url")
+    private String profileImageUrl;
 }

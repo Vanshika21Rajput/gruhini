@@ -1,27 +1,40 @@
 package com.example.Gruhani.dtos;
 
 import com.example.Gruhani.Enums.OrderStatus;
+import com.example.Gruhani.models.Address;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.List;
 
-public class orderResponseDto {
+@Getter
+@Setter
+@NoArgsConstructor
+public class OrderSellerResponseDto {
     Long id;
     LocalDateTime placedAt;
-    BigDecimal price;
+    BigDecimal orderValue;
     String message;
-    SellerDetailsDto sellerDetailsDto;
+    SellerDetailsDto sellerDetails;
     OrderStatus orderStatus;
+    String deliveryTime;
+    Address deliveryAddress;
+    List<OrderItemDto> orderItems;
 
-    public orderResponseDto(Long id,BigDecimal ordervalue,LocalDateTime time,String message,SellerDetailsDto sellerDetailsDto,OrderStatus orderStatus)
+    public OrderSellerResponseDto(Long id, BigDecimal ordervalue, LocalDateTime time, String message, SellerDetailsDto sellerDetailsDto, OrderStatus orderStatus, String deliveryTime, Address deliveryAddress, List<OrderItemDto>orderItemDtos)
     {
         this.id=id;
-        price=ordervalue;
+        this.orderValue=ordervalue;
         placedAt=time;
         this.message=message;
-        this.sellerDetailsDto=sellerDetailsDto;
+        this.sellerDetails=sellerDetailsDto;
         this.orderStatus=orderStatus;
+        this.deliveryAddress=deliveryAddress;
+        this.deliveryTime=deliveryTime;
+        this.orderItems=orderItemDtos;
 
     }
 
