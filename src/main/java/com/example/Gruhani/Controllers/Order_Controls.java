@@ -63,15 +63,7 @@ OrderService orderService;
         ));
     }
 
-    @GetMapping("/view-order-seller")
-    public ResponseEntity<?> viewSellerOrders(@RequestParam(required = false)String orderStatus)
-    {
-       List<OrderUserResponseDto> orderUserResponseDtos=orderService.viewOrderToSeller(orderStatus);
-        return ResponseEntity.status(200).body(Map.of(
-                "success", true,
-                "User details",orderUserResponseDtos
-        ));
-    }
+
 
     
 }

@@ -21,8 +21,7 @@ public class CloudinaryService {
             return cloudresult.get("secure_url").toString();
         }
 
-        catch(
-                IOException e){
+        catch(IOException e){
             throw new RuntimeException(e);
         }
 

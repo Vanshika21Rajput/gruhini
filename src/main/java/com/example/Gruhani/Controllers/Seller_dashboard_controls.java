@@ -4,10 +4,13 @@ import com.example.Gruhani.Enums.ProductStatus;
 import com.example.Gruhani.Repositories.ProductRepo;
 import com.example.Gruhani.Repositories.SellerRepo;
 import com.example.Gruhani.Repositories.UserRepo;
+import com.example.Gruhani.dtos.OrderUserResponseDto;
 import com.example.Gruhani.dtos.ProductDto;
+import com.example.Gruhani.dtos.ProductReceiveDto;
 import com.example.Gruhani.models.Seller;
 import com.example.Gruhani.models.Product;
 import com.example.Gruhani.service.CloudinaryService;
+import com.example.Gruhani.service.OrderService;
 import com.example.Gruhani.service.SellerDashBoardService;
 import com.example.Gruhani.service.addproduct_db;
 import org.checkerframework.checker.units.qual.A;
@@ -21,22 +24,26 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
-@RestController("/seller")
+@RestController
+@RequestMapping(("/seller"))
+@PreAuthorize("hasRole('SELLER')")
 public class Seller_dashboard_controls {
 
     @Autowired
     SellerDashBoardService sellerDashBoardService;
     @Autowired
     ProductRepo productRepo;
+    @Autowired
+    OrderService orderService;
 
 
-    @PreAuthorize("hasRole('SELLER')")
     @PostMapping("/add-product")
-    public ResponseEntity<?> method(@RequestPart("data") ProductDto pdto , @RequestPart("image") MultipartFile image) {
-        System.out.println("inside add prodict");
+    public ResponseEntity<?> method(@RequestPart("data") ProductReceiveDto pdto , @RequestPart("image") MultipartFile image) {
+        System.out.println("inside add product");
         Map<String, Object> response = new HashMap<>();
 
         try {
@@ -56,8 +63,15 @@ public class Seller_dashboard_controls {
 
 
     }
+    @GetMapping("/get-All-products")
+    public ResponseEntity<?>getProduct(@RequestParam(required = false) String productStatus)
+    {
+        List<ProductDto> productDtoList=sellerDashBoardService.getAllProducts(productStatus);
+        return ResponseEntity.ok(productDtoList);
+
+    }
     @DeleteMapping("/delete-product")
-    public ResponseEntity<?> deleteproduct(@RequestParam Long id)
+    public ResponseEntity<?> deleteproduct(@RequestParam("id") Long id)
     {
         Map<String, Object> response = new HashMap<>();
 
@@ -66,6 +80,46 @@ public class Seller_dashboard_controls {
             response.put("success", true);
             return ResponseEntity.ok(response);
     }
-    //uodate the product enpot mut be added
+    @PatchMapping("/update-product")
+    public ResponseEntity<?>updateProduct(@RequestBody ProductDto productDto)
+    {
+        sellerDashBoardService.updateProduct(productDto);
+        return ResponseEntity.ok("PRODUCT UPDATED SUCCESSFULLY");
+    }
+   @PostMapping("/accept-order")
+           public ResponseEntity<?> acceptOrder(@RequestBody List<Long>orderIds)
+   {
+           orderService.acceptOrder(orderIds);
+           return ResponseEntity.ok("ORDER ACCEPTED");
+
+   }
+    @PostMapping("/reject-order")
+    public ResponseEntity<?> rejectOrder(@RequestBody List<Long>orderIds)
+    {
+        orderService.rejectOrder(orderIds);
+        return ResponseEntity.ok("ORDER REJECTED");
+
+    }
+    @GetMapping("/view-order-seller")
+    public ResponseEntity<?> viewSellerOrders(@RequestParam(required = false)String orderStatus)
+    {
+        List<OrderUserResponseDto> orderUserResponseDtos=orderService.viewOrderToSeller(orderStatus);
+        return ResponseEntity.status(200).body(Map.of(
+                "success", true,
+                "User details",orderUserResponseDtos
+        ));
+    }
+    @PostMapping("/verify-otp")
+    public ResponseEntity<?> verifyOtp(@RequestParam("orderId")Long id,@RequestParam("otp")String otp)
+    {
+           if(orderService.verifyOtp(id,otp))
+           {
+               return ResponseEntity.ok("OTP Verified");
+           }
+           return ResponseEntity.ok("OTP NOT VERIFIED ENTER CORRET ONE");
+    }
+
+
+
 
 }

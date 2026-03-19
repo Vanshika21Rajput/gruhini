@@ -40,6 +40,7 @@ public class OrderService {
     @Autowired
     SellerRepo sellerRepo;
 
+
     public List<OrderItem> MaptoOrderItem(List<CartItem> cartItemList, Order order) {
         List<OrderItem> orderItemList = new ArrayList<>();
         for (CartItem i : cartItemList) {
@@ -327,4 +328,54 @@ public class OrderService {
         return dtoList;
 
     }
+    @Transactional
+    public void acceptOrder(List<Long> orderIds) {
+        String username = usernameFromContext.fetchUsername();
+        Seller seller = sellerRepo.findByuser_email(username);
+        if (seller == null) throw new UserNotFoundException("Seller not found");
+
+        List<Order> orders = orderRepository.findAllById(orderIds);
+        if (orders.size() != orderIds.size()) {
+            throw new InvalidOrder("Some orders not found");
+        }
+        for (Order order : orders) {
+            if (!order.getSeller().getId().equals(seller.getId())) {
+                throw new RuntimeException("Not authorized to update this order");
+            }
+            order.setOrderStatus(OrderStatus.ACCEPTED);
+        }
+    }
+    @Transactional
+    public void rejectOrder(List<Long> orderIds) {
+        String username = usernameFromContext.fetchUsername();
+        Seller seller = sellerRepo.findByuser_email(username);
+        if (seller == null) throw new UserNotFoundException("Seller not found");
+
+        List<Order> orders = orderRepository.findAllById(orderIds);
+        if (orders.size() != orderIds.size()) {
+            throw new InvalidOrder("Some orders not found");
+        }
+        for (Order order : orders) {
+            if (!order.getSeller().getId().equals(seller.getId())) {
+                throw new RuntimeException("Not authorized to update this order");
+            }
+            order.setOrderStatus(OrderStatus.REJECTED);
+        }
+    }
+@Transactional
+    public Boolean verifyOtp(Long id, String otp) {
+    Order order = orderRepository.findById(id).orElseThrow(() -> new InvalidOrder("Order Not Found"));
+    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime expiration = order.getExpiration();
+    if (now.isAfter(expiration)) {
+        throw new RuntimeException("Order OTP has expired");
+    }
+
+        if  (bCryptPasswordEncoder.matches(otp, order.getHashedOtp())) {
+            order.setOrderStatus(OrderStatus.DELIVERED);
+            order.setOtpVerified(true);
+            return true;
+        }
+    return false;
+}
 }

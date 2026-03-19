@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class ProductDto {
 
-   Long id;
+    Long id;
    String  name;
    BigDecimal price;
     Category category;
@@ -26,11 +26,11 @@ public class ProductDto {
   Double rating;
    Double discount;
     Boolean verified=false;
-    int quantity;
      String message;
      String deliveryTime;
      String badge;
      Long Sellerid;
+     String image;
 
 
 }
