@@ -48,8 +48,6 @@ jwtfilter jf;
         return hs.csrf(o->o.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(h->h.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
-
                 .authorizeHttpRequests(o->o.requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll().requestMatchers("/logins","/register","/register-seller","/explore").permitAll()
                  ///logins","/register","/home","/api/**","/register-seller","/seller-login","/view-pending","/get-all-products","/add-product","/got-message","/upload"
                     .anyRequest().authenticated())

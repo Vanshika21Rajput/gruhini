@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class LoginRequest {
     @Email(message = "must be valid mail")
      String email;
-    @Size(min=5,max=10)
+    @Size(min=5)
      String password;
     String userType;
 

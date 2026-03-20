@@ -18,13 +18,31 @@ public class CloudinaryService {
         Map cloudresult;
         try {
             cloudresult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+
             return cloudresult.get("secure_url").toString();
+
         }
 
         catch(IOException e){
             throw new RuntimeException(e);
         }
+    }
+    public void deleteImage(String imageUrl) {
+        try {
+            // Extract public_id from URL
+            // Cloudinary URL format: https://res.cloudinary.com/{cloud}/image/upload/v123/{publicId}.jpg
+            String publicId = extractPublicId(imageUrl);
+            cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to delete image: " + e.getMessage());
+        }
+    }
 
-
+    private String extractPublicId(String imageUrl) {
+        // Extract everything after "upload/" and remove extension
+        String[] parts = imageUrl.split("upload/");
+        String withVersion = parts[1]; // v123456/publicId.jpg
+        String withoutVersion = withVersion.replaceFirst("v\\d+/", ""); // publicId.jpg
+        return withoutVersion.substring(0, withoutVersion.lastIndexOf(".")); // publicId
     }
 }

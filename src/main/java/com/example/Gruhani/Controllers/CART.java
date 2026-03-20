@@ -5,16 +5,14 @@ import com.example.Gruhani.Repositories.UserRepo;
 import com.example.Gruhani.dtos.AddtoCartDto;
 import com.example.Gruhani.models.Cart;
 import com.example.Gruhani.models.Users;
-import com.example.Gruhani.service.authutil;
 import com.example.Gruhani.service.cartService;
-import com.example.Gruhani.service.usernameFromContext;
+import com.example.Gruhani.service.UsernameFromContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +26,7 @@ public class CART {
     @Autowired
     CartRepo cartRepo;
     @Autowired
-    usernameFromContext usernameFromContext;
+    UsernameFromContext usernameFromContext;
     @Autowired
     UserRepo userRepo;
 

@@ -14,14 +14,13 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 public class ProductDto {
-
     Long id;
    String  name;
    BigDecimal price;
     Category category;
-     String subcategory;
-  String  description;
-   int stock;
+    String subcategory;
+    String  description;
+     int stock;
    ProductStatus status=ProductStatus.PENDING;
   Double rating;
    Double discount;
@@ -31,6 +30,4 @@ public class ProductDto {
      String badge;
      Long Sellerid;
      String image;
-
-
 }

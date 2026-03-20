@@ -20,6 +20,6 @@ import java.math.BigDecimal;
         int stock;
         Double discount;
         String deliveryTime;
-        String image;
+
     }
 

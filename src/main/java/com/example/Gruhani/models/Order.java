@@ -19,9 +19,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "orders", indexes = {
-        @Index(name = "idx_order_seller_id", columnList = "seller_id"),
-        @Index(name = "idx_order_user_id", columnList = "user_id"),
-        @Index(name = "idx_order_status", columnList = "orderStatus")
+        @Index(name = "idx_order_seller_id", columnList = "sellerOfOrder"),
+        @Index(name = "idx_order_user_id", columnList = "userid"),
+
 })
 @Getter
 @Setter
@@ -36,7 +36,7 @@ public class Order {
    private OrderStatus orderStatus;
     private String deliveryTime;
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="user_id")
+    @JoinColumn(name="userid")
     Users user;
 
 
@@ -46,15 +46,15 @@ public class Order {
     BigDecimal orderValue;
 
     private String message;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="sellerOfOrder")
     Seller seller;
-    @Size(min=6,max=6)
+
     String hashedOtp;
     @NotNull
     LocalDateTime expiration;
     Boolean OtpVerified=false;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
     private Address deliveryAddress;
 

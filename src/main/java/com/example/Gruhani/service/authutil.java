@@ -45,10 +45,9 @@ public class authutil {
         jwtClaims.setUser_id(user.getId());
         Map<String,Object>mp=new HashMap<>();
         mp.put("jwtClaims",jwtClaims );
-        return Jwts.builder().setSubject(u.getUsername())
+        return Jwts.builder() .claims(mp).setSubject(u.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .claims(mp)
-                .expiration(new Date(System.currentTimeMillis()+10*60*1000))
+                .expiration(new Date(System.currentTimeMillis()+10*60*1000*60))
                 .signWith(getskey())
                 .compact();
 

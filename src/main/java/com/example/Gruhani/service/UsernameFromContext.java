@@ -6,8 +6,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 @Component
-public class usernameFromContext {
-    public String fetchUsername()
+public class UsernameFromContext {
+    public  String fetchUsername()
     {
         Authentication auth= SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails= (UserDetails) auth.getPrincipal();

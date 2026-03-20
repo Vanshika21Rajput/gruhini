@@ -48,7 +48,6 @@ public class cartService {
                 .orElseThrow(() -> new ProductNotFoundException("Product not found"));
 
         if(!cart.getCartItems().isEmpty()) {
-
             Long existingSellerId = cart.getCartItems()
                     .get(0)
                     .getProduct()
@@ -64,7 +63,7 @@ public class cartService {
         }
 
         Optional<CartItem> existingItem =
-                cartItemRepository.findByC_idAndP_id(cart.getId(), addtocart.getProductid());
+                cartItemRepository. findByCartIdAndProductId(cart.getId(), addtocart.getProductid());
 
         if (existingItem.isPresent()) {
 
@@ -72,18 +71,14 @@ public class cartService {
             item.setQuantity(item.getQuantity() + addtocart.getQuantity());
 
         } else {
-
             CartItem cartItem = new CartItem();
             cartItem.setCart(cart);
             cartItem.setProduct(product);
             cartItem.setPriceAtAddTime(product.getPrice());
             cartItem.setQuantity(addtocart.getQuantity());
-
             cart.getCartItems().add(cartItem);
         }
-
         cartRepo.save(cart);
-
         return ResponseEntity.ok("Product successfully added to cart");
     }
 

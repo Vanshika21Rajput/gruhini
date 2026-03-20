@@ -1,6 +1,7 @@
 package com.example.Gruhani.Controllers;
 
 import com.example.Gruhani.Repositories.UserRepo;
+import com.example.Gruhani.dtos.FeedBackDto;
 import com.example.Gruhani.dtos.OrderUserResponseDto;
 import com.example.Gruhani.dtos.orderReceiveDto;
 
@@ -9,6 +10,7 @@ import com.example.Gruhani.service.authutil;
 import com.example.Gruhani.service.OrderService;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -63,7 +65,12 @@ OrderService orderService;
         ));
     }
 
-
+@PostMapping("/feedback")
+    public ResponseEntity<?> feedback(@RequestBody @Valid FeedBackDto feedBackDto)
+{
+                   orderService.feedback(feedBackDto);
+    return ResponseEntity.ok("Feedback submitted successfully");
+}
 
     
 }

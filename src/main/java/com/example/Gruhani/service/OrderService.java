@@ -2,10 +2,7 @@ package com.example.Gruhani.service;
 
 import com.example.Gruhani.Enums.OrderStatus;
 import com.example.Gruhani.Package.*;
-import com.example.Gruhani.Repositories.OrderRepository;
-import com.example.Gruhani.Repositories.ProductRepo;
-import com.example.Gruhani.Repositories.SellerRepo;
-import com.example.Gruhani.Repositories.UserRepo;
+import com.example.Gruhani.Repositories.*;
 import com.example.Gruhani.dtos.*;
 import com.example.Gruhani.models.OrderItem;
 
@@ -14,6 +11,9 @@ import com.example.Gruhani.models.Users;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,11 +34,13 @@ public class OrderService {
     @Autowired
     OrderRepository orderRepository;
     @Autowired
-    usernameFromContext usernameFromContext;
+    UsernameFromContext usernameFromContext;
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
     SellerRepo sellerRepo;
+    @Autowired
+    FeedBackRepo feedBackRepo;
 
 
     public List<OrderItem> MaptoOrderItem(List<CartItem> cartItemList, Order order) {
@@ -374,8 +376,56 @@ public class OrderService {
         if  (bCryptPasswordEncoder.matches(otp, order.getHashedOtp())) {
             order.setOrderStatus(OrderStatus.DELIVERED);
             order.setOtpVerified(true);
+            int orderCount=order.getSeller().getTotalOrderCount();
+            order.getSeller().setTotalOrderCount(orderCount+1);
             return true;
         }
     return false;
 }
+
+    @Transactional
+    public void feedback(@Valid FeedBackDto feedBackDto) {
+        String username = usernameFromContext.fetchUsername();
+        Users user = userRepo.findByemail(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        // Verify order belongs to this user
+        Order order = orderRepository.findById(feedBackDto.getOrderId())
+                .orElseThrow(() -> new InvalidOrder("Order not found"));
+
+        if (!order.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("Not authorized to review this order");
+        }
+
+        // Only allow feedback after delivery
+        if (order.getOrderStatus() != OrderStatus.DELIVERED) {
+            throw new RuntimeException("Can only review after order is delivered");
+        }
+
+
+        if (feedBackRepo.existsByOrderId(feedBackDto.getOrderId())) {
+            throw new RuntimeException("Feedback already submitted for this order");
+        }
+
+        Feedback feedback = new Feedback();
+        feedback.setOrder(order);
+        feedback.setSeller(order.getSeller());
+        feedback.setUser(user);
+        feedback.setRating(feedBackDto.getRating());
+        feedback.setComment(feedBackDto.getComment());
+        feedback.setCreatedAt(LocalDateTime.now());
+        feedBackRepo.save(feedback);
+
+        // Update seller's average rating
+        updateSellerRating(order.getSeller());
+    }
+
+    private void updateSellerRating(Seller seller) {
+        List<Feedback> feedbacks = feedBackRepo.findBySellerId(seller.getId());
+        double avgRating = feedbacks.stream()
+                .mapToInt(Feedback::getRating)
+                .average()
+                .orElse(0.0);
+        seller.setRating((float) avgRating); // dirty checking ✅
+    }
 }

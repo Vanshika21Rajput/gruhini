@@ -48,14 +48,10 @@ public class jwtfilter extends OncePerRequestFilter {
     }
 
     @Override
-
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String headauth= request.getHeader("Authorization");
         System.out.println("inside jwt filter");
-
-
-
-        System.out.print("inside jwt shpuldnt be here");
+        System.out.print("inside jwt shouldn't be here");
         String path = request.getServletPath();
         if (path.equals("/logins") ||
                 path.equals("/register") ||
@@ -67,7 +63,7 @@ public class jwtfilter extends OncePerRequestFilter {
         {
                String s=headauth.split("Bearer ")[1];
                 JwtClaims jwtclaims=a.validatetoken(s);//validate and get username from token
-                                    Users user=ur.findById(jwtclaims.getUser_id()).get();
+                Users user=ur.findById(jwtclaims.getUser_id()).get();
                  userdetails u= (userdetails) us.loadUserByUsername(user.getEmail());
                  if(u!=null && SecurityContextHolder.getContext().getAuthentication()==null)
                  {

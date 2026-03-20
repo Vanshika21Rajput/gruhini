@@ -41,7 +41,7 @@ public class Seller_dashboard_controls {
     OrderService orderService;
 
 
-    @PostMapping("/add-product")
+    @PostMapping(value = "/add-product",consumes = "multipart/form-data")
     public ResponseEntity<?> method(@RequestPart("data") ProductReceiveDto pdto , @RequestPart("image") MultipartFile image) {
         System.out.println("inside add product");
         Map<String, Object> response = new HashMap<>();

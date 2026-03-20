@@ -11,20 +11,18 @@ import com.example.Gruhani.models.Product;
 import com.example.Gruhani.models.Seller;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
 public class SellerDashBoardService {
    @Autowired
-   usernameFromContext usernameFromContext;
+   UsernameFromContext usernameFromContext;
     @Autowired
     ProductRepo productRepo;
     @Autowired
@@ -63,13 +61,9 @@ public class SellerDashBoardService {
             productRepo.save(product);
             return product.getId();
 
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-
-
     }
     public void deleteproduct(Long id)
     {
@@ -91,7 +85,6 @@ public class SellerDashBoardService {
             productList=productRepo.findBySellerId(seller.getId());
         }
         else {
-
             try {
                 productList = productRepo.findBySellerIdAndStatus(
                         seller.getId(),

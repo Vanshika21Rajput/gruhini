@@ -34,15 +34,11 @@ public class AdminService {
 
     public List<ProductDto> viewPending()
     {
-
-            List<Product> l = productRepo.findAllByStatus(ProductStatus.PENDING);
+        List<Product> l = productRepo.findAllByStatus(ProductStatus.PENDING);
             List<ProductDto> productDtos = l.stream()
                     .map(this::mapToDto)
                     .collect(Collectors.toList());
             return productDtos;
-
-
-
     }
 
     private ProductDto mapToDto(Product product) {
@@ -61,7 +57,7 @@ public class AdminService {
         dto.setDeliveryTime(product.getDeliveryTime());
         dto.setBadge(product.getBadge());
         // quantity has no matching field in Product — set default or remove from DTO
-        dto.setQuantity(0);
+
         dto.setSellerid(product.getSeller().getId());
         return dto;
     }

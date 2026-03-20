@@ -14,8 +14,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class Seller {
-    @GeneratedValue(
-            strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -40,7 +39,9 @@ public class Seller {
     @OneToMany(mappedBy = "seller",fetch=FetchType.LAZY,orphanRemoval = true,cascade = CascadeType.ALL)
     private List<Order> orders=new ArrayList<>();
 
-    int totalOrderCount=0;
+    private int totalOrderCount=0;
+    private Float rating;
+
 
 
 }

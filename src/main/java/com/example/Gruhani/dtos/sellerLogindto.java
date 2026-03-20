@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 
 public class sellerLogindto {
-    @Email(message = "email sai ni  h")
+    @Email(message = "email is not valid")
     String username;
     @Size(min=10)
     String password;

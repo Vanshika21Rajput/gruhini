@@ -45,4 +45,12 @@ public class Users {
     private List<Address> addresses = new ArrayList<>();
     @Column(name = "profile_image_url")
     private String profileImageUrl;
+    @OneToOne(mappedBy = "user",fetch=FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
+    private Seller seller;
+    @OneToOne(mappedBy = "user",fetch=FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
+    Admin admin;
+
+
+
+
 }

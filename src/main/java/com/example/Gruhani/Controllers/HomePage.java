@@ -3,6 +3,7 @@ package com.example.Gruhani.Controllers;
 
 
 
+import com.example.Gruhani.Enums.ProductStatus;
 import com.example.Gruhani.Repositories.ProductRepo;
 import com.example.Gruhani.Repositories.SellerRepo;
 import com.example.Gruhani.dtos.ProductDto;
@@ -66,9 +67,9 @@ public class HomePage {
 */
     @GetMapping("/explore")
     public ResponseEntity<?> method() {
-        List<Product> l = prepo.findAllBystatus("approved");
+        List<Product> l = prepo.findAllByStatus(ProductStatus.APPROVED);
         Map<String, Object> response = new HashMap<>();
-        //here in response the product dto attributes will be mapped and sent to frontend
+
         List<ProductDto>s= l.stream()
                 .map(product -> {
                     ProductDto dto = new ProductDto();
@@ -79,6 +80,7 @@ public class HomePage {
         return ResponseEntity.ok().body(s);
 
     }
+
 
 
 

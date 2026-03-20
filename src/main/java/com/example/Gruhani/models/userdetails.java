@@ -1,9 +1,9 @@
 package com.example.Gruhani.models;
 
+import com.example.Gruhani.Enums.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.List;
@@ -14,9 +14,9 @@ import java.util.stream.Collectors;
 public class userdetails implements UserDetails {
    private String username;
    private String pass;
-    Set<String>s;
+    Set<Role>s;
 
-    public userdetails(String user, String pass, Set<String>r)
+    public userdetails(String user, String pass, Set<Role> r)
     {
         this.username=user;
         this.pass=pass;
@@ -28,7 +28,7 @@ public class userdetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
         List<GrantedAuthority> authorities = s.stream()
-                .map(SimpleGrantedAuthority::new)
+                .map(role -> new SimpleGrantedAuthority(role.name()))
                 .collect(Collectors.toList());
         System.out.print("userdetails only"+authorities);
         return authorities;
