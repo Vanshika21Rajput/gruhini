@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.validator.constraints.ISBN;
 import org.springframework.stereotype.Component;
@@ -35,6 +36,7 @@ public class Order {
     @Enumerated(EnumType.STRING)
    private OrderStatus orderStatus;
     private String deliveryTime;
+    @JsonIgnore
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="userid")
     Users user;

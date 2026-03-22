@@ -17,5 +17,5 @@ public class FeedBackDto {
     Long sellerId;
     int rating;
     String comment;
-    LocalDateTime at;
+
 }

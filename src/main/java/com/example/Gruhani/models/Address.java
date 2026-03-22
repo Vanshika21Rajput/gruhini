@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.minidev.json.annotate.JsonIgnore;
 
 @Entity
 @Getter
@@ -17,6 +18,8 @@ public class Address {
     String pincode;
     String state;
     String city;
+
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     Users user;

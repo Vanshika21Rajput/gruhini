@@ -15,6 +15,6 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class orderReceiveDto {
-    private Address address;
+    private Long addressId;
 
 }

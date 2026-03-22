@@ -86,6 +86,7 @@ public class Seller_dashboard_controls {
         sellerDashBoardService.updateProduct(productDto);
         return ResponseEntity.ok("PRODUCT UPDATED SUCCESSFULLY");
     }
+
    @PostMapping("/accept-order")
            public ResponseEntity<?> acceptOrder(@RequestBody List<Long>orderIds)
    {

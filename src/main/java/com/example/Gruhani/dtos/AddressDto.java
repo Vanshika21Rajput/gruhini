@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class AddressDto {
+    Long id=0l;
     String addressLine;
     String pincode;
     String state;

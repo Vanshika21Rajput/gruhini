@@ -35,7 +35,7 @@ public interface ProductRepo extends JpaRepository<Product,Long> {
     @Modifying //update and delete operations
     @Transactional
     @Query("UPDATE Product p SET p.status=:status,p.message=:reason where p.id in :ids")
-    void batchUpdateStatus(@Param("p_status") ProductStatus status, @Param("ids")List<Long>ids,@Param("reason")String reason);
+    void batchUpdateStatus(@Param("status") ProductStatus status, @Param("ids")List<Long>ids,@Param("reason")String reason);
 
     List<Product> findBySellerId(Long id);
 

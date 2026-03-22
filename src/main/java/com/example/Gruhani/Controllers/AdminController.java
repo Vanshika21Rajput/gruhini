@@ -5,7 +5,7 @@ import com.example.Gruhani.Repositories.SellerRepo;
 import com.example.Gruhani.dtos.OrderUserResponseDto;
 import com.example.Gruhani.dtos.ProductDto;
 import com.example.Gruhani.dtos.SellerDetailsDto;
-import com.example.Gruhani.models.SelectedProductsbyAdmin;
+import com.example.Gruhani.models.SelectedItemsByAdmin;
 import com.example.Gruhani.models.SellerOrderSummary;
 import com.example.Gruhani.service.AdminService;
 import com.example.Gruhani.service.OrderService;
@@ -15,7 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+//ADD SELLER APPROVE ENDPOINT AS WELL
 @RestController
 @RequestMapping("/admin")
 @PreAuthorize("hasRole('ADMIN')")
@@ -37,22 +37,22 @@ public class AdminController {
 
 
     @PostMapping("/accept-item")
-    public ResponseEntity<String> acceptItem(@RequestBody SelectedProductsbyAdmin selected) {
+    public ResponseEntity<String> acceptItem(@RequestBody SelectedItemsByAdmin selected) {
         if(selected==null)
         {
             return ResponseEntity.badRequest().body("Could not Process the request");
         }
          adminService.acceptItem(selected);
-        return ResponseEntity.ok().body("ok");
+        return ResponseEntity.ok().body("APPROVED YOUR PRODUCT");
     }
 
     @PostMapping("/reject-item")
-    public ResponseEntity<String> rejectItem(@RequestBody SelectedProductsbyAdmin selected) {
+    public ResponseEntity<String> rejectItem(@RequestBody SelectedItemsByAdmin selected) {
         if (selected == null ) {
             return ResponseEntity.badRequest().body("No products selected");
         }
        adminService.rejectItem(selected);
-        return ResponseEntity.ok().body("ok");
+        return ResponseEntity.ok().body("PRODUCT REJECTED BECAUSE OF"+selected.getMessage());
     }
     //VIEW ORDER BY SELLER group by selller ids so that admin can see the stats
 
@@ -75,13 +75,13 @@ public class AdminController {
         return ResponseEntity.ok().body(sellerDetailsDtos);
     }
     @DeleteMapping("/delete-product")
-    public ResponseEntity<?> deleteProducts(@RequestBody SelectedProductsbyAdmin selectedProductsbyAdmin)
+    public ResponseEntity<?> deleteProducts(@RequestBody SelectedItemsByAdmin selectedItemsByAdmin)
     {
-        if(selectedProductsbyAdmin==null)
+        if(selectedItemsByAdmin ==null)
         {
             return ResponseEntity.badRequest().body("NO PRODUCTS SELECTED");
         }
-        adminService.deleteProducts(selectedProductsbyAdmin.getSelectedProducts());
+        adminService.deleteProducts(selectedItemsByAdmin.getSelectedProducts());
         return ResponseEntity.ok("SUCCESSFULLY DELETED THE SELECTED PRODUCTS");
 
     }
@@ -97,7 +97,7 @@ public class AdminController {
     public ResponseEntity<?> viewSeller(@PathVariable("id")Long id)
     {
         SellerDetailsDto sellerDetailsDto=adminService.searchSeller(id);
-        return ResponseEntity.ok(sellerDetailsDto);
+        return ResponseEntity.ok(sellerDetailsDto);//view thier order as well kittedeliver kiye cozahi ni hua
 
     }
     @GetMapping("/view-orders")
@@ -111,6 +111,12 @@ public class AdminController {
     {
               List<OrderUserResponseDto>sellerOrders=orderService.viewSellerOrderToAdmin(id,Status);
               return ResponseEntity.ok(sellerOrders);
+    }
+    @GetMapping("/approve-seller")
+    public ResponseEntity<?> approveSeller(@RequestBody SelectedItemsByAdmin selectedItemsByAdmin)
+    {
+          adminService.approveSeller(selectedItemsByAdmin);
+          return ResponseEntity.ok("APPROVED SELLER");
     }
 
 

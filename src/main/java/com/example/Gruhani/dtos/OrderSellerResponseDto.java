@@ -21,10 +21,10 @@ public class OrderSellerResponseDto {
     SellerDetailsDto sellerDetails;
     OrderStatus orderStatus;
     String deliveryTime;
-    Address deliveryAddress;
+    AddressDto deliveryAddress;
     List<OrderItemDto> orderItems;
 
-    public OrderSellerResponseDto(Long id, BigDecimal ordervalue, LocalDateTime time, String message, SellerDetailsDto sellerDetailsDto, OrderStatus orderStatus, String deliveryTime, Address deliveryAddress, List<OrderItemDto>orderItemDtos)
+    public OrderSellerResponseDto(Long id, BigDecimal ordervalue, LocalDateTime time, String message, SellerDetailsDto sellerDetailsDto, OrderStatus orderStatus, String deliveryTime, AddressDto deliveryAddress, List<OrderItemDto>orderItemDtos)
     {
         this.id=id;
         this.orderValue=ordervalue;

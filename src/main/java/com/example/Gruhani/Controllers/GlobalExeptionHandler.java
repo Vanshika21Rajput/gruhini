@@ -82,8 +82,15 @@ public class GlobalExeptionHandler {
                     "errorCode", "RETRY ODERING",
                     "message", ex.getMessage()
             ));
-
-
+    }
+    @ExceptionHandler(  UserNotFoundException.class)
+    public ResponseEntity<?> userNotFound( UserNotFoundException ex)
+    {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+                "success", false,
+                "errorCode", "RETRY ODERING",
+                "message", ex.getMessage()
+        ));
     }
 
 

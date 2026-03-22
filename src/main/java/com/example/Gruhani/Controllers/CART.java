@@ -80,7 +80,7 @@ public class CART {
 
 
         boolean removed = cart.getCartItems().removeIf(
-                item -> item.getId().equals(id)//removal of cartitem from cart makes it orphan and hence is auto deleted by JPA in DB
+                item -> item.getProduct().getId().equals(id)//removal of cartitem from cart makes it orphan and hence is auto deleted by JPA in DB
         );
 
         if (!removed) {

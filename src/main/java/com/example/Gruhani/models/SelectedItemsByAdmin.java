@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class SelectedProductsbyAdmin {
+public class SelectedItemsByAdmin {
     private List<Long> selectedProducts=new ArrayList<>();
     private String message;
 

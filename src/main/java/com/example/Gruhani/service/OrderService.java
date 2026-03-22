@@ -41,6 +41,8 @@ public class OrderService {
     SellerRepo sellerRepo;
     @Autowired
     FeedBackRepo feedBackRepo;
+    @Autowired
+    AddressRepo addressRepo;
 
 
     public List<OrderItem> MaptoOrderItem(List<CartItem> cartItemList, Order order) {
@@ -62,11 +64,12 @@ public class OrderService {
     @Transactional
     public OrderSellerResponseDto processOrder(orderReceiveDto receiveDto, HttpServletRequest req) {
         String username = usernameFromContext.fetchUsername();
-        Users user = userRepo.findByemail(username).orElseThrow(() -> new RuntimeException("USER NOT FOUND"));
+        Users user = userRepo.findByemail(username).orElseThrow(() -> new UserNotFoundException("USER NOT FOUND"));
         Cart cart = user.getCart();
         if (cart == null) {
             throw new InvalidCart("Cart Doesn't Exist");
         }
+
         Order order = new Order();
         List<OrderItem> list = MaptoOrderItem(cart.getCartItems(), order);
         if (list.isEmpty()) {
@@ -74,7 +77,9 @@ public class OrderService {
         }
         order.setUser(user);
         order.setDeliveryTime("3-4 Days");
-        order.setDeliveryAddress(receiveDto.getAddress());
+        Address address=getAddress(user,receiveDto.getAddressId());
+        order.setDeliveryAddress(address);
+        AddressDto addressDto=maptoAddressDto(address);
         int otp = ThreadLocalRandom.current().nextInt(100000, 1_000_000);
         String hashedOtp = bCryptPasswordEncoder.encode(String.valueOf(otp));
         order.setHashedOtp(hashedOtp);
@@ -96,16 +101,31 @@ public class OrderService {
         cart.getCartItems().clear();
         //Setting seller details to send to user
         SellerDetailsDto sellerDetailsDto = new SellerDetailsDto();
-        sellerDetailsDto.setAddress(order.getSeller().getAddress());
+        sellerDetailsDto.setAddress(addressDto);
         sellerDetailsDto.setName(order.getSeller().getUser().getName());
         sellerDetailsDto.setContact(order.getSeller().getContactNo());
         sellerDetailsDto.setBusinessName(order.getSeller().getBusinessName());
 
         List<OrderItemDto> orderItemDtos = OrderItemtoDto(list);
 
-        return new OrderSellerResponseDto(order.getId(), order.getOrderValue(), order.getPlacedAt(), order.getMessage(), sellerDetailsDto, OrderStatus.PENDING, order.getDeliveryTime(), order.getDeliveryAddress(), orderItemDtos);
+        return new OrderSellerResponseDto(order.getId(), order.getOrderValue(), order.getPlacedAt(), order.getMessage(), sellerDetailsDto, OrderStatus.PENDING, order.getDeliveryTime(), addressDto, orderItemDtos);
 //frotend must show placed order and pending both
 
+    }
+
+    private AddressDto maptoAddressDto(Address address) {
+        AddressDto addressDto=new AddressDto();
+        addressDto.setAddressLine(address.getAddressLine());
+        addressDto.setId(address.getId());
+        addressDto.setCity(address.getCity());
+        addressDto.setState(address.getState());
+        addressDto.setPincode(address.getPincode());
+        return  addressDto;
+    }
+
+    private Address getAddress(Users users,Long id) {
+       Address address=addressRepo.findById(id).orElseThrow(()->new AddressNotFoundException("NO SUCH ADDRESS EXISTS"));
+        return address;
     }
 
     private List<OrderItemDto> OrderItemtoDto(List<OrderItem> list) {
@@ -226,7 +246,8 @@ public class OrderService {
             sellerDetailsDto.setName(order.getSeller().getUser().getName());
             sellerDetailsDto.setBusinessName(order.getSeller().getBusinessName());
             sellerDetailsDto.setContact(order.getSeller().getContactNo());
-            sellerDetailsDto.setAddress(order.getSeller().getAddress());
+           AddressDto addressDto= maptoAddressDto(order.getDeliveryAddress());
+            sellerDetailsDto.setAddress(addressDto);
 
             // Build Response DTO
             OrderSellerResponseDto dto = new OrderSellerResponseDto(
@@ -237,7 +258,7 @@ public class OrderService {
                     sellerDetailsDto,
                     order.getOrderStatus(),
                     order.getDeliveryTime(),
-                    order.getDeliveryAddress(),
+                    maptoAddressDto(order.getDeliveryAddress()),
                     orderItemDtos
             );
             dtoList.add(dto);

@@ -9,11 +9,11 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 @NoArgsConstructor
-
 public class SellerDetailsDto {
+    Long id;
     String name;
     String contact;
-    Address address;
+    AddressDto address;
     String businessName;
     String image;
 }

@@ -8,17 +8,15 @@ import com.example.Gruhani.Package.UserNotFoundException;
 import com.example.Gruhani.Repositories.OrderRepository;
 import com.example.Gruhani.Repositories.ProductRepo;
 import com.example.Gruhani.Repositories.SellerRepo;
+import com.example.Gruhani.dtos.AddressDto;
 import com.example.Gruhani.dtos.ProductDto;
 import com.example.Gruhani.dtos.SellerDetailsDto;
-import com.example.Gruhani.models.Product;
-import com.example.Gruhani.models.SelectedProductsbyAdmin;
-import com.example.Gruhani.models.Seller;
-import com.example.Gruhani.models.SellerOrderSummary;
+import com.example.Gruhani.models.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -63,22 +61,21 @@ public class AdminService {
     }
     public ProductDto viewSingleProduct(Long id)
     {
-
-            Product product=productRepo.findById(id).orElseThrow(()->new ProductNotFoundException("NOT FOUND"));
+        Product product=productRepo.findById(id).orElseThrow(()->new ProductNotFoundException("NOT FOUND"));
                            ProductDto  productdto=mapToDto(product);
                            return productdto;
     }
     //we have not used transactional because in db for this query is already annotated wit transactional
-    public void acceptItem(SelectedProductsbyAdmin selectedProductsbyAdmin)
+    public void acceptItem(SelectedItemsByAdmin selectedItemsByAdmin)
     {
-        List<Long> selectedProducts = selectedProductsbyAdmin.getSelectedProducts();
-        productRepo.batchUpdateStatus(ProductStatus.APPROVED,selectedProducts,selectedProductsbyAdmin.getMessage());
+        List<Long> selectedProducts = selectedItemsByAdmin.getSelectedProducts();
+        productRepo.batchUpdateStatus(ProductStatus.APPROVED,selectedProducts, selectedItemsByAdmin.getMessage());
 
     }
-    public void rejectItem(SelectedProductsbyAdmin selectedProductsbyAdmin)
+    public void rejectItem(SelectedItemsByAdmin selectedItemsByAdmin)
     {
-        List<Long> selectedProducts = selectedProductsbyAdmin.getSelectedProducts();
-        productRepo.batchUpdateStatus(ProductStatus.REJECTED,selectedProducts,selectedProductsbyAdmin.getMessage());
+        List<Long> selectedProducts = selectedItemsByAdmin.getSelectedProducts();
+        productRepo.batchUpdateStatus(ProductStatus.REJECTED,selectedProducts, selectedItemsByAdmin.getMessage());
     }
 
     public List<ProductDto> viewAllProducts() {
@@ -93,10 +90,7 @@ public class AdminService {
         if (products.size() != selectedProducts.size()) {
             throw new ProductNotFoundException("Some products not found");
         }
-
             productRepo.deleteAll(products);
-
-
     }
 
     @Transactional
@@ -110,14 +104,23 @@ public class AdminService {
                        SellerDetailsDto sellerDetailsDto= maptoSellerDto(seller);
                        return sellerDetailsDto;
     }
-
+    private AddressDto maptoAddressDto(Address address) {
+        AddressDto addressDto=new AddressDto();
+        addressDto.setAddressLine(address.getAddressLine());
+        addressDto.setId(address.getId());
+        addressDto.setCity(address.getCity());
+        addressDto.setState(address.getState());
+        addressDto.setPincode(address.getPincode());
+        return  addressDto;
+    }
     private SellerDetailsDto maptoSellerDto(Seller seller) {
         SellerDetailsDto sellerDto=new SellerDetailsDto();
         sellerDto.setBusinessName(seller.getBusinessName());
         sellerDto.setContact(seller.getContactNo());
         sellerDto.setName(seller.getUser().getName());
-        sellerDto.setAddress(seller.getAddress());
+        sellerDto.setAddress(maptoAddressDto(seller.getAddress()));
         sellerDto.setImage(seller.getUser().getProfileImageUrl());
+        sellerDto.setId(sellerDto.getId());
         return sellerDto;
     }
 
@@ -141,4 +144,14 @@ public class AdminService {
         }
     }
 
+    @Transactional
+    public void approveSeller(SelectedItemsByAdmin selectedItemsByAdmin) {
+
+           List<Seller>sellers= sellerRepo.findAllById(selectedItemsByAdmin.getSelectedProducts());
+           for(Seller seller:sellers)
+           {
+               seller.setIsApproved(true);
+           }
+
+    }
 }
