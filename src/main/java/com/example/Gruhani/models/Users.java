@@ -51,8 +51,10 @@ public class Users {
     private Seller seller;
     @OneToOne(mappedBy = "user",fetch=FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
     Admin admin;
-
-
+    @Column(name = "fcm_token")
+    private String fcmToken;
+    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY,cascade = CascadeType.REMOVE,orphanRemoval = true)
+    List<PasswordResetOtp>resetOtps;
 
 
 }

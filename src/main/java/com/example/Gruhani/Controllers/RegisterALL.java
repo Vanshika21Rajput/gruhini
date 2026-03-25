@@ -2,7 +2,7 @@ package com.example.Gruhani.Controllers;
 import com.example.Gruhani.Package.UserNotFoundException;
 import com.example.Gruhani.Repositories.SellerRepo;
 import com.example.Gruhani.Repositories.UserRepo;
-import com.example.Gruhani.dtos.SellerDto;
+import com.example.Gruhani.dtos.SellerReceiveDto;
 import com.example.Gruhani.dtos.UserDto;
 import com.example.Gruhani.models.Users;
 import com.example.Gruhani.service.ProfileService;
@@ -55,16 +55,16 @@ ProfileService profileService;
     // REGISTER SELLER
 
     @PostMapping("/register-seller")
-    public ResponseEntity<Map<String, Object>> sellerRegister( @Valid @RequestBody SellerDto sellerDto)
+    public ResponseEntity<Map<String, Object>> sellerRegister( @Valid @RequestBody SellerReceiveDto sellerReceiveDto)
     {
-        profileService.registerSeller(sellerDto);
+        profileService.registerSeller(sellerReceiveDto);
 
         return ResponseEntity.ok(Map.of(
                 "success", true,
                 "message", "Login successful as a seller",
                 "seller", Map.of(
-                        "name",sellerDto.getName(),
-                        "businessName", sellerDto.getBusinessName()
+                        "name", sellerReceiveDto.getName(),
+                        "businessName", sellerReceiveDto.getBusinessName()
         )));
 
     }

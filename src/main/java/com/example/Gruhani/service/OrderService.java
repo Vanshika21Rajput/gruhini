@@ -8,6 +8,7 @@ import com.example.Gruhani.models.OrderItem;
 
 import com.example.Gruhani.models.*;
 import com.example.Gruhani.models.Users;
+import com.google.firebase.messaging.FirebaseMessagingException;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
@@ -43,6 +44,10 @@ public class OrderService {
     FeedBackRepo feedBackRepo;
     @Autowired
     AddressRepo addressRepo;
+    @Autowired
+    NotificationService notificationService;
+    @Autowired
+    MailService emailService;
 
 
     public List<OrderItem> MaptoOrderItem(List<CartItem> cartItemList, Order order) {
@@ -62,7 +67,7 @@ public class OrderService {
 
 
     @Transactional
-    public OrderSellerResponseDto processOrder(orderReceiveDto receiveDto, HttpServletRequest req) {
+    public OrderSellerResponseDto processOrder(orderReceiveDto receiveDto, HttpServletRequest req) throws FirebaseMessagingException {
         String username = usernameFromContext.fetchUsername();
         Users user = userRepo.findByemail(username).orElseThrow(() -> new UserNotFoundException("USER NOT FOUND"));
         Cart cart = user.getCart();
@@ -98,6 +103,19 @@ public class OrderService {
 
         order.setMessage("Order placed Successfully");
         orderRepository.save(order);
+        boolean emailSent;
+        try {
+            emailService.sendOtpEmailHtml(
+                    user.getEmail(),
+                    String.valueOf(otp),
+                    String.valueOf(order.getId())
+            );
+            emailSent=true;
+        } catch (Exception e) {
+            emailSent=false;
+            throw new RuntimeException("Email failed again, please check your email address");
+
+        }
         cart.getCartItems().clear();
         //Setting seller details to send to user
         SellerDetailsDto sellerDetailsDto = new SellerDetailsDto();
@@ -108,8 +126,8 @@ public class OrderService {
 
         List<OrderItemDto> orderItemDtos = OrderItemtoDto(list);
 
-        return new OrderSellerResponseDto(order.getId(), order.getOrderValue(), order.getPlacedAt(), order.getMessage(), sellerDetailsDto, OrderStatus.PENDING, order.getDeliveryTime(), addressDto, orderItemDtos);
-//frotend must show placed order and pending both
+        return new OrderSellerResponseDto(order.getId(), order.getOrderValue(), order.getPlacedAt(), order.getMessage(), sellerDetailsDto, OrderStatus.PENDING, order.getDeliveryTime(), addressDto, orderItemDtos,emailSent);
+//frontend must show placed order and pending both
 
     }
 
@@ -198,10 +216,21 @@ public class OrderService {
             throw new RuntimeException("Order cannot be cancelled after 36 hours");
         }
         order.setOrderStatus(OrderStatus.CANCELLED);
+
         try {
             validateAndIncreaseStock(order.getOrderItemList());
         } catch (OptimisticLockException e) {
             throw new OptimisticLockException("Retry ORDERING");
+        }
+        try {
+            emailService.sendOrderStatusEmail(
+                    order.getSeller().getUser().getEmail(),
+                    order.getSeller().getUser().getName(),
+                    String.valueOf(order.getId()),
+                    "CANCELLED_BY_USER"
+            );
+        } catch (Exception e) {
+            System.err.println("Email failed for order " + order.getId() + ": " + e.getMessage());
         }
     }
 
@@ -259,7 +288,8 @@ public class OrderService {
                     order.getOrderStatus(),
                     order.getDeliveryTime(),
                     maptoAddressDto(order.getDeliveryAddress()),
-                    orderItemDtos
+                    orderItemDtos,
+                    false
             );
             dtoList.add(dto);
         }
@@ -366,6 +396,16 @@ public class OrderService {
                 throw new RuntimeException("Not authorized to update this order");
             }
             order.setOrderStatus(OrderStatus.ACCEPTED);
+            try {
+                emailService.sendOrderStatusEmail(
+                        order.getUser().getEmail(),
+                        order.getUser().getName(),
+                        String.valueOf(order.getId()),
+                        "ACCEPTED"
+                );
+            } catch (Exception e) {
+                System.err.println("Email failed for order " + order.getId() + ": " + e.getMessage());
+            }
         }
     }
     @Transactional
@@ -383,6 +423,16 @@ public class OrderService {
                 throw new RuntimeException("Not authorized to update this order");
             }
             order.setOrderStatus(OrderStatus.REJECTED);
+            try {
+                emailService.sendOrderStatusEmail(
+                        order.getUser().getEmail(),
+                        order.getUser().getName(),
+                        String.valueOf(order.getId()),
+                        "REJECTED"
+                );
+            } catch (Exception e) {
+                System.err.println("Email failed for order " + order.getId() + ": " + e.getMessage());
+            }
         }
     }
 @Transactional
@@ -399,7 +449,18 @@ public class OrderService {
             order.setOtpVerified(true);
             int orderCount=order.getSeller().getTotalOrderCount();
             order.getSeller().setTotalOrderCount(orderCount+1);
+            try {
+                emailService.sendOrderStatusEmail(
+                        order.getUser().getEmail(),
+                        order.getUser().getName(),
+                        String.valueOf(order.getId()),
+                        "DELIVERED"
+                );
+            } catch (Exception e) {
+                System.err.println("Email failed for order " + id + ": " + e.getMessage());
+            }
             return true;
+
         }
     return false;
 }
@@ -449,4 +510,44 @@ public class OrderService {
                 .orElse(0.0);
         seller.setRating((float) avgRating); // dirty checking ✅
     }
-}
+
+        @Transactional
+        public void resendOtp(Long orderId) {
+            String username = usernameFromContext.fetchUsername();
+            Users user = userRepo.findByemail(username)
+                    .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+            Order order = orderRepository.findById(orderId)
+                    .orElseThrow(() -> new InvalidOrder("Order not found"));
+
+            // Security check - only order owner can resend
+            if (!order.getUser().getId().equals(user.getId())) {
+                throw new RuntimeException("Not authorized");
+            }
+
+            // Don't resend if already delivered
+            if (order.getOrderStatus() == OrderStatus.DELIVERED) {
+                throw new RuntimeException("Order already delivered");
+            }
+
+            // Generate fresh OTP
+            int newOtp = ThreadLocalRandom.current().nextInt(100000, 1_000_000);
+            String newHashedOtp = bCryptPasswordEncoder.encode(String.valueOf(newOtp));
+
+            // Replace old OTP in DB
+            order.setHashedOtp(newHashedOtp);
+            order.setExpiration(LocalDateTime.now().plusDays(5)); // reset expiry too
+
+            // Send fresh email
+            try {
+                emailService.sendOtpEmailHtml(
+                        user.getEmail(),
+                        String.valueOf(newOtp),
+                        String.valueOf(orderId)
+                );
+            } catch (Exception e) {
+                throw new RuntimeException("Email failed again, please check your email address");
+            }
+        }
+    }
+

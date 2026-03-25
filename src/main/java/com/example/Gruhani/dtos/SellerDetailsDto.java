@@ -16,4 +16,5 @@ public class SellerDetailsDto {
     AddressDto address;
     String businessName;
     String image;
+    String Description;
 }

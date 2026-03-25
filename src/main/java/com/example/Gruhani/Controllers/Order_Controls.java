@@ -64,7 +64,11 @@ OrderService orderService;
                 "Seller-Details",sellerResponses
         ));
     }
-
+    @PostMapping("/orders/{orderId}/resend-otp")
+    public ResponseEntity<String> resendOtp(@PathVariable("orderId") Long orderId) {
+        orderService.resendOtp(orderId);
+        return ResponseEntity.ok("OTP resent to your email!");
+    }
 @PostMapping("/feedback")
     public ResponseEntity<?> feedback(@RequestBody @Valid FeedBackDto feedBackDto)
 {

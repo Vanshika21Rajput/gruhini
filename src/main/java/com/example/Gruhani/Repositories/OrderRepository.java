@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
@@ -35,4 +36,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "FROM Order o WHERE o.orderStatus = :orderStatus " +
             "GROUP BY o.seller.id, o.seller.businessName, o.seller.user.name")
     List<SellerOrderSummary> getOrderCountForSellerByStatus(@Param("orderStatus") OrderStatus orderStatus);
+    @Query("SELECT SUM(o.totalAmount) FROM Order o WHERE o.seller.id = :sellerId AND o.orderStatus = 'DELIVERED'")
+    BigDecimal sumRevenueBySellerId(Long sellerId);
+
+    long countBySeller_IdAndOrderStatus(Long sellerId, OrderStatus orderStatus);
+     long countBySeller_id(Long sellerId);
 }

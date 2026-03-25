@@ -41,6 +41,7 @@ public class Seller {
 
     private int totalOrderCount=0;
     private Float rating;
+    private String Description;
 
 
 

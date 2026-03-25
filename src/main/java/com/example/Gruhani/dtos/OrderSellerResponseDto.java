@@ -23,8 +23,11 @@ public class OrderSellerResponseDto {
     String deliveryTime;
     AddressDto deliveryAddress;
     List<OrderItemDto> orderItems;
+    private String otpFallback;
+    private String otpMessage;
+    private boolean emailSent;
 
-    public OrderSellerResponseDto(Long id, BigDecimal ordervalue, LocalDateTime time, String message, SellerDetailsDto sellerDetailsDto, OrderStatus orderStatus, String deliveryTime, AddressDto deliveryAddress, List<OrderItemDto>orderItemDtos)
+    public OrderSellerResponseDto(Long id, BigDecimal ordervalue, LocalDateTime time, String message, SellerDetailsDto sellerDetailsDto, OrderStatus orderStatus, String deliveryTime, AddressDto deliveryAddress, List<OrderItemDto>orderItemDtos,boolean emailSent)
     {
         this.id=id;
         this.orderValue=ordervalue;
@@ -35,6 +38,7 @@ public class OrderSellerResponseDto {
         this.deliveryAddress=deliveryAddress;
         this.deliveryTime=deliveryTime;
         this.orderItems=orderItemDtos;
+        this.emailSent=emailSent;
 
     }
 

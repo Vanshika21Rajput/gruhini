@@ -6,8 +6,9 @@ import com.example.Gruhani.Repositories.AddressRepo;
 import com.example.Gruhani.Repositories.SellerRepo;
 import com.example.Gruhani.Repositories.UserRepo;
 import com.example.Gruhani.dtos.AddressDto;
-import com.example.Gruhani.dtos.SellerDto;
+import com.example.Gruhani.dtos.SellerReceiveDto;
 import com.example.Gruhani.dtos.UserDto;
+import com.example.Gruhani.dtos.UserProfileDto;
 import com.example.Gruhani.models.Address;
 import com.example.Gruhani.models.Seller;
 import com.example.Gruhani.models.Users;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ProfileService {
@@ -39,22 +41,23 @@ public class ProfileService {
     UsernameFromContext usernameFromContext;
 
     @Transactional
-    public void registerSeller(SellerDto sellerDto)
+    public void registerSeller(SellerReceiveDto sellerReceiveDto)
     {
-        Users user=userRepo.findByemail(sellerDto.getEmail()).orElseThrow(()->new UserNotFoundException("REGISTER AS A USER FIRST"));
+        Users user=userRepo.findByemail(sellerReceiveDto.getEmail()).orElseThrow(()->new UserNotFoundException("REGISTER AS A USER FIRST"));
         System.out.print("user-seller"+user.getEmail());
 
         Seller seller=new Seller();
-        seller.setContactNo(sellerDto.getPhone());
-        seller.setBusinessName(sellerDto.getBusinessName());
+        seller.setContactNo(sellerReceiveDto.getPhone());
+        seller.setBusinessName(sellerReceiveDto.getBusinessName());
         seller.setIsApproved(false);
         Set<Role> s=new HashSet<>();
         s.add(Role.ROLE_USER);
         s.add(Role.ROLE_SELLER);
         user.setRole(s);
          seller.setUser(user);
-        seller.setCategories(sellerDto.getCategories());
+        seller.setCategories(sellerReceiveDto.getCategories());
         seller.setUser(user);
+        seller.setDescription(seller.getDescription());
         sellerRepo.save(seller);
     }
     @Transactional
@@ -117,9 +120,37 @@ public class ProfileService {
         }
         user.setProfileImageUrl(imageUrl);
     }
-    @Transactional
-    public  void adminRegister()
-    {
+
+    public UserProfileDto viewProfile() {
+       String username=usernameFromContext.fetchUsername();
+       Users user=userRepo.findByemail(username).orElseThrow(()->new UserNotFoundException("NO USER"));
+      return mapToProfileDto(user);
+    }
+    private AddressDto maptoAddressDto(Address address) {
+        AddressDto addressDto=new AddressDto();
+        addressDto.setAddressLine(address.getAddressLine());
+        addressDto.setId(address.getId());
+        addressDto.setCity(address.getCity());
+        addressDto.setState(address.getState());
+        addressDto.setPincode(address.getPincode());
+        return  addressDto;
+    }
+
+    private UserProfileDto mapToProfileDto(Users user) {
+        UserProfileDto userProfileDto=new UserProfileDto();
+        userProfileDto.setAddresses(
+                user.getAddresses() == null ? List.of() :
+                        user.getAddresses()
+                                .stream()
+                                .map(this::maptoAddressDto)
+                                .toList()
+        );
+        userProfileDto.setProfileImageUrl(user.getProfileImageUrl());
+        userProfileDto.setId(user.getId());
+        userProfileDto.setName(user.getName());
+        userProfileDto.setEmail(user.getEmail());
+        userProfileDto.setContact(user.getContact());
+        return userProfileDto;
 
     }
 }

@@ -3,21 +3,19 @@ package com.example.Gruhani.Controllers;
 import com.example.Gruhani.Repositories.UserRepo;
 import com.example.Gruhani.dtos.AddressDto;
 import com.example.Gruhani.dtos.UserDto;
+import com.example.Gruhani.dtos.UserProfileDto;
 import com.example.Gruhani.service.CloudinaryService;
 import com.example.Gruhani.service.ProfileService;
 import com.example.Gruhani.service.UsernameFromContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
 @RestController
-public class UpdateProfile {
+public class ProfileController {
     @Autowired
     UsernameFromContext usernameFromContext;
     @Autowired
@@ -47,6 +45,12 @@ public class UpdateProfile {
     {
         profileService.updateAddress(addressDto);
           return ResponseEntity.ok("ADDED ADDRESS SUCCESSFULLY");
+    }
+    @GetMapping("/view-profile")
+    public  ResponseEntity<?> viewProfile()
+    {
+         UserProfileDto userProfileDto=profileService.viewProfile();
+         return ResponseEntity.ok(userProfileDto);
     }
 
 }
