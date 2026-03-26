@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.minidev.json.annotate.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.validator.constraints.ISBN;
 import org.springframework.stereotype.Component;
@@ -59,6 +59,8 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
     private Address deliveryAddress;
+    @OneToOne(mappedBy = "order",cascade = CascadeType.DETACH,orphanRemoval = true)
+    Feedback feedback;
 
 
 

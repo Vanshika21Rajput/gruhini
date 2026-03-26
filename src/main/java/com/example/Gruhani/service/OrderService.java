@@ -1,7 +1,7 @@
 package com.example.Gruhani.service;
 
 import com.example.Gruhani.Enums.OrderStatus;
-import com.example.Gruhani.Package.*;
+import com.example.Gruhani.Exceptions.*;
 import com.example.Gruhani.Repositories.*;
 import com.example.Gruhani.dtos.*;
 import com.example.Gruhani.models.OrderItem;
@@ -14,7 +14,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -44,8 +43,7 @@ public class OrderService {
     FeedBackRepo feedBackRepo;
     @Autowired
     AddressRepo addressRepo;
-    @Autowired
-    NotificationService notificationService;
+
     @Autowired
     MailService emailService;
 
@@ -69,7 +67,7 @@ public class OrderService {
     @Transactional
     public OrderSellerResponseDto processOrder(orderReceiveDto receiveDto, HttpServletRequest req) throws FirebaseMessagingException {
         String username = usernameFromContext.fetchUsername();
-        Users user = userRepo.findByemail(username).orElseThrow(() -> new UserNotFoundException("USER NOT FOUND"));
+        Users user = userRepo.findByEmail(username).orElseThrow(() -> new UserNotFoundException("USER NOT FOUND"));
         Cart cart = user.getCart();
         if (cart == null) {
             throw new InvalidCart("Cart Doesn't Exist");
@@ -116,6 +114,17 @@ public class OrderService {
             throw new RuntimeException("Email failed again, please check your email address");
 
         }
+        try {
+            emailService.sendSellerOrderUpdateEmail(
+                    order.getSeller().getUser().getEmail(),
+                    order.getSeller().getUser().getName(),
+                    String.valueOf(order.getId()),
+                    "PLACED"
+            );
+        } catch (Exception e) {
+            System.out.println("Seller email failed: " + e.getMessage());
+        }
+
         cart.getCartItems().clear();
         //Setting seller details to send to user
         SellerDetailsDto sellerDetailsDto = new SellerDetailsDto();
@@ -200,7 +209,7 @@ public class OrderService {
     @Transactional
     public void cancelOrder(Long id) {
         String username = usernameFromContext.fetchUsername();
-        Users user = userRepo.findByemail(username).orElseThrow(() -> new UserNotFoundException("USER NOT FOUND"));
+        Users user = userRepo.findByEmail(username).orElseThrow(() -> new UserNotFoundException("USER NOT FOUND"));
         Order order = orderRepository.findById(id).orElseThrow(() -> new InvalidOrder("ORDER NOT FOUND"));
         Long requestUserId = order.getUser().getId();
         Long currUserId = user.getId();
@@ -232,12 +241,22 @@ public class OrderService {
         } catch (Exception e) {
             System.err.println("Email failed for order " + order.getId() + ": " + e.getMessage());
         }
+        try {
+            emailService.sendSellerOrderUpdateEmail(
+                    order.getSeller().getUser().getEmail(),
+                    order.getSeller().getUser().getName(),
+                    String.valueOf(order.getId()),
+                    "CANCELLED"
+            );
+        } catch (Exception e) {
+            System.out.println("Seller email failed: " + e.getMessage());
+        }
     }
 
 
     public List<OrderSellerResponseDto >viewOrdersToUser(String orderStatus) {
         String username = usernameFromContext.fetchUsername();
-        Users users = userRepo.findByemail(username)
+        Users users = userRepo.findByEmail(username)
                 .orElseThrow(() -> new UserNotFoundException("USER NOT FOUND"));
         List<Order> orders;
         if (orderStatus==null) {
@@ -373,7 +392,7 @@ public class OrderService {
                     userDetailsDto,
                     order.getOrderStatus(),
                     order.getDeliveryTime(),
-                    order.getDeliveryAddress(),
+                    maptoAddressDto(order.getDeliveryAddress()),
                     orderItemDtos
             );
             dtoList.add(dto);
@@ -468,7 +487,7 @@ public class OrderService {
     @Transactional
     public void feedback(@Valid FeedBackDto feedBackDto) {
         String username = usernameFromContext.fetchUsername();
-        Users user = userRepo.findByemail(username)
+        Users user = userRepo.findByEmail(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         // Verify order belongs to this user
@@ -514,7 +533,7 @@ public class OrderService {
         @Transactional
         public void resendOtp(Long orderId) {
             String username = usernameFromContext.fetchUsername();
-            Users user = userRepo.findByemail(username)
+            Users user = userRepo.findByEmail(username)
                     .orElseThrow(() -> new UserNotFoundException("User not found"));
 
             Order order = orderRepository.findById(orderId)

@@ -1,4 +1,4 @@
-package com.example.Gruhani.Package;
+package com.example.Gruhani.Exceptions;
 
 public class InvalidCart extends RuntimeException {
     public InvalidCart(String message) {

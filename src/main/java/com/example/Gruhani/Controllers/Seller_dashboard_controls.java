@@ -4,15 +4,14 @@ import com.example.Gruhani.Enums.ProductStatus;
 import com.example.Gruhani.Repositories.ProductRepo;
 import com.example.Gruhani.Repositories.SellerRepo;
 import com.example.Gruhani.Repositories.UserRepo;
-import com.example.Gruhani.dtos.OrderUserResponseDto;
-import com.example.Gruhani.dtos.ProductDto;
-import com.example.Gruhani.dtos.ProductReceiveDto;
+import com.example.Gruhani.dtos.*;
 import com.example.Gruhani.models.Seller;
 import com.example.Gruhani.models.Product;
 import com.example.Gruhani.service.CloudinaryService;
 import com.example.Gruhani.service.OrderService;
+import com.example.Gruhani.service.ProfileService;
 import com.example.Gruhani.service.SellerDashBoardService;
-import com.example.Gruhani.service.addproduct_db;
+
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +38,8 @@ public class Seller_dashboard_controls {
     ProductRepo productRepo;
     @Autowired
     OrderService orderService;
+    @Autowired
+    ProfileService profileService;
 
 
     @PostMapping(value = "/add-product",consumes = "multipart/form-data")
@@ -119,6 +120,19 @@ public class Seller_dashboard_controls {
            }
            return ResponseEntity.ok("OTP NOT VERIFIED ENTER CORRET ONE");
     }
+    @PostMapping("/update-profile")
+    public ResponseEntity<?> updateSeller(@RequestBody SellerReceiveDto sellerReceiveDto)
+    {
+      profileService.updateSellerProfile(sellerReceiveDto);
+        return ResponseEntity.ok("UPDATED PROFILE SUCCESFULLY");
+    }
+    @GetMapping("/get-seller-profile")
+    public ResponseEntity<?> getSellerProfile()
+    {
+      SellerDetailsDto sellerDetailsDto= profileService.getSellerProfile();
+        return ResponseEntity.ok(sellerDetailsDto);
+    }
+
 
 
 

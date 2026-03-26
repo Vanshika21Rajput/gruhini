@@ -2,7 +2,7 @@ package com.example.Gruhani.Controllers;
 
 import com.example.Gruhani.dtos.LoginRequest;
 import com.example.Gruhani.models.userdetails;
-import com.example.Gruhani.service.authutil;
+import com.example.Gruhani.service.Authutil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,7 @@ public class AuthUsingJWT {
     @Autowired
     AuthenticationManager authenticationManager;
     @Autowired
-    authutil at;
+    Authutil at;
 
     @PostMapping("/logins")
     public ResponseEntity<Map<String, String>> method(@RequestBody @Valid LoginRequest loginRequest)

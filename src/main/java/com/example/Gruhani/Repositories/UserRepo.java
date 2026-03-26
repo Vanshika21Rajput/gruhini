@@ -15,9 +15,8 @@ public interface UserRepo extends JpaRepository<Users,Long> {
 
     Optional<Users> findById(Long aLong);
 
-    Optional<Users> findByemail(String username);
-    @Query("SELECT u.fcmToken FROM User u WHERE u.id = :userId")
-    String findFcmTokenByUserId(@Param("userId") Long userId);
+    Optional<Users> findByEmail(String username);
+
 
 
 }

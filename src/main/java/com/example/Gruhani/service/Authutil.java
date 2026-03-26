@@ -18,7 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @Service
-public class authutil {
+public class Authutil {
     @Autowired
     UserRepo ur;
     @Value("${jwt.secretkey}")
@@ -33,7 +33,7 @@ public class authutil {
 
     public String generateToken(userdetails u)
     {
-        Users user = ur.findByemail(u.getUsername())
+        Users user = ur.findByEmail(u.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + u.getUsername()));
 
         List<String> roles = u.getAuthorities()
@@ -42,14 +42,17 @@ public class authutil {
                 .toList();
         JwtClaims jwtClaims=new JwtClaims();
         jwtClaims.setRoles(roles);
-        jwtClaims.setUser_id(user.getId());
+        jwtClaims.setUserid(user.getId());
         Map<String,Object>mp=new HashMap<>();
         mp.put("jwtClaims",jwtClaims );
-        return Jwts.builder() .claims(mp).setSubject(u.getUsername())
+        return Jwts.builder()
+                .claims(mp)
+                .subject(u.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis()+10*60*1000*60))
+                .expiration(new Date(System.currentTimeMillis() + 10 * 60 * 1000 * 60))
                 .signWith(getskey())
                 .compact();
+
 
     }
 

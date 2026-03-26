@@ -5,7 +5,7 @@ import com.example.Gruhani.models.Users;
 import com.example.Gruhani.models.JwtClaims;
 import com.example.Gruhani.models.userdetails;
 import com.example.Gruhani.models.userdetailsServices;
-import com.example.Gruhani.service.authutil;
+import com.example.Gruhani.service.Authutil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,7 +22,7 @@ import java.io.IOException;
 public class jwtfilter extends OncePerRequestFilter {
 
     @Autowired
-    authutil a;
+    Authutil a;
     @Autowired
     UserRepo ur;
     @Autowired
@@ -63,7 +63,7 @@ public class jwtfilter extends OncePerRequestFilter {
         {
                String s=headauth.split("Bearer ")[1];
                 JwtClaims jwtclaims=a.validatetoken(s);//validate and get username from token
-                Users user=ur.findById(jwtclaims.getUser_id()).get();
+                Users user=ur.findById(jwtclaims.getUserid()).get();
                  userdetails u= (userdetails) us.loadUserByUsername(user.getEmail());
                  if(u!=null && SecurityContextHolder.getContext().getAuthentication()==null)
                  {

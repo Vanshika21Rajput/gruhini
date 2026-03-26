@@ -1,14 +1,19 @@
 package com.example.Gruhani.service;
 
 import com.example.Gruhani.Enums.ProductStatus;
-import com.example.Gruhani.Package.ProductNotFoundException;
-import com.example.Gruhani.Package.UserNotFoundException;
+import com.example.Gruhani.Exceptions.ProductNotFoundException;
+import com.example.Gruhani.Exceptions.UserNotFoundException;
 import com.example.Gruhani.Repositories.ProductRepo;
 import com.example.Gruhani.Repositories.SellerRepo;
+import com.example.Gruhani.Repositories.UserRepo;
 import com.example.Gruhani.dtos.ProductDto;
 import com.example.Gruhani.dtos.ProductReceiveDto;
+import com.example.Gruhani.dtos.SellerDetailsDto;
+import com.example.Gruhani.dtos.SellerReceiveDto;
+import com.example.Gruhani.models.Address;
 import com.example.Gruhani.models.Product;
 import com.example.Gruhani.models.Seller;
+import com.example.Gruhani.models.Users;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +34,8 @@ public class SellerDashBoardService {
     SellerRepo sellerRepo;
     @Autowired
     CloudinaryService cloudinaryService;
+    @Autowired
+    UserRepo userRepo;
     public Long addproduct(ProductReceiveDto productDto, MultipartFile image)
     {
         try
@@ -141,5 +148,8 @@ public class SellerDashBoardService {
 
 
     }
+
+
+
 }
 

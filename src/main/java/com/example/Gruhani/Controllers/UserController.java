@@ -16,7 +16,7 @@ import com.example.Gruhani.models.Product;
 
 import com.example.Gruhani.models.Users;
 import com.example.Gruhani.service.UserService;
-import com.example.Gruhani.service.addproduct_db;
+
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +38,7 @@ public class UserController {
     UserRepo userRepo;
     @Autowired
     UserService userService;
-    @Autowired
-    addproduct_db db;
+
 
     //SENDING PRODUCTS TO FRONTEND VIA PROTOBUF BUT JS PROTOBUF DECODER FAILED,PROTOBUF SUCCESSFULLY WORKED IN BACKED
 

@@ -55,6 +55,8 @@ public class Users {
     private String fcmToken;
     @OneToMany(mappedBy = "user",fetch = FetchType.LAZY,cascade = CascadeType.REMOVE,orphanRemoval = true)
     List<PasswordResetOtp>resetOtps;
+    @OneToMany(mappedBy = "user",cascade = CascadeType.DETACH,orphanRemoval = true)
+    List<Feedback> feedback;
 
 
 }

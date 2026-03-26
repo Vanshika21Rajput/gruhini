@@ -119,8 +119,9 @@ public class AdminController {
 
     @GetMapping("/pending-seller")
     public ResponseEntity<?> approveSeller() {
-        adminService.viewPendingSeller();
-        return ResponseEntity.ok("SENT THE LIST OF ALL PENDING SELLER");
+
+        List<SellerDetailsDto>l=adminService.viewPendingSeller();
+        return ResponseEntity.ok(l);
     }
 }
 

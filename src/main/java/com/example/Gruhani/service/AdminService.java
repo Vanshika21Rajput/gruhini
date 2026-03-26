@@ -2,9 +2,9 @@ package com.example.Gruhani.service;
 
 import com.example.Gruhani.Enums.OrderStatus;
 import com.example.Gruhani.Enums.ProductStatus;
-import com.example.Gruhani.Package.InvalidOrder;
-import com.example.Gruhani.Package.ProductNotFoundException;
-import com.example.Gruhani.Package.UserNotFoundException;
+import com.example.Gruhani.Exceptions.InvalidOrder;
+import com.example.Gruhani.Exceptions.ProductNotFoundException;
+import com.example.Gruhani.Exceptions.UserNotFoundException;
 import com.example.Gruhani.Repositories.OrderRepository;
 import com.example.Gruhani.Repositories.ProductRepo;
 import com.example.Gruhani.Repositories.SellerRepo;
@@ -146,7 +146,8 @@ public class AdminService {
         sellerDto.setName(seller.getUser().getName());
         sellerDto.setAddress(maptoAddressDto(seller.getAddress()));
         sellerDto.setImage(seller.getUser().getProfileImageUrl());
-        sellerDto.setId(sellerDto.getId());
+        sellerDto.setId(seller.getId());
+        sellerDto.setDescription(seller.getDescription());
         return sellerDto;
     }
 
@@ -183,7 +184,7 @@ public class AdminService {
     @Transactional
     public  List<SellerDetailsDto> viewPendingSeller() {
 
-        List<Seller>sellers= sellerRepo.findAllByIsApproved(false);
+        List<Seller>sellers= sellerRepo.findByIsApproved(false);
         List<SellerDetailsDto>sellerDtos=sellers.stream().map(this::maptoSellerDto).collect(Collectors.toList());
         return sellerDtos;
 

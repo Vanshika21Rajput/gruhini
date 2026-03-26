@@ -36,7 +36,7 @@ public class CART {
     public ResponseEntity<String> addtocart(@RequestBody AddtoCartDto dto)
     {
              String username= usernameFromContext.fetchUsername();
-                              Users u=userRepo.findByemail(username).get();
+                              Users u=userRepo.findByEmail(username).get();
                  return cartserv.addtocarts(u.getId(),dto);
 
     }
@@ -73,7 +73,7 @@ public class CART {
     public ResponseEntity<String> deleteCartItem(@PathVariable("id")Long id) {
 
         String username= usernameFromContext.fetchUsername();
-                          Users user=userRepo.findByemail(username).orElseThrow(()->new RuntimeException("user not found"));
+                          Users user=userRepo.findByEmail(username).orElseThrow(()->new RuntimeException("user not found"));
 
         Cart cart = cartRepo.findByUser_Id(user.getId())
                 .orElseThrow(() -> new RuntimeException("Cart not found"));

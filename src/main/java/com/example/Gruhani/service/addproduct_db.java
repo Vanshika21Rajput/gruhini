@@ -1,16 +1,8 @@
-package com.example.Gruhani.service;
+/*package com.example.Gruhani.service;
 
 import com.example.Gruhani.Repositories.ProductRepo;
 import com.example.Gruhani.Repositories.SellerRepo;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.index.*;
-import org.apache.lucene.queryparser.classic.ParseException;
-import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -100,6 +92,7 @@ return responseo.id();
     return 1;
 
     }*/
+/*
     public void searchidx(String s) throws ParseException, IOException {
         QueryParser qp=new QueryParser("name",new StandardAnalyzer());
         Query q=qp.parse(s);
@@ -114,5 +107,5 @@ return responseo.id();
         }
 
     }
-}
+}*/
 

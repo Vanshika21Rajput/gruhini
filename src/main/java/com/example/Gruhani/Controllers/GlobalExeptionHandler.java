@@ -1,6 +1,6 @@
 package com.example.Gruhani.Controllers;
 
-import com.example.Gruhani.Package.*;
+import com.example.Gruhani.Exceptions.*;
 import jakarta.persistence.OptimisticLockException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

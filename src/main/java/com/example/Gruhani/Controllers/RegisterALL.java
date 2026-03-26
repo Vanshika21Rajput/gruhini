@@ -1,5 +1,5 @@
 package com.example.Gruhani.Controllers;
-import com.example.Gruhani.Package.UserNotFoundException;
+import com.example.Gruhani.Exceptions.UserNotFoundException;
 import com.example.Gruhani.Repositories.SellerRepo;
 import com.example.Gruhani.Repositories.UserRepo;
 import com.example.Gruhani.dtos.SellerReceiveDto;

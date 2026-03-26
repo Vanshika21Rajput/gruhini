@@ -2,12 +2,12 @@ package com.example.Gruhani.Controllers;
 
 import com.example.Gruhani.Repositories.UserRepo;
 import com.example.Gruhani.dtos.FeedBackDto;
-import com.example.Gruhani.dtos.OrderUserResponseDto;
 import com.example.Gruhani.dtos.orderReceiveDto;
 
 import com.example.Gruhani.dtos.OrderSellerResponseDto;
-import com.example.Gruhani.service.authutil;
+import com.example.Gruhani.service.Authutil;
 import com.example.Gruhani.service.OrderService;
+import com.google.firebase.messaging.FirebaseMessagingException;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -24,7 +24,7 @@ import static org.apache.commons.lang3.StringUtils.substring;
 @RestController
 public class Order_Controls {
 @Autowired
-    authutil auth;
+Authutil auth;
 @Autowired
     UserRepo userRepo;
 @Autowired
@@ -33,8 +33,7 @@ OrderService orderService;
 
 
     @PostMapping("/place-order")
-    public ResponseEntity<OrderSellerResponseDto> placingOrder(@RequestBody orderReceiveDto receiveDto, HttpServletRequest request)
-    {
+    public ResponseEntity<OrderSellerResponseDto> placingOrder(@RequestBody orderReceiveDto receiveDto, HttpServletRequest request) throws FirebaseMessagingException {
   //NOTIFICATIONS ARE REMAINING TO BE SENT -user ko otp bhejo and selller ko info ki order aaya hai
        return ResponseEntity.ok().body(orderService.processOrder(receiveDto,request));
 
@@ -64,7 +63,7 @@ OrderService orderService;
                 "Seller-Details",sellerResponses
         ));
     }
-    @PostMapping("/orders/{orderId}/resend-otp")
+    @GetMapping ("/orders/{orderId}/resend-otp")
     public ResponseEntity<String> resendOtp(@PathVariable("orderId") Long orderId) {
         orderService.resendOtp(orderId);
         return ResponseEntity.ok("OTP resent to your email!");

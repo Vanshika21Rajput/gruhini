@@ -17,7 +17,7 @@ public class Seller {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
     @JoinColumn(name = "address_id")
     private Address address;
     @Column(nullable = false)
@@ -35,6 +35,7 @@ public class Seller {
 
     @ElementCollection
     @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "seller_categories", joinColumns = @JoinColumn(name = "seller_id"))
      private List<Category> categories=new ArrayList<>();
     @OneToMany(mappedBy = "seller",fetch=FetchType.LAZY,orphanRemoval = true,cascade = CascadeType.ALL)
     private List<Order> orders=new ArrayList<>();
@@ -42,6 +43,8 @@ public class Seller {
     private int totalOrderCount=0;
     private Float rating;
     private String Description;
+    @OneToMany(mappedBy = "seller",cascade = CascadeType.DETACH,fetch = FetchType.LAZY,orphanRemoval = true)
+    List<Feedback> feedback;
 
 
 

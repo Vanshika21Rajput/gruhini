@@ -1,6 +1,6 @@
 package com.example.Gruhani.service;
 
-import com.example.Gruhani.Package.UserNotFoundException;
+import com.example.Gruhani.Exceptions.UserNotFoundException;
 import com.example.Gruhani.Repositories.PasswordResetOtpRepository;
 import com.example.Gruhani.Repositories.SellerRepo;
 import com.example.Gruhani.Repositories.UserRepo;
@@ -66,7 +66,7 @@ public class UserService {
     public void forgotPassword(String email) {
 
         // Check user exists
-        Users user = userRepo.findByemail(email)
+        Users user = userRepo.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("No account found with this email"));
 
         // Delete any old OTPs for this user
@@ -103,7 +103,7 @@ public class UserService {
     public void resetPassword(ResetPasswordDto dto) {
 
         // Find user
-        Users user = userRepo.findByemail(dto.getEmail())
+        Users user = userRepo.findByEmail(dto.getEmail())
                 .orElseThrow(() -> new UserNotFoundException("No account found with this email"));
 
         // Find valid unused OTP for this user
@@ -126,7 +126,7 @@ public class UserService {
     }
 
     public List<SellerSummaryDto> getAllSellers() {
-        List<Seller>sellers=sellerRepo.findAllByIsApproved(true);
+        List<Seller>sellers=sellerRepo.findByIsApproved(true);
         List<SellerSummaryDto>sellerSummaryDtos=sellers.stream().map(this::maptoSellerSummaryDto).collect(Collectors.toList());
         return sellerSummaryDtos;
     }
