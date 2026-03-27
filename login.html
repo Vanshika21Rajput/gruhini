@@ -59,7 +59,7 @@
             -webkit-user-select: none;
         }
 
-        input {
+        input, textarea {
             user-select: text;
         }
 
@@ -99,32 +99,14 @@
         }
 
         @keyframes steam {
-            0% {
-                opacity: 0.3;
-                transform: translateY(10px);
-            }
-
-            50% {
-                opacity: 0.5;
-                transform: translateY(-10px);
-            }
-
-            100% {
-                opacity: 0.3;
-                transform: translateY(10px);
-            }
+            0% { opacity: 0.3; transform: translateY(10px); }
+            50% { opacity: 0.5; transform: translateY(-10px); }
+            100% { opacity: 0.3; transform: translateY(10px); }
         }
 
         @keyframes cardIn {
-            from {
-                opacity: 0;
-                transform: translate(-50%, -48%) scale(0.98);
-            }
-
-            to {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1);
-            }
+            from { opacity: 0; transform: translate(-50%, -48%) scale(0.98); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
         }
 
         .auth-container {
@@ -132,9 +114,9 @@
             top: 50%;
             left: 30%;
             transform: translate(-50%, -50%);
-            width: 400px;
+            width: 440px; /* Slightly wider for the address grid */
             max-height: 90vh;
-            overflow-y: auto;
+            overflow-y: auto; /* Enables scrolling for longer registration form */
             background-color: #ffffff;
             border: 1px solid #e7d5c0;
             box-shadow: 0 0 0 4px #fffaf0, 0 30px 60px -15px rgba(0, 0, 0, 0.6);
@@ -144,25 +126,34 @@
             animation: cardIn 0.5s ease-out;
         }
 
-        .input-group input {
+        /* Custom Scrollbar for auth container */
+        .auth-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        .auth-container::-webkit-scrollbar-thumb {
+            background-color: #e7d5c0;
+            border-radius: 4px;
+        }
+
+        .input-group input, .input-group textarea {
             width: 100%;
-            padding: 12px 14px;
+            padding: 10px 14px;
             background: #fff;
             border: 1px solid #d1d5db;
             border-radius: 8px;
             color: #1f2937;
             font-family: 'Lato', sans-serif;
-            font-size: 14px;
+            font-size: 13px;
             transition: all 0.2s;
         }
 
-        .input-group input:focus {
+        .input-group input:focus, .input-group textarea:focus {
             border-color: #b45309;
             box-shadow: 0 0 0 3px rgba(180, 83, 9, 0.1);
             outline: none;
         }
 
-        .input-group input.error {
+        .input-group input.error, .input-group textarea.error {
             border-color: #dc2626;
         }
 
@@ -182,29 +173,14 @@
         }
 
         @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         @media(max-width: 900px) {
-            .split-left {
-                display: none;
-            }
-
-            .split-right {
-                width: 100%;
-            }
-
-            .auth-container {
-                left: 50%;
-                width: 90%;
-                max-width: 400px;
-            }
+            .split-left { display: none; }
+            .split-right { width: 100%; }
+            .auth-container { left: 50%; width: 90%; max-width: 440px; }
         }
     </style>
 
@@ -223,15 +199,8 @@
         }
 
         @keyframes slideUp {
-            from {
-                transform: translateY(100%);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
     </style>
 </head>
@@ -341,7 +310,7 @@
         // =====================================================
         const CONFIG = {
             // Fallback if external config not loaded
-            BASE_URL: window.CONFIG?.BASE_URL || 'https://gruhani-backend.onrender.com'
+            BASE_URL: window.CONFIG?.BASE_URL || 'https://gruhinibackend.onrender.com'
         };
 
         // =====================================================
@@ -384,15 +353,34 @@
 
                 document.getElementById('page-title').innerText = isReg ? (isSeller ? "Join as a Chef" : "Join as a Foodie") : "Unlock the Kitchen";
                 document.getElementById('btn-submit').innerText = isReg ? "Create Account" : "Login";
-                document.getElementById('footer-text').innerText = isReg ? "Already registered?" : "New to Gruhani?";
+                document.getElementById('footer-text').innerText = isReg ? "Already registered?" : "New to Gruhini?";
                 document.getElementById('footer-link').innerText = isReg ? "Login" : "Create Account";
 
                 if (isReg) {
-                    const ic = "w-full p-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:border-royalGold focus:outline-none text-sm transition-all";
+                    const ic = "w-full p-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 focus:border-royalGold focus:outline-none text-sm transition-all";
+                    
+                    // Basic Info
                     let html = `<div class="input-group"><input type="text" id="name" placeholder="Full Name" required class="${ic}"></div>`;
                     html += `<div class="input-group mt-3"><input type="tel" id="contact" placeholder="Phone Number (10 digits)" required pattern="[0-9]{10}" class="${ic}"></div>`;
+                    
+                    // Address Section (Added for BOTH Customer & Seller)
+                    html += `<div class="mt-4 pt-3 border-t border-gray-200">
+                                <p class="text-[10px] uppercase font-bold text-gray-400 mb-2 tracking-widest">Address Details</p>
+                                <div class="input-group"><input type="text" id="addressLine" placeholder="Street Address / Flat No." required class="${ic}"></div>
+                                <div class="flex gap-2 mt-2">
+                                    <div class="input-group flex-1"><input type="text" id="city" placeholder="City" required class="${ic}"></div>
+                                    <div class="input-group flex-1"><input type="text" id="state" placeholder="State" required class="${ic}"></div>
+                                </div>
+                                <div class="input-group mt-2"><input type="text" id="pincode" placeholder="Pincode (6 Digits)" required pattern="[0-9]{6}" class="${ic}"></div>
+                             </div>`;
+
+                    // Seller Specific Details (Added Description)
                     if (isSeller) {
-                        html += `<div class="input-group mt-3"><input type="text" id="businessName" placeholder="Kitchen/Business Name" required class="${ic}"></div>`;
+                        html += `<div class="mt-4 pt-3 border-t border-gray-200">
+                                    <p class="text-[10px] uppercase font-bold text-gray-400 mb-2 tracking-widest">Kitchen Details</p>
+                                    <div class="input-group"><input type="text" id="businessName" placeholder="Kitchen/Business Name" required class="${ic}"></div>
+                                    <div class="input-group mt-2"><textarea id="description" placeholder="Kitchen Description / Short Bio" required class="${ic}" rows="2"></textarea></div>
+                                 </div>`;
                     }
                     extraDiv.innerHTML = html;
                 } else {
@@ -467,7 +455,6 @@
 
                 try {
                     if (AppState.view === 'login') {
-                        // IMPORTANT: Clear old role first, then set based on current tab
                         localStorage.removeItem('userRole');
                         if (AppState.role === 'seller') {
                             localStorage.setItem('userRole', 'SELLER');
@@ -486,16 +473,11 @@
             },
 
             async handleLogin(email, password) {
-                console.log('🔐 Attempting login for:', email);
-
                 try {
-
                     const loginPayload = {
                         email: email,
                         password: password
                     };
-
-                    // Sending login request
 
                     const response = await fetch(`${CONFIG.BASE_URL}/logins`, {
                         method: 'POST',
@@ -506,55 +488,39 @@
                         body: JSON.stringify(loginPayload)
                     });
 
-                    // Response received
-
                     if (!response.ok) {
                         let errorMsg = 'Invalid email or password';
                         try {
                             const errorData = await response.json();
-                            console.log('❌ Error response:', errorData);
                             errorMsg = errorData.message || errorData.error || errorMsg;
-                        } catch (e) {
-                            console.log('⚠️ Could not parse error response');
-                        }
+                        } catch (e) {}
                         throw new Error(errorMsg);
                     }
 
-
                     const data = await response.json();
-                    console.log('✅ Login successful', data);
 
-                    // Store authentication data
                     if (data.token) {
                         localStorage.setItem('authToken', data.token);
 
-                        // Use role/name from response (new backend) or decode JWT (fallback)
                         let userName = data.name || email.split('@')[0];
-                        // Check if role was pre-set (during seller registration) or from localStorage
                         let userRole = localStorage.getItem('userRole') || 'CUSTOMER';
 
-                        // Check direct role from response (if backend sends it)
                         if (data.role === 'SELLER' || (data.roles && data.roles.includes('ROLE_SELLER'))) {
                             userRole = 'SELLER';
                         }
 
-                        // Fallback: try to decode JWT
                         if (!data.role && !data.roles) {
                             try {
                                 const payload = JSON.parse(atob(data.token.split('.')[1]));
-                                console.log('👤 Token payload:', payload);
                                 userName = payload.sub || payload.name || userName;
                                 if (payload.roles && Array.isArray(payload.roles) && payload.roles.includes('ROLE_SELLER')) {
                                     userRole = 'SELLER';
                                 }
-                            } catch (e) {
-                                console.warn('⚠️ Could not decode token');
-                            }
+                            } catch (e) {}
                         }
 
                         localStorage.setItem('userName', userName);
                         localStorage.setItem('userRole', userRole);
-                        console.log('👤 User:', userName, 'Role:', userRole);
 
                         UI.showSuccessAndRedirect(userRole);
                     } else {
@@ -562,48 +528,69 @@
                     }
 
                 } catch (err) {
-                    console.error('❌ Login fetch error:', err);
-                    console.error('❌ Attempted URL:', `${CONFIG.BASE_URL}/logins`);
-
                     if (err.name === 'TypeError' && err.message.includes('fetch')) {
-                        throw new Error(`Cannot connect to ${CONFIG.BASE_URL}. Check if backend is running and CORS is enabled.`);
+                        throw new Error(`Cannot connect to Backend. Check if backend is running and CORS is enabled.`);
                     }
                     throw err;
                 }
             },
 
             async handleRegister(email, password) {
+                // Base details
                 const name = document.getElementById('name')?.value.trim();
                 const contact = document.getElementById('contact')?.value.trim();
+                
+                // Address details (Now captured for ALL)
+                const addressLine = document.getElementById('addressLine')?.value.trim();
+                const city = document.getElementById('city')?.value.trim();
+                const state = document.getElementById('state')?.value.trim();
+                const pincode = document.getElementById('pincode')?.value.trim();
 
                 // Validation
-                if (!name || !contact) {
-                    throw new Error('Please fill in all required fields');
+                if (!name || !contact || !addressLine || !city || !state || !pincode) {
+                    throw new Error('Please fill in all required fields including address');
                 }
 
                 if (!/^[0-9]{10}$/.test(contact)) {
                     throw new Error('Please enter a valid 10-digit phone number');
                 }
 
+                if (!/^[0-9]{6}$/.test(pincode)) {
+                    throw new Error('Please enter a valid 6-digit pincode');
+                }
+
+                // Check Seller specifics
+                let businessName = "";
+                let description = "";
                 if (AppState.role === 'seller') {
-                    const businessName = document.getElementById('businessName')?.value.trim();
-                    if (!businessName) {
-                        throw new Error('Please enter your kitchen/business name');
+                    businessName = document.getElementById('businessName')?.value.trim();
+                    description = document.getElementById('description')?.value.trim();
+                    
+                    if (!businessName || !description) {
+                        throw new Error('Please enter your business name and description');
                     }
                 }
 
-                console.log('📝 Starting registration for:', email);
-
                 try {
-
+                    // Step 1: Customer Payload (Now includes flat address fields exactly matching UserDto)
                     const registerPayload = {
                         name: name,
                         email: email,
                         password: password,
-                        contact: contact
+                        contact: contact,
+                        // Sending flat address fields to match backend DTO
+                        addressLine: addressLine,
+                        city: city,
+                        state: state,
+                        pincode: pincode,
+                        // Also wrapping in AddressDto just in case backend expects it nested
+                        addressDto: {
+                            addressLine: addressLine,
+                            city: city,
+                            state: state,
+                            pincode: pincode
+                        }
                     };
-
-                    // Sending registration request
 
                     const regResponse = await fetch(`${CONFIG.BASE_URL}/register`, {
                         method: 'POST',
@@ -614,44 +601,34 @@
                         body: JSON.stringify(registerPayload)
                     });
 
-                    console.log('📥 Registration response status:', regResponse.status);
-
                     if (!regResponse.ok) {
                         let errorMsg = 'Registration failed';
                         try {
                             const errorData = await regResponse.json();
-                            console.log('❌ Registration error:', errorData);
-
-                            // Handle validation errors
                             if (typeof errorData === 'object' && !errorData.message) {
                                 const errors = Object.values(errorData).join(', ');
                                 errorMsg = errors || errorMsg;
                             } else {
                                 errorMsg = errorData.message || errorData.error || errorMsg;
                             }
-                        } catch (e) {
-                            console.log('⚠️ Could not parse error response');
-                        }
+                        } catch (e) {}
                         throw new Error(errorMsg);
                     }
 
-                    console.log('✅ User registration successful');
-
-                    // Step 2: If seller, register as seller
-
+                    // Step 2: If seller, hit register-seller API with extended data
                     if (AppState.role === 'seller') {
-                        const businessName = document.getElementById('businessName').value.trim();
-
-
                         const sellerPayload = {
                             name: name,
                             email: email,
                             phone: contact,
                             businessName: businessName,
-                            categories: ['Home Cooked', 'Indian Cuisine']
+                            description: description, // Now captured from UI
+                            categories: ['ALL'], // Hardcoded to ALL for everyone
+                            addressLine: addressLine,
+                            city: city,
+                            state: state,
+                            pincode: pincode
                         };
-
-                        // Sending seller registration
 
                         const sellerResponse = await fetch(`${CONFIG.BASE_URL}/register-seller`, {
                             method: 'POST',
@@ -662,27 +639,17 @@
                             body: JSON.stringify(sellerPayload)
                         });
 
-                        console.log('📥 Seller registration response status:', sellerResponse.status);
-
                         if (!sellerResponse.ok) {
                             let errorMsg = 'Seller registration failed';
                             try {
                                 const errorData = await sellerResponse.json();
-                                console.log('❌ Seller registration error:', errorData);
                                 errorMsg = errorData.message || errorData.error || errorMsg;
-                            } catch (e) {
-                                console.log('⚠️ Could not parse error response');
-                            }
+                            } catch (e) {}
                             throw new Error(errorMsg);
                         }
-
-                        console.log('✅ Seller registration successful');
                     }
 
-                    // Step 3: Auto-login (with role hint for sellers)
-                    console.log('🔐 Auto-logging in...');
-
-                    // If seller, pre-set the role so redirect works correctly
+                    // Step 3: Auto-login
                     if (AppState.role === 'seller') {
                         localStorage.setItem('userRole', 'SELLER');
                     }
@@ -690,11 +657,8 @@
                     await this.handleLogin(email, password);
 
                 } catch (err) {
-                    console.error('❌ Register fetch error:', err);
-                    console.error('❌ Attempted URL:', `${CONFIG.BASE_URL}/register`);
-
                     if (err.name === 'TypeError' && err.message.includes('fetch')) {
-                        throw new Error(`Cannot connect to ${CONFIG.BASE_URL}. Check if backend is running and CORS is enabled.`);
+                        throw new Error(`Cannot connect to Backend. Check if backend is running and CORS is enabled.`);
                     }
                     throw err;
                 }
@@ -706,16 +670,9 @@
         // =====================================================
         window.onload = function () {
             console.log('🚀 Page loaded, initializing...');
-            // Backend URL configured
         };
 
-        // Network connectivity check
-        window.addEventListener('online', () => {
-            console.log('✅ Network connected');
-        });
-
         window.addEventListener('offline', () => {
-            console.log('❌ Network disconnected');
             UI.showError('No internet connection. Please check your network.');
         });
 
@@ -736,8 +693,6 @@
                 AppState.view = 'register';
                 UI.renderForm();
             }
-
-            console.log('🔧 URL params - mode:', mode, 'role:', role);
         })();
 
         // Initialize Lucide Icons
@@ -771,7 +726,6 @@
                     messageDiv.className = 'mt-4 p-3 rounded-lg text-sm bg-green-100 text-green-800';
                     messageDiv.textContent = '✅ Password reset link sent! Check your email.';
                     messageDiv.classList.remove('hidden');
-
                     setTimeout(() => closeForgotPassword(), 3000);
                 } else {
                     throw new Error('Email not found');
@@ -783,7 +737,5 @@
             }
         }
     </script>
-
 </body>
-
 </html>
