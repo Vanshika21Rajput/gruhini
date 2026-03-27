@@ -14,6 +14,7 @@
 
     <!-- Professional Vector Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/modals.js"></script>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="js/config.js"></script>
@@ -242,12 +243,13 @@
     <div class="hero-overlay"></div>
 
     <!-- Auth Check -->
-    <script>
-        if (!localStorage.getItem('authToken') || localStorage.getItem('userRole') !== 'SELLER') {
-            window.location.href = 'login.html';
-        }
-    </script>
-
+   <!-- Auth Check - DISABLED FOR PREVIEW -->
+<script>
+    // Auth Check — redirect to login if not authenticated
+    if (!localStorage.getItem('authToken') || localStorage.getItem('userRole') !== 'SELLER') {
+        window.location.href = 'login.html';
+    }
+</script>
     <!-- NAVBAR -->
     <nav
         class="fixed top-0 w-full z-50 px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center bg-royal-dark/90 backdrop-blur-md border-b border-gold-main/10">
@@ -302,11 +304,11 @@
                     </div>
                     <div class="flex flex-wrap gap-2">
                         <span
-                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-green-500/20 text-green-400 border border-green-500/30">
+                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide bg-green-500/20 text-green-400 border border-green-500/30">
                             <i data-lucide="badge-check" class="w-3 h-3"></i> Verified Kitchen
                         </span>
                         <span
-                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide bg-amber-500/20 text-amber-400 border border-amber-500/30">
                             <i data-lucide="home" class="w-3 h-3"></i> Home Kitchen
                         </span>
                     </div>
@@ -452,7 +454,7 @@
                         class="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-blue-600/20 border border-blue-500/30 text-blue-400 text-xs font-bold hover:bg-blue-600/30 transition">
                         <i data-lucide="user" class="w-4 h-4"></i> View My Profile
                     </a>
-                    <button onclick="alert('💰 Payouts feature coming soon!')"
+                    <button onclick="showToast('💰 Payouts feature coming soon!', 'success')"
                         class="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-green-600/20 border border-green-500/30 text-green-400 text-xs font-bold hover:bg-green-600/30 transition">
                         💰 View Payouts
                     </button>
@@ -556,11 +558,9 @@
                             class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Category</label>
                         <select name="category"
                             class="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-gold/50">
-                            <option value="Thali">Thali</option>
-                            <option value="Main Course">Main Course</option>
-                            <option value="Snacks">Snacks</option>
-                            <option value="Sweets">Sweets</option>
-                            <option value="Beverages">Beverages</option>
+                            <option value="SNACKS">Snacks</option>
+                            <option value="SWEETS">Sweets</option>
+                            <option value="VRAT">Vrat</option>
                         </select>
                     </div>
                 </div>
@@ -602,7 +602,7 @@
     </div>
 
     <script>
-        const BASE_URL = window.CONFIG?.BASE_URL || 'https://gruhinibackend.onrender.com';
+        const BASE_URL = window.CONFIG?.BASE_URL || 'https://gruhani-backend.onrender.com';
 
         // Professional Toast Notification (replaces alert)
         function showToast(message, type = 'success') {
@@ -654,6 +654,7 @@
                 });
                 if (res.ok) {
                     const dishes = await res.json();
+                    allDishes = dishes; // ✅ FIX: Store globally for delete operations
                     renderDishes(dishes);
                 } else {
                     renderDishes([]);
@@ -679,7 +680,7 @@
             grid.innerHTML = dishes.map(dish => `
                 <div class="dish-card glass rounded-xl overflow-hidden">
                     <div class="h-32 bg-gradient-to-br from-amber-500/20 to-amber-700/20 flex items-center justify-center">
-                        ${dish.image ? `<img src="${dish.image}" class="w-full h-full object-cover">` : '<i data-lucide="utensils" class="w-10 h-10 text-gray-500"></i>'}
+                        ${dish.image ? `<img src="${dish.image}" loading="lazy" class="w-full h-full object-cover">` : '<i data-lucide="utensils" class="w-10 h-10 text-gray-500"></i>'}
                     </div>
                     <div class="p-4">
                         <div class="flex justify-between items-start mb-2">
@@ -706,26 +707,42 @@
 
         }
 
+        // ===== DELETE DISH =====
+        // ✅ FIX: Global state to prevent undefined errors
+        let allDishes = [];
+
         async function deleteDish(id) {
-            if (!confirm('Are you sure you want to delete this dish?')) return;
+            // Assuming 'allDishes' is available globally or passed, or fetched here.
+            // For this change, we'll assume it's available as per the instruction's snippet.
+            // In a real scenario, 'allDishes' would need to be populated, e.g., from loadDishes.
+            const dish = allDishes.find(d => d.id === id);
+            const dishName = dish ? (dish.name || dish.title || 'this dish') : 'this dish';
 
-            const token = localStorage.getItem('authToken');
-            try {
-                const res = await fetch(`${BASE_URL}/seller/delete-product/${id}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+            CustomModal.confirm(
+                `Are you sure you want to delete "${dishName}"? This action cannot be undone.`,
+                async () => {
+                    try {
+                        const token = localStorage.getItem('authToken');
+                        const response = await fetch(`${BASE_URL}/seller/delete-product?id=${id}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Content-Type': 'application/json'
+                            }
+                        });
 
-                if (res.ok) {
-                    showToast('Dish deleted successfully', 'success');
-                    loadDishes();
-                } else {
-                    throw new Error('Failed to delete');
+                        if (response.ok) {
+                            showToast('Dish deleted successfully!', 'success');
+                            loadDishes(); // Reload dishes
+                        } else {
+                            throw new Error('Failed to delete');
+                        }
+                    } catch (error) {
+                        console.error('Error deleting dish:', error);
+                        showToast('Could not delete dish. Please try again.', 'error');
+                    }
                 }
-            } catch (error) {
-                console.error('Delete error:', error);
-                showToast('Could not delete dish', 'error');
-            }
+            );
         }
 
         function toggleDish(id, el) {
@@ -896,9 +913,15 @@
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
-        // Kitchen Open/Close Toggle
+        // Kitchen Open/Close Toggle - DISABLED (Backend Not Implemented)
+        // This feature will be enabled when backend API is ready
         let kitchenOpen = true;
         function toggleKitchen() {
+            // Prevent misleading sellers with non-functional toggle
+            showToast('Kitchen controls coming soon! Contact support to update status.', 'info');
+            return; // Do nothing until backend is ready
+
+            /* COMMENTED OUT UNTIL BACKEND IS READY
             kitchenOpen = !kitchenOpen;
             const toggle = document.getElementById('kitchenToggle');
             const knob = document.getElementById('toggleKnob');
@@ -924,34 +947,14 @@
 
             // TODO: Send to backend
             console.log('Kitchen status:', kitchenOpen ? 'OPEN' : 'CLOSED');
+            */
         }
 
-        // Order Actions
+        // Order Actions - DISABLED (Backend Not Implemented)
         function updateOrderStatus(orderId, action) {
-            console.log('Order', orderId, 'action:', action);
-
-            // Visual feedback
-            const btn = event.target;
-            const originalText = btn.textContent;
-            btn.textContent = '...';
-            btn.disabled = true;
-
-            // Simulate API call
-            setTimeout(() => {
-                if (action === 'accept') {
-                    btn.textContent = '✓ Accepted';
-                    btn.classList.remove('bg-green-600');
-                    btn.classList.add('bg-green-700');
-                } else if (action === 'reject') {
-                    btn.closest('.glass').style.opacity = '0.5';
-                } else if (action === 'ready') {
-                    btn.textContent = '✓ Ready!';
-                    btn.classList.remove('bg-amber-600');
-                    btn.classList.add('bg-green-600');
-                }
-            }, 500);
-
-            // TODO: Send to backend
+            // Prevent misleading sellers
+            showToast('Order management coming soon! Check email for updates.', 'info');
+            return;
         }
 
         // Initialize

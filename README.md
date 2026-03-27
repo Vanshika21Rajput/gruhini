@@ -7,7 +7,7 @@
 **India's Premier Home Kitchen Marketplace**
 
 [![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-gruhini--app1.onrender.com-gold?style=for-the-badge)](https://gruhini-app1.onrender.com)
-[![Backend](https://img.shields.io/badge/🔧_Backend-gruhinibackend.onrender.com-green?style=for-the-badge)](https://gruhinibackend.onrender.com)
+[![Backend](https://img.shields.io/badge/🔧_Backend-gruhani-backend.onrender.com-green?style=for-the-badge)](https://gruhani-backend.onrender.com)
 [![Made in India](https://img.shields.io/badge/🇮🇳_Made_in-India-orange?style=for-the-badge)]()
 
 *Connecting home chefs with food lovers who crave authentic, homemade meals*

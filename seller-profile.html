@@ -411,7 +411,7 @@
         }
 
         async function fetchSellerDetails() {
-            const BASE_URL = window.CONFIG?.BASE_URL || 'https://gruhinibackend.onrender.com';
+            const BASE_URL = window.CONFIG?.BASE_URL || 'https://gruhani-backend.onrender.com';
             try {
                 const res = await fetch(`${BASE_URL}/sellers`);
                 if (res.ok) {
@@ -435,7 +435,7 @@
         }
 
         async function loadSellerData(sellerName) {
-            const BASE_URL = window.CONFIG?.BASE_URL || 'https://gruhinibackend.onrender.com';
+            const BASE_URL = window.CONFIG?.BASE_URL || 'https://gruhani-backend.onrender.com';
 
             try {
                 const controller = new AbortController();
