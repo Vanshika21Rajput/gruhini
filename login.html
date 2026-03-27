@@ -427,7 +427,7 @@
                     // Address section — shared by both customer and seller
                     html += `
                         <div class="address-section mt-3">
-                            <div class="address-section-label">📍 Address</div>
+                            <div class="address-section-label">📍 Delivery / Service Address</div>
                             <div class="input-group">
                                 <input type="text" id="addressLine" placeholder="Address Line" required class="${ic}">
                             </div>
@@ -773,10 +773,8 @@
             const messageDiv = document.getElementById('forgotPasswordMessage');
 
             try {
-                const response = await fetch(`${CONFIG.BASE_URL}/api/auth/forgot-password`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email })
+                const response = await fetch(`${CONFIG.BASE_URL}/api/auth/forgot-password?email=${encodeURIComponent(email)}`, {
+                    method: 'POST'
                 });
 
                 if (response.ok) {
