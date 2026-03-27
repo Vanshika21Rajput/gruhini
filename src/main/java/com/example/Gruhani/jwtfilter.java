@@ -44,7 +44,9 @@ public class jwtfilter extends OncePerRequestFilter {
         return path.equals("/logins")
                 || path.equals("/register")
                 || path.equals("/register-seller")
-                || request.getMethod().equalsIgnoreCase("OPTIONS");
+                || request.getMethod().equalsIgnoreCase("OPTIONS")||path.equals("/explore")||path.equals("/forgot-password")||path.equals("/verify-otp-forgetPassword")
+                || path.equals("/")
+                || path.equals("/error");
     }
 
     @Override
@@ -55,7 +57,7 @@ public class jwtfilter extends OncePerRequestFilter {
         String path = request.getServletPath();
         if (path.equals("/logins") ||
                 path.equals("/register") ||
-                path.equals("/register-seller")||path.equals("/explore")) {
+                path.equals("/register-seller")||path.equals("/explore")||path.equals("/forgot-password")||path.equals("//verify-otp-forgetPassword")) {
             filterChain.doFilter(request, response);
             return;
         }
