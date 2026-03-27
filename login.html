@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gruhini – Login</title>
+    <title>Gruhani – Login</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,10 +12,8 @@
         href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Playfair+Display:wght@600;700&family=Lato:wght@400;700&display=swap"
         rel="stylesheet">
 
-    <!-- Professional Vector Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <!-- Load external config FIRST -->
+    
     <script src="js/config.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -172,19 +170,6 @@
             transform: scale(0.98);
         }
 
-        #google-btn-wrapper {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            margin-bottom: 16px;
-        }
-
-        #google-btn-wrapper>div {
-            border-radius: 999px !important;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e5e7eb;
-        }
-
         .spinner {
             border: 2px solid #f3f4f6;
             border-top: 2px solid #b45309;
@@ -260,11 +245,11 @@
         <div class="text-center mb-4">
             <div class="flex justify-center mb-3">
                 <div class="w-16 h-16 rounded-full overflow-hidden shadow-lg border-2 border-royalGold/20">
-                    <img src="public/Logo.png" alt="Gruhini" class="w-full h-full object-cover">
+                    <img src="public/Logo.png" alt="Gruhani" class="w-full h-full object-cover">
                 </div>
             </div>
 
-            <h1 class="font-cinzel text-3xl text-royalBrown font-bold">Gruhini</h1>
+            <h1 class="font-cinzel text-3xl text-royalBrown font-bold">Gruhani</h1>
             <p class="font-serif italic text-gray-500 text-xs mt-1">Ghar Jaisa Khana, Ghar Ke Log</p>
             <p id="page-title" class="font-sans text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em] mt-2">
                 Unlock the Kitchen</p>
@@ -278,15 +263,6 @@
         </div>
 
         <div id="auth-section">
-            <div id="google-btn-wrapper"></div>
-
-            <div class="relative flex py-1 items-center mb-4">
-                <div class="flex-grow border-t border-gray-200"></div>
-                <span class="flex-shrink-0 mx-3 text-gray-400 text-[9px] font-bold uppercase tracking-widest">Or
-                    Continue
-                    With Email</span>
-                <div class="flex-grow border-t border-gray-200"></div>
-            </div>
 
             <div class="bg-gray-100 p-1 rounded-lg flex mb-4 relative border border-gray-200" role="group">
                 <div id="glider"
@@ -326,7 +302,7 @@
             </form>
 
             <div class="text-center mt-4">
-                <span id="footer-text" class="text-gray-500 text-xs">New to Gruhini?</span>
+                <span id="footer-text" class="text-gray-500 text-xs">New to Gruhani?</span>
                 <button type="button" onclick="AppState.toggleMode()" id="footer-link"
                     class="text-royalGold font-bold text-xs uppercase tracking-wide hover:underline ml-1">Create
                     Account</button>
@@ -334,7 +310,6 @@
         </div>
     </main>
 
-    <!-- Forgot Password Modal -->
     <div id="forgotPasswordModal"
         class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-cream rounded-2xl max-w-md w-full p-8 shadow-2xl border-4 border-royalGold relative">
@@ -366,11 +341,8 @@
         // =====================================================
         const CONFIG = {
             // Fallback if external config not loaded
-            BASE_URL: window.CONFIG?.BASE_URL || 'https://gruhinibackend.onrender.com',
-            GOOGLE_CLIENT_ID: "YOUR_GOOGLE_CLIENT_ID_HERE"
+            BASE_URL: window.CONFIG?.BASE_URL || 'https://gruhani-backend.onrender.com'
         };
-
-        // Backend configured
 
         // =====================================================
         // APPLICATION STATE
@@ -412,7 +384,7 @@
 
                 document.getElementById('page-title').innerText = isReg ? (isSeller ? "Join as a Chef" : "Join as a Foodie") : "Unlock the Kitchen";
                 document.getElementById('btn-submit').innerText = isReg ? "Create Account" : "Login";
-                document.getElementById('footer-text').innerText = isReg ? "Already registered?" : "New to Gruhini?";
+                document.getElementById('footer-text').innerText = isReg ? "Already registered?" : "New to Gruhani?";
                 document.getElementById('footer-link').innerText = isReg ? "Login" : "Create Account";
 
                 if (isReg) {
@@ -726,37 +698,6 @@
                     }
                     throw err;
                 }
-            },
-
-            async handleGoogleResponse(response) {
-                try {
-                    console.log('🔐 Google login initiated');
-                    const res = await fetch(`${CONFIG.BASE_URL}/google-login`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            token: response.credential,
-                            role: AppState.role.toUpperCase()
-                        })
-                    });
-
-                    const data = await res.json();
-                    if (!res.ok) {
-                        throw new Error(data.message || "Google Login Failed");
-                    }
-
-                    localStorage.setItem('authToken', data.token);
-                    localStorage.setItem('userRole', data.role);
-                    localStorage.setItem('userName', data.name);
-
-                    UI.showSuccessAndRedirect(data.role);
-                } catch (err) {
-                    console.error('❌ Google login error:', err);
-                    UI.showError(err.message || 'Google login failed');
-                }
             }
         };
 
@@ -766,27 +707,6 @@
         window.onload = function () {
             console.log('🚀 Page loaded, initializing...');
             // Backend URL configured
-
-            if (window.google) {
-                try {
-                    google.accounts.id.initialize({
-                        client_id: CONFIG.GOOGLE_CLIENT_ID,
-                        callback: Handlers.handleGoogleResponse
-                    });
-                    google.accounts.id.renderButton(
-                        document.getElementById("google-btn-wrapper"),
-                        {
-                            theme: "outline",
-                            size: "large",
-                            width: "280",
-                            shape: "pill"
-                        }
-                    );
-                    console.log('✅ Google Sign-In initialized');
-                } catch (e) {
-                    console.log('⚠️ Google Sign-In not configured');
-                }
-            }
         };
 
         // Network connectivity check
