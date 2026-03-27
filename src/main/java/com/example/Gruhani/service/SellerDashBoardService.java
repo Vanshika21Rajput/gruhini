@@ -121,7 +121,7 @@ public class SellerDashBoardService {
         dto.setBadge(product.getBadge());
         dto.setMessage(product.getMessage());
         dto.setImage(product.getImage());
-        dto.setSellerid(product.getSeller().getId());
+        dto.setSellerId(product.getSeller().getId());
         return dto;
     }
 

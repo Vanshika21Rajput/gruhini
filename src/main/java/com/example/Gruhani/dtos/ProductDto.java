@@ -28,6 +28,6 @@ public class ProductDto {
      String message;
      String deliveryTime;
      String badge;
-     Long Sellerid;
+     Long sellerId;
      String image;
 }

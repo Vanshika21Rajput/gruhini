@@ -513,7 +513,7 @@ public class OrderService {
         feedback.setSeller(order.getSeller());
         feedback.setUser(user);
         feedback.setRating(feedBackDto.getRating());
-        feedback.setComment(feedBackDto.getComment());
+        feedback.setComment(feedBackDto.getReview() );
         feedback.setCreatedAt(LocalDateTime.now());
         feedBackRepo.save(feedback);
 

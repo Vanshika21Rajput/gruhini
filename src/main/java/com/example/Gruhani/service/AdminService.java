@@ -56,7 +56,7 @@ public class AdminService {
         dto.setBadge(product.getBadge());
         // quantity has no matching field in Product — set default or remove from DTO
 
-        dto.setSellerid(product.getSeller().getId());
+        dto.setSellerId(product.getSeller().getId());
         return dto;
     }
     public ProductDto viewSingleProduct(Long id)

@@ -81,6 +81,9 @@ public class UserController {
                 .map(product -> {
                     ProductDto dto = new ProductDto();
                     BeanUtils.copyProperties(product, dto);
+                    if (product.getSeller() != null) {
+                        dto.setSellerId(product.getSeller().getId());
+                    }
                     return dto;
                 })
                 .collect(Collectors.toList());

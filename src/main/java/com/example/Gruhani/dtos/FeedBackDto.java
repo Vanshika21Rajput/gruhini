@@ -13,9 +13,7 @@ import java.time.LocalDateTime;
 public class FeedBackDto {
     @NotNull
     Long orderId;
-    @NotNull
-    Long sellerId;
     int rating;
-    String comment;
+    String review;
 
 }
