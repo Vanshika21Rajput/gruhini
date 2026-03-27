@@ -222,6 +222,33 @@
             }
         }
     </style>
+
+    <style>
+        /* Mobile Bottom Sheet for Forgot Password */
+        @media (max-width: 640px) {
+            #forgotPasswordModal .bg-cream {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                max-width: 100%;
+                border-radius: 24px 24px 0 0;
+                animation: slideUp 0.3s ease-out;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -279,7 +306,13 @@
                 </div>
                 <div class="input-group">
                     <input type="password" id="password" placeholder="Password (min 6 characters)" required
-                        autocomplete="current-password" minlength="6">
+                        autocomplete="current-password">
+                </div>
+                <div class="text-right -mt-2 mb-3">
+                    <button type="button" onclick="openForgotPassword()"
+                        class="text-xs text-royalGold hover:underline transition">
+                        Forgot Password?
+                    </button>
                 </div>
 
                 <div id="form-error"
@@ -301,17 +334,43 @@
         </div>
     </main>
 
+    <!-- Forgot Password Modal -->
+    <div id="forgotPasswordModal"
+        class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-cream rounded-2xl max-w-md w-full p-8 shadow-2xl border-4 border-royalGold relative">
+            <button onclick="closeForgotPassword()"
+                class="absolute top-4 right-4 text-gray-500 hover:text-royalGold transition">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+
+            <h2 class="font-cinzel text-2xl text-royalBrown mb-2">Forgot Password?</h2>
+            <p class="text-sm text-gray-600 mb-6">Enter your email to receive a password reset link</p>
+
+            <form id="forgotPasswordForm" onsubmit="handleForgotPassword(event); return false;">
+                <input type="email" id="forgotEmail" placeholder="Your Email" required
+                    class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-royalGold focus:outline-none transition mb-4">
+
+                <button type="submit"
+                    class="w-full bg-gradient-to-r from-royalGold to-amber-700 text-white font-bold py-3 rounded-lg hover:shadow-lg transition">
+                    Send Reset Link
+                </button>
+            </form>
+
+            <div id="forgotPasswordMessage" class="hidden mt-4 p-3 rounded-lg text-sm"></div>
+        </div>
+    </div>
+
     <script>
         // =====================================================
         // CONFIGURATION - Uses external js/config.js if available
         // =====================================================
         const CONFIG = {
             // Fallback if external config not loaded
-            BASE_URL: window.CONFIG?.BASE_URL || 'https://gruhani-backend.onrender.com',
+            BASE_URL: window.CONFIG?.BASE_URL || 'https://gruhinibackend.onrender.com',
             GOOGLE_CLIENT_ID: "YOUR_GOOGLE_CLIENT_ID_HERE"
         };
 
-        console.log('🔧 Backend URL:', CONFIG.BASE_URL);
+        // Backend configured
 
         // =====================================================
         // APPLICATION STATE
@@ -401,7 +460,7 @@
                         localStorage.removeItem('redirectAfterLogin');
                         window.location.href = redirect;
                     } else {
-                        window.location.href = role === 'SELLER' ? 'seller-dashboard.html' : 'index.html';
+                        window.location.href = role === 'SELLER' ? 'seller-dashboard-enhanced.html' : 'index.html';
                     }
                 }, 1500);
             }
@@ -464,7 +523,7 @@
                         password: password
                     };
 
-                    console.log('📤 Sending login request to:', `${CONFIG.BASE_URL}/logins`);
+                    // Sending login request
 
                     const response = await fetch(`${CONFIG.BASE_URL}/logins`, {
                         method: 'POST',
@@ -475,7 +534,7 @@
                         body: JSON.stringify(loginPayload)
                     });
 
-                    console.log('📥 Login response status:', response.status);
+                    // Response received
 
                     if (!response.ok) {
                         let errorMsg = 'Invalid email or password';
@@ -572,7 +631,7 @@
                         contact: contact
                     };
 
-                    console.log('📤 Sending registration request to:', `${CONFIG.BASE_URL}/register`);
+                    // Sending registration request
 
                     const regResponse = await fetch(`${CONFIG.BASE_URL}/register`, {
                         method: 'POST',
@@ -620,7 +679,7 @@
                             categories: ['Home Cooked', 'Indian Cuisine']
                         };
 
-                        console.log('📤 Sending seller registration request to:', `${CONFIG.BASE_URL}/register-seller`);
+                        // Sending seller registration
 
                         const sellerResponse = await fetch(`${CONFIG.BASE_URL}/register-seller`, {
                             method: 'POST',
@@ -706,7 +765,7 @@
         // =====================================================
         window.onload = function () {
             console.log('🚀 Page loaded, initializing...');
-            console.log('📡 Using backend:', CONFIG.BASE_URL);
+            // Backend URL configured
 
             if (window.google) {
                 try {
@@ -760,12 +819,51 @@
 
             console.log('🔧 URL params - mode:', mode, 'role:', role);
         })();
+
+        // Initialize Lucide Icons
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+
+        // ===== FORGOT PASSWORD FUNCTIONS =====
+        function openForgotPassword() {
+            document.getElementById('forgotPasswordModal').classList.remove('hidden');
+            document.getElementById('forgotEmail').value = '';
+            document.getElementById('forgotPasswordMessage').classList.add('hidden');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function closeForgotPassword() {
+            document.getElementById('forgotPasswordModal').classList.add('hidden');
+        }
+
+        async function handleForgotPassword(e) {
+            e.preventDefault();
+            const email = document.getElementById('forgotEmail').value;
+            const messageDiv = document.getElementById('forgotPasswordMessage');
+
+            try {
+                const response = await fetch(`${CONFIG.BASE_URL}/api/auth/forgot-password`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+
+                if (response.ok) {
+                    messageDiv.className = 'mt-4 p-3 rounded-lg text-sm bg-green-100 text-green-800';
+                    messageDiv.textContent = '✅ Password reset link sent! Check your email.';
+                    messageDiv.classList.remove('hidden');
+
+                    setTimeout(() => closeForgotPassword(), 3000);
+                } else {
+                    throw new Error('Email not found');
+                }
+            } catch (error) {
+                messageDiv.className = 'mt-4 p-3 rounded-lg text-sm bg-red-100 text-red-800';
+                messageDiv.textContent = '❌ Email not found. Please check and try again.';
+                messageDiv.classList.remove('hidden');
+            }
+        }
     </script>
 
-    <!-- Initialize Lucide Icons -->
-    <script>if (typeof lucide !== 'undefined') lucide.createIcons();</script>
 </body>
 
 </html>
-=======
->>>>>>> 2d3076e4e83af9151cf13ac063ce8ba6297d4092

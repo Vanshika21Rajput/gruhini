@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dish Details - Gruhini</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Playfair+Display:ital@1&family=Lato:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Professional Vector Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: { main: '#c5a059', hover: '#e2b091', matte: '#8c6a38' },
+                        brown: '#2a160e',
+                        paper: '#FFFAF0',
+                        cream: '#FDF8F0',
+                        royalDark: '#1a0f0a'
+                    },
+                    fontFamily: {
+                        cinzel: ['Cinzel', 'serif'],
+                        serif: ['Playfair Display', 'serif'],
+                        sans: ['Lato', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Config -->
+    <script src="js/config.js"></script>
+
+    <style>
+        /* === BASE === */
+        body {
+            background: #FFFAF0;
+            color: #2a160e;
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c5a059;
+            border-radius: 10px;
+        }
+
+        /* === HERO === */
+        .hero-section {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 50%, rgba(26, 15, 10, 0.6) 100%);
+            pointer-events: none;
+        }
+
+        /* === MAIN CARD — Conversion focused === */
+        .main-card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 8px 40px rgba(42, 22, 14, 0.1);
+        }
+
+        .content-overlap {
+            margin-top: -80px;
+            position: relative;
+            z-index: 10;
+        }
+
+        @media (min-width: 1024px) {
+            .content-overlap {
+                margin-top: -120px;
+            }
+        }
+
+        /* === TRUST STRIP === */
+        .trust-strip {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px 40px;
+            justify-content: center;
+        }
+
+        .trust-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        /* === CHEF SECTION — DARK, STANDS OUT === */
+        /* This is the visual break. Everything else is light. This is DARK. */
+        .chef-section {
+            background: linear-gradient(135deg, #1a0f0a 0%, #2a1810 100%);
+            color: white;
+            margin: 0 -16px;
+            padding: 40px 24px;
+            position: relative;
+        }
+
+        @media (min-width: 768px) {
+            .chef-section {
+                margin: 0 -32px;
+                padding: 48px 40px;
+                border-radius: 0;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .chef-section {
+                margin: 32px -64px;
+                border-radius: 24px;
+            }
+        }
+
+        .chef-avatar {
+            width: 88px;
+            height: 88px;
+            border-radius: 50%;
+            border: 3px solid #c5a059;
+            box-shadow: 0 0 30px rgba(197, 160, 89, 0.4);
+            object-fit: cover;
+        }
+
+        @media (min-width: 768px) {
+            .chef-avatar {
+                width: 110px;
+                height: 110px;
+            }
+        }
+
+        .chef-name {
+            font-family: 'Cinzel', serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #c5a059;
+        }
+
+        @media (min-width: 768px) {
+            .chef-name {
+                font-size: 24px;
+            }
+        }
+
+        .chef-quote {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 16px;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.85);
+            border-left: 2px solid #c5a059;
+            padding-left: 16px;
+            margin-top: 16px;
+        }
+
+        @media (min-width: 768px) {
+            .chef-quote {
+                font-size: 18px;
+            }
+        }
+
+        /* === DESCRIPTION — Simple, no box === */
+        .description-section {
+            padding: 32px 0;
+        }
+
+        .description-section p {
+            font-family: 'Playfair Display', serif;
+            font-size: 17px;
+            line-height: 1.8;
+            color: #4a3d35;
+        }
+
+        @media (min-width: 768px) {
+            .description-section p {
+                font-size: 19px;
+            }
+        }
+
+        /* === DETAILS GRID — Compact, inline === */
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            padding: 24px;
+            background: #F8F4EE;
+            border-radius: 16px;
+        }
+
+        @media (min-width: 768px) {
+            .details-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .detail-item {
+            text-align: center;
+        }
+
+        .detail-item .label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #888;
+            margin-bottom: 4px;
+        }
+
+        .detail-item .value {
+            font-weight: 700;
+            font-size: 13px;
+            color: #2a160e;
+        }
+
+        /* === INGREDIENTS — Tags, not list === */
+        .ingredient-tag {
+            display: inline-block;
+            padding: 6px 14px;
+            background: transparent;
+            border: 1px solid #ddd;
+            border-radius: 100px;
+            font-size: 11px;
+            color: #666;
+            margin: 4px 4px 4px 0;
+        }
+
+        /* === FEATURED REVIEW — Single, large === */
+        .featured-review {
+            background: linear-gradient(135deg, #F8F4EE 0%, #FDF8F0 100%);
+            border-radius: 20px;
+            padding: 32px;
+            position: relative;
+        }
+
+        .featured-review::before {
+            content: '"';
+            font-family: 'Playfair Display', serif;
+            font-size: 100px;
+            color: #c5a059;
+            opacity: 0.15;
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            line-height: 1;
+        }
+
+        .featured-review blockquote {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 19px;
+            line-height: 1.7;
+            color: #4a3d35;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (min-width: 768px) {
+            .featured-review blockquote {
+                font-size: 22px;
+            }
+        }
+
+        .featured-review cite {
+            display: block;
+            margin-top: 16px;
+            font-style: normal;
+            font-size: 13px;
+            color: #888;
+        }
+
+        /* === RECOMMENDATIONS — Muted, subtle === */
+        .recommendations-section {
+            padding: 24px 0;
+            border-top: 1px solid rgba(42, 22, 14, 0.08);
+        }
+
+        .recommendations-section h4 {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #aaa;
+            margin-bottom: 16px;
+        }
+
+        .recommend-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(42, 22, 14, 0.04);
+            cursor: pointer;
+        }
+
+        .recommend-item:last-child {
+            border-bottom: none;
+        }
+
+        .recommend-item img {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .recommend-item .name {
+            flex: 1;
+            font-weight: 600;
+            font-size: 15px;
+            color: #2a160e;
+        }
+
+        .recommend-item .price {
+            font-weight: 700;
+            font-size: 15px;
+            color: #4a351d;
+        }
+
+        .recommend-item .add-btn {
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #c5a059 0%, #d4b068 100%);
+            color: #2a160e;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .recommend-item .add-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(197, 160, 89, 0.4);
+        }
+
+        /* === ACCORDION === */
+        .accordion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(42, 22, 14, 0.06);
+            cursor: pointer;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .accordion-icon {
+            transition: transform 0.3s;
+        }
+
+        .accordion-icon.open {
+            transform: rotate(180deg);
+        }
+
+        /* === MOBILE STICKY === */
+        .mobile-sticky-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            background: linear-gradient(135deg, #2a160e 0%, #4a2c1e 100%);
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        @media (min-width: 1024px) {
+            .mobile-sticky-bar {
+                display: none;
+            }
+        }
+
+        /* === UTILITIES === */
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        .animate-slideIn {
+            animation: slideIn 0.3s ease-out forwards;
+        }
+
+        .animate-slideOut {
+            animation: slideOut 0.3s ease-out forwards;
+        }
+    </style>
+</head>
+
+<body class="antialiased min-h-screen selection:bg-gold-main/30">
+
+    <!-- Toast container (aria-live) -->
+    <div id="toast" aria-live="polite" aria-atomic="true" class="fixed top-4 right-4 z-[60]"></div>
+
+    <!-- Confetti container -->
+    <div id="confettiContainer" class="fixed inset-0 pointer-events-none z-[55]"></div>
+
+    <!-- Navigation -->
+    <nav
+        class="fixed top-0 w-full z-50 bg-[#1a0f0a]/95 backdrop-blur-sm border-b border-gold-main/20 px-4 md:px-6 py-3 flex justify-between items-center">
+        <a href="index.html" class="flex items-center gap-3 group">
+            <div
+                class="w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden relative shadow-[0_0_15px_rgba(197,160,89,0.4)] group-hover:shadow-[0_0_25px_rgba(197,160,89,0.6)] transition-all duration-500">
+                <img src="public/logo.jpg" alt="Gruhini"
+                    class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+            </div>
+            <span
+                class="font-cinzel text-lg md:text-xl font-bold text-gold-main tracking-widest group-hover:text-white transition-colors duration-300">GRUHINI</span>
+        </a>
+        <div class="flex items-center gap-4 md:gap-6" id="navLinks"></div>
+    </nav>
+
+    <script>
+            (function () {
+                const token = localStorage.getItem('authToken');
+                const role = localStorage.getItem('userRole');
+                const navLinks = document.getElementById('navLinks');
+
+                const linkClass = "text-xs font-bold uppercase tracking-widest text-gold-main/80 hover:text-white transition-colors";
+                const btnClass = "border border-gold-main/40 px-5 py-2 rounded-full text-gold-main text-xs font-bold tracking-widest hover:bg-gold-main/10 hover:text-white transition-all uppercase";
+
+                if (!token) {
+                    navLinks.innerHTML = `
+                    <a href="menu.html" class="${linkClass} hidden md:block">Menu</a>
+                    <a href="sellers.html" class="${linkClass} hidden md:block">Our Kitchens</a>
+                    <a href="about.html" class="${linkClass} hidden md:block">About</a>
+                    <a href="login.html" class="${btnClass}">Login</a>
+                `;
+                } else if (role === 'SELLER') {
+                    navLinks.innerHTML = `
+                    <a href="menu.html" class="${linkClass} hidden md:block">Menu</a>
+                    <a href="sellers.html" class="${linkClass} hidden md:block">Our Kitchens</a>
+                    <a href="about.html" class="${linkClass} hidden md:block">About</a>
+                    <a href="seller-dashboard.html" class="${btnClass}">Dashboard</a>
+                `;
+                } else {
+                    navLinks.innerHTML = `
+                    <a href="menu.html" class="${linkClass} hidden md:block">Menu</a>
+                    <a href="sellers.html" class="${linkClass} hidden md:block">Our Kitchens</a>
+                    <a href="about.html" class="${linkClass} hidden md:block">About</a>
+                    <a href="cart.html" class="${linkClass} flex items-center gap-1"><span class="hidden sm:inline">Cart</span> <i data-lucide="shopping-cart" class="w-4 h-4"></i></a>
+                `;
+                }
+            })();
+    </script>
+
+    <!-- Loading State -->
+    <div id="loading" class="loading-container bg-paper">
+        <div class="text-center animate-pulse">
+            <div class="w-16 h-16 rounded-full bg-gold-main/10 flex items-center justify-center mx-auto mb-4"><i
+                    data-lucide="soup" class="w-8 h-8 text-gold-main"></i></div>
+            <p id="loadingText" class="font-cinzel tracking-widest text-sm text-brown">Rasoi mein dekh rahe hain...</p>
+        </div>
+    </div>
+
+    <!-- Main Content (hidden until loaded) -->
+    <div id="content" class="hidden">
+
+        <!-- Hero Section -->
+        <section id="heroSection" class="hero-section pt-14 md:pt-16">
+            <div class="w-full h-[55vh] md:h-[60vh] bg-black relative">
+                <img id="heroImg" src="" alt="" class="w-full h-full object-cover" loading="eager">
+
+                <!-- Mobile overlay info -->
+                <div
+                    class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/90 via-black/50 to-transparent p-6 lg:hidden">
+                    <h1 id="mobTitle"
+                        class="font-serif text-2xl md:text-3xl text-white font-bold leading-tight drop-shadow-md">--
+                    </h1>
+                    <p id="mobPrice" class="font-cinzel text-gold-main text-xl mt-2 font-bold">--</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Content Card (Overlaps Hero) -->
+        <main class="content-overlap px-4 md:px-8 lg:px-16 pb-32 lg:pb-16 max-w-5xl mx-auto">
+
+            <!-- Dish Identity — THE CONVERSION CARD -->
+            <div class="main-card p-6 md:p-8 mb-8">
+
+                <!-- Desktop: Title & Price Row -->
+                <div class="hidden lg:flex justify-between items-start mb-6">
+                    <div class="flex-1">
+                        <h1 id="dishTitle"
+                            class="font-serif text-4xl xl:text-5xl text-brown font-bold leading-tight mb-2">--</h1>
+                        <p id="dishSubtitle" class="text-gray-500 text-sm">--</p>
+                    </div>
+                    <div class="text-right">
+                        <p id="dishPrice" class="font-cinzel text-3xl text-brown font-bold">--</p>
+                        <p id="dishServes" class="text-xs text-gray-500 mt-1">--</p>
+                    </div>
+                </div>
+
+                <!-- Mobile: Title & Subtitle (price shown in overlay) -->
+                <div class="lg:hidden mb-4">
+                    <p id="dishSubtitleMobile" class="text-gray-500 text-xs mb-1">--</p>
+                    <p class="text-xs text-gray-500 mt-1" id="dishServesMobile">--</p>
+                </div>
+
+                <!-- Primary CTA -->
+                <div class="mb-6">
+                    <button onclick="addToCart()" id="addToPlateBtn"
+                        class="w-full bg-gradient-to-r from-brown to-[#4a2c20] text-paper py-4 md:py-5 rounded-xl font-cinzel font-bold text-sm tracking-[0.2em] uppercase shadow-xl hover:shadow-2xl hover:-translate-y-0.5 transition-all flex justify-center items-center gap-2 focus:outline-none focus:ring-4 focus:ring-gold-main/50"
+                        aria-label="Add this dish to your plate">
+                        <span>Add to Plate</span>
+                        <i data-lucide="utensils" class="w-4 h-4"></i>
+                    </button>
+                    <p class="text-center text-xs text-gray-400 mt-3">Prepared fresh on order · Home kitchens prepare
+                        limited quantities daily</p>
+                </div>
+
+                <!-- Trust Strip -->
+                <div class="trust-strip pt-4 border-t border-gray-100">
+                    <div class="trust-item">
+                        <i data-lucide="home" class="w-4 h-4 text-gold-main"></i>
+                        <span>Home Kitchen</span>
+                    </div>
+                    <div class="trust-item">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-gold-main"></i>
+                        <span>Verified Seller</span>
+                    </div>
+                    <div class="trust-item">
+                        <i data-lucide="leaf" class="w-4 h-4 text-green-500"></i>
+                        <span>No Preservatives</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <!-- CHEF SECTION — DARK, FULL-BLEED, THE VISUAL BREAK -->
+            <!-- This is what makes Gruhini different. Everything else is light. -->
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <div class="chef-section">
+                <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
+                    <img id="chefAvatar" src="" alt="" class="chef-avatar">
+                    <div class="flex-1 text-center md:text-left">
+                        <p class="text-[10px] uppercase tracking-[0.15em] text-gold-main/70 mb-2">Made by</p>
+                        <h3 id="chefName" class="chef-name">--</h3>
+                        <p id="chefLocation" class="text-sm text-white/60 mt-1">--</p>
+
+                        <p id="chefQuote" class="chef-quote mt-6">--</p>
+
+                        <!-- Human anchor — not a claim, just identity -->
+                        <p class="text-xs text-white/40 mt-3 italic">Cooks daily for her family before serving customers
+                        </p>
+
+                        <div class="mt-6 flex flex-wrap justify-center md:justify-start gap-2">
+                            <span
+                                class="px-3 py-1 bg-green-900/30 text-green-400 text-[10px] font-bold uppercase tracking-wide rounded-full border border-green-700/30 flex items-center gap-1"><i
+                                    data-lucide="badge-check" class="w-3 h-3"></i>
+                                Verified</span>
+                            <span id="chefStat"
+                                class="px-3 py-1 bg-gold-main/10 text-gold-main text-[10px] font-bold uppercase tracking-wide rounded-full">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <!-- DESCRIPTION — Simple, no box -->
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <div class="description-section">
+                <p id="dishDescription">--</p>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <!-- DETAILS GRID — Compact, 4-column on desktop -->
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <div class="details-grid mb-8" id="detailsGrid">
+                <div class="detail-item">
+                    <div class="label">Portion</div>
+                    <div class="value" id="detailPortion">Single meal</div>
+                </div>
+                <div class="detail-item">
+                    <div class="label">Spice Level</div>
+                    <div class="value" id="detailSpice">Medium</div>
+                </div>
+                <div class="detail-item">
+                    <div class="label">Packaging</div>
+                    <div class="value" id="detailPackaging">Sealed</div>
+                </div>
+                <div class="detail-item">
+                    <div class="label">Best Before</div>
+                    <div class="value" id="detailShelf">Same day</div>
+                </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <!-- INGREDIENTS — Simple inline tags with trust signal -->
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <div class="mb-8">
+                <p class="text-xs text-gray-500 mb-2 italic">Same ingredients used in home cooking</p>
+                <h4 class="text-[11px] uppercase tracking-[0.1em] text-gray-400 mb-3 font-semibold">Ingredients</h4>
+                <div id="ingredientsList">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <!-- FEATURED REVIEW — Single, large, impactful -->
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <div class="featured-review mb-8" id="featuredReview">
+                <blockquote id="reviewText">"Ghar jaisa taste. Meri mummy ko bhi pasand aaya!"</blockquote>
+                <cite id="reviewCite">— Ordered for parents, Delhi</cite>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <!-- RECOMMENDATIONS — Muted, list style -->
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <div class="recommendations-section" id="recommendationsSection">
+                <h4>Goes well with</h4>
+                <div id="recommendsList">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+    </div>
+
+    <!-- Delivery & Policy Accordion -->
+    <div class="mb-8 border-t border-gray-100 pt-4">
+        <div class="accordion-header" onclick="toggleAccordion('deliveryContent')">
+            <span class="text-sm font-medium flex items-center gap-2"><i data-lucide="package"
+                    class="w-4 h-4 text-gold-main"></i> Delivery details</span>
+            <span id="deliveryContentIcon" class="accordion-icon text-gray-400 text-xs">▼</span>
+        </div>
+        <div id="deliveryContent" class="hidden py-4 text-sm text-gray-600">
+            <p>Orders are prepared fresh and delivered same day within city limits. Delivery time varies by
+                location (typically 2-4 hours).</p>
+        </div>
+
+        <div class="accordion-header" onclick="toggleAccordion('cancelContent')">
+            <span class="text-sm font-medium flex items-center gap-2"><i data-lucide="refresh-cw"
+                    class="w-4 h-4 text-gold-main"></i> Cancellation policy</span>
+            <span id="cancelContentIcon" class="accordion-icon text-gray-400 text-xs">▼</span>
+        </div>
+        <div id="cancelContent" class="hidden py-4 text-sm text-gray-600">
+            <p>Cancel within 30 minutes of ordering for a full refund. After preparation begins, cancellation is
+                not possible as food is made fresh.</p>
+        </div>
+
+        <div class="accordion-header" onclick="toggleAccordion('helpContent')">
+            <span class="text-sm font-medium flex items-center gap-2"><i data-lucide="help-circle"
+                    class="w-4 h-4 text-gold-main"></i> Need help?</span>
+            <span id="helpContentIcon" class="accordion-icon text-gray-400 text-xs">▼</span>
+        </div>
+        <div id="helpContent" class="hidden py-4 text-sm text-gray-600">
+            <p>Contact us via WhatsApp or call our support line. We're here to help with any questions about
+                your order.</p>
+        </div>
+    </div>
+
+    </main>
+
+    <!-- Brand Footer — Fixed like navbar -->
+    <footer
+        class="fixed bottom-0 left-0 right-0 z-40 bg-[#1a0f0a] border-t border-gold-main/20 py-3 px-4 text-center lg:relative lg:bg-transparent lg:border-0 lg:py-8">
+        <span class="font-serif italic text-sm text-gold-main/60">Gruhini — ghar jaisa khana, ghar ke log</span>
+    </footer>
+
+    <!-- Mobile Sticky CTA Bar -->
+    <nav id="mobileStickyBar" class="mobile-sticky-bar translate-y-full opacity-0" role="navigation"
+        aria-label="Add to plate bar">
+        <div class="text-white">
+            <p id="stickyPrice" class="font-cinzel font-bold text-xl">--</p>
+        </div>
+        <button id="mobileAddBtn" onclick="addToCart()"
+            class="bg-gradient-to-r from-gold-hover to-gold-main text-brown px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-wide shadow-lg focus:outline-none focus:ring-4 focus:ring-gold-main/50">
+            Add to Plate <i data-lucide="utensils" class="w-4 h-4"></i>
+        </button>
+    </nav>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/product.js"></script>
+
+    <!-- Sync mobile subtitle/serves -->
+    <script>
+        // Sync mobile elements with desktop after render
+        const syncObserver = new MutationObserver(() => {
+            const subtitle = document.getElementById('dishSubtitle');
+            const serves = document.getElementById('dishServes');
+            const mobileSubtitle = document.getElementById('dishSubtitleMobile');
+            const mobileServes = document.getElementById('dishServesMobile');
+
+            if (subtitle && mobileSubtitle) mobileSubtitle.textContent = subtitle.textContent;
+            if (serves && mobileServes) mobileServes.textContent = serves.textContent;
+        });
+
+        const dishTitle = document.getElementById('dishTitle');
+        if (dishTitle) {
+            syncObserver.observe(dishTitle, { childList: true, characterData: true, subtree: true });
+        }
+    </script>
+
+    <!-- Initialize Lucide Icons -->
+    <script>if (typeof lucide !== 'undefined') lucide.createIcons();</script>
+
+</body>
+
+</html>

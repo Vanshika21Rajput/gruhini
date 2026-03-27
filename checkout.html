@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gruhini – Checkout</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="js/config.js"></script>
+  <style>
+    :root {
+      --gold-main: #D4AF37;
+      --gold-dim: #c5a059;
+      --dark: #0f0805;
+      --dark2: #1a0f0a;
+      --text: #f5f1e8;
+      --muted: rgba(245,241,232,0.6);
+      --green: #22c55e;
+      --red: #ef4444;
+      --border: rgba(212,175,55,0.2);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: linear-gradient(135deg, #0f0805 0%, #1a0f0a 50%, #0f0805 100%);
+      min-height: 100vh;
+      color: var(--text);
+      font-family: 'Lato', sans-serif;
+      line-height: 1.6;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 2px,
+        rgba(212, 175, 55, 0.02) 2px,
+        rgba(212, 175, 55, 0.02) 4px
+      );
+      pointer-events: none;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(180deg, rgba(15,8,5,0.3) 0%, rgba(15,8,5,0.8) 100%);
+      pointer-events: none;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 100;
+      padding: 16px 32px;
+      background: linear-gradient(90deg, rgba(15,8,5,0.95), rgba(26,15,10,0.92));
+      backdrop-filter: blur(20px);
+      border-bottom: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--gold-main);
+      letter-spacing: 0.15em;
+    }
+
+    main {
+      padding: 100px 40px 60px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .checkout-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+
+    /* ===== DELIVERY SECTION ===== */
+    .delivery-section {
+      background: linear-gradient(135deg, rgba(212,175,55,0.08), rgba(212,175,55,0.04));
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+    }
+
+    .section-title {
+      font-family: 'Cinzel', serif;
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--gold-main);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-label {
+      display: block;
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .form-input {
+      width: 100%;
+      background: linear-gradient(135deg, rgba(212,175,55,0.06), rgba(212,175,55,0.02));
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: var(--text);
+      font-family: 'Lato', sans-serif;
+      font-size: 13px;
+      transition: all 0.3s ease;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--gold-main);
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.15);
+    }
+
+    .form-input-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    textarea {
+      width: 100%;
+      background: linear-gradient(135deg, rgba(212,175,55,0.06), rgba(212,175,55,0.02));
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: var(--text);
+      font-family: 'Lato', sans-serif;
+      font-size: 13px;
+      resize: vertical;
+      min-height: 80px;
+      transition: all 0.3s ease;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--gold-main);
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.15);
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--gold-main);
+      cursor: pointer;
+    }
+
+    .checkbox-group label {
+      font-size: 13px;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    /* ===== ORDER SUMMARY SECTION ===== */
+    .summary-section {
+      background: linear-gradient(135deg, rgba(212,175,55,0.08), rgba(212,175,55,0.04));
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      height: fit-content;
+      position: sticky;
+      top: 100px;
+    }
+
+    .order-items {
+      margin-bottom: 24px;
+      border-bottom: 1px solid rgba(212,175,55,0.2);
+      padding-bottom: 24px;
+    }
+
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 13px;
+    }
+
+    .order-item-name {
+      flex: 1;
+      color: var(--text);
+    }
+
+    .order-item-qty {
+      color: var(--muted);
+      margin: 0 12px;
+    }
+
+    .order-item-price {
+      color: var(--gold-main);
+      font-weight: 600;
+    }
+
+    .order-summary {
+      margin-bottom: 20px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 13px;
+    }
+
+    .summary-row.total {
+      border-top: 1px solid rgba(212,175,55,0.3);
+      padding-top: 12px;
+      margin-top: 12px;
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--gold-main);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-family: 'Lato', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold-main), var(--gold-dim));
+      color: var(--dark);
+      box-shadow: 0 4px 15px rgba(212,175,55,0.3);
+    }
+
+    .btn-gold:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(212,175,55,0.4);
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* ===== SECURITY INFO ===== */
+    .security-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ===== MODAL ===== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(12px);
+      padding: 20px;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .modal {
+      background: linear-gradient(135deg, #1a0f0a, #0f0805);
+      border: 2px solid rgba(212,175,55,0.3);
+      border-radius: 18px;
+      padding: 32px;
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--muted);
+      transition: all 0.3s ease;
+    }
+
+    .modal-close:hover {
+      color: var(--gold-main);
+      border-color: rgba(212,175,55,0.5);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 999;
+      padding: 14px 18px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      animation: slideIn 0.3s ease;
+      border: 1px solid rgba(212,175,55,0.3);
+      display: none;
+    }
+
+    .toast.show {
+      display: block;
+    }
+
+    .toast-success {
+      background: linear-gradient(135deg, rgba(34,197,94,0.9), rgba(34,197,94,0.7));
+      color: #fff;
+    }
+
+    .toast-error {
+      background: linear-gradient(135deg, rgba(239,68,68,0.9), rgba(239,68,68,0.7));
+      color: #fff;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(30px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @media (max-width: 768px) {
+      main { padding: 90px 24px 40px; }
+      .checkout-container { grid-template-columns: 1fr; }
+      .summary-section { position: relative; top: 0; }
+      .page-title { font-size: 1.5rem; }
+      .form-input-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-brand">GRUHINI</span>
+  <a href="cart.html" style="color: var(--muted); text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 13px;">
+    <i data-lucide="arrow-left" style="width: 14px; height: 14px;"></i> Back to Cart
+  </a>
+</nav>
+
+<main>
+  <h1 class="page-title">🛍️ Checkout</h1>
+
+  <div class="checkout-container">
+    <!-- DELIVERY SECTION -->
+    <div class="delivery-section">
+      <div class="section-title">
+        <i data-lucide="map-pin" style="width: 16px; height: 16px;"></i>
+        Select Delivery Address
+      </div>
+
+      <!-- SAVED ADDRESSES -->
+      <div id="savedAddressesContainer" style="margin-bottom: 24px;">
+        <div style="display: flex; flex-direction: column; gap: 12px;" id="addressList">
+          <!-- Populated from /user/addresses -->
+        </div>
+        <button type="button" class="btn btn-gold" onclick="toggleNewAddressForm()" style="margin-top: 12px; background: rgba(212,175,55,0.12); color: var(--gold-main); box-shadow: none;">
+          <i data-lucide="plus" style="width: 14px; height: 14px;"></i>
+          Add New Address
+        </button>
+      </div>
+
+      <!-- NEW ADDRESS FORM (HIDDEN BY DEFAULT) -->
+      <form id="deliveryForm" onsubmit="validateAndProceed(event)" style="display: none;" id="newAddressForm">
+        <div style="background: rgba(212,175,55,0.05); border: 1px solid rgba(212,175,55,0.2); border-radius: 10px; padding: 16px; margin-bottom: 20px;">
+          <p style="font-size: 12px; color: var(--muted); font-family: 'Noto Sans Devanagari', sans-serif;">नया पता जोड़ने के लिए फॉर्म भरें</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" id="fullName" class="form-input" placeholder="Your name">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input type="tel" id="phone" class="form-input" placeholder="+91-9876543210">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Street Address</label>
+          <input type="text" id="street" class="form-input" placeholder="123 Main St, Building X">
+        </div>
+
+        <div class="form-input-row">
+          <div class="form-group">
+            <label class="form-label">City</label>
+            <input type="text" id="city" class="form-input" placeholder="Mumbai">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Pincode</label>
+            <input type="text" id="pincode" class="form-input" placeholder="400001">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Delivery Instructions (Optional)</label>
+          <textarea id="instructions" placeholder="Ring bell twice, Gate is red, etc."></textarea>
+        </div>
+
+        <div class="checkbox-group">
+          <input type="checkbox" id="setAsDefault">
+          <label for="setAsDefault">💾 Set as default address</label>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 16px;">
+          <button type="button" class="btn" onclick="toggleNewAddressForm()" style="background: transparent; border: 1px solid var(--border); color: var(--muted); flex: 1;">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-gold" style="flex: 1;">
+            <i data-lucide="check" style="width: 14px; height: 14px;"></i>
+            Save & Continue
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- ORDER SUMMARY SECTION -->
+    <div class="summary-section">
+      <div class="section-title">
+        <i data-lucide="receipt" style="width: 16px; height: 16px;"></i>
+        Order Summary
+      </div>
+
+      <div class="order-items" id="orderItems">
+        <!-- Populated from cart -->
+      </div>
+
+      <div class="order-summary">
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span id="subtotal">₹0</span>
+        </div>
+        <div class="summary-row">
+          <span>Taxes (5%)</span>
+          <span id="taxes">₹0</span>
+        </div>
+        <div class="summary-row">
+          <span>Delivery Fee</span>
+          <span id="delivery">₹49</span>
+        </div>
+        <div class="summary-row total">
+          <span>Total</span>
+          <span id="total">₹0</span>
+        </div>
+      </div>
+
+      <div class="security-info">
+        <i data-lucide="shield-check" style="width: 14px; height: 14px; color: var(--green);"></i>
+        Direct Order System • Pay on Delivery
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- TOAST NOTIFICATION -->
+<div id="toast" class="toast"></div>
+
+<script src="js/config.js"></script>
+<script>
+const BASE_URL = window.CONFIG?.BASE_URL || 'https://gruhinibackend.onrender.com';
+const DELIVERY_FEE = 49;
+let selectedAddressId = null;
+let userAddresses = [];
+
+// Load cart on page init
+document.addEventListener('DOMContentLoaded', () => {
+  lucide.createIcons();
+  loadUserAddresses();
+  loadCartSummary();
+});
+
+// Load user's saved addresses from backend
+async function loadUserAddresses() {
+  try {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      console.log('Not logged in, showing form to create new address');
+      document.getElementById('savedAddressesContainer').style.display = 'none';
+      toggleNewAddressForm();
+      return;
+    }
+
+    const res = await fetch(`${BASE_URL}/view-profile`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    if (!res.ok) throw new Error('Failed to load profile');
+    
+    const profile = await res.json();
+    userAddresses = profile.addresses || [];
+    renderAddresses();
+  } catch (e) {
+    console.warn('Could not load addresses from backend:', e.message);
+    // Fallback: try localStorage
+    const saved = JSON.parse(localStorage.getItem('deliveryAddress') || '{}');
+    if (saved.fullName) {
+      userAddresses = [{ id: 'local-0', ...saved }];
+      renderAddresses();
+    } else {
+      toggleNewAddressForm();
+    }
+  }
+}
+
+function renderAddresses() {
+  const list = document.getElementById('addressList');
+  if (userAddresses.length === 0) {
+    toggleNewAddressForm();
+    return;
+  }
+
+  list.innerHTML = userAddresses.map((addr, idx) => `
+    <div class="address-card" style="border: 2px solid ${selectedAddressId === addr.id ? 'var(--gold-main)' : 'var(--border)'}; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s;" 
+         onclick="selectAddress(${addr.id})" 
+         style="background: ${selectedAddressId === addr.id ? 'rgba(212,175,55,0.08)' : 'rgba(255,255,255,0.02)'};border: 2px solid ${selectedAddressId === addr.id ? 'var(--gold-main)' : 'var(--border)'};border-radius: 12px;padding: 16px;cursor: pointer;transition: all 0.2s">
+      <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+        <strong style="color: var(--text)">${addr.fullName || addr.name}</strong>
+        ${selectedAddressId === addr.id ? '<span style="color: var(--gold-main); font-size: 12px; font-weight: 600;">✓ SELECTED</span>' : ''}
+      </div>
+      <div style="font-size: 12px; color: var(--muted); line-height: 1.6;">
+        📍 ${addr.street || addr.address}<br>
+        🏙️ ${addr.city}, ${addr.pincode}<br>
+        📱 ${addr.phone}
+      </div>
+    </div>
+  `).join('');
+
+  // Auto-select first address if none selected
+  if (!selectedAddressId && userAddresses.length > 0) {
+    selectAddress(userAddresses[0].id);
+  }
+}
+
+function selectAddress(addressId) {
+  selectedAddressId = addressId;
+  renderAddresses();
+  document.getElementById('deliveryForm').style.display = 'none';
+}
+
+function toggleNewAddressForm() {
+  const form = document.getElementById('deliveryForm');
+  if (form.style.display === 'none') {
+    form.style.display = 'block';
+    selectedAddressId = null;
+  } else {
+    form.style.display = 'none';
+  }
+  lucide.createIcons();
+}
+
+function loadCartSummary() {
+  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+  const orderItemsDiv = document.getElementById('orderItems');
+  
+  let subtotal = 0;
+  const TAX_RATE = 0.05;
+  orderItemsDiv.innerHTML = cart.map(item => {
+    const itemTotal = item.price * item.quantity;
+    subtotal += itemTotal;
+    return `
+      <div class="order-item">
+        <span class="order-item-name">${item.name}</span>
+        <span class="order-item-qty">×${item.quantity}</span>
+        <span class="order-item-price">₹${itemTotal.toFixed(2)}</span>
+      </div>
+    `;
+  }).join('');
+
+  updateCostSummary(subtotal);
+}
+
+function updateCostSummary(subtotal) {
+  const TAX_RATE = 0.05;
+  const taxes = subtotal * TAX_RATE;
+  const total = subtotal + taxes + DELIVERY_FEE;
+
+  document.getElementById('subtotal').textContent = `₹${subtotal.toFixed(2)}`;
+  document.getElementById('taxes').textContent = `₹${taxes.toFixed(2)}`;
+  document.getElementById('total').textContent = `₹${total.toFixed(2)}`;
+}
+
+function validateAndProceed(event) {
+  event.preventDefault();
+
+  // If new address form is being submitted
+  const fullName = document.getElementById('fullName').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const street = document.getElementById('street').value.trim();
+  const city = document.getElementById('city').value.trim();
+  const pincode = document.getElementById('pincode').value.trim();
+
+  if (!fullName || !phone || !street || !city || !pincode) {
+    showToast('कृपया सभी आवश्यक फील्ड भरें', 'error');
+    return;
+  }
+
+  // Validate phone format
+  if (!/^[+\d\-\s()]{8,}$/.test(phone)) {
+    showToast('Invalid phone number', 'error');
+    return;
+  }
+
+  // Validate pincode
+  if (!/^\d{6}$/.test(pincode)) {
+    showToast('Pincode must be 6 digits', 'error');
+    return;
+  }
+
+  // Create/Save address object for new address
+  const newAddress = {
+    fullName,
+    phone,
+    street,
+    city,
+    pincode,
+    instructions: document.getElementById('instructions').value.trim()
+  };
+
+  // Try to save to backend if logged in
+  const token = localStorage.getItem('authToken');
+  if (token) {
+    saveAddressToBackend(newAddress);
+  } else {
+    // Fallback: save to localStorage and proceed
+    selectedAddressId = 'local-new';
+    userAddresses.push({ id: selectedAddressId, ...newAddress });
+    localStorage.setItem('deliveryAddress', JSON.stringify(newAddress));
+    proceedToPayment();
+  }
+}
+
+async function saveAddressToBackend(addressData) {
+  try {
+    const token = localStorage.getItem('authToken');
+    const res = await fetch(`${BASE_URL}/add-address`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(addressData)
+    });
+
+    if (!res.ok) throw new Error('Failed to save address');
+    const saved = await res.json();
+    
+    selectedAddressId = saved.id;
+    userAddresses.push(saved);
+    renderAddresses();
+    document.getElementById('newAddressForm').style.display = 'none';
+    showToast('✅ Address saved!', 'success');
+    proceedToPayment();
+  } catch (e) {
+    console.error('Save address error:', e);
+    // Fallback to localStorage
+    selectedAddressId = 'local-new';
+    localStorage.setItem('deliveryAddress', JSON.stringify(addressData));
+    proceedToPayment();
+  }
+}
+
+async function proceedToPayment() {
+  try {
+    // Check if address is selected
+    if (!selectedAddressId) {
+      showToast('कृपया पता चुनें या जोड़ें', 'error');
+      return;
+    }
+
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    if (cart.length === 0) {
+      showToast('Cart is empty', 'error');
+      return;
+    }
+
+    // Calculate totals
+    const TAX_RATE = 0.05;
+    let subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const taxes = subtotal * TAX_RATE;
+    const total = subtotal + taxes + DELIVERY_FEE;
+
+    // Step 1: Create order via backend - DIRECT ORDER (No Razorpay)
+    showToast('Creating your order...', 'info');
+    
+    const token = localStorage.getItem('authToken');
+    const selectedAddress = userAddresses.find(a => a.id === selectedAddressId) || 
+                            JSON.parse(localStorage.getItem('deliveryAddress') || '{}');
+
+    const createOrderRes = await fetch(`${BASE_URL}/place-order`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token || ''}`
+      },
+      body: JSON.stringify({
+        addressId: selectedAddressId
+      })
+    });
+
+    if (!createOrderRes.ok) {
+      const errorData = await createOrderRes.json();
+      throw new Error(errorData.message || 'Failed to create order');
+    }
+
+    const orderData = await createOrderRes.json();
+    const orderId = orderData.orderId || orderData.id;
+
+    // Step 2: Clear cart and redirect to status page
+    localStorage.removeItem('cart');
+    showToast('✅ Order placed! Status page loading...', 'success');
+    
+    setTimeout(() => {
+      window.location.href = `order-status.html?orderId=${orderId}`;
+    }, 800);
+
+  } catch (error) {
+    console.error('Order creation error:', error);
+    showToast('❌ ' + error.message, 'error');
+  }
+}
+
+function showToast(message, type = 'success') {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.className = `toast show toast-${type}`;
+  
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3000);
+}
+</script>
+
+</body>
+</html>

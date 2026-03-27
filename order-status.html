@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gruhini – Order Status</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="js/config.js"></script>
+  <style>
+    :root {
+      --gold-main: #D4AF37;
+      --gold-dim: #c5a059;
+      --dark: #0f0805;
+      --dark2: #1a0f0a;
+      --text: #f5f1e8;
+      --muted: rgba(245,241,232,0.6);
+      --muted2: rgba(245,241,232,0.4);
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --border: rgba(212,175,55,0.2);
+      --border2: rgba(212,175,55,0.3);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      background: linear-gradient(135deg, #0f0805 0%, #1a0f0a 50%, #0f0805 100%);
+      min-height: 100vh;
+      color: var(--text);
+      font-family: 'Lato', sans-serif;
+      line-height: 1.6;
+    }
+
+    body::before {
+      content: ''; position: fixed; inset: 0; z-index: -2;
+      background: radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.08) 0%, transparent 50%);
+    }
+
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 32px;
+      background: rgba(15,8,5,0.95); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-brand { 
+      font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; 
+      color: var(--gold-main); letter-spacing: 0.1em; text-decoration: none; 
+    }
+
+    .nav-links {
+      display: flex; gap: 20px;
+    }
+
+    .nav-links a {
+      color: var(--muted); text-decoration: none; font-size: 13px; display: flex; 
+      align-items: center; gap: 6px; transition: all 0.3s;
+    }
+
+    .nav-links a:hover { color: var(--gold-main); }
+
+    main { padding: 100px 20px 60px; max-width: 950px; margin: 0 auto; }
+
+    .status-banner {
+      background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(245,158,11,0.05));
+      border: 1px solid rgba(245,158,11,0.3);
+      border-radius: 16px; padding: 32px 24px; text-align: center;
+      margin-bottom: 32px; transition: all 0.4s ease;
+    }
+
+    .status-banner.accepted {
+      background: linear-gradient(135deg, rgba(34,197,94,0.1), rgba(34,197,94,0.05));
+      border-color: rgba(34,197,94,0.3);
+    }
+
+    .status-banner.rejected {
+      background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(239,68,68,0.05));
+      border-color: rgba(239,68,68,0.3);
+    }
+    
+    .status-icon {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: rgba(245,158,11,0.2); color: var(--amber);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px; animation: pulse 2s infinite;
+    }
+
+    .status-banner.accepted .status-icon { 
+      background: rgba(34,197,94,0.2); color: var(--green); animation: none;
+    }
+
+    .status-banner.rejected .status-icon { 
+      background: rgba(239,68,68,0.2); color: var(--red); animation: none;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    .status-title { 
+      font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; 
+      margin-bottom: 8px; 
+    }
+
+    .status-desc { 
+      font-size: 14px; color: var(--muted); max-width: 600px; margin: 0 auto;
+    }
+
+    .status-time {
+      font-size: 12px; color: var(--muted2); margin-top: 8px;
+    }
+
+    .grid-container { display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px; }
+
+    @media (max-width: 768px) { 
+      .grid-container { grid-template-columns: 1fr; }
+      main { padding: 90px 16px 40px; }
+    }
+
+    .card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border); border-radius: 16px;
+      padding: 24px; position: relative; overflow: hidden;
+    }
+
+    .card-title { 
+      font-family: 'Cinzel', serif; font-size: 12px; font-weight: 700; 
+      letter-spacing: 0.1em; color: var(--gold-main); margin-bottom: 18px; 
+      display: flex; align-items: center; gap: 8px; text-transform: uppercase;
+    }
+    
+    .otp-box {
+      background: #000; border: 2px dashed var(--border2);
+      border-radius: 12px; padding: 24px; text-align: center;
+      margin-top: 16px;
+    }
+
+    .otp-label { 
+      font-size: 11px; color: var(--muted); margin-bottom: 12px; 
+      text-transform: uppercase; letter-spacing: 0.15em; font-weight: 600;
+    }
+
+    .otp-code { 
+      font-family: 'Courier New', Courier, monospace; 
+      font-size: 3rem; font-weight: 700; letter-spacing: 0.4em; 
+      color: var(--text); margin: 12px 0;
+      filter: blur(5px); transition: all 0.3s ease;
+      user-select: none;
+    }
+
+    .otp-code.revealed { 
+      filter: blur(0); 
+      user-select: text; 
+      color: var(--gold-main);
+      font-size: 2.2rem;
+      letter-spacing: 0.2em;
+    }
+
+    .otp-actions {
+      display: flex; flex-direction: column; gap: 10px; margin-top: 16px;
+    }
+
+    .btn-otp {
+      padding: 10px 16px; background: transparent; border: 1px solid var(--border);
+      color: var(--muted); border-radius: 8px; cursor: pointer; font-size: 12px;
+      transition: all 0.3s; text-decoration: none;
+    }
+
+    .btn-otp:hover { border-color: var(--gold-main); color: var(--gold-main); }
+
+    .seller-profile { 
+      display: flex; align-items: center; gap: 16px; margin-bottom: 20px;
+      padding: 16px; background: rgba(59,130,246,0.05); border-radius: 12px;
+    }
+
+    .seller-avatar { 
+      width: 56px; height: 56px; border-radius: 50%; 
+      background: var(--border); display: flex; align-items: center; 
+      justify-content: center; font-size: 28px; flex-shrink: 0;
+    }
+
+    .seller-info { flex: 1; }
+
+    .seller-name { 
+      font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .seller-meta { font-size: 12px; color: var(--muted); }
+
+    .call-btn {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      width: 100%; padding: 12px; border-radius: 10px;
+      background: linear-gradient(135deg, rgba(59,130,246,0.25), rgba(59,130,246,0.1));
+      border: 1px solid rgba(59,130,246,0.4); color: #3b82f6;
+      font-weight: 600; text-decoration: none; transition: all 0.3s;
+      font-size: 14px; margin-bottom: 12px;
+    }
+
+    .call-btn:hover { 
+      background: linear-gradient(135deg, rgba(59,130,246,0.35), rgba(59,130,246,0.2));
+      border-color: rgba(59,130,246,0.6);
+    }
+
+    .order-item { 
+      display: flex; justify-content: space-between; padding: 12px 0; 
+      border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px;
+    }
+
+    .order-item:last-child { border-bottom: none; }
+
+    .order-total { 
+      display: flex; justify-content: space-between; padding-top: 16px; 
+      margin-top: 12px; border-top: 1px dashed var(--border); 
+      font-weight: 700; font-size: 1.2rem; color: var(--gold-main);
+    }
+    
+    .delivery-info { 
+      display: none; background: rgba(34,197,94,0.08); border-left: 4px solid var(--green); 
+      padding: 16px; margin-top: 16px; border-radius: 0 8px 8px 0; font-size: 13px;
+    }
+
+    .delivery-info.active { display: block; }
+
+    .delivery-row {
+      display: flex; justify-content: space-between; margin-bottom: 8px;
+    }
+
+    .delivery-label { color: var(--muted); font-size: 12px; }
+
+    .delivery-value { color: var(--text); font-weight: 600; }
+
+    .rejection-info {
+      display: none; background: rgba(239,68,68,0.08); border-left: 4px solid var(--red);
+      padding: 16px; margin-top: 16px; border-radius: 0 8px 8px 0;
+    }
+
+    .rejection-info.active { display: block; }
+
+    .rejection-reason { color: var(--text); font-size: 14px; margin-top: 8px; }
+
+    .action-buttons {
+      display: flex; gap: 12px; margin-top: 16px;
+    }
+
+    .btn {
+      flex: 1; padding: 11px 16px; border-radius: 10px; border: none;
+      cursor: pointer; font-family: 'Lato', sans-serif; font-size: 13px;
+      font-weight: 600; transition: all 0.3s; text-transform: uppercase;
+      letter-spacing: 0.05em; display: flex; align-items: center;
+      justify-content: center; gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold-main), var(--gold-dim));
+      color: var(--dark); box-shadow: 0 4px 15px rgba(212,175,55,0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px); box-shadow: 0 6px 25px rgba(212,175,55,0.4);
+    }
+
+    .btn-secondary {
+      background: transparent; border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--gold-main); color: var(--gold-main);
+    }
+
+    .btn:disabled {
+      opacity: 0.4; cursor: not-allowed; transform: none !important;
+    }
+
+    .status-badge {
+      display: inline-block; padding: 4px 12px; border-radius: 20px; 
+      font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+      margin-top: 12px;
+    }
+
+    .status-badge.pending {
+      background: rgba(245,158,11,0.2); color: var(--amber);
+    }
+
+    .status-badge.accepted {
+      background: rgba(34,197,94,0.2); color: var(--green);
+    }
+
+    .status-badge.rejected {
+      background: rgba(239,68,68,0.2); color: var(--red);
+    }
+
+    .loading-spinner {
+      display: inline-block; width: 16px; height: 16px;
+      border: 2px solid var(--muted2); border-top-color: var(--gold-main);
+      border-radius: 50%; animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .toast {
+      position: fixed; bottom: 20px; right: 20px; z-index: 999;
+      padding: 14px 18px; border-radius: 12px; font-size: 13px;
+      font-weight: 600; animation: slideIn 0.3s ease;
+      border: 1px solid rgba(212,175,55,0.3); display: none;
+    }
+
+    .toast.show { display: block; }
+
+    .toast-success {
+      background: linear-gradient(135deg, rgba(34,197,94,0.9), rgba(34,197,94,0.7));
+      color: #fff;
+    }
+
+    .toast-info {
+      background: linear-gradient(135deg, rgba(59,130,246,0.9), rgba(59,130,246,0.7));
+      color: #fff;
+    }
+
+    .toast-error {
+      background: linear-gradient(135deg, rgba(239,68,68,0.9), rgba(239,68,68,0.7));
+      color: #fff;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(30px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .seller-contact-box {
+      background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(59,130,246,0.05));
+      border: 1px solid rgba(59,130,246,0.2); border-radius: 12px; padding: 14px;
+      margin-top: 12px; font-size: 12px;
+    }
+
+    .seller-phone { font-weight: 700; color: #3b82f6; margin: 8px 0; }
+
+    .acceptance-notification {
+      display: none; background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(34,197,94,0.08));
+      border: 1px solid rgba(34,197,94,0.4); border-radius: 12px; padding: 16px;
+      margin-top: 16px; font-size: 14px; color: var(--text);
+    }
+
+    .acceptance-notification.active { display: block; }
+
+    .acceptance-notification-icon { font-size: 20px; margin-right: 8px; }
+
+    .support-info-box {
+      display: none; background: linear-gradient(135deg, rgba(212,175,55,0.1), rgba(212,175,55,0.05));
+      border: 1px solid rgba(212,175,55,0.4); border-radius: 12px; padding: 16px;
+      margin-top: 16px; font-size: 13px;
+    }
+
+    .support-info-box.active { display: block; }
+
+    .support-info-title { 
+      font-size: 12px; color: var(--muted); margin-bottom: 12px;
+      text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600;
+    }
+
+    .support-info-content { color: var(--text); line-height: 1.8; }
+
+    .support-info-content strong { color: var(--gold-main); display: block; margin: 6px 0; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-brand">GRUHINI</a>
+  <div class="nav-links">
+    <a href="cart.html"><i data-lucide="shopping-cart" style="width:14px;height:14px"></i> Back to Cart</a>
+    <a href="menu.html"><i data-lucide="utensils" style="width:14px;height:14px"></i> Continue Shopping</a>
+  </div>
+</nav>
+
+<main>
+  
+  <div class="status-banner" id="statusBanner">
+    <div class="status-icon" id="statusIcon">
+      <i data-lucide="clock" style="width:36px;height:36px"></i>
+    </div>
+    <h1 class="status-title" id="statusTitle">Order Sent to Chef</h1>
+    <p class="status-desc" id="statusDesc">
+      आपका आदेश शेफ को भेज दिया गया है। कृपया 2-3 घंटे में स्वीकृति की प्रतीक्षा करें।
+    </p>
+    <div class="status-time" id="statusTime"></div>
+    <div class="status-badge pending" id="statusBadge">🟡 PENDING ACCEPTANCE</div>
+    
+    <div class="acceptance-notification" id="acceptanceNotification">
+      <span class="acceptance-notification-icon">📧</span>
+      <strong>Order Accepted!</strong> Your seller will contact you via email with delivery details and OTP within minutes.
+    </div>
+  </div>
+
+  <div class="grid-container">
+    
+    <!-- LEFT SIDE: Order Details & OTP -->
+    <div>
+      <div class="card" style="margin-bottom: 24px;">
+        <h2 class="card-title"><i data-lucide="receipt" style="width:14px;height:14px"></i> ऑर्डर विवरण</h2>
+        
+        <div style="font-size: 11px; color: var(--muted); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.1em;">
+          Order ID: <strong id="orderId" style="color: var(--text);">#ORD-000000</strong> • 
+          <span id="orderTime">आज, 2:30 PM</span>
+        </div>
+        
+        <div id="orderItems" style="margin-bottom: 16px;">
+          <!-- Items populated here -->
+        </div>
+
+        <div class="order-total">
+          <span>कुल (डिलीवरी के समय भुगतान करें)</span>
+          <span id="totalAmount">₹0</span>
+        </div>
+
+        <div class="delivery-info" id="deliveryInfoBlock">
+          <div class="delivery-row">
+            <div class="delivery-label">अपेक्षित डिलीवरी:</div>
+            <div class="delivery-value" id="expectedTime">--</div>
+          </div>
+          <div class="delivery-row">
+            <div class="delivery-label">डिलीवरी विधि:</div>
+            <div class="delivery-value" id="deliveryMethod">--</div>
+          </div>
+        </div>
+
+        <div class="rejection-info" id="rejectionBlock">
+          <div style="color: var(--muted); font-size: 12px; font-weight: 600;">अस्वीकृति कारण:</div>
+          <div class="rejection-reason" id="rejectionReason">--</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title"><i data-lucide="key" style="width:14px;height:14px"></i> डिलीवरी सत्यापन</h2>
+        <p style="font-size: 12px; color: var(--muted); margin-bottom: 16px;">
+          खाना मिलने पर शेफ को यह OTP बताएं। बिना OTP के ऑर्डर डिलीवर नहीं माना जाएगा।
+        </p>
+        
+        <div class="otp-box">
+          <div class="otp-label" id="otpLabel">स्वीकृति की प्रतीक्षा...</div>
+          <div class="otp-code" id="otpCode">------</div>
+          <div class="otp-actions" id="otpActions" style="display:none;">
+            <button class="btn-otp" onclick="toggleOtpVisibility()">
+              <i data-lucide="eye" style="width:12px;height:12px;display:none" id="eyeIcon"></i>
+              <span id="toggleText">OTP दिखाएं</span>
+            </button>
+            <button class="btn-otp" onclick="resendOtp()" id="resendBtn">
+              ✉️ ईमेल पर OTP फिर से भेजें
+            </button>
+            <button class="btn-otp" onclick="copyOtp()">
+              📋 OTP कॉपी करें
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT SIDE: Chef Contact & Status -->
+    <div>
+      <div class="card">
+        <h2 class="card-title"><i data-lucide="user" style="width:14px;height:14px"></i> शेफ से संपर्क करें</h2>
+        
+        <div class="seller-profile" id="sellerProfile">
+          <div class="seller-avatar" id="sellerAvatar">👩‍🍳</div>
+          <div class="seller-info">
+            <div class="seller-name" id="sellerName">शेफ नाम लोड हो रहा है...</div>
+            <div class="seller-meta" id="sellerMeta">लोड हो रहा है...</div>
+          </div>
+        </div>
+
+        <p style="font-size: 12px; color: var(--muted); margin-bottom: 12px; line-height: 1.6;">
+          अगर आप अपने ऑर्डर में कोई बदलाव करना चाहते हैं या स्थिति जानना चाहते हैं तो आप सीधे शेफ को कॉल या संदेश कर सकते हैं।
+        </p>
+
+        <a href="tel:+919876543210" class="call-btn" id="callBtn" style="display:none;">
+          <i data-lucide="phone" style="width:14px;height:14px"></i> शेफ को अभी कॉल करें
+        </a>
+
+        <div class="seller-contact-box">
+          <div style="color: var(--muted); font-size: 11px; margin-bottom: 4px;">📱 संपर्क सूचना</div>
+          <div class="seller-phone" id="sellerPhone">+91-9876543210</div>
+          <div style="color: var(--muted); font-size: 11px;">उपलब्ध: 11 AM - 10 PM IST</div>
+        </div>
+
+        <div style="margin-top: 20px; padding: 14px; background: rgba(212,175,55,0.05); border-radius: 12px; border-left: 3px solid var(--gold-main);">
+          <div style="font-size: 11px; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.1em;">💬 सहायता केंद्र</div>
+          <div style="font-size: 12px; color: var(--text); line-height: 1.6;">
+            किसी समस्या का सामना करना पड़ रहा है?<br>
+            <strong>📧</strong> gruhani214@gmail.com<br>
+            <strong>📱</strong> +91 9131206200
+          </div>
+        </div>
+
+        <div class="support-info-box" id="supportInfoBox">
+          <div class="support-info-title">📞 यदि आपका ऑर्डर 1 घंटे में स्वीकृत नहीं हुआ</div>
+          <div class="support-info-content">
+            <strong>शेफ को सीधे संपर्क करें:</strong>
+            सीधे शेफ को कॉल करने या संदेश भेजने के लिए ऊपर दिए गए नंबर का उपयोग करें।
+          </div>
+        </div>
+      </div>
+      
+      <div style="margin-top: 24px; padding: 16px; border: 1px dashed var(--border); border-radius: 12px; text-align: center; background: rgba(255,255,255,0.01);">
+        <p style="font-size: 11px; color: var(--muted); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.1em;">🔄 ऑटो-अपडेट: हर 5 सेकंड में स्थिति की जांच</p>
+        <button onclick="manualRefresh()" class="btn btn-secondary" style="width: 100%; margin-top: 8px;">
+          <i data-lucide="refresh-cw" style="width:13px;height:13px"></i> अभी रीफ्रेश करें
+        </button>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const BASE_URL = window.CONFIG?.BASE_URL || 'https://gruhinibackend.onrender.com';
+let orderData = {};
+let orderId = null;
+let pollingInterval = null;
+let otpVisible = false;
+
+document.addEventListener('DOMContentLoaded', () => {
+  lucide.createIcons();
+  const params = new URLSearchParams(window.location.search);
+  orderId = params.get('orderId');
+  
+  if (!orderId) {
+    showToast('Order ID not found', 'error');
+    setTimeout(() => window.location.href = 'index.html', 2000);
+    return;
+  }
+
+  loadOrderData();
+  startPolling();
+  updateTimeDisplay();
+});
+
+async function loadOrderData() {
+  try {
+    const token = localStorage.getItem('authToken');
+    const res = await fetch(`${BASE_URL}/orders/${orderId}`, {
+      headers: { 'Authorization': `Bearer ${token || ''}` }
+    });
+
+    if (!res.ok) throw new Error('Failed to load order');
+    
+    orderData = await res.json();
+    renderOrderData();
+  } catch (e) {
+    console.error('Load order error:', e);
+    showToast('Order loading failed: ' + e.message, 'error');
+  }
+}
+
+function renderOrderData() {
+  document.getElementById('orderId').textContent = `#ORD-${String(orderData.id || 000000).padStart(6, '0')}`;
+  
+  // Render order items
+  const itemsDiv = document.getElementById('orderItems');
+  let subtotal = 0;
+  itemsDiv.innerHTML = (orderData.items || []).map(item => {
+    const itemTotal = (item.price || 0) * (item.quantity || 1);
+    subtotal += itemTotal;
+    return `
+      <div class="order-item">
+        <span>${item.name || 'Item'}</span>
+        <span style="color: var(--muted);">×${item.quantity || 1}</span>
+        <span style="color: var(--gold-main);">₹${itemTotal.toFixed(0)}</span>
+      </div>
+    `;
+  }).join('');
+
+  const total = orderData.total || subtotal;
+  document.getElementById('totalAmount').textContent = `₹${total.toFixed(0)}`;
+
+  // Render seller info
+  if (orderData.seller) {
+    document.getElementById('sellerName').textContent = orderData.seller.businessName || orderData.seller.name || 'Chef';
+    document.getElementById('sellerMeta').textContent = orderData.seller.location || 'Home Kitchen • Verified';
+    document.getElementById('sellerPhone').textContent = orderData.seller.phone || '+91-9876543210';
+    document.getElementById('callBtn').href = `tel:${orderData.seller.phone || '+919876543210'}`;
+    document.getElementById('callBtn').style.display = 'flex';
+  }
+
+  updateStatusDisplay();
+}
+
+function updateStatusDisplay() {
+  const status = orderData.status?.toUpperCase() || 'PENDING';
+  const banner = document.getElementById('statusBanner');
+  const statusIcon = document.getElementById('statusIcon');
+  const statusTitle = document.getElementById('statusTitle');
+  const statusDesc = document.getElementById('statusDesc');
+  const statusBadge = document.getElementById('statusBadge');
+  const otpLabel = document.getElementById('otpLabel');
+  const otpCode = document.getElementById('otpCode');
+  const otpActions = document.getElementById('otpActions');
+  const deliveryInfo = document.getElementById('deliveryInfoBlock');
+  const rejectionBlock = document.getElementById('rejectionBlock');
+  const acceptanceNotification = document.getElementById('acceptanceNotification');
+  const supportInfoBox = document.getElementById('supportInfoBox');
+
+  if (status === 'ACCEPTED') {
+    banner.className = 'status-banner accepted';
+    statusIcon.innerHTML = '<i data-lucide="check-circle" style="width:36px;height:36px"></i>';
+    statusIcon.style.animation = 'none';
+    statusTitle.textContent = '✅ Order Accepted!';
+    statusDesc.textContent = 'शेफ ने आपका ऑर्डर स्वीकार कर लिया है। अब खाना तैयारी शुरू हो गई है!';
+    statusBadge.textContent = '🟢 ACCEPTED';
+    statusBadge.className = 'status-badge accepted';
+
+    // Show acceptance notification
+    acceptanceNotification.classList.add('active');
+    supportInfoBox.classList.remove('active');
+
+    // Show OTP
+    otpLabel.textContent = 'आपका गुप्त डिलीवरी OTP';
+    otpCode.textContent = orderData.otp || '------';
+    otpCode.className = 'otp-code revealed';
+    otpActions.style.display = 'flex';
+
+    // Show delivery info
+    if (orderData.deliveryTime || orderData.deliveryMethod) {
+      deliveryInfo.classList.add('active');
+      document.getElementById('expectedTime').textContent = orderData.deliveryTime || '--';
+      document.getElementById('deliveryMethod').textContent = translateDeliveryMethod(orderData.deliveryMethod) || '--';
+    }
+  } else if (status === 'REJECTED') {
+    banner.className = 'status-banner rejected';
+    statusIcon.innerHTML = '<i data-lucide="x-circle" style="width:36px;height:36px"></i>';
+    statusIcon.style.animation = 'none';
+    statusTitle.textContent = '❌ Order Rejected';
+    statusDesc.textContent = 'दुर्भाग्यवश, शेफ ने आपका ऑर्डर अस्वीकार कर दिया है। नीचे कारण देखें।';
+    statusBadge.textContent = '🔴 REJECTED';
+    statusBadge.className = 'status-badge rejected';
+
+    // Hide acceptance notification and support box
+    acceptanceNotification.classList.remove('active');
+    supportInfoBox.classList.remove('active');
+
+    // Show rejection reason
+    rejectionBlock.classList.add('active');
+    document.getElementById('rejectionReason').textContent = orderData.rejectionReason || 'Any reason not provided';
+
+    // Hide OTP
+    otpActions.style.display = 'none';
+    otpCode.textContent = '------';
+    otpCode.className = 'otp-code';
+  } else {
+    // PENDING (default)
+    acceptanceNotification.classList.remove('active');
+    supportInfoBox.classList.add('active');
+    otpLabel.textContent = 'स्वीकृति की प्रतीक्षा...';
+    otpCode.textContent = '------';
+    otpCode.className = 'otp-code';
+    otpActions.style.display = 'none';
+  }
+
+  lucide.createIcons();
+}
+
+function translateDeliveryMethod(method) {
+  const map = {
+    'SELLER_DELIVERY': 'शेफ द्वारा सरधन डिलीवरी',
+    'CUSTOMER_PICKUP': 'ग्राहक द्वारा पिकअप',
+    'THIRD_PARTY': 'डंजो / पोर्टर द्वारा'
+  };
+  return map[method] || method;
+}
+
+function startPolling() {
+  pollingInterval = setInterval(async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      const res = await fetch(`${BASE_URL}/orders/${orderId}`, {
+        headers: { 'Authorization': `Bearer ${token || ''}` }
+      });
+
+      if (!res.ok) throw new Error('Failed to refresh');
+      const newData = await res.json();
+      
+      if (newData.status !== orderData.status) {
+        orderData = newData;
+        renderOrderData();
+        showToast('✅ Order status updated!', 'success');
+      }
+    } catch (e) {
+      console.warn('Polling error:', e.message);
+    }
+  }, 5000); // Poll every 5 seconds
+}
+
+function stopPolling() {
+  if (pollingInterval) clearInterval(pollingInterval);
+}
+
+function manualRefresh() {
+  loadOrderData();
+  showToast('🔄 Refreshing...', 'info');
+}
+
+function toggleOtpVisibility() {
+  otpVisible = !otpVisible;
+  const otpCode = document.getElementById('otpCode');
+  const toggleText = document.getElementById('toggleText');
+  
+  if (otpVisible) {
+    otpCode.style.filter = 'blur(0)';
+    otpCode.style.userSelect = 'text';
+    toggleText.textContent = 'OTP छुपाएं';
+  } else {
+    otpCode.style.filter = 'blur(5px)';
+    otpCode.style.userSelect = 'none';
+    toggleText.textContent = 'OTP दिखाएं';
+  }
+}
+
+function copyOtp() {
+  const otp = orderData.otp || document.getElementById('otpCode').textContent;
+  if (otp && otp !== '------') {
+    navigator.clipboard.writeText(otp).then(() => {
+      showToast('✅ OTP copied to clipboard!', 'success');
+    }).catch(() => {
+      showToast('Failed to copy OTP', 'error');
+    });
+  }
+}
+
+async function resendOtp() {
+  try {
+    const token = localStorage.getItem('authToken');
+    const res = await fetch(`${BASE_URL}/orders/${orderId}/resend-otp`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token || ''}` }
+    });
+
+    if (!res.ok) throw new Error('Failed to resend OTP');
+    showToast('✅ OTP resent to your email!', 'success');
+  } catch (e) {
+    showToast('❌ ' + e.message, 'error');
+  }
+}
+
+function updateTimeDisplay() {
+  const now = new Date();
+  const timeStr = now.toLocaleString('hi-IN', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  });
+  document.getElementById('statusTime').textContent = `Placed: ${timeStr}`;
+}
+
+function showToast(message, type = 'info') {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.className = `toast show toast-${type || 'info'}`;
+  
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3500);
+}
+
+// Stop polling when user leaves
+window.addEventListener('beforeunload', stopPolling);
+</script>
+
+</body>
+</html>
