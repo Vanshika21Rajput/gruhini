@@ -523,7 +523,7 @@
 <div id="toast" class="toast"></div>
 
 <script>
-const BASE_URL = window.CONFIG?.BASE_URL || 'https://gruhinibackend.onrender.com';
+const BASE_URL = window.CONFIG?.BASE_URL || 'https://gruhani-backend.onrender.com';
 let orderData = {};
 let orderId = null;
 let pollingInterval = null;
@@ -776,6 +776,12 @@ function showToast(message, type = 'info') {
 
 // Stop polling when user leaves
 window.addEventListener('beforeunload', stopPolling);
+
+// 75s timer for final status page
+setTimeout(() => {
+  showToast('Order journey complete! Redirecting to orders...', 'info');
+  window.location.href = 'orders.html';
+}, 75000);
 </script>
 
 </body>
