@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gruhani - The Menu</title>
+    <title>Gruhini - The Menu</title>
     <link rel="preload" href="public/background.jpg" as="image" type="image/jpeg">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Lato:wght@400;700&display=swap"
         rel="stylesheet">
@@ -153,7 +153,7 @@
             <a href="index.html" class="flex items-center gap-3 group">
                 <div
                     class="w-12 h-12 rounded-full overflow-hidden relative shadow-[0_0_15px_rgba(197,160,89,0.4)] group-hover:shadow-[0_0_25px_rgba(197,160,89,0.6)] transition-all duration-500 border border-gold/30">
-                    <img src="public/logo.jpg" alt="Gruhani"
+                    <img src="public/logo.jpg" alt="Gruhini"
                         class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
                     <div class="absolute inset-0 bg-gradient-to-tr from-black/10 to-transparent pointer-events-none">
                     </div>
@@ -178,7 +178,7 @@
 
                     const navContent = `
                         <span class="${activeClass}">Menu</span>
-                        <a href="sellers.html" class="${linkClass}">Kitchens</a>
+                        <a href="menu.html" class="${linkClass}">Kitchens</a>
                         <a href="about.html" class="${linkClass}">About</a>
                     `;
 
@@ -188,10 +188,49 @@
                         <a href="login.html" class="${btnClass}">Login</a>
                     `;
                     } else if (role === 'SELLER') {
+                        const initials = userName.charAt(0).toUpperCase();
                         navLinks.innerHTML = `
                         ${navContent}
-                        <a href="seller-dashboard.html" class="${btnClass}">Dashboard</a>
+                        <div class="relative" id="userProfileWrapper">
+                            <button id="userProfileBtn" class="flex items-center gap-2 px-2 py-1 rounded-full hover:bg-white/10 transition-all">
+                                <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-white text-xs font-bold shadow-lg border border-amber-400/30">
+                                    ${initials}
+                                </div>
+                                <span class="hidden sm:block text-[10px] text-white/80 font-medium max-w-[80px] truncate">${userName.split('@')[0]}</span>
+                                <svg class="w-3 h-3 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </button>
+                            <div id="userDropdown" class="hidden absolute right-0 top-full mt-2 w-48 bg-[#1a0f0a]/95 backdrop-blur-xl rounded-xl border border-amber-500/20 shadow-2xl overflow-hidden z-50">
+                                <div class="px-4 py-3 border-b border-white/10">
+                                    <p class="text-white font-bold text-sm truncate">${userName.split('@')[0]}</p>
+                                    <p class="text-gray-400 text-[10px] truncate">🍳 Home Chef</p>
+                                </div>
+                                <div class="py-2">
+                                    <a href="seller-dashboard-enhanced.html" class="flex items-center gap-3 px-4 py-2.5 text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 transition-all text-xs font-bold">
+                                        <i data-lucide="layout-dashboard" class="w-4 h-4"></i> My Dashboard
+                                    </a>
+                                    <a href="seller-profile-modern.html" class="flex items-center gap-3 px-4 py-2.5 text-white/80 hover:text-white hover:bg-amber-500/10 transition-all text-xs">
+                                        <i data-lucide="user" class="w-4 h-4"></i> My Profile
+                                    </a>
+                                </div>
+                                <div class="border-t border-white/10 py-2">
+                                    <button onclick="localStorage.clear(); window.location.href='login.html'" class="flex items-center gap-3 px-4 py-2.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all text-xs w-full">
+                                        <i data-lucide="log-out" class="w-4 h-4"></i> Logout
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     `;
+
+                        setTimeout(() => {
+                            const btn = document.getElementById('userProfileBtn');
+                            const dropdown = document.getElementById('userDropdown');
+                            if (btn && dropdown) {
+                                btn.addEventListener('click', (e) => { e.stopPropagation(); dropdown.classList.toggle('hidden'); });
+                                document.addEventListener('click', () => { dropdown.classList.add('hidden'); });
+                            }
+                        }, 100);
                     } else {
                         const initials = userName.charAt(0).toUpperCase();
                         navLinks.innerHTML = `
@@ -247,7 +286,10 @@
                                         badge.classList.remove('hidden');
                                     }
                                 }
-                            }).catch(e => console.log('Cart fetch error', e));
+                            }).catch(e => {
+                                console.log('Cart fetch error', e);
+                                // Cart count will remain at previous value on error
+                            });
 
                         setTimeout(() => {
                             const btn = document.getElementById('userProfileBtn');
@@ -277,10 +319,26 @@
                 class="tab-btn px-8 py-3 rounded-full bg-amber-800 text-white text-xs font-bold uppercase shadow-lg transition-all hover:scale-105 border border-amber-900">All</button>
             <button id="btn-Thalis" onclick="filter('Thalis')"
                 class="tab-btn px-8 py-3 rounded-full bg-white border border-gray-200 text-gray-600 text-xs font-bold uppercase hover:bg-amber-50 hover:text-amber-800 transition-all shadow-md">Thalis</button>
+            <button id="btn-Lunch" onclick="filter('Lunch')"
+                class="tab-btn px-8 py-3 rounded-full bg-white border border-gray-200 text-gray-600 text-xs font-bold uppercase hover:bg-amber-50 hover:text-amber-800 transition-all shadow-md">Lunch</button>
+            <button id="btn-Dinner" onclick="filter('Dinner')"
+                class="tab-btn px-8 py-3 rounded-full bg-white border border-gray-200 text-gray-600 text-xs font-bold uppercase hover:bg-amber-50 hover:text-amber-800 transition-all shadow-md">Dinner</button>
             <button id="btn-Snacks" onclick="filter('Snacks')"
                 class="tab-btn px-8 py-3 rounded-full bg-white border border-gray-200 text-gray-600 text-xs font-bold uppercase hover:bg-amber-50 hover:text-amber-800 transition-all shadow-md">Snacks</button>
             <button id="btn-Desserts" onclick="filter('Desserts')"
                 class="tab-btn px-8 py-3 rounded-full bg-white border border-gray-200 text-gray-600 text-xs font-bold uppercase hover:bg-amber-50 hover:text-amber-800 transition-all shadow-md">Desserts</button>
+            <button id="btn-Sweets" onclick="filter('Sweets')"
+                class="tab-btn px-8 py-3 rounded-full bg-white border border-gray-200 text-gray-600 text-xs font-bold uppercase hover:bg-amber-50 hover:text-amber-800 transition-all shadow-md">Sweets</button>
+            <button id="btn-Beverages" onclick="filter('Beverages')"
+                class="tab-btn px-8 py-3 rounded-full bg-white border border-gray-200 text-gray-600 text-xs font-bold uppercase hover:bg-amber-50 hover:text-amber-800 transition-all shadow-md">Beverages</button>
+            <button id="btn-Breakfast" onclick="filter('Breakfast')"
+                class="tab-btn px-8 py-3 rounded-full bg-white border border-gray-200 text-gray-600 text-xs font-bold uppercase hover:bg-amber-50 hover:text-amber-800 transition-all shadow-md">Breakfast</button>
+            <button id="btn-Pickles" onclick="filter('Pickles')"
+                class="tab-btn px-8 py-3 rounded-full bg-white border border-gray-200 text-gray-600 text-xs font-bold uppercase hover:bg-amber-50 hover:text-amber-800 transition-all shadow-md">Pickles</button>
+            <button id="btn-Papad" onclick="filter('Papad')"
+                class="tab-btn px-8 py-3 rounded-full bg-white border border-gray-200 text-gray-600 text-xs font-bold uppercase hover:bg-amber-50 hover:text-amber-800 transition-all shadow-md">Papad</button>
+            <button id="btn-Vrat" onclick="filter('Vrat')"
+                class="tab-btn px-8 py-3 rounded-full bg-white border border-gray-200 text-gray-600 text-xs font-bold uppercase hover:bg-amber-50 hover:text-amber-800 transition-all shadow-md">Vrat</button>
             <button id="btn-Crafts" onclick="filter('Crafts')"
                 class="tab-btn px-8 py-3 rounded-full bg-white border border-gray-200 text-gray-600 text-xs font-bold uppercase hover:bg-amber-50 hover:text-amber-800 transition-all shadow-md">Crafts</button>
         </div>
@@ -302,9 +360,14 @@
 
     <div class="max-w-7xl mx-auto px-4 pb-24">
         <div id="loading" class="text-center py-20">
-            <div class="text-amber-800/50 animate-pulse tracking-widest font-cinzel text-lg mb-2">Setting the table...
+            <div class="flex flex-col items-center gap-4">
+                <div class="w-12 h-12 border-4 border-amber-200 border-t-amber-700 rounded-full animate-spin"></div>
+                <div class="font-cinzel text-amber-800 text-lg" id="loadingText">Waking up our kitchen...</div>
+                <p class="text-xs text-gray-400 max-w-xs mx-auto" id="loadingSub">
+                    Our server sleeps when idle (Render free tier).<br>First load takes <strong>30–60 seconds</strong>. Please wait 🙏
+                </p>
+                <div id="loadingTimer" class="text-[11px] text-gray-300 font-mono bg-amber-50 px-3 py-1 rounded-full border border-amber-100">0s elapsed</div>
             </div>
-            <p class="text-xs text-gray-400">First load may take a moment while our kitchen wakes up</p>
         </div>
         <div id="menuGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 hidden"></div>
     </div>
@@ -323,28 +386,48 @@
         ];
 
         async function init() {
+            let elapsed = 0;
+            const timerEl = document.getElementById('loadingTimer');
+            const subEl   = document.getElementById('loadingSub');
+            const txtEl   = document.getElementById('loadingText');
+
+            const timerInterval = setInterval(() => {
+                elapsed++;
+                if (timerEl) timerEl.textContent = elapsed + 's elapsed';
+                if (elapsed === 10 && txtEl) txtEl.textContent = 'Kitchen is starting up...';
+                if (elapsed === 25 && txtEl) txtEl.textContent = 'Almost there, hang on...';
+                if (elapsed === 40 && subEl) subEl.innerHTML = 'Taking a bit longer than usual — Render cold start can take up to 60s. Still waiting... ☕';
+            }, 1000);
+
             try {
+                let loaded = false;
+
+                // Try backend — 58s timeout (Render free tier needs up to 50s cold start)
                 try {
                     const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 sec timeout for Render cold start
+                    const timeoutId = setTimeout(() => controller.abort(), 58000);
                     const res = await fetch(`${window.CONFIG.BASE_URL}/explore`, { signal: controller.signal });
                     clearTimeout(timeoutId);
                     if (res.ok) {
                         const data = await res.json();
                         if (data && data.length > 0) {
                             allItems = data;
+                            loaded = true;
+                            console.log('✅ Loaded', data.length, 'real dishes from backend');
                         } else {
-                            throw new Error('Backend empty');
+                            throw new Error('Backend returned empty array');
                         }
-                    } else throw new Error('Backend failed');
+                    } else throw new Error('Backend HTTP ' + res.status);
                 } catch (e) {
-                    console.warn('Backend unavailable, trying local JSON:', e.message);
+                    console.warn('⚠️ Backend unavailable, trying local JSON:', e.message);
                     try {
                         const localRes = await fetch('real-products.json');
                         if (localRes.ok) {
                             const localData = await localRes.json();
                             if (localData && localData.length > 0) {
                                 allItems = localData.map(i => ({ ...i, image: i.img?.startsWith('http') ? i.img : "public/" + i.img }));
+                                loaded = true;
+                                console.log('✅ Loaded', localData.length, 'items from real-products.json');
                             } else {
                                 throw new Error('Local JSON empty');
                             }
@@ -352,13 +435,17 @@
                             throw new Error('Local JSON failed');
                         }
                     } catch (e2) {
-                        console.warn('Local JSON also failed, using MOCK_DATA:', e2.message);
+                        console.warn('⚠️ Local JSON also failed, using MOCK_DATA:', e2.message);
                         allItems = MOCK_DATA;
                     }
                 }
+
+                clearInterval(timerInterval);
                 render(allItems);
+
             } catch (err) {
-                console.error('All sources failed:', err);
+                clearInterval(timerInterval);
+                console.error('Critical error in init():', err);
                 allItems = MOCK_DATA;
                 render(allItems);
             }
@@ -422,7 +509,7 @@
                 return `
                 <div class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 group hover:-translate-y-2 border border-gray-100">
                     <div class="h-60 overflow-hidden relative cursor-pointer" onclick="window.open('product.html?id=${item.id}', '_blank')">
-                        <img src="${img}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        <img src="${img}" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4 backdrop-blur-[2px]">
                             <span class="text-gold font-cinzel text-lg border-b border-gold pb-1 mb-1">View Details</span>
                         </div>
@@ -430,6 +517,7 @@
                             ${item.time || 'Fresh'}
                         </div>
                         <button onclick="event.stopPropagation(); toggleFavorite('${item.id}', '${safeName}', '${safeImage}', ${safePrice}, '${safeChef}', this)" 
+                            aria-label="Add ${safeName} to favorites"
                             class="absolute top-3 left-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur shadow-sm flex items-center justify-center hover:scale-110 transition-transform cursor-pointer z-10 group/fav border border-gray-100">
                             <i data-lucide="heart" class="w-4 h-4 text-gray-400 group-hover/fav:text-red-500 transition-colors"></i>
                         </button>
@@ -455,8 +543,10 @@
                         
                         <div class="flex justify-between items-center pt-4 border-t border-gray-100">
                             <span class="text-2xl font-cinzel text-amber-800 font-bold">${price}</span>
-                            <button onclick="addToCart('${item.id}', this)" class="bg-gray-900 hover:bg-amber-700 text-white px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg transition-all flex items-center gap-2 group-hover:bg-amber-800">
-                                Add <span class="text-gold">+</span>
+                            <button onclick="addToCart('${item.id}', this)" 
+                                aria-label="Add ${safeName} to cart"
+                                class="bg-gray-900 hover:bg-amber-700 text-white px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg transition-all flex items-center gap-2 group-hover:bg-amber-800">
+                                Add <span class="text-gold" aria-hidden="true">+</span>
                             </button>
                         </div>
                     </div>
@@ -500,8 +590,8 @@
                         localStorage.removeItem('authToken');
                         localStorage.removeItem('userName');
                         localStorage.removeItem('userRole');
-                        alert('Your session has expired. Please login again.');
-                        window.location.href = 'login.html';
+                        showToast('Your session has expired. Please login again.', 'error');
+                        setTimeout(() => window.location.href = 'login.html', 2000);
                         return;
                     }
 
@@ -540,6 +630,37 @@
             }
         }
 
+        // Load cart count from backend
+        async function loadCartCount() {
+            try {
+                const token = localStorage.getItem('authToken');
+                if (!token) return;
+
+                const res = await fetch(`${window.CONFIG.BASE_URL}/cart/get-all`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                });
+
+                if (res.ok) {
+                    const cartItems = await res.json();
+                    const badge = document.getElementById('cartCountBadge');
+                    if (badge && cartItems && cartItems.length > 0) {
+                        badge.innerText = cartItems.length;
+                        badge.classList.remove('hidden');
+                    }
+                }
+            } catch (e) {
+                console.log('⚠️ Could not load cart count');
+            }
+        }
+
+        // Load cart count on page load
+        document.addEventListener('DOMContentLoaded', loadCartCount);
+
         async function toggleFavorite(dishId, dishName, dishImage, dishPrice, chefName, btn) {
             const token = localStorage.getItem('authToken');
             if (!token) {
@@ -572,6 +693,8 @@
                 console.error('Fav error', e);
                 // Revert on error
                 icon.innerText = isFav ? '❤️' : '🤍';
+                // Show user-friendly error
+                showToast('Could not update favorite. Please try again.', 'error');
             }
         }
 
@@ -590,6 +713,37 @@
 
             if (cat === 'All') render(allItems);
             else render(allItems.filter(i => normalize(i.category) === normalize(cat)));
+        }
+
+        // ===== SORT DISHES =====
+        function sortDishes() {
+            const sortBy = document.getElementById('sortSelect').value;
+            let sorted = [...displayedDishes];
+
+            switch (sortBy) {
+                case 'price-low':
+                    sorted.sort((a, b) => parsePrice(a) - parsePrice(b));
+                    break;
+                case 'price-high':
+                    sorted.sort((a, b) => parsePrice(b) - parsePrice(a));
+                    break;
+                case 'rating':
+                    sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+                    break;
+                case 'newest':
+                    sorted.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+                    break;
+                default:
+                    sorted.sort((a, b) => (a.name || a.title || '').localeCompare(b.name || b.title || ''));
+            }
+
+            displayedDishes = sorted;
+            renderGrid();
+        }
+
+        function parsePrice(item) {
+            const priceStr = String(item.price || '0');
+            return Number(priceStr.replace(/[^0-9.]/g, '')) || 0;
         }
 
         // 🕉️ TYOHAR (VRAT) TOGGLE - Cultural Filter
@@ -669,7 +823,7 @@
                 const price = Number(String(item.price).replace(/[^0-9.]/g, '')) || 0;
                 return `
                     <a href="product.html?id=${item.id}" class="flex items-center gap-4 p-4 bg-white/5 rounded-xl hover:bg-amber-500/10 transition-all border border-transparent hover:border-amber-500/30">
-                        <img src="${img}" class="w-16 h-16 rounded-lg object-cover">
+                        <img src="${img}" loading="lazy" class="w-16 h-16 rounded-lg object-cover">
                         <div class="flex-1">
                             <h4 class="font-cinzel text-white font-bold">${item.name || item.title}</h4>
                             <p class="text-xs text-gray-400">By ${item.chef || 'Home Chef'} · ${item.loc || ''}</p>
@@ -731,7 +885,7 @@
                     <ul class="space-y-2">
                         <li><a href="index.html"
                                 class="text-gray-400 text-sm hover:text-white transition-colors">Home</a></li>
-                        <li><a href="sellers.html" class="text-gray-400 text-sm hover:text-white transition-colors">Our
+                        <li><a href="menu.html" class="text-gray-400 text-sm hover:text-white transition-colors">Our
                                 Kitchens</a></li>
                         <li><a href="about.html" class="text-gray-400 text-sm hover:text-white transition-colors">About
                                 Us</a></li>
@@ -740,7 +894,7 @@
                 <div>
                     <h4 class="font-cinzel text-amber-500 font-bold text-sm mb-4">For Chefs</h4>
                     <ul class="space-y-2">
-                        <li><a href="sellers.html"
+                        <li><a href="menu.html"
                                 class="text-gray-400 text-sm hover:text-white transition-colors">Become a Home Chef</a>
                         </li>
                         <li><a href="login.html" class="text-gray-400 text-sm hover:text-white transition-colors">Seller
@@ -763,13 +917,26 @@
                 </div>
             </div>
             <div class="border-t border-white/10 pt-8 text-center">
-                <p class="font-cinzel italic text-sm text-amber-500/60">Gruhani — ghar jaisa khana, ghar ke log</p>
-                <p class="text-xs text-gray-500 mt-2 flex items-center justify-center gap-1">© 2026 Gruhani. Made with
+                <p class="font-cinzel italic text-sm text-amber-500/60">Gruhini — ghar jaisa khana, ghar ke log</p>
+                <p class="text-xs text-gray-500 mt-2 flex items-center justify-center gap-1">© 2026 Gruhini. Made with
                     <i data-lucide="heart" class="w-3 h-3 text-red-500 fill-red-500"></i> in India.
                 </p>
             </div>
         </div>
     </footer>
+
+    <!-- Sort Options -->
+    <div class="flex items-center gap-3 mb-6 flex-wrap">
+        <label class="text-sm text-gray-400 font-bold uppercase tracking-wider">Sort:</label>
+        <select id="sortSelect" onchange="sortDishes()"
+            class="bg-black/40 border border-gold-main/30 text-white px-4 py-2 rounded-lg text-sm focus:outline-none focus:border-gold-main transition">
+            <option value="name">Name (A-Z)</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+            <option value="rating">Highest Rated</option>
+            <option value="newest">Newest First</option>
+        </select>
+    </div>
 
     <!-- Mobile Bottom Navigation (Food App UX Pattern) -->
     <nav class="fixed bottom-0 left-0 right-0 z-50 bg-[#0f0805]/95 backdrop-blur-xl border-t border-gold/20 py-2 px-4 lg:hidden"
