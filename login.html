@@ -13,7 +13,7 @@
         rel="stylesheet">
 
     <script src="https://unpkg.com/lucide@latest"></script>
-    
+
     <script src="js/config.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -59,7 +59,8 @@
             -webkit-user-select: none;
         }
 
-        input, textarea {
+        input,
+        textarea {
             user-select: text;
         }
 
@@ -114,9 +115,9 @@
             top: 50%;
             left: 30%;
             transform: translate(-50%, -50%);
-            width: 440px; /* Slightly wider for the address grid */
+            width: 400px;
             max-height: 90vh;
-            overflow-y: auto; /* Enables scrolling for longer registration form */
+            overflow-y: auto;
             background-color: #ffffff;
             border: 1px solid #e7d5c0;
             box-shadow: 0 0 0 4px #fffaf0, 0 30px 60px -15px rgba(0, 0, 0, 0.6);
@@ -124,37 +125,76 @@
             padding: 28px 32px;
             z-index: 10;
             animation: cardIn 0.5s ease-out;
+            scrollbar-width: thin;
+            scrollbar-color: #b45309 #f3f4f6;
         }
 
-        /* Custom Scrollbar for auth container */
         .auth-container::-webkit-scrollbar {
-            width: 6px;
+            width: 4px;
         }
-        .auth-container::-webkit-scrollbar-thumb {
-            background-color: #e7d5c0;
+
+        .auth-container::-webkit-scrollbar-track {
+            background: #f3f4f6;
             border-radius: 4px;
         }
 
-        .input-group input, .input-group textarea {
+        .auth-container::-webkit-scrollbar-thumb {
+            background: #b45309;
+            border-radius: 4px;
+        }
+
+        .input-group input,
+        .input-group textarea {
             width: 100%;
-            padding: 10px 14px;
+            padding: 12px 14px;
             background: #fff;
             border: 1px solid #d1d5db;
             border-radius: 8px;
             color: #1f2937;
             font-family: 'Lato', sans-serif;
-            font-size: 13px;
+            font-size: 14px;
             transition: all 0.2s;
         }
 
-        .input-group input:focus, .input-group textarea:focus {
+        .input-group textarea {
+            resize: none;
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus {
             border-color: #b45309;
             box-shadow: 0 0 0 3px rgba(180, 83, 9, 0.1);
             outline: none;
         }
 
-        .input-group input.error, .input-group textarea.error {
+        .input-group input.error,
+        .input-group textarea.error {
             border-color: #dc2626;
+        }
+
+        /* Address section styling */
+        .address-section {
+            border: 1px solid #e7d5c0;
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 8px;
+            background: #fffaf0;
+        }
+
+        .address-section-label {
+            font-family: 'Lato', sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #b45309;
+            margin-bottom: 8px;
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
         }
 
         #btn-submit:active:not(:disabled) {
@@ -180,7 +220,11 @@
         @media(max-width: 900px) {
             .split-left { display: none; }
             .split-right { width: 100%; }
-            .auth-container { left: 50%; width: 90%; max-width: 440px; }
+            .auth-container {
+                left: 50%;
+                width: 90%;
+                max-width: 420px;
+            }
         }
     </style>
 
@@ -225,8 +269,9 @@
         </div>
 
         <div id="success-section" class="hidden text-center py-4" role="alert">
-            <div class="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-2"><i
-                    data-lucide="soup" class="w-8 h-8 text-royalGold"></i></div>
+            <div class="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-2">
+                <i data-lucide="soup" class="w-8 h-8 text-royalGold"></i>
+            </div>
             <h3 class="text-royalBrown font-cinzel text-lg font-bold">Welcome Home</h3>
             <p class="text-xs text-gray-500 mt-1">Setting your table...</p>
         </div>
@@ -279,6 +324,7 @@
         </div>
     </main>
 
+    <!-- Forgot Password Modal -->
     <div id="forgotPasswordModal"
         class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-cream rounded-2xl max-w-md w-full p-8 shadow-2xl border-4 border-royalGold relative">
@@ -306,10 +352,9 @@
 
     <script>
         // =====================================================
-        // CONFIGURATION - Uses external js/config.js if available
+        // CONFIGURATION
         // =====================================================
         const CONFIG = {
-            // Fallback if external config not loaded
             BASE_URL: window.CONFIG?.BASE_URL || 'https://gruhani-backend.onrender.com'
         };
 
@@ -351,37 +396,54 @@
                 const isSeller = AppState.role === 'seller';
                 const extraDiv = document.getElementById('extra-fields');
 
-                document.getElementById('page-title').innerText = isReg ? (isSeller ? "Join as a Chef" : "Join as a Foodie") : "Unlock the Kitchen";
+                document.getElementById('page-title').innerText = isReg
+                    ? (isSeller ? "Join as a Chef" : "Join as a Foodie")
+                    : "Unlock the Kitchen";
                 document.getElementById('btn-submit').innerText = isReg ? "Create Account" : "Login";
                 document.getElementById('footer-text').innerText = isReg ? "Already registered?" : "New to Gruhani?";
                 document.getElementById('footer-link').innerText = isReg ? "Login" : "Create Account";
 
                 if (isReg) {
-                    const ic = "w-full p-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 focus:border-royalGold focus:outline-none text-sm transition-all";
-                    
-                    // Basic Info
-                    let html = `<div class="input-group"><input type="text" id="name" placeholder="Full Name" required class="${ic}"></div>`;
-                    html += `<div class="input-group mt-3"><input type="tel" id="contact" placeholder="Phone Number (10 digits)" required pattern="[0-9]{10}" class="${ic}"></div>`;
-                    
-                    // Address Section (Added for BOTH Customer & Seller)
-                    html += `<div class="mt-4 pt-3 border-t border-gray-200">
-                                <p class="text-[10px] uppercase font-bold text-gray-400 mb-2 tracking-widest">Address Details</p>
-                                <div class="input-group"><input type="text" id="addressLine" placeholder="Street Address / Flat No." required class="${ic}"></div>
-                                <div class="flex gap-2 mt-2">
-                                    <div class="input-group flex-1"><input type="text" id="city" placeholder="City" required class="${ic}"></div>
-                                    <div class="input-group flex-1"><input type="text" id="state" placeholder="State" required class="${ic}"></div>
-                                </div>
-                                <div class="input-group mt-2"><input type="text" id="pincode" placeholder="Pincode (6 Digits)" required pattern="[0-9]{6}" class="${ic}"></div>
-                             </div>`;
+                    const ic = "w-full p-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:border-royalGold focus:outline-none text-sm transition-all";
 
-                    // Seller Specific Details (Added Description)
+                    let html = `
+                        <div class="input-group">
+                            <input type="text" id="name" placeholder="Full Name" required class="${ic}">
+                        </div>
+                        <div class="input-group mt-3">
+                            <input type="tel" id="contact" placeholder="Phone Number (10 digits)" required pattern="[0-9]{10}" class="${ic}">
+                        </div>`;
+
                     if (isSeller) {
-                        html += `<div class="mt-4 pt-3 border-t border-gray-200">
-                                    <p class="text-[10px] uppercase font-bold text-gray-400 mb-2 tracking-widest">Kitchen Details</p>
-                                    <div class="input-group"><input type="text" id="businessName" placeholder="Kitchen/Business Name" required class="${ic}"></div>
-                                    <div class="input-group mt-2"><textarea id="description" placeholder="Kitchen Description / Short Bio" required class="${ic}" rows="2"></textarea></div>
-                                 </div>`;
+                        html += `
+                        <div class="input-group mt-3">
+                            <input type="text" id="businessName" placeholder="Kitchen / Business Name" required class="${ic}">
+                        </div>
+                        <div class="input-group mt-3">
+                            <textarea id="description" placeholder="Describe your kitchen & specialties..." required class="${ic}" rows="2"></textarea>
+                        </div>`;
                     }
+
+                    // Address section — shared by both customer and seller
+                    html += `
+                        <div class="address-section mt-3">
+                            <div class="address-section-label">📍 Address</div>
+                            <div class="input-group">
+                                <input type="text" id="addressLine" placeholder="Address Line" required class="${ic}">
+                            </div>
+                            <div class="input-row mt-2">
+                                <div class="input-group">
+                                    <input type="text" id="city" placeholder="City" required class="${ic}">
+                                </div>
+                                <div class="input-group">
+                                    <input type="text" id="state" placeholder="State" required class="${ic}">
+                                </div>
+                            </div>
+                            <div class="input-group mt-2">
+                                <input type="text" id="pincode" placeholder="Pincode (6 digits)" required pattern="[0-9]{6}" class="${ic}">
+                            </div>
+                        </div>`;
+
                     extraDiv.innerHTML = html;
                 } else {
                     extraDiv.innerHTML = '';
@@ -440,7 +502,6 @@
                 const email = document.getElementById('email').value.trim();
                 const password = document.getElementById('password').value;
 
-                // Basic validation
                 if (!email || !password) {
                     UI.showError('Please fill in all required fields');
                     UI.setLoading(false);
@@ -456,11 +517,7 @@
                 try {
                     if (AppState.view === 'login') {
                         localStorage.removeItem('userRole');
-                        if (AppState.role === 'seller') {
-                            localStorage.setItem('userRole', 'SELLER');
-                        } else {
-                            localStorage.setItem('userRole', 'CUSTOMER');
-                        }
+                        localStorage.setItem('userRole', AppState.role === 'seller' ? 'SELLER' : 'CUSTOMER');
                         await this.handleLogin(email, password);
                     } else {
                         await this.handleRegister(email, password);
@@ -473,19 +530,16 @@
             },
 
             async handleLogin(email, password) {
-                try {
-                    const loginPayload = {
-                        email: email,
-                        password: password
-                    };
+                console.log('🔐 Attempting login for:', email);
 
+                try {
                     const response = await fetch(`${CONFIG.BASE_URL}/logins`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                             'Accept': 'application/json'
                         },
-                        body: JSON.stringify(loginPayload)
+                        body: JSON.stringify({ email, password })
                     });
 
                     if (!response.ok) {
@@ -498,6 +552,7 @@
                     }
 
                     const data = await response.json();
+                    console.log('✅ Login successful', data);
 
                     if (data.token) {
                         localStorage.setItem('authToken', data.token);
@@ -516,11 +571,14 @@
                                 if (payload.roles && Array.isArray(payload.roles) && payload.roles.includes('ROLE_SELLER')) {
                                     userRole = 'SELLER';
                                 }
-                            } catch (e) {}
+                            } catch (e) {
+                                console.warn('⚠️ Could not decode token');
+                            }
                         }
 
                         localStorage.setItem('userName', userName);
                         localStorage.setItem('userRole', userRole);
+                        console.log('👤 User:', userName, 'Role:', userRole);
 
                         UI.showSuccessAndRedirect(userRole);
                     } else {
@@ -529,68 +587,63 @@
 
                 } catch (err) {
                     if (err.name === 'TypeError' && err.message.includes('fetch')) {
-                        throw new Error(`Cannot connect to Backend. Check if backend is running and CORS is enabled.`);
+                        throw new Error(`Cannot connect to ${CONFIG.BASE_URL}. Check if backend is running and CORS is enabled.`);
                     }
                     throw err;
                 }
             },
 
             async handleRegister(email, password) {
-                // Base details
-                const name = document.getElementById('name')?.value.trim();
-                const contact = document.getElementById('contact')?.value.trim();
-                
-                // Address details (Now captured for ALL)
+                // ── Basic fields ──
+                const name        = document.getElementById('name')?.value.trim();
+                const contact     = document.getElementById('contact')?.value.trim();
+
+                // ── Address fields ──
                 const addressLine = document.getElementById('addressLine')?.value.trim();
-                const city = document.getElementById('city')?.value.trim();
-                const state = document.getElementById('state')?.value.trim();
-                const pincode = document.getElementById('pincode')?.value.trim();
+                const city        = document.getElementById('city')?.value.trim();
+                const state       = document.getElementById('state')?.value.trim();
+                const pincode     = document.getElementById('pincode')?.value.trim();
 
-                // Validation
-                if (!name || !contact || !addressLine || !city || !state || !pincode) {
-                    throw new Error('Please fill in all required fields including address');
+                // ── Validation ──
+                if (!name || !contact) {
+                    throw new Error('Please fill in your name and phone number');
                 }
-
                 if (!/^[0-9]{10}$/.test(contact)) {
                     throw new Error('Please enter a valid 10-digit phone number');
                 }
-
+                if (!addressLine || !city || !state || !pincode) {
+                    throw new Error('Please fill in all address fields');
+                }
                 if (!/^[0-9]{6}$/.test(pincode)) {
                     throw new Error('Please enter a valid 6-digit pincode');
                 }
 
-                // Check Seller specifics
-                let businessName = "";
-                let description = "";
                 if (AppState.role === 'seller') {
-                    businessName = document.getElementById('businessName')?.value.trim();
-                    description = document.getElementById('description')?.value.trim();
-                    
-                    if (!businessName || !description) {
-                        throw new Error('Please enter your business name and description');
-                    }
+                    const businessName = document.getElementById('businessName')?.value.trim();
+                    const description  = document.getElementById('description')?.value.trim();
+                    if (!businessName) throw new Error('Please enter your kitchen / business name');
+                    if (!description)  throw new Error('Please add a description for your kitchen');
                 }
 
+                console.log('📝 Starting registration for:', email);
+
                 try {
-                    // Step 1: Customer Payload (Now includes flat address fields exactly matching UserDto)
+                    // ── Step 1: Register user ──
                     const registerPayload = {
-                        name: name,
-                        email: email,
-                        password: password,
-                        contact: contact,
-                        // Sending flat address fields to match backend DTO
-                        addressLine: addressLine,
-                        city: city,
-                        state: state,
-                        pincode: pincode,
-                        // Also wrapping in AddressDto just in case backend expects it nested
+                        name,
+                        email,
+                        password,
+                        contact,
                         addressDto: {
-                            addressLine: addressLine,
-                            city: city,
-                            state: state,
-                            pincode: pincode
+                            id: 0,
+                            addressLine,
+                            pincode,
+                            state,
+                            city
                         }
                     };
+
+                    console.log('📤 Register payload:', registerPayload);
 
                     const regResponse = await fetch(`${CONFIG.BASE_URL}/register`, {
                         method: 'POST',
@@ -606,8 +659,7 @@
                         try {
                             const errorData = await regResponse.json();
                             if (typeof errorData === 'object' && !errorData.message) {
-                                const errors = Object.values(errorData).join(', ');
-                                errorMsg = errors || errorMsg;
+                                errorMsg = Object.values(errorData).join(', ') || errorMsg;
                             } else {
                                 errorMsg = errorData.message || errorData.error || errorMsg;
                             }
@@ -615,20 +667,30 @@
                         throw new Error(errorMsg);
                     }
 
-                    // Step 2: If seller, hit register-seller API with extended data
+                    console.log('✅ User registration successful');
+
+                    // ── Step 2: If seller, register as seller ──
                     if (AppState.role === 'seller') {
+                        const businessName = document.getElementById('businessName').value.trim();
+                        const description  = document.getElementById('description').value.trim();
+
                         const sellerPayload = {
-                            name: name,
-                            email: email,
+                            name,
+                            email,
                             phone: contact,
-                            businessName: businessName,
-                            description: description, // Now captured from UI
-                            categories: ['ALL'], // Hardcoded to ALL for everyone
-                            addressLine: addressLine,
-                            city: city,
-                            state: state,
-                            pincode: pincode
+                            businessName,
+                            description,
+                            categories: ['ALL'],
+                            addressDto: {
+                                id: 0,
+                                addressLine,
+                                pincode,
+                                state,
+                                city
+                            }
                         };
+
+                        console.log('📤 Seller payload:', sellerPayload);
 
                         const sellerResponse = await fetch(`${CONFIG.BASE_URL}/register-seller`, {
                             method: 'POST',
@@ -647,18 +709,18 @@
                             } catch (e) {}
                             throw new Error(errorMsg);
                         }
-                    }
 
-                    // Step 3: Auto-login
-                    if (AppState.role === 'seller') {
+                        console.log('✅ Seller registration successful');
                         localStorage.setItem('userRole', 'SELLER');
                     }
 
+                    // ── Step 3: Auto-login ──
+                    console.log('🔐 Auto-logging in...');
                     await this.handleLogin(email, password);
 
                 } catch (err) {
                     if (err.name === 'TypeError' && err.message.includes('fetch')) {
-                        throw new Error(`Cannot connect to Backend. Check if backend is running and CORS is enabled.`);
+                        throw new Error(`Cannot connect to ${CONFIG.BASE_URL}. Check if backend is running and CORS is enabled.`);
                     }
                     throw err;
                 }
@@ -668,17 +730,10 @@
         // =====================================================
         // INITIALIZATION
         // =====================================================
-        window.onload = function () {
-            console.log('🚀 Page loaded, initializing...');
-        };
+        window.addEventListener('online',  () => console.log('✅ Network connected'));
+        window.addEventListener('offline', () => UI.showError('No internet connection. Please check your network.'));
 
-        window.addEventListener('offline', () => {
-            UI.showError('No internet connection. Please check your network.');
-        });
-
-        // =====================================================
-        // AUTO-SELECT ROLE/MODE FROM URL PARAMS
-        // =====================================================
+        // Auto-select role/mode from URL params
         (function () {
             const params = new URLSearchParams(window.location.search);
             const mode = params.get('mode');
@@ -698,7 +753,9 @@
         // Initialize Lucide Icons
         if (typeof lucide !== 'undefined') lucide.createIcons();
 
-        // ===== FORGOT PASSWORD FUNCTIONS =====
+        // =====================================================
+        // FORGOT PASSWORD
+        // =====================================================
         function openForgotPassword() {
             document.getElementById('forgotPasswordModal').classList.remove('hidden');
             document.getElementById('forgotEmail').value = '';
@@ -737,5 +794,6 @@
             }
         }
     </script>
+
 </body>
 </html>
