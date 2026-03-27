@@ -310,7 +310,7 @@
         // =====================================================
         const CONFIG = {
             // Fallback if external config not loaded
-            BASE_URL: window.CONFIG?.BASE_URL || 'https://gruhinibackend.onrender.com'
+            BASE_URL: window.CONFIG?.BASE_URL || 'https://gruhani-backend.onrender.com'
         };
 
         // =====================================================
@@ -353,7 +353,7 @@
 
                 document.getElementById('page-title').innerText = isReg ? (isSeller ? "Join as a Chef" : "Join as a Foodie") : "Unlock the Kitchen";
                 document.getElementById('btn-submit').innerText = isReg ? "Create Account" : "Login";
-                document.getElementById('footer-text').innerText = isReg ? "Already registered?" : "New to Gruhini?";
+                document.getElementById('footer-text').innerText = isReg ? "Already registered?" : "New to Gruhani?";
                 document.getElementById('footer-link').innerText = isReg ? "Login" : "Create Account";
 
                 if (isReg) {
