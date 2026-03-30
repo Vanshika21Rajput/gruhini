@@ -38,16 +38,19 @@ public class jwtfilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        String path = request.getRequestURI();
-        System.out.print("inside should not filter");
 
-        return path.equals("/logins")
-                || path.equals("/register")
-                || path.equals("/register-seller")
-                || request.getMethod().equalsIgnoreCase("OPTIONS")||path.equals("/explore")||path.equals("/forgot-password")||path.equals("/verify-otp-forgetPassword")
-                || path.equals("/")
-                || path.equals("/error");
-    }
+            String path = request.getServletPath();  //
+
+            System.out.println("PATH: " + path);
+
+            return path.startsWith("/forgot-password")
+                    || path.startsWith("/verify-otp-forgetPassword")
+                    || path.startsWith("/logins")
+                    || path.startsWith("/register")
+                    || path.startsWith("/explore")
+                    || request.getMethod().equalsIgnoreCase("OPTIONS");
+        }
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

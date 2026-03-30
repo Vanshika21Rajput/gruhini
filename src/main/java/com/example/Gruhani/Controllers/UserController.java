@@ -117,12 +117,7 @@ public class UserController {
        SellerDetailsDto sellerDetailsDto= userService.searchSeller(id);
        return ResponseEntity.ok(sellerDetailsDto);
     }
-    @PostMapping("/forgot-password")
-    public ResponseEntity<?> forgetPassword(@RequestParam String email)
-    {
-        userService.forgotPassword(email);
-        return ResponseEntity.ok("OTP SENT TO YOUR MAIL KINDLY VERIFY AND RESET PASSWORD");
-    }
+
     @PostMapping("/verify-otp-forgetPassword")
     public ResponseEntity<?> verifyOtp(@RequestBody ResetPasswordDto resetPasswordDto)
     {
