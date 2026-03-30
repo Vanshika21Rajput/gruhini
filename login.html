@@ -773,7 +773,7 @@
             const messageDiv = document.getElementById('forgotPasswordMessage');
 
             try {
-                // UPDATE: Sent request to /forgot-password instead of /api/auth/forgot-password
+                
                 const response = await fetch(`${CONFIG.BASE_URL}/forgot-password?email=${encodeURIComponent(email)}`, {
                     method: 'POST'
                 });
