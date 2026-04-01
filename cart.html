@@ -185,7 +185,7 @@
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
-                    credentials: 'include'
+                  
                 });
                 if (!res.ok) throw new Error('Failed to load cart');
 
@@ -295,7 +295,7 @@
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
-                    credentials: 'include'
+         
                 });
                 fetchCart();
             } catch (e) {
