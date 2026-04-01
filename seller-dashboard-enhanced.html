@@ -441,6 +441,23 @@
         <label class="form-label">Description</label>
         <textarea class="form-textarea" name="description" placeholder="बताएं आपका यह व्यंजन खास क्यों है? इसमें क्या-क्या है? कौन सी चीजें हाथ से बनाई जाती हैं?"></textarea>
       </div>
+      <!-- Stock -->
+<div class="form-group">
+  <label class="form-label">Stock (Quantity) *</label>
+  <input type="number" class="form-input" name="stock" required placeholder="e.g. 20" min="0">
+</div>
+
+<!-- Discount -->
+<div class="form-group">
+  <label class="form-label">Discount % (Optional)</label>
+  <input type="number" class="form-input" name="discount" placeholder="e.g. 10" min="0" max="100" step="0.1">
+</div>
+
+<!-- Delivery Time -->
+<div class="form-group">
+  <label class="form-label">Delivery Time *</label>
+  <input type="text" class="form-input" name="deliveryTime" required placeholder="e.g. 30-45 mins, Same day">
+</div>
       <div class="form-group">
         <label class="form-label">Dish Photo *</label>
         <div class="img-upload-zone" id="addUploadZone">
@@ -735,15 +752,16 @@ document.getElementById('addProductForm').addEventListener('submit', async (e) =
   btn.innerHTML = '<span class="spinner"></span> Uploading...';
   btn.disabled = true;
 
-  const formData = new FormData();
-  const data = {
-    name: form.name.value,
-    price: parseFloat(form.price.value),
-    stock: 999,
-    category: form.category.value,
-    subcategory: form.subcategory?.value || '',
-    description: form.description.value,
-  };
+ const data = {
+  name: form.name.value,
+  price: parseFloat(form.price.value),
+  stock: parseInt(form.stock.value),                        
+  discount: form.discount.value ? parseFloat(form.discount.value) : 0.0,  
+  deliveryTime: form.deliveryTime.value,                     
+  category: form.category.value,
+  subcategory: form.subcategory?.value || '',
+  description: form.description.value,
+};
   formData.append('data', new Blob([JSON.stringify(data)], { type: 'application/json' }));
   if (form.image.files[0]) formData.append('image', form.image.files[0]);
 
