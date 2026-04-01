@@ -356,9 +356,8 @@
 
         if (!res.ok) throw new Error("Order failed");
 
-        const data = await res.json(); // must return orderId
+        const data = await res.json();
 
-        // ✅ Redirect to order status page
         window.location.href = `order-status.html?orderId=${data.id}`;
 
     } catch (e) {
@@ -367,7 +366,6 @@
         btn.disabled = false;
     }
 }
-
         async function onPaymentSuccess(paymentId, amount) {
             document.querySelector('.glass').innerHTML = `
                 <div class="text-center py-10 animate-fade-in-up">
