@@ -61,7 +61,26 @@ public class UserService {
         addressDto.setPincode(address.getPincode());
         return addressDto;
     }
+    @Transactional
+    public String createOtp(String email) {
+        Users user = userRepo.findByEmail(email)
+                .orElseThrow(()->new UserNotFoundException("NO USER"));
 
+        passwordResetOtpRepository.deleteByUser(user);
+
+        String otp =  String.valueOf(ThreadLocalRandom.current().nextInt(100000, 1_000_000));
+
+
+        PasswordResetOtp resetOtp = new PasswordResetOtp();
+        resetOtp.setUser(user);
+        resetOtp.setOtp(bcp.encode(otp));
+        resetOtp.setExpiryTime(LocalDateTime.now().plusMinutes(10));
+        resetOtp.setUsed(false);
+
+        passwordResetOtpRepository.save(resetOtp);
+
+        return otp;
+    }
     @Transactional
     public void forgotPassword(String email) {
 
