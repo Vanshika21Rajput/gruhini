@@ -562,7 +562,7 @@
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
-                    credentials: 'include',
+                    
                     body: JSON.stringify({ productid: id, quantity: 1 })
                 });
 
@@ -626,7 +626,7 @@
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
-                    credentials: 'include'
+                
                 });
 
                 if (res.ok) {
