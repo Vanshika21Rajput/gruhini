@@ -313,34 +313,40 @@
         }
     }
 
-    // ✅ FIXED CHECKOUT (ONLY ONE FUNCTION)
+    
     async function checkout() {
-        const btn = document.getElementById('checkoutBtn');
-        btn.innerHTML = "Placing Order...";
-        btn.disabled = true;
+    const btn = document.getElementById('checkoutBtn');
+    btn.innerHTML = "Placing Order...";
+    btn.disabled = true;
 
-        try {
-            const res = await fetch(`${window.CONFIG.BASE_URL}/place-order`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
+    try {
+        const res = await fetch(`${window.CONFIG.BASE_URL}/place-order`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                addressId: 1  
+            })
+        });
 
-            if (!res.ok) throw new Error("Order failed");
+        const text = await res.text();
+        console.log("SERVER RESPONSE:", text);
 
-            const data = await res.json();
+        if (!res.ok) throw new Error(text);
 
-            window.location.href = `order-status.html?orderId=${data.id}`;
+        const data = JSON.parse(text);
 
-        } catch (e) {
-            console.error(e);
-            alert("Order failed");
-            btn.innerHTML = "Place Order";
-            btn.disabled = false;
-        }
+        window.location.href = `order-status.html?orderId=${data.id}`;
+
+    } catch (e) {
+        console.error(e);
+        alert("Order failed: " + e.message);
+        btn.innerHTML = "Place Order";
+        btn.disabled = false;
     }
+}
 </script>
 
 
