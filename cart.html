@@ -166,236 +166,185 @@
             </p>
         </div>
     </div>
-
+    
     <script>
-        let cartData = [];
-        const token = localStorage.getItem('authToken');
+    let cartData = [];
+    const token = localStorage.getItem('authToken');
 
-        if (!token) {
-            window.location.href = 'login.html';
-        } else {
-            fetchCart();
-        }
+    if (!token) {
+        window.location.href = 'login.html';
+    } else {
+        fetchCart();
+    }
 
-        async function fetchCart() {
-            try {
-                const res = await fetch(`${window.CONFIG.BASE_URL}/get-cart`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    },
-                  
-                });
-                if (!res.ok) throw new Error('Failed to load cart');
-
-                const rawData = await res.json();
-                console.log("📦 Backend Response:", rawData);
-
-                // 🛠️ SMART FIX: Handle Array or Object response
-                if (Array.isArray(rawData)) {
-                    cartData = rawData;
-                } else if (rawData.cartItems) {
-                    cartData = rawData.cartItems;
-                } else if (rawData.items) {
-                    cartData = rawData.items;
-                } else if (rawData.product) {
-                    cartData = [rawData]; // Single item wrapped
-                } else {
-                    cartData = [];
+    async function fetchCart() {
+        try {
+            const res = await fetch(`${window.CONFIG.BASE_URL}/get-cart`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
                 }
-
-                renderCart();
-            } catch (e) {
-                console.error(e);
-                document.getElementById('cartItems').innerHTML = `<div class="text-center py-10 text-red-400">Could not load cart. <br><button onclick="location.reload()" class="underline mt-2">Retry</button></div>`;
-            }
-        }
-
-        function renderCart() {
-            const container = document.getElementById('cartItems');
-            const itemCountEl = document.getElementById('itemCount');
-            const subtotalEl = document.getElementById('subtotal');
-            const totalEl = document.getElementById('total');
-            const checkoutBtn = document.getElementById('checkoutBtn');
-
-            if (!cartData || cartData.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-10 text-gray-400 flex flex-col items-center">
-                        <div class="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-4"><i data-lucide="shopping-bag" class="w-10 h-10 text-gray-500"></i></div>
-                        <p class="font-cinzel text-lg mb-4">Your cart is empty.</p>
-                        <a href="menu.html" class="px-6 py-2 border border-gold-main text-gold-main hover:bg-gold-main hover:text-black transition-all rounded-full text-xs uppercase font-bold tracking-widest">Browse Menu</a>
-                    </div>
-                `;
-                itemCountEl.innerText = "0 ITEMS";
-                subtotalEl.innerText = "₹0";
-                totalEl.innerText = "₹0";
-                checkoutBtn.disabled = true;
-                return;
-            }
-
-            let total = 0;
-            container.innerHTML = cartData.map(item => {
-                // 🛠️ Handle nested product object
-                const product = item.product || item.p || item;
-
-                // Safe Data Extraction
-                const name = product.productname || product.name || item.productname || "Unknown Item";
-                const chef = product.chefname || product.chef || item.chefname || "Home Chef";
-                const price = parseFloat(product.price || item.price || 0);
-                const img = product.image || product.img || item.image || 'public/placeholder.jpg';
-                const id = product.productid || product.id || item.productid || item.id;
-                const qty = item.quantity || 1;
-
-                total += price * qty;
-
-                return `
-                <div class="flex items-center gap-4 p-4 bg-white/5 rounded-xl border border-white/5 hover:border-gold-main/20 transition-colors group">
-                    <img src="${img}" class="w-20 h-20 rounded-lg object-cover bg-black/50">
-                    
-                    <div class="flex-1">
-                        <h3 class="font-cinzel text-lg text-white group-hover:text-gold-main transition-colors">${name}</h3>
-                        <p class="text-xs text-gray-400 uppercase tracking-widest mb-1">By ${chef}</p>
-                        <div class="font-bold text-gold-main">₹${price}${qty > 1 ? ` × ${qty}` : ''}</div>
-                    </div>
-
-                    <button onclick="removeItem('${id}')" class="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-gray-500 hover:text-red-400 hover:border-red-400/50 hover:bg-red-400/10 transition-all" title="Remove Item">
-                        ✕
-                    </button>
-                </div>
-                `;
-            }).join('');
-
-            itemCountEl.innerText = `${cartData.length} ITEMS`;
-            const formattedTotal = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 }).format(total);
-            subtotalEl.innerText = formattedTotal;
-            totalEl.innerText = formattedTotal;
-            checkoutBtn.disabled = false;
-
-            window.cartTotal = total;
-        }
-
-        async function removeItem(id) {
-            if (!confirm("Remove this item?")) return;
-
-            const originalData = [...cartData];
-
-            // Filter with nested ID check
-            cartData = cartData.filter(i => {
-                const pId = i.product?.id || i.p?.id || i.productid || i.id;
-                return String(pId) !== String(id);
             });
 
+            if (!res.ok) throw new Error('Failed to load cart');
+
+            const rawData = await res.json();
+            console.log("📦 Backend Response:", rawData);
+
+            if (Array.isArray(rawData)) {
+                cartData = rawData;
+            } else if (rawData.cartItems) {
+                cartData = rawData.cartItems;
+            } else if (rawData.items) {
+                cartData = rawData.items;
+            } else if (rawData.product) {
+                cartData = [rawData];
+            } else {
+                cartData = [];
+            }
+
             renderCart();
-
-            try {
-                await fetch(`${window.CONFIG.BASE_URL}/remove-from-cart/${id}`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    },
-         
-                });
-                fetchCart();
-            } catch (e) {
-                console.error(e);
-                cartData = originalData;
-                renderCart();
-            }
+        } catch (e) {
+            console.error(e);
+            document.getElementById('cartItems').innerHTML = `
+                <div class="text-center py-10 text-red-400">
+                    Could not load cart.<br>
+                    <button onclick="location.reload()" class="underline mt-2">Retry</button>
+                </div>`;
         }
-
-        // Checkout Logic (Razorpay)
-        async function checkout() {
-            const btn = document.getElementById('checkoutBtn');
-            btn.innerHTML = "Processing...";
-            btn.disabled = true;
-
-            try {
-                const amount = window.cartTotal;
-                // Create Order
-                const orderRes = await fetch(`${window.CONFIG.BASE_URL}/create-razorpay-order/${amount}`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-
-                // Fallback if create-razorpay-order not implemented, proceed with client-side only (mock)
-                // For this demo, let's assume we proceed to success directly if backend integration is complex
-                // But user wants "Razorpay", so let's try standard flow.
-
-                // If backend endpoint missing, we might mimic success for demo purposes if instructed. 
-                // BUT user wants real features. Assuming backend /create-razorpay-order exists or we use key only.
-
-                // Let's use the reliable client-side options approach with RAZORPAY_KEY
-                const options = {
-                    "key": window.CONFIG.RAZORPAY_KEY,
-                    "amount": amount * 100, // paise
-                    "currency": "INR",
-                    "name": "gruhani",
-                    "description": "Delicious Home Food",
-                    "image": "public/logo.jpg",
-                    "handler": function (response) {
-                        // Payment Success
-                        onPaymentSuccess(response.razorpay_payment_id, amount);
-                    },
-                    "theme": { "color": "#c5a059" }
-                };
-
-               async function checkout() {
-    const btn = document.getElementById('checkoutBtn');
-    btn.innerHTML = "Placing Order...";
-    btn.disabled = true;
-
-    try {
-        const res = await fetch(`${window.CONFIG.BASE_URL}/place-order`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
-        });
-
-        if (!res.ok) throw new Error("Order failed");
-
-        const data = await res.json();
-
-        window.location.href = `order-status.html?orderId=${data.id}`;
-
-    } catch (e) {
-        alert("Order failed");
-        btn.innerHTML = "Place Order";
-        btn.disabled = false;
     }
-}
-        async function onPaymentSuccess(paymentId, amount) {
-            document.querySelector('.glass').innerHTML = `
-                <div class="text-center py-10 animate-fade-in-up">
-                    <div class="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center mb-4 mx-auto"><i data-lucide="check-circle" class="w-10 h-10 text-green-400"></i></div>
-                    <h2 class="font-cinzel text-2xl text-gold-main mb-2">Order Confirmed!</h2>
-                    <p class="text-gray-400 mb-6">Redirecting you...</p>
+
+    function renderCart() {
+        const container = document.getElementById('cartItems');
+        const itemCountEl = document.getElementById('itemCount');
+        const subtotalEl = document.getElementById('subtotal');
+        const totalEl = document.getElementById('total');
+        const checkoutBtn = document.getElementById('checkoutBtn');
+
+        if (!cartData || cartData.length === 0) {
+            container.innerHTML = `
+                <div class="text-center py-10 text-gray-400 flex flex-col items-center">
+                    <div class="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-4">
+                        <i data-lucide="shopping-bag" class="w-10 h-10 text-gray-500"></i>
+                    </div>
+                    <p class="font-cinzel text-lg mb-4">Your cart is empty.</p>
+                    <a href="menu.html" class="px-6 py-2 border border-gold-main text-gold-main hover:bg-gold-main hover:text-black transition-all rounded-full text-xs uppercase font-bold tracking-widest">Browse Menu</a>
                 </div>
             `;
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-
-            try {
-                await fetch(`${window.CONFIG.BASE_URL}/order-success`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({
-                        paymentId: paymentId,
-                        orderId: "ORD-" + Date.now()
-                    })
-                });
-                setTimeout(() => window.location.href = 'orders.html', 2000);
-            } catch (e) {
-                console.error("Backend sync failed but payment worked");
-                setTimeout(() => window.location.href = 'orders.html', 2000);
-            }
+            itemCountEl.innerText = "0 ITEMS";
+            subtotalEl.innerText = "₹0";
+            totalEl.innerText = "₹0";
+            checkoutBtn.disabled = true;
+            return;
         }
-    </script>
 
+        let total = 0;
+
+        container.innerHTML = cartData.map(item => {
+            const product = item.product || item.p || item;
+
+            const name = product.productname || product.name || item.productname || "Unknown Item";
+            const chef = product.chefname || product.chef || item.chefname || "Home Chef";
+            const price = parseFloat(product.price || item.price || 0);
+            const img = product.image || product.img || item.image || 'public/placeholder.jpg';
+            const id = product.productid || product.id || item.productid || item.id;
+            const qty = item.quantity || 1;
+
+            total += price * qty;
+
+            return `
+            <div class="flex items-center gap-4 p-4 bg-white/5 rounded-xl border border-white/5 hover:border-gold-main/20 transition-colors group">
+                <img src="${img}" class="w-20 h-20 rounded-lg object-cover bg-black/50">
+                
+                <div class="flex-1">
+                    <h3 class="font-cinzel text-lg text-white group-hover:text-gold-main transition-colors">${name}</h3>
+                    <p class="text-xs text-gray-400 uppercase tracking-widest mb-1">By ${chef}</p>
+                    <div class="font-bold text-gold-main">₹${price}${qty > 1 ? ` × ${qty}` : ''}</div>
+                </div>
+
+                <button onclick="removeItem('${id}')" class="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-gray-500 hover:text-red-400 hover:border-red-400/50 hover:bg-red-400/10 transition-all">
+                    ✕
+                </button>
+            </div>
+            `;
+        }).join('');
+
+        itemCountEl.innerText = `${cartData.length} ITEMS`;
+
+        const formattedTotal = new Intl.NumberFormat('en-IN', {
+            style: 'currency',
+            currency: 'INR',
+            minimumFractionDigits: 0
+        }).format(total);
+
+        subtotalEl.innerText = formattedTotal;
+        totalEl.innerText = formattedTotal;
+        checkoutBtn.disabled = false;
+
+        window.cartTotal = total;
+    }
+
+    async function removeItem(id) {
+        if (!confirm("Remove this item?")) return;
+
+        const originalData = [...cartData];
+
+        cartData = cartData.filter(i => {
+            const pId = i.product?.id || i.p?.id || i.productid || i.id;
+            return String(pId) !== String(id);
+        });
+
+        renderCart();
+
+        try {
+            await fetch(`${window.CONFIG.BASE_URL}/remove-from-cart/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            fetchCart();
+        } catch (e) {
+            console.error(e);
+            cartData = originalData;
+            renderCart();
+        }
+    }
+
+    // ✅ FIXED CHECKOUT (ONLY ONE FUNCTION)
+    async function checkout() {
+        const btn = document.getElementById('checkoutBtn');
+        btn.innerHTML = "Placing Order...";
+        btn.disabled = true;
+
+        try {
+            const res = await fetch(`${window.CONFIG.BASE_URL}/place-order`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!res.ok) throw new Error("Order failed");
+
+            const data = await res.json();
+
+            window.location.href = `order-status.html?orderId=${data.id}`;
+
+        } catch (e) {
+            console.error(e);
+            alert("Order failed");
+            btn.innerHTML = "Place Order";
+            btn.disabled = false;
+        }
+    }
+</script>
+
+
+    
     <!-- Initialize Lucide Icons -->
     <script>if (typeof lucide !== 'undefined') lucide.createIcons();</script>
 </body>
