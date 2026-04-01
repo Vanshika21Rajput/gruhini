@@ -235,10 +235,11 @@
                         const initials = userName.charAt(0).toUpperCase();
                         navLinks.innerHTML = `
                         ${navContent}
-                        <a href="cart.html" class="${linkClass} relative flex items-center">
-                            Cart
-                            <span id="cartCountBadge" class="hidden absolute -top-2 -right-3 bg-red-600 text-white text-[8px] w-4 h-4 flex items-center justify-center rounded-full border border-royal-dark font-bold shadow-sm">0</span>
-                        </a>
+                    
+<a href="cart.html" class="relative flex items-center justify-center w-9 h-9 rounded-full bg-white/10 hover:bg-gold/20 border border-white/20 hover:border-gold/50 transition-all" aria-label="Cart">
+    <i data-lucide="shopping-bag" style="width:16px;height:16px;color:#c5a059"></i>
+    <span id="cartCountBadge" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-[8px] w-4 h-4 flex items-center justify-center rounded-full font-bold shadow-sm">0</span>
+</a>
                         <div class="relative" id="userProfileWrapper">
                             <button id="userProfileBtn" class="flex items-center gap-2 px-2 py-1 rounded-full hover:bg-white/10 transition-all">
                                 <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-white text-xs font-bold shadow-lg border border-amber-400/30">
@@ -620,7 +621,7 @@
                 const token = localStorage.getItem('authToken');
                 if (!token) return;
 
-                const res = await fetch(`${window.CONFIG.BASE_URL}/cart/get-all`, {
+               const res = await fetch(`${window.CONFIG.BASE_URL}/get-cart`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
