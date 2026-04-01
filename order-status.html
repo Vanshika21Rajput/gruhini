@@ -47,7 +47,20 @@
       background: rgba(15,8,5,0.95); backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
     }
+.hero-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: url('public/background.jpg') center/cover no-repeat;
+    opacity: 0.35;
+}
 
+.hero-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(to bottom, rgba(5,2,1,0.4), #0f0805);
+}
     .nav-brand { 
       font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; 
       color: var(--gold-main); letter-spacing: 0.1em; text-decoration: none; 
@@ -373,13 +386,30 @@
   </style>
 </head>
 <body>
+<div class="hero-bg"></div>
+<div class="hero-overlay"></div>
+<nav class="fixed top-0 w-full z-40 px-6 py-4 flex justify-between items-center nav-glass">
 
-<nav>
-  <a href="index.html" class="nav-brand">Gruhani</a>
-  <div class="nav-links">
-    <a href="cart.html"><i data-lucide="shopping-cart" style="width:14px;height:14px"></i> Back to Cart</a>
-    <a href="menu.html"><i data-lucide="utensils" style="width:14px;height:14px"></i> Continue Shopping</a>
+  <!-- LEFT: Logo + Brand -->
+  <a href="index.html" class="flex items-center gap-3 group">
+    <div class="w-10 h-10 rounded-full overflow-hidden border border-gold-main/30">
+      <img src="public/logo.jpg" class="w-full h-full object-cover">
+    </div>
+    <span class="font-cinzel text-xl font-bold text-gold-main tracking-widest">
+      Gruhani
+    </span>
+  </a>
+    
+  <!-- RIGHT: Links -->
+  <div class="nav-links flex gap-6">
+    <a href="cart.html" class="flex items-center gap-2 text-xs text-gold-main/80 hover:text-white uppercase">
+      <i data-lucide="shopping-cart" style="width:14px;height:14px"></i> Back to Cart
+    </a>
+    <a href="menu.html" class="flex items-center gap-2 text-xs text-gold-main/80 hover:text-white uppercase">
+      <i data-lucide="utensils" style="width:14px;height:14px"></i> Continue Shopping
+    </a>
   </div>
+
 </nav>
 
 <main>
@@ -392,6 +422,9 @@
     <p class="status-desc" id="statusDesc">
       आपका आदेश शेफ को भेज दिया गया है। कृपया 2-3 घंटे में स्वीकृति की प्रतीक्षा करें।
     </p>
+    <p style="font-size:12px; color:gray; margin-top:8px;">
+  This page will auto close in 2 minutes
+</p>
     <div class="status-time" id="statusTime"></div>
     <div class="status-badge pending" id="statusBadge">🟡 PENDING ACCEPTANCE</div>
     
@@ -485,6 +518,7 @@
           <i data-lucide="phone" style="width:14px;height:14px"></i> शेफ को अभी कॉल करें
         </a>
 
+       
         <div class="seller-contact-box">
           <div style="color: var(--muted); font-size: 11px; margin-bottom: 4px;">📱 संपर्क सूचना</div>
           <div class="seller-phone" id="sellerPhone">+91-9876543210</div>
@@ -528,18 +562,32 @@ let orderData = {};
 let orderId = null;
 let pollingInterval = null;
 let otpVisible = false;
-
+ 
 document.addEventListener('DOMContentLoaded', () => {
   lucide.createIcons();
   const params = new URLSearchParams(window.location.search);
   orderId = params.get('orderId');
-  
+setTimeout(() => {
+  window.location.href = 'menu.html';
+}, 120000);
   if (!orderId) {
     showToast('Order ID not found', 'error');
-    setTimeout(() => window.location.href = 'index.html', 2000);
+    setTimeout(() => {
+  window.location.href = 'index.html';
+}, 120000);
     return;
   }
+let timeLeft = 120;
+const timer = setInterval(() => {
+  timeLeft--;
 
+  const el = document.getElementById('statusTime');
+  if (el) {
+    el.innerText = `Auto closing in ${timeLeft}s`;
+  }
+
+  if (timeLeft <= 0) clearInterval(timer);
+}, 1000);
   loadOrderData();
   startPolling();
   updateTimeDisplay();
@@ -618,7 +666,6 @@ function updateStatusDisplay() {
     statusDesc.textContent = 'शेफ ने आपका ऑर्डर स्वीकार कर लिया है। अब खाना तैयारी शुरू हो गई है!';
     statusBadge.textContent = '🟢 ACCEPTED';
     statusBadge.className = 'status-badge accepted';
-
     // Show acceptance notification
     acceptanceNotification.classList.add('active');
     supportInfoBox.classList.remove('active');
