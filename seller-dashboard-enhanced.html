@@ -752,6 +752,7 @@ document.getElementById('addProductForm').addEventListener('submit', async (e) =
   btn.innerHTML = '<span class="spinner"></span> Uploading...';
   btn.disabled = true;
 
+  const formData = new FormData();
  const data = {
   name: form.name.value,
   price: parseFloat(form.price.value),
