@@ -564,7 +564,7 @@
                         'Authorization': `Bearer ${token}`
                     },
                     
-                    body: JSON.stringify({ productid: id, quantity: 1 })
+                    body: JSON.stringify({ productid: parseInt(id, 10), quantity: 1 })
                 });
 
                 console.log('📥 Response status:', res.status);
