@@ -1,23 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gruhani – The Royal Experience</title>
-
-    <!-- Preload critical assets -->
     <link rel="preload" href="public/background.jpg" as="image" type="image/jpeg">
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&family=Noto+Sans+Devanagari:wght@400;600&display=swap"
-        rel="stylesheet">
-
-    <!-- Professional Vector Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -38,361 +29,61 @@
         }
     </script>
     <script src="js/config.js"></script>
-
     <style>
-        /* ========== GLOBAL PROFESSIONAL POLISH ========== */
-        /* PREMIUM HINDI FONT STYLING */
-        .font-hindi {
-            font-family: 'Noto Sans Devanagari', sans-serif;
-            font-weight: 500;
-            line-height: 1.8;
-            letter-spacing: 0.02em;
-        }
+        .font-hindi { font-family: 'Noto Sans Devanagari', sans-serif; font-weight: 500; line-height: 1.8; letter-spacing: 0.02em; }
+        [data-lucide] { vertical-align: middle; margin-top: -2px; }
+        html { scroll-behavior: smooth; }
+        body { background-color: #0f0805; color: #fff; overflow-x: hidden; line-height: 1.6; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        ::selection { background: rgba(212,175,55,0.3); color: #FDF8F0; }
+        h1, h2, h3 { font-family: 'Playfair Display', serif; line-height: 1.2; }
+        .hero-bg { position: fixed; inset: 0; z-index: -1; background: url('public/background.jpg') center/cover no-repeat; opacity: 0.65; }
+        .hero-overlay { position: fixed; inset: 0; z-index: -1; background: linear-gradient(to bottom, rgba(5,2,1,0.1), #0f0805); }
+        @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+        .ticker-anim { animation: ticker 40s linear infinite; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .nav-glass { background: rgba(5,2,1,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(197,160,89,0.2); }
+        .thali-widget { display: grid; grid-template-columns: 1fr 1.2fr; background: #1a0f0a; border: 1px solid rgba(197,160,89,0.3); border-radius: 40px; box-shadow: 0 30px 70px rgba(0,0,0,0.8); max-width: 1000px; margin: 0 auto; min-height: 500px; position: relative; }
+        .plate-ring { width: 360px; height: 360px; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px dashed rgba(197,160,89,0.15); transition: transform 1s cubic-bezier(0.2,0.8,0.2,1); transform-origin: center center; }
+        .katori { position: absolute; top: 50%; left: 50%; width: 75px; height: 75px; margin-left: -37.5px; margin-top: -37.5px; z-index: 10; pointer-events: auto; }
+        .katori-inner { width: 100%; height: 100%; border-radius: 50%; background: #000; border: 2px solid #8c6a38; overflow: hidden; transition: transform 0.35s ease, border-color 0.3s ease, box-shadow 0.3s ease; cursor: pointer; box-shadow: 0 5px 20px rgba(0,0,0,0.6); }
+        .katori-inner img { width: 100%; height: 100%; object-fit: cover; }
+        .plate-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 150px; height: 150px; border-radius: 50%; border: 4px solid #c5a059; overflow: hidden; box-shadow: 0 0 50px rgba(197,160,89,0.3); z-index: 20; background: #000; cursor: pointer; }
 
-        /* GLOBAL ICON ALIGNMENT FIX */
-        [data-lucide] {
-            vertical-align: middle;
-            margin-top: -2px;
-        }
+        /* ── Modal shared styles ── */
+        .gruhani-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.78); z-index:500; align-items:center; justify-content:center; padding:16px; backdrop-filter:blur(4px); }
+        .gruhani-modal.open { display:flex; }
+        .gruhani-modal-box { background:#1a0f0a; border:1px solid rgba(197,160,89,0.3); border-radius:20px; padding:28px; width:100%; max-width:440px; max-height:90vh; overflow-y:auto; position:relative; }
+        .gruhani-modal-box::-webkit-scrollbar { width:5px; }
+        .gruhani-modal-box::-webkit-scrollbar-thumb { background:#8c6a38; border-radius:4px; }
+        .modal-close { position:absolute; top:14px; right:14px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; width:30px; height:30px; cursor:pointer; color:#aaa; font-size:16px; display:flex; align-items:center; justify-content:center; transition:all 0.2s; }
+        .modal-close:hover { background:rgba(255,255,255,0.12); color:#fff; }
+        .modal-label { display:block; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:rgba(197,160,89,0.6); margin-bottom:5px; margin-top:12px; }
+        .modal-input { width:100%; padding:10px 12px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f5f0e8; font-size:13px; outline:none; box-sizing:border-box; transition:border-color 0.2s; }
+        .modal-input:focus { border-color:#c5a059; }
+        .modal-input::placeholder { color:rgba(255,255,255,0.25); }
+        .modal-error { display:none; color:#ef4444; font-size:11px; margin-top:8px; background:rgba(239,68,68,0.08); padding:8px 10px; border-radius:6px; }
+        .modal-btn-row { display:flex; gap:10px; margin-top:16px; }
+        .modal-btn-cancel { flex:1; padding:10px; background:transparent; border:1px solid rgba(255,255,255,0.12); color:rgba(245,240,232,0.5); border-radius:8px; cursor:pointer; font-size:12px; }
+        .modal-btn-save { flex:1; padding:10px; background:linear-gradient(135deg,#c5a059,#8c6a38); color:#0f0805; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:12px; font-family:'Cinzel',serif; transition:opacity 0.2s; }
+        .modal-btn-save:disabled { opacity:0.6; cursor:not-allowed; }
 
-        html {
-            scroll-behavior: smooth;
-        }
+        /* ── Cart badge ── */
+        .cart-nav-wrap { position:relative; display:flex; align-items:center; }
+        .cart-badge { position:absolute; top:-8px; right:-8px; background:#ef4444; color:#fff; font-size:9px; font-weight:700; min-width:16px; height:16px; border-radius:8px; display:none; align-items:center; justify-content:center; padding:0 3px; border:1.5px solid #0f0805; }
+        .cart-badge.show { display:flex; }
 
-        body {
-            background-color: #0f0805;
-            color: #fff;
-            overflow-x: hidden;
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        /* Selection color */
-        ::selection {
-            background: rgba(212, 175, 55, 0.3);
-            color: #FDF8F0;
-        }
-
-        /* Headings use serif font */
-        h1,
-        h2,
-        h3 {
-            font-family: 'Playfair Display', serif;
-            line-height: 1.2;
-        }
-
-        /* Hero Background */
-        .hero-bg {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            background: url('public/background.jpg') center/cover no-repeat;
-            opacity: 0.65;
-        }
-
-        .hero-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            background: linear-gradient(to bottom, rgba(5, 2, 1, 0.1), #0f0805);
-        }
-
-        @keyframes ticker {
-            0% {
-                transform: translateX(0);
-            }
-
-            100% {
-                transform: translateX(-100%);
-            }
-        }
-
-        .ticker-anim {
-            animation: ticker 40s linear infinite;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .nav-glass {
-            background: rgba(5, 2, 1, 0.95);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(197, 160, 89, 0.2);
-        }
-
-        /* --- ROLLER GEOMETRY (FIXED & BIGGER) --- */
-        .thali-widget {
-            display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            background: #1a0f0a;
-            border: 1px solid rgba(197, 160, 89, 0.3);
-            border-radius: 40px;
-            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.8);
-            max-width: 1000px;
-            margin: 0 auto;
-            min-height: 500px;
-            position: relative;
-        }
-
-        /* 🚨 FIX: Bigger size, perfect centering via transform */
-        .plate-ring {
-            width: 360px;
-            height: 360px;
-            /* Bigger size */
-            border-radius: 50%;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            /* Removed negative margins, using transform for centering */
-            transform: translate(-50%, -50%);
-            border: 1px dashed rgba(197, 160, 89, 0.15);
-            transition: transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
-            transform-origin: center center;
-        }
-
-        .katori {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 75px;
-            height: 75px;
-            margin-left: -37.5px;
-            margin-top: -37.5px;
-            z-index: 10;
-            pointer-events: auto;
-        }
-
-        .katori-inner {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: #000;
-            border: 2px solid #8c6a38;
-            overflow: hidden;
-            transition: transform 0.35s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.6);
-        }
-
-        .katori-inner img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .plate-center {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 4px solid #c5a059;
-            overflow: hidden;
-            box-shadow: 0 0 50px rgba(197, 160, 89, 0.3);
-            z-index: 20;
-            background: #000;
-            cursor: pointer;
-        }
-
-        @media(max-width: 900px) {
-            .thali-widget {
-                grid-template-columns: 1fr;
-            }
-
-            /* Larger mobile sizes for professional look */
-            .plate-ring {
-                width: 320px;
-                height: 320px;
-                margin: 0;
-            }
-
-            .plate-center {
-                width: 130px;
-                height: 130px;
-            }
-
-            .katori {
-                width: 70px;
-                height: 70px;
-                margin-left: -35px;
-                margin-top: -35px;
-            }
-        }
-
-        /* Mobile-first responsive fixes */
-        @media(max-width: 768px) {
-
-            /* Navbar */
-            #navLinks {
-                gap: 0.75rem !important;
-            }
-
-            #navLinks a,
-            #navLinks button {
-                font-size: 8px !important;
-                padding: 6px 10px !important;
-            }
-
-            /* Hero section */
-            .hero-bg {
-                background-position: center center;
-                background-attachment: scroll;
-            }
-        }
-
-        @media(max-width: 640px) {
-
-            /* Smaller logo text */
-            nav span.font-cinzel {
-                font-size: 1.25rem !important;
-            }
-
-            nav a div:first-child {
-                width: 2.5rem !important;
-                height: 2.5rem !important;
-            }
-
-            /* Thali widget mobile */
-            .thali-widget {
-                min-height: 400px;
-                border-radius: 24px;
-                margin: 0 1rem;
-            }
-
-            .plate-ring {
-                width: 300px;
-                height: 300px;
-            }
-
-            .plate-center {
-                width: 120px;
-                height: 120px;
-            }
-
-            .katori {
-                width: 65px;
-                height: 65px;
-                margin-left: -32.5px;
-                margin-top: -32.5px;
-            }
-        }
-
-        /* Very small phones - comprehensive mobile fixes */
-        @media (max-width: 480px) {
-            .ticker-anim {
-                font-size: 9px;
-            }
-
-            /* Hero text smaller */
-            .font-hindi {
-                font-size: 2.25rem !important;
-            }
-
-            /* Navbar - horizontal scroll instead of overflow hidden */
-            nav {
-                padding-left: 12px !important;
-                padding-right: 12px !important;
-            }
-
-            #navLinks {
-                gap: 4px !important;
-                flex-wrap: nowrap !important;
-            }
-
-            #navLinks a,
-            #navLinks button {
-                font-size: 7px !important;
-                padding: 4px 6px !important;
-                white-space: nowrap;
-            }
-
-            /* Fix roller overflow on very small phones */
-            .thali-widget {
-                max-width: 100%;
-                overflow: visible;
-                min-height: auto;
-                margin: 0 8px;
-            }
-
-            .plate-ring {
-                width: 220px;
-                height: 220px;
-            }
-
-            .plate-center {
-                width: 90px;
-                height: 90px;
-            }
-
-            .katori {
-                width: 50px;
-                height: 50px;
-                margin-left: -25px;
-                margin-top: -25px;
-            }
-
-            /* Right panel - product details */
-            .thali-widget>div:last-child {
-                padding: 16px !important;
-            }
-
-            .thali-widget h2 {
-                font-size: 1.5rem !important;
-            }
-
-            .thali-widget p.italic {
-                font-size: 12px !important;
-                height: auto !important;
-                max-height: 50px;
-            }
-
-            /* Price and buttons row - stack on mobile */
-            .thali-widget .flex.items-center.justify-between {
-                flex-wrap: wrap;
-                gap: 12px;
-            }
-
-            .thali-widget .flex.items-center.justify-between>span {
-                font-size: 1.75rem !important;
-            }
-
-            /* Arrow buttons smaller */
-            .thali-widget .flex.items-center.justify-between button.w-12 {
-                width: 36px !important;
-                height: 36px !important;
-                font-size: 14px !important;
-            }
-
-            /* View Details button - full width on mobile */
-            .thali-widget .flex.items-center.justify-between>button:last-child {
-                width: 100%;
-                margin-top: 8px;
-                padding: 12px 16px !important;
-                font-size: 10px !important;
-            }
-        }
+        @media(max-width:900px) { .thali-widget { grid-template-columns:1fr; } .plate-ring { width:320px; height:320px; margin:0; } .plate-center { width:130px; height:130px; } .katori { width:70px; height:70px; margin-left:-35px; margin-top:-35px; } }
+        @media(max-width:768px) { #navLinks { gap:0.75rem!important; } #navLinks a,#navLinks button { font-size:8px!important; padding:6px 10px!important; } }
+        @media(max-width:640px) { nav span.font-cinzel { font-size:1.25rem!important; } nav a div:first-child { width:2.5rem!important; height:2.5rem!important; } .thali-widget { min-height:400px; border-radius:24px; margin:0 1rem; } .plate-ring { width:300px; height:300px; } .plate-center { width:120px; height:120px; } .katori { width:65px; height:65px; margin-left:-32.5px; margin-top:-32.5px; } }
+        @media(max-width:480px) { .ticker-anim { font-size:9px; } .font-hindi { font-size:2.25rem!important; } nav { padding-left:12px!important; padding-right:12px!important; } #navLinks { gap:4px!important; flex-wrap:nowrap!important; } #navLinks a,#navLinks button { font-size:7px!important; padding:4px 6px!important; white-space:nowrap; } .thali-widget { max-width:100%; overflow:visible; min-height:auto; margin:0 8px; } .plate-ring { width:220px; height:220px; } .plate-center { width:90px; height:90px; } .katori { width:50px; height:50px; margin-left:-25px; margin-top:-25px; } }
     </style>
 </head>
-
 <body>
-
     <div class="hero-bg"></div>
     <div class="hero-overlay"></div>
 
-    <div
-        class="fixed top-0 w-full z-50 bg-[#2c1810] text-[#eebb55] text-[10px] font-bold tracking-[2px] py-2 overflow-hidden border-b border-matte/30">
+    <!-- Ticker -->
+    <div class="fixed top-0 w-full z-50 bg-[#2c1810] text-[#eebb55] text-[10px] font-bold tracking-[2px] py-2 overflow-hidden border-b border-matte/30">
         <div class="ticker-anim whitespace-nowrap inline-block pl-[100%] font-cinzel">
             ✦ Narmadapuram (MP): Traditional dal recipes, cooked the homestyle way ✦
             Central India: Slow-cooked meals inspired by family kitchens ✦
@@ -400,201 +91,427 @@
         </div>
     </div>
 
-
-    <nav class="fixed top-10 w-full z-40 px-6 py-4 flex justify-between items-center transition-all duration-300"
-        id="navbar">
+    <!-- Navbar -->
+    <nav class="fixed top-10 w-full z-40 px-6 py-4 flex justify-between items-center transition-all duration-300" id="navbar">
         <a href="index.html" class="flex items-center gap-3 group">
-            <div
-                class="w-12 h-12 rounded-full overflow-hidden relative shadow-[0_0_15px_rgba(197,160,89,0.4)] group-hover:shadow-[0_0_25px_rgba(197,160,89,0.6)] transition-all duration-500 border border-gold-main/30">
-                <img src="public/Logo.png" alt="Gruhani"
-                    class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
-                <div class="absolute inset-0 bg-gradient-to-tr from-black/10 to-transparent pointer-events-none"></div>
+            <div class="w-12 h-12 rounded-full overflow-hidden relative shadow-[0_0_15px_rgba(197,160,89,0.4)] group-hover:shadow-[0_0_25px_rgba(197,160,89,0.6)] transition-all duration-500 border border-gold-main/30">
+                <img src="public/Logo.png" alt="Gruhani" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
             </div>
-            <span
-                class="font-cinzel text-2xl font-bold text-gold-main tracking-widest drop-shadow-md group-hover:text-white transition-colors">GRUHANI</span>
+            <span class="font-cinzel text-2xl font-bold text-gold-main tracking-widest drop-shadow-md group-hover:text-white transition-colors">GRUHANI</span>
         </a>
-
-        <div class="flex items-center gap-6" id="navLinks">
-            <!-- Role-aware navigation injected by JS -->
-        </div>
+        <div class="flex items-center gap-6" id="navLinks"></div>
     </nav>
 
     <script>
-            (function () {
-                const token = localStorage.getItem('authToken');
-                const role = localStorage.getItem('userRole');
-                const userName = localStorage.getItem('userName') || 'User';
-                const navLinks = document.getElementById('navLinks');
+    (function () {
+        const token    = localStorage.getItem('authToken');
+        const role     = localStorage.getItem('userRole');
+        const userName = localStorage.getItem('userName') || '';
+        const navLinks = document.getElementById('navLinks');
+        const BASE     = window.CONFIG.BASE_URL;
 
-                // Mobile-optimized: smaller fonts, but ALL links visible
-                const linkClass = "text-[9px] sm:text-xs font-bold uppercase tracking-widest text-gold-main/80 hover:text-white transition-colors px-1 sm:px-2";
-                const btnClass = "border border-gold-main/40 px-3 sm:px-5 py-1.5 sm:py-2 rounded-full text-gold-main text-[9px] sm:text-xs font-bold tracking-widest hover:bg-gold-main/10 hover:text-white transition-all uppercase";
+        const linkClass   = "text-[9px] sm:text-xs font-bold uppercase tracking-widest text-gold-main/80 hover:text-white transition-colors px-1 sm:px-2";
+        const btnClass    = "border border-gold-main/40 px-3 sm:px-5 py-1.5 sm:py-2 rounded-full text-gold-main text-[9px] sm:text-xs font-bold tracking-widest hover:bg-gold-main/10 hover:text-white transition-all uppercase";
+        const navContent  = `
+            <a href="menu.html"    class="${linkClass}">Menu</a>
+            <a href="sellers.html" class="${linkClass}">Kitchens</a>
+            <a href="about.html"   class="${linkClass}">About</a>`;
 
-                // All links visible on all screens - trust-first UX
-                const navContent = `
-                    <a href="menu.html" class="${linkClass}">Menu</a>
-                    <a href="sellers.html" class="${linkClass}">Kitchens</a>
-                    <a href="about.html" class="${linkClass}">About</a>
-                `;
+        const avatarDiv = initials => `
+            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-white text-xs font-bold shadow-lg border border-amber-400/30">
+                ${initials}
+            </div>`;
 
-                if (!token) {
-                    navLinks.innerHTML = `
-                    ${navContent}
-                    <a href="login.html" class="${btnClass}">Login</a>
-                `;
-                } else if (role === 'ADMIN') {
-                    navLinks.innerHTML = `
-                    <a href="admin-dashboard-modern.html" class="${btnClass}">👑 Admin Dashboard</a>
-                `;
-                } else if (role === 'SELLER') {
-                    const initials = userName.charAt(0).toUpperCase();
-                    navLinks.innerHTML = `
-                    ${navContent}
-                    
-                    <!-- Seller Profile Dropdown -->
-                    <div class="relative" id="userProfileWrapper">
-                        <button id="userProfileBtn" class="flex items-center gap-2 px-2 py-1 rounded-full hover:bg-white/10 transition-all">
-                            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-white text-xs font-bold shadow-lg border border-amber-400/30">
-                                ${initials}
-                            </div>
-                            <span class="hidden sm:block text-[10px] text-white/80 font-medium max-w-[80px] truncate">${userName.split('@')[0]}</span>
-                            <svg class="w-3 h-3 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </button>
-                        
-                        <!-- Dropdown Menu -->
-                        <div id="userDropdown" class="hidden absolute right-0 top-full mt-2 w-48 bg-[#1a0f0a]/95 backdrop-blur-xl rounded-xl border border-amber-500/20 shadow-2xl overflow-hidden z-50">
-                            <div class="px-4 py-3 border-b border-white/10">
-                                <p class="text-white font-bold text-sm truncate">${userName.split('@')[0]}</p>
-                                <p class="text-gray-400 text-[10px] truncate">🍳 Home Chef</p>
-                            </div>
-                            <div class="py-2">
-                                <a href="seller-dashboard-enhanced.html" class="flex items-center gap-3 px-4 py-2.5 text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 transition-all text-xs font-bold">
-                                    <i data-lucide="layout-dashboard" class="w-4 h-4"></i> My Dashboard
-                                </a>
-                                <a href="seller-profile-modern.html" class="flex items-center gap-3 px-4 py-2.5 text-white/80 hover:text-white hover:bg-amber-500/10 transition-all text-xs">
-                                    <i data-lucide="user" class="w-4 h-4"></i> My Profile
-                                </a>
-                            </div>
-                            <div class="border-t border-white/10 py-2">
-                                <button onclick="localStorage.clear(); window.location.href='login.html'" class="flex items-center gap-3 px-4 py-2.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all text-xs w-full">
-                                    <i data-lucide="log-out" class="w-4 h-4"></i> Logout
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
+        const chevron = `<svg class="w-3 h-3 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>`;
 
-                    // Toggle dropdown for seller
-                    setTimeout(() => {
-                        const btn = document.getElementById('userProfileBtn');
-                        const dropdown = document.getElementById('userDropdown');
-                        if (btn && dropdown) {
-                            btn.addEventListener('click', (e) => {
-                                e.stopPropagation();
-                                dropdown.classList.toggle('hidden');
-                            });
-                            document.addEventListener('click', () => {
-                                dropdown.classList.add('hidden');
-                            });
-                        }
-                    }, 100);
-                } else {
-                    // Get first letter for avatar
-                    const initials = userName.charAt(0).toUpperCase();
-
-                    navLinks.innerHTML = `
-                    ${navContent}
-                    <a href="cart.html" class="${linkClass} relative flex items-center">
-                        Cart
-                        <span id="cartCountBadge" class="hidden absolute -top-2 -right-3 bg-red-600 text-white text-[8px] w-4 h-4 flex items-center justify-center rounded-full border border-royal-dark font-bold shadow-sm">0</span>
-                    </a>
-                    
-                    <!-- User Profile Dropdown -->
-                    <div class="relative" id="userProfileWrapper">
-                        <button id="userProfileBtn" class="flex items-center gap-2 px-2 py-1 rounded-full hover:bg-white/10 transition-all">
-                            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-white text-xs font-bold shadow-lg border border-amber-400/30">
-                                ${initials}
-                            </div>
-                            <span class="hidden sm:block text-[10px] text-white/80 font-medium max-w-[80px] truncate">${userName.split('@')[0]}</span>
-                            <svg class="w-3 h-3 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </button>
-                        
-                        <!-- Dropdown Menu -->
-                        <div id="userDropdown" class="hidden absolute right-0 top-full mt-2 w-48 bg-[#1a0f0a]/95 backdrop-blur-xl rounded-xl border border-amber-500/20 shadow-2xl overflow-hidden z-50">
-                            <div class="px-4 py-3 border-b border-white/10">
-                                <p class="text-white font-bold text-sm truncate">${userName.split('@')[0]}</p>
-                                <p class="text-gray-400 text-[10px] truncate">${userName}</p>
-                            </div>
-                            <div class="py-2">
-                                <a href="cart.html" class="flex items-center gap-3 px-4 py-2.5 text-white/80 hover:text-white hover:bg-amber-500/10 transition-all text-xs">
-                                    <i data-lucide="shopping-cart" class="w-4 h-4"></i> My Cart
-                                </a>
-                                <a href="orders.html" class="flex items-center gap-3 px-4 py-2.5 text-white/80 hover:text-white hover:bg-amber-500/10 transition-all text-xs">
-                                    <i data-lucide="package" class="w-4 h-4"></i> Previous Orders
-                                </a>
-                                <a href="favorites.html" class="flex items-center gap-3 px-4 py-2.5 text-white/80 hover:text-white hover:bg-amber-500/10 transition-all text-xs">
-                                    <i data-lucide="heart" class="w-4 h-4"></i> Favorites
-                                </a>
-                            </div>
-                            <div class="border-t border-white/10 py-2">
-                                <button onclick="localStorage.clear(); window.location.href='login.html'" class="flex items-center gap-3 px-4 py-2.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all text-xs w-full">
-                                    <i data-lucide="log-out" class="w-4 h-4"></i> Logout
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    </div>
-                `;
-
-                    // Fetch Cart Count (Premium Feature)
-                    fetch(`${window.CONFIG.BASE_URL}/get-cart`, {
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    }).then(res => res.json())
-                        .then(data => {
-                            if (data && Array.isArray(data) && data.length > 0) {
-                                const badge = document.getElementById('cartCountBadge');
-                                if (badge) {
-                                    badge.innerText = data.length;
-                                    badge.classList.remove('hidden');
-                                }
-                            }
-                        }).catch(e => console.log('Cart fetch error', e));
-
-                    // Toggle dropdown
-                    setTimeout(() => {
-                        const btn = document.getElementById('userProfileBtn');
-                        const dropdown = document.getElementById('userDropdown');
-                        if (btn && dropdown) {
-                            btn.addEventListener('click', (e) => {
-                                e.stopPropagation();
-                                dropdown.classList.toggle('hidden');
-                            });
-                            // Close on click outside
-                            document.addEventListener('click', () => {
-                                dropdown.classList.add('hidden');
-                            });
-                        }
-                    }, 100);
+        function setupToggle() {
+            setTimeout(() => {
+                const btn = document.getElementById('userProfileBtn');
+                const dd  = document.getElementById('userDropdown');
+                if (btn && dd) {
+                    btn.addEventListener('click', e => { e.stopPropagation(); dd.classList.toggle('hidden'); });
+                    document.addEventListener('click', () => dd.classList.add('hidden'));
                 }
-            })();
+            }, 80);
+        }
+
+        /* ── NO TOKEN ── */
+        if (!token) {
+            navLinks.innerHTML = `${navContent}<a href="login.html" class="${btnClass}">Login</a>`;
+            return;
+        }
+
+        /* ── ADMIN ── */
+        if (role === 'ADMIN') {
+            navLinks.innerHTML = `<a href="admin-dashboard.html" class="${btnClass}">👑 Admin Dashboard</a>`;
+            return;
+        }
+
+        /* ── SELLER ── */
+        if (role === 'SELLER') {
+            navLinks.innerHTML = `
+            ${navContent}
+            <div class="relative" id="userProfileWrapper">
+                <button id="userProfileBtn" class="flex items-center gap-2 px-2 py-1 rounded-full hover:bg-white/10 transition-all">
+                    ${avatarDiv('<span class="nav-initials">S</span>')}
+                    <span class="nav-display-name hidden sm:block text-[10px] text-white/80 font-medium max-w-[80px] truncate">Chef</span>
+                    ${chevron}
+                </button>
+                <div id="userDropdown" class="hidden absolute right-0 top-full mt-2 w-52 bg-[#1a0f0a]/95 backdrop-blur-xl rounded-xl border border-amber-500/20 shadow-2xl overflow-hidden z-50">
+                    <div class="px-4 py-3 border-b border-white/10">
+                        <p class="nav-display-name text-white font-bold text-sm truncate">Chef</p>
+                        <p class="nav-display-email text-gray-400 text-[10px] truncate">🍳 Home Chef</p>
+                    </div>
+                    <div class="py-2">
+                        <a href="seller-dashboard-enhanced.html" class="flex items-center gap-3 px-4 py-2.5 text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 transition-all text-xs font-bold">
+                            <i data-lucide="layout-dashboard" class="w-4 h-4"></i> My Dashboard
+                        </a>
+                        <a href="seller-profile-modern.html" class="flex items-center gap-3 px-4 py-2.5 text-white/80 hover:text-white hover:bg-amber-500/10 transition-all text-xs">
+                            <i data-lucide="user" class="w-4 h-4"></i> My Profile
+                        </a>
+                    </div>
+                    <div class="border-t border-white/10 py-2">
+                        <button onclick="localStorage.clear();window.location.href='login.html'" class="flex items-center gap-3 px-4 py-2.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all text-xs w-full">
+                            <i data-lucide="log-out" class="w-4 h-4"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            </div>`;
+            setupToggle();
+            loadProfileIntoNav(token, BASE);
+            return;
+        }
+
+        /* ── CUSTOMER (default) ── */
+        navLinks.innerHTML = `
+        ${navContent}
+
+        <!-- Cart icon with badge -->
+        <a href="cart.html" class="cart-nav-wrap" aria-label="My Cart">
+            <i data-lucide="shopping-bag" style="width:18px;height:18px;color:#c5a059;"></i>
+            <span id="cartCountBadge" class="cart-badge">0</span>
+        </a>
+
+        <!-- User dropdown -->
+        <div class="relative" id="userProfileWrapper">
+            <button id="userProfileBtn" class="flex items-center gap-2 px-2 py-1 rounded-full hover:bg-white/10 transition-all">
+                ${avatarDiv('<span class="nav-initials">U</span>')}
+                <span class="nav-display-name hidden sm:block text-[10px] text-white/80 font-medium max-w-[80px] truncate">User</span>
+                ${chevron}
+            </button>
+            <div id="userDropdown" class="hidden absolute right-0 top-full mt-2 w-56 bg-[#1a0f0a]/95 backdrop-blur-xl rounded-xl border border-amber-500/20 shadow-2xl overflow-hidden z-50">
+                <div class="px-4 py-3 border-b border-white/10">
+                    <p class="nav-display-name text-white font-bold text-sm truncate">User</p>
+                    <p class="nav-display-email text-gray-400 text-[10px] truncate"></p>
+                </div>
+                <div class="py-2">
+                    <a href="cart.html" class="flex items-center gap-3 px-4 py-2.5 text-white/80 hover:text-white hover:bg-amber-500/10 transition-all text-xs">
+                        <i data-lucide="shopping-cart" class="w-4 h-4"></i> My Cart
+                        <span id="cartCountDropdown" class="ml-auto bg-red-500/80 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
+                    </a>
+                    <a href="orders.html" class="flex items-center gap-3 px-4 py-2.5 text-white/80 hover:text-white hover:bg-amber-500/10 transition-all text-xs">
+                        <i data-lucide="package" class="w-4 h-4"></i> My Orders
+                    </a>
+                    <button onclick="openEditProfile()" class="flex items-center gap-3 px-4 py-2.5 text-white/80 hover:text-white hover:bg-amber-500/10 transition-all text-xs w-full text-left">
+                        <i data-lucide="user-pen" class="w-4 h-4"></i> Edit Profile
+                    </button>
+                    <button onclick="openEditAddress()" class="flex items-center gap-3 px-4 py-2.5 text-white/80 hover:text-white hover:bg-amber-500/10 transition-all text-xs w-full text-left">
+                        <i data-lucide="map-pin" class="w-4 h-4"></i> Edit Address
+                    </button>
+                    <a href="favorites.html" class="flex items-center gap-3 px-4 py-2.5 text-white/80 hover:text-white hover:bg-amber-500/10 transition-all text-xs">
+                        <i data-lucide="heart" class="w-4 h-4"></i> Favorites
+                    </a>
+                </div>
+                <div class="border-t border-white/10 py-2">
+                    <button onclick="localStorage.clear();window.location.href='login.html'" class="flex items-center gap-3 px-4 py-2.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all text-xs w-full">
+                        <i data-lucide="log-out" class="w-4 h-4"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </div>`;
+
+        setupToggle();
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+
+        // ── Load profile (name + email) ──
+        loadProfileIntoNav(token, BASE);
+
+        // ── Load cart count ──
+        fetch(`${BASE}/get-cart`, { headers: { Authorization: `Bearer ${token}` } })
+            .then(r => r.ok ? r.json() : [])
+            .then(data => {
+                const count = Array.isArray(data) ? data.length : 0;
+                if (count > 0) {
+                    const badge = document.getElementById('cartCountBadge');
+                    const dropdown = document.getElementById('cartCountDropdown');
+                    if (badge) { badge.textContent = count; badge.classList.add('show'); }
+                    if (dropdown) { dropdown.textContent = count; dropdown.classList.remove('hidden'); }
+                }
+            }).catch(() => {});
+
+    })(); // end IIFE
+
+    // ── Shared: load real name/email into navbar ──
+    function loadProfileIntoNav(token, BASE) {
+        fetch(`${BASE}/view-profile`, { headers: { Authorization: `Bearer ${token}` } })
+            .then(r => r.ok ? r.json() : null)
+            .then(p => {
+                if (!p) return;
+                const name  = p.name  || localStorage.getItem('userName') || 'User';
+                const email = p.email || '';
+                // Store real name
+                if (name) localStorage.setItem('userName', name);
+                // Display name (first word, not the email part)
+                const displayName = name.includes('@') ? name.split('@')[0] : name.split(' ')[0];
+                // Initial letter for avatar
+                const initial = displayName.charAt(0).toUpperCase();
+                document.querySelectorAll('.nav-display-name').forEach(el => el.textContent = displayName);
+                document.querySelectorAll('.nav-display-email').forEach(el => el.textContent = email);
+                document.querySelectorAll('.nav-initials').forEach(el => el.textContent = initial);
+            }).catch(() => {});
+    }
     </script>
 
+    <!-- ══════════════════════════════════════
+         EDIT PROFILE MODAL
+    ══════════════════════════════════════ -->
+    <div id="editProfileModal" class="gruhani-modal">
+        <div class="gruhani-modal-box">
+            <button class="modal-close" onclick="closeModal('editProfileModal')">✕</button>
+            <h3 style="font-family:'Cinzel',serif;color:#c5a059;font-size:1.1rem;font-weight:700;margin-bottom:6px;">
+                <i data-lucide="user-pen" style="width:16px;height:16px;display:inline;margin-right:6px;vertical-align:middle;"></i>
+                Edit Profile
+            </h3>
+            <p style="font-size:11px;color:rgba(255,255,255,0.35);margin-bottom:18px;">Changes are saved to your account instantly.</p>
+
+            <label class="modal-label">Full Name</label>
+            <input id="ep_name" class="modal-input" placeholder="Your full name">
+
+            <label class="modal-label">Phone Number</label>
+            <div style="display:flex;gap:8px;">
+                <div style="display:flex;align-items:center;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:0 10px;font-size:13px;color:#c5a059;font-weight:700;white-space:nowrap;">+91</div>
+                <input id="ep_contact" class="modal-input" placeholder="10-digit mobile" maxlength="10" inputmode="tel" oninput="this.value=this.value.replace(/\D/g,'')">
+            </div>
+
+            <div id="ep_error" class="modal-error"></div>
+            <div class="modal-btn-row">
+                <button class="modal-btn-cancel" onclick="closeModal('editProfileModal')">Cancel</button>
+                <button class="modal-btn-save" id="saveProfileBtn" onclick="saveProfile()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         EDIT ADDRESS MODAL
+    ══════════════════════════════════════ -->
+    <div id="editAddressModal" class="gruhani-modal">
+        <div class="gruhani-modal-box">
+            <button class="modal-close" onclick="closeModal('editAddressModal')">✕</button>
+            <h3 style="font-family:'Cinzel',serif;color:#c5a059;font-size:1.1rem;font-weight:700;margin-bottom:6px;">
+                <i data-lucide="map-pin" style="width:16px;height:16px;display:inline;margin-right:6px;vertical-align:middle;"></i>
+                Edit Address
+            </h3>
+            <p style="font-size:11px;color:rgba(255,255,255,0.35);margin-bottom:18px;">Used as your default delivery address.</p>
+
+            <!-- Pincode first → auto-fills state + city -->
+            <label class="modal-label">Pincode *</label>
+            <input id="ea_pin" class="modal-input" placeholder="6-digit pincode" maxlength="6" inputmode="numeric" oninput="onEaPincodeInput(this.value)">
+            <div id="ea_pin_status" style="font-size:11px;min-height:16px;margin-top:4px;display:flex;align-items:center;gap:4px;"></div>
+
+            <label class="modal-label">State *</label>
+            <select id="ea_state" class="modal-input" style="appearance:none;">
+                <option value="">— Select State —</option>
+                <option>Andhra Pradesh</option><option>Arunachal Pradesh</option><option>Assam</option>
+                <option>Bihar</option><option>Chhattisgarh</option><option>Goa</option>
+                <option>Gujarat</option><option>Haryana</option><option>Himachal Pradesh</option>
+                <option>Jharkhand</option><option>Karnataka</option><option>Kerala</option>
+                <option>Madhya Pradesh</option><option>Maharashtra</option><option>Manipur</option>
+                <option>Meghalaya</option><option>Mizoram</option><option>Nagaland</option>
+                <option>Odisha</option><option>Punjab</option><option>Rajasthan</option>
+                <option>Sikkim</option><option>Tamil Nadu</option><option>Telangana</option>
+                <option>Tripura</option><option>Uttar Pradesh</option><option>Uttarakhand</option>
+                <option>West Bengal</option><option>Andaman &amp; Nicobar Islands</option>
+                <option>Chandigarh</option><option>Dadra &amp; Nagar Haveli and Daman &amp; Diu</option>
+                <option>Delhi (NCT)</option><option>Jammu &amp; Kashmir</option>
+                <option>Ladakh</option><option>Lakshadweep</option><option>Puducherry</option>
+            </select>
+
+            <label class="modal-label">District / City *</label>
+            <input id="ea_city" class="modal-input" placeholder="Auto-filled from pincode, or type">
+
+            <label class="modal-label">House / Flat / Street *</label>
+            <input id="ea_line" class="modal-input" placeholder="e.g. Flat 4B, Shanti Nagar, MG Road">
+
+            <div id="ea_error" class="modal-error"></div>
+            <div class="modal-btn-row">
+                <button class="modal-btn-cancel" onclick="closeModal('editAddressModal')">Cancel</button>
+                <button class="modal-btn-save" id="saveAddressBtn" onclick="saveAddress()">Save Address</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    const _BASE = window.CONFIG.BASE_URL;
+    const _tok  = () => localStorage.getItem('authToken');
+
+    /* ── Modal helpers ── */
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+    function openModal(id)  { document.getElementById(id).classList.add('open'); if (typeof lucide !== 'undefined') lucide.createIcons(); }
+
+    // Close on backdrop click
+    document.querySelectorAll('.gruhani-modal').forEach(m => {
+        m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+    });
+
+    function showToast(msg, isErr) {
+        const t = document.createElement('div');
+        t.textContent = msg;
+        t.style.cssText = `position:fixed;bottom:24px;right:24px;z-index:9999;padding:12px 18px;
+            background:${isErr ? 'rgba(239,68,68,0.92)' : 'rgba(34,197,94,0.92)'};
+            color:#fff;border-radius:10px;font-size:13px;font-weight:600;
+            box-shadow:0 4px 20px rgba(0,0,0,0.4);transition:opacity 0.3s;`;
+        document.body.appendChild(t);
+        setTimeout(() => { t.style.opacity='0'; setTimeout(() => t.remove(), 300); }, 3000);
+    }
+
+    /* ══════════════════════════════════════
+       EDIT PROFILE
+    ══════════════════════════════════════ */
+    async function openEditProfile() {
+        document.getElementById('userDropdown')?.classList.add('hidden');
+        document.getElementById('ep_error').style.display = 'none';
+        try {
+            const p = await fetch(`${_BASE}/view-profile`, { headers: { Authorization: `Bearer ${_tok()}` } }).then(r => r.json());
+            document.getElementById('ep_name').value    = p.name    || '';
+            document.getElementById('ep_contact').value = (p.contact || '').replace(/^\+91/, '');
+        } catch { showToast('Could not load profile', true); return; }
+        openModal('editProfileModal');
+    }
+
+    async function saveProfile() {
+        const name    = document.getElementById('ep_name').value.trim();
+        const contact = document.getElementById('ep_contact').value.trim();
+        const errEl   = document.getElementById('ep_error');
+        errEl.style.display = 'none';
+
+        if (!name) { errEl.textContent='Name is required'; errEl.style.display='block'; return; }
+        if (contact && !/^\d{10}$/.test(contact)) { errEl.textContent='Phone must be 10 digits'; errEl.style.display='block'; return; }
+
+        const btn = document.getElementById('saveProfileBtn');
+        btn.textContent = 'Saving...'; btn.disabled = true;
+        try {
+            // GET profile for email (required by UserDto)
+            const p = await fetch(`${_BASE}/view-profile`, { headers: { Authorization: `Bearer ${_tok()}` } }).then(r => r.json());
+            const res = await fetch(`${_BASE}/update-profile`, {
+                method: 'PATCH',
+                headers: { Authorization: `Bearer ${_tok()}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email: p.email || '', contact: contact ? '+91' + contact : (p.contact || '') })
+            });
+            if (!res.ok) throw new Error(await res.text());
+            localStorage.setItem('userName', name);
+            const displayName = name.split(' ')[0];
+            document.querySelectorAll('.nav-display-name').forEach(el => el.textContent = displayName);
+            document.querySelectorAll('.nav-initials').forEach(el => el.textContent = displayName.charAt(0).toUpperCase());
+            closeModal('editProfileModal');
+            showToast('✅ Profile updated successfully!');
+        } catch(e) {
+            errEl.textContent = 'Update failed: ' + (e.message || 'Please try again.');
+            errEl.style.display = 'block';
+        } finally { btn.textContent = 'Save Changes'; btn.disabled = false; }
+    }
+
+    /* ══════════════════════════════════════
+       EDIT ADDRESS
+    ══════════════════════════════════════ */
+    let _eaPinTimer = null, _eaAddrId = 0;
+
+    async function openEditAddress() {
+        document.getElementById('userDropdown')?.classList.add('hidden');
+        document.getElementById('ea_error').style.display = 'none';
+        document.getElementById('ea_pin_status').innerHTML = '';
+        try {
+            const p = await fetch(`${_BASE}/view-profile`, { headers: { Authorization: `Bearer ${_tok()}` } }).then(r => r.json());
+            const a = (p.addresses || [])[0] || {};
+            _eaAddrId = a.id || 0;
+            document.getElementById('ea_line').value  = a.addressLine || '';
+            document.getElementById('ea_city').value  = a.city        || '';
+            document.getElementById('ea_pin').value   = a.pincode     || '';
+            // Set state dropdown
+            const sel = document.getElementById('ea_state');
+            for (let opt of sel.options) {
+                if (opt.text.toLowerCase() === (a.state || '').toLowerCase()) { sel.value = opt.value; break; }
+            }
+        } catch { showToast('Could not load address', true); return; }
+        openModal('editAddressModal');
+    }
+
+    function onEaPincodeInput(val) {
+        const clean = val.replace(/\D/g,'');
+        document.getElementById('ea_pin').value = clean;
+        clearTimeout(_eaPinTimer);
+        const s = document.getElementById('ea_pin_status');
+        if (clean.length < 6) { s.innerHTML = ''; return; }
+        s.style.color = '#c5a059'; s.innerHTML = '⏳ Verifying...';
+        _eaPinTimer = setTimeout(async () => {
+            try {
+                const data = await (await fetch(`https://api.postalpincode.in/pincode/${clean}`)).json();
+                if (data[0].Status === 'Success' && data[0].PostOffice?.length > 0) {
+                    const po = data[0].PostOffice[0];
+                    const district = po.District || '', state = po.State || '';
+                    const cityEl = document.getElementById('ea_city');
+                    if (!cityEl.value) cityEl.value = district;
+                    const sel = document.getElementById('ea_state');
+                    for (let opt of sel.options) {
+                        if (opt.text.toLowerCase().includes(state.toLowerCase()) ||
+                            state.toLowerCase().includes(opt.text.toLowerCase())) { sel.value = opt.value; break; }
+                    }
+                    s.style.color = '#4ade80';
+                    s.innerHTML = `✓ <strong>${district}</strong>, ${state}`;
+                } else { s.style.color='#f87171'; s.innerHTML = '✗ Invalid pincode'; }
+            } catch { s.style.color='#f87171'; s.innerHTML = '⚠ Could not verify'; }
+        }, 600);
+    }
+
+    async function saveAddress() {
+        const addressLine = document.getElementById('ea_line').value.trim();
+        const city        = document.getElementById('ea_city').value.trim();
+        const state       = document.getElementById('ea_state').value.trim();
+        const pincode     = document.getElementById('ea_pin').value.trim();
+        const errEl       = document.getElementById('ea_error');
+        errEl.style.display = 'none';
+
+        if (!addressLine) { errEl.textContent='Please enter your street / house address'; errEl.style.display='block'; return; }
+        if (!city)        { errEl.textContent='Please enter the city or district'; errEl.style.display='block'; return; }
+        if (!state)       { errEl.textContent='Please select your state'; errEl.style.display='block'; return; }
+        if (!/^\d{6}$/.test(pincode)) { errEl.textContent='Pincode must be exactly 6 digits'; errEl.style.display='block'; return; }
+
+        const btn = document.getElementById('saveAddressBtn');
+        btn.textContent = 'Saving...'; btn.disabled = true;
+        try {
+            // AddressDto field names: id, addressLine, city, state, pincode
+            const res = await fetch(`${_BASE}/add-address`, {
+                method: 'PATCH',
+                headers: { Authorization: `Bearer ${_tok()}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: _eaAddrId, addressLine, city, state, pincode })
+            });
+            if (!res.ok) throw new Error(await res.text());
+            closeModal('editAddressModal');
+            showToast('✅ Address updated successfully!');
+        } catch(e) {
+            errEl.textContent = 'Update failed: ' + (e.message || 'Please try again.');
+            errEl.style.display = 'block';
+        } finally { btn.textContent = 'Save Address'; btn.disabled = false; }
+    }
+    </script>
+
+    <!-- Hero -->
     <header class="min-h-screen flex flex-col items-center justify-center text-center px-4 relative pt-24">
-        <h1
-            class="font-hindi text-5xl md:text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-white to-gold-main mb-6 leading-[1.4] py-4 drop-shadow-2xl opacity-0 animate-[fadeIn_1s_ease-out_forwards]">
+        <h1 class="font-hindi text-5xl md:text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-white to-gold-main mb-6 leading-[1.4] py-4 drop-shadow-2xl opacity-0 animate-[fadeIn_1s_ease-out_forwards]">
             स्वाद जो दिल छू जाए<br>
-            <span
-                class="text-3xl md:text-5xl block mt-2 font-playfair italic text-gold-rose font-normal tracking-wide">Ghar
-                ka khana, Royal Andaaz.</span>
+            <span class="text-3xl md:text-5xl block mt-2 font-playfair italic text-gold-rose font-normal tracking-wide">Ghar ka khana, Royal Andaaz.</span>
         </h1>
-        <p
-            class="text-gray-300 text-base sm:text-lg max-w-2xl mb-6 sm:mb-10 font-light tracking-wide opacity-0 animate-[fadeIn_1s_0.3s_forwards] px-4">
-            <span class="hidden sm:inline">Handmade meals by India's finest home chefs. No preservatives. Just
-                love.</span>
+        <p class="text-gray-300 text-base sm:text-lg max-w-2xl mb-6 sm:mb-10 font-light tracking-wide opacity-0 animate-[fadeIn_1s_0.3s_forwards] px-4">
+            <span class="hidden sm:inline">Handmade meals by India's finest home chefs. No preservatives. Just love.</span>
             <span class="sm:hidden">Handmade meals from trusted home kitchens.</span>
         </p>
         <button onclick="window.location.href='menu.html'"
@@ -603,6 +520,7 @@
         </button>
     </header>
 
+    <!-- Thali Widget -->
     <section class="pb-32 px-4" id="thali-section">
         <div class="thali-widget">
             <div class="relative flex items-center justify-center overflow-hidden min-h-[500px]">
@@ -621,22 +539,15 @@
                         <span id="chefLoc" class="text-xs text-gray-500 font-bold uppercase">--</span>
                     </div>
                 </div>
-                <h2 id="dishTitle" class="font-playfair text-4xl md:text-5xl text-white mb-4 leading-tight">Loading...
-                </h2>
-                <p id="dishDesc"
-                    class="font-sans text-gray-400 text-sm leading-7 mb-10 border-l-2 border-gold-matte pl-6 italic max-w-md h-16 overflow-hidden">
-                    Waking up the kitchen... this may take a moment.
-                </p>
+                <h2 id="dishTitle" class="font-playfair text-4xl md:text-5xl text-white mb-4 leading-tight">Loading...</h2>
+                <p id="dishDesc" class="font-sans text-gray-400 text-sm leading-7 mb-10 border-l-2 border-gold-matte pl-6 italic max-w-md h-16 overflow-hidden">Waking up the kitchen...</p>
                 <div class="flex items-center justify-between border-t border-white/10 pt-8">
                     <span id="dishPrice" class="font-cinzel text-4xl text-gold-main font-bold">--</span>
                     <div class="flex gap-3">
-                        <button onclick="rotateThali(-1)"
-                            class="w-12 h-12 rounded-full border border-gray-600 text-white hover:border-gold-main transition-colors text-xl flex items-center justify-center pb-1">&larr;</button>
-                        <button onclick="rotateThali(1)"
-                            class="w-12 h-12 rounded-full border border-gray-600 text-white hover:border-gold-main transition-colors text-xl flex items-center justify-center pb-1">&rarr;</button>
+                        <button onclick="rotateThali(-1)" class="w-12 h-12 rounded-full border border-gray-600 text-white hover:border-gold-main transition-colors text-xl flex items-center justify-center pb-1">&larr;</button>
+                        <button onclick="rotateThali(1)"  class="w-12 h-12 rounded-full border border-gray-600 text-white hover:border-gold-main transition-colors text-xl flex items-center justify-center pb-1">&rarr;</button>
                     </div>
-                    <button onclick="goToProduct()"
-                        class="bg-gradient-to-r from-gold-matte to-gold-main text-black px-8 py-4 rounded-full font-bold text-xs uppercase tracking-[0.2em] hover:shadow-[0_0_20px_rgba(197,160,89,0.3)] transition-all">
+                    <button onclick="goToProduct()" class="bg-gradient-to-r from-gold-matte to-gold-main text-black px-8 py-4 rounded-full font-bold text-xs uppercase tracking-[0.2em] hover:shadow-[0_0_20px_rgba(197,160,89,0.3)] transition-all">
                         View Details
                     </button>
                 </div>
@@ -646,216 +557,132 @@
 
     <script>
         const MOCK_DATA = [
-            { id: "1", title: "Dal Makhani", price: 299, chef: "Mrs. Singh", loc: "Amritsar", desc: "Black lentils cooked overnight on charcoal.", img: window.CONFIG.PLACEHOLDER, avatar: window.CONFIG.PLACEHOLDER },
-            { id: "2", title: "Hyderabadi Biryani", price: 450, chef: "Mrs. Reddy", loc: "Hyderabad", desc: "Aromatic basmati rice sealed with dough.", img: window.CONFIG.PLACEHOLDER, avatar: window.CONFIG.PLACEHOLDER },
-            { id: "3", title: "Gajar Halwa", price: 199, chef: "Mrs. Gupta", loc: "Delhi", desc: "Winter carrots slow cooked in pure Desi Ghee.", img: window.CONFIG.PLACEHOLDER, avatar: window.CONFIG.PLACEHOLDER },
-            { id: "4", title: "Shahi Paneer", price: 349, chef: "Mrs. Kapoor", loc: "Jaipur", desc: "Cottage cheese in a royal creamy sauce.", img: window.CONFIG.PLACEHOLDER, avatar: window.CONFIG.PLACEHOLDER },
-            { id: "5", title: "Rajma Chawal", price: 240, chef: "Nani's Kitchen", loc: "Punjab", desc: "Comfort food at its finest.", img: window.CONFIG.PLACEHOLDER, avatar: window.CONFIG.PLACEHOLDER }
+            { id:"1", title:"Dal Makhani",       price:299, chef:"Mrs. Singh",  loc:"Amritsar",  desc:"Black lentils cooked overnight on charcoal.",            img:window.CONFIG.PLACEHOLDER, avatar:window.CONFIG.PLACEHOLDER },
+            { id:"2", title:"Hyderabadi Biryani", price:450, chef:"Mrs. Reddy",  loc:"Hyderabad", desc:"Aromatic basmati rice sealed with dough.",                img:window.CONFIG.PLACEHOLDER, avatar:window.CONFIG.PLACEHOLDER },
+            { id:"3", title:"Gajar Halwa",        price:199, chef:"Mrs. Gupta",  loc:"Delhi",     desc:"Winter carrots slow cooked in pure Desi Ghee.",           img:window.CONFIG.PLACEHOLDER, avatar:window.CONFIG.PLACEHOLDER },
+            { id:"4", title:"Shahi Paneer",       price:349, chef:"Mrs. Kapoor", loc:"Jaipur",    desc:"Cottage cheese in a royal creamy sauce.",                 img:window.CONFIG.PLACEHOLDER, avatar:window.CONFIG.PLACEHOLDER },
+            { id:"5", title:"Rajma Chawal",       price:240, chef:"Nani's Kitchen", loc:"Punjab", desc:"Comfort food at its finest.",                             img:window.CONFIG.PLACEHOLDER, avatar:window.CONFIG.PLACEHOLDER }
         ];
 
-        let items = [...MOCK_DATA];
-        let currIdx = 0;
-        let autoRotate;
+        let items = [...MOCK_DATA], currIdx = 0, autoRotate;
 
-        // Pick one product from each unique chef for variety
-        // Mobile = 4 katoris, Desktop = 5 katoris
         function pickOnePerChef(products) {
             const chefMap = new Map();
-            products.forEach(p => {
-                const chef = p.chef || p.seller?.businessName || 'Unknown';
-                if (!chefMap.has(chef)) {
-                    chefMap.set(chef, p);
-                }
-            });
-            // Mobile (< 900px) = 4 items, Desktop = 5 items
-            const isMobile = window.innerWidth < 900;
-            const maxItems = isMobile ? 4 : 5;
-            return Array.from(chefMap.values()).slice(0, maxItems);
+            products.forEach(p => { const c = p.chef || 'Unknown'; if (!chefMap.has(c)) chefMap.set(c, p); });
+            const max = window.innerWidth < 900 ? 4 : 5;
+            return Array.from(chefMap.values()).slice(0, max);
         }
 
         async function init() {
-            // Show loading state
-            document.getElementById('dishTitle').innerText = 'Loading...';
-            document.getElementById('dishDesc').innerText = 'Waking up the kitchen... first load may take up to 10 seconds.';
-
             try {
-                // Try backend first with 10 second timeout (Render cold start)
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 10000);
-
-                const response = await fetch(`${window.CONFIG.BASE_URL}/explore`, { signal: controller.signal });
-                clearTimeout(timeoutId);
-
-                if (response.ok) {
-                    const data = await response.json();
+                const ctrl = new AbortController();
+                const tid  = setTimeout(() => ctrl.abort(), 10000);
+                const res  = await fetch(`${window.CONFIG.BASE_URL}/explore`, { signal: ctrl.signal });
+                clearTimeout(tid);
+                if (res.ok) {
+                    const data = await res.json();
                     if (data.length > 0) {
-                        // Pick one product from each unique chef for variety
                         items = pickOnePerChef(data).map(i => ({
                             ...i,
-                            title: i.title || i.name,
-                            desc: i.desc || i.description,
-                            img: i.img?.startsWith('http') ? i.img : `public/${i.img || 'placeholder.jpg'}`,
-                            avatar: i.avatar?.startsWith('http') ? i.avatar : `public/${i.avatar || 'placeholder.jpg'}`
+                            title:  i.title  || i.name,
+                            desc:   i.desc   || i.description,
+                            img:    (i.img   || '').startsWith('http') ? i.img   : `public/${i.img   || 'placeholder.jpg'}`,
+                            avatar: (i.avatar|| '').startsWith('http') ? i.avatar: `public/${i.avatar|| 'placeholder.jpg'}`
                         }));
-                        setupThali();
-                        return;
+                        setupThali(); return;
                     }
                 }
-            } catch (e) {
-                console.log("Backend loading or offline, trying local data...");
-            }
-
-            // Fallback to local JSON
+            } catch {}
             try {
                 const res = await fetch('real-products.json');
                 if (res.ok) {
                     const data = await res.json();
-                    // Pick one product from each unique chef for variety
                     items = pickOnePerChef(data).map(i => ({
-                        ...i,
-                        title: i.title || i.name,
-                        desc: i.desc || i.description,
-                        img: i.img ? (i.img.startsWith('http') ? i.img : `public/${i.img}`) : window.CONFIG.PLACEHOLDER,
+                        ...i, title: i.title||i.name, desc: i.desc||i.description,
+                        img:    i.img    ? (i.img.startsWith('http')    ? i.img    : `public/${i.img}`)    : window.CONFIG.PLACEHOLDER,
                         avatar: i.avatar ? (i.avatar.startsWith('http') ? i.avatar : `public/${i.avatar}`) : window.CONFIG.PLACEHOLDER
                     }));
                 }
-            } catch (e) {
-                console.log("Local JSON also unavailable, using mock data.");
-            }
-
+            } catch {}
             setupThali();
         }
 
         function setupThali() {
             const plate = document.getElementById('plate');
             plate.innerHTML = '';
-
-            // 🚨 FIX: Responsive Radius for Bigger Ring
-            const isMobile = window.innerWidth < 900;
-            const r = isMobile ? 150 : 180; // 180px radius for 360px ring
-
+            const r = window.innerWidth < 900 ? 150 : 180;
             items.forEach((item, i) => {
-                const el = document.createElement('div');
+                const el  = document.createElement('div');
                 el.className = 'katori';
-
-                const ang = (360 / items.length) * i;
-
-                // Position logic
-                el.style.transform = `rotate(${ang}deg) translate(${r}px) rotate(-${ang}deg)`;
-
-                el.innerHTML = `
-                    <div class="katori-inner">
-                        <img src="${item.img || window.CONFIG.PLACEHOLDER}" onerror="this.src='${window.CONFIG.PLACEHOLDER}'">
-                    </div>
-                `;
-
+                el.style.transform = `rotate(${(360/items.length)*i}deg) translate(${r}px) rotate(-${(360/items.length)*i}deg)`;
+                el.innerHTML = `<div class="katori-inner"><img src="${item.img||window.CONFIG.PLACEHOLDER}" onerror="this.src='${window.CONFIG.PLACEHOLDER}'"></div>`;
                 el.onclick = () => { updateUI(i); resetTimer(); };
                 plate.appendChild(el);
             });
-
-            updateUI(0);
-            resetTimer();
+            updateUI(0); resetTimer();
         }
 
         function updateUI(idx) {
             currIdx = idx;
-            const item = items[idx];
-            if (!item) return;
-
-            // 🚨 FIX: Ensure transform maintains center during rotation
-            document.getElementById('plate').style.transform = `translate(-50%, -50%) rotate(-${(360 / items.length) * idx}deg)`;
-
+            const item = items[idx]; if (!item) return;
+            document.getElementById('plate').style.transform = `translate(-50%, -50%) rotate(-${(360/items.length)*idx}deg)`;
             const center = document.getElementById('centerImg');
             center.style.opacity = 0;
-            setTimeout(() => { center.src = item.img || window.CONFIG.PLACEHOLDER; center.style.opacity = 1; }, 200);
-
-            document.getElementById('dishTitle').innerText = item.title;
-            const safePrice = Number(String(item.price).replace(/[^0-9.]/g, '')) || 0;
-            document.getElementById('dishPrice').innerText = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 }).format(safePrice);
-            document.getElementById('dishDesc').innerText = item.desc;
-            document.getElementById('chefName').innerText = item.chef;
-            document.getElementById('chefLoc').innerText = item.loc;
-            document.getElementById('chefImg').src = item.avatar || window.CONFIG.PLACEHOLDER;
-
-            document.querySelectorAll('.katori-inner').forEach((k, i) => {
-                if (i === idx) {
-                    k.style.transform = 'scale(1.25)';
-                    k.style.borderColor = '#c5a059';
-                    k.style.boxShadow = '0 0 25px rgba(197, 160, 89, 0.6)';
-                } else {
-                    k.style.transform = 'scale(1)';
-                    k.style.borderColor = '#8c6a38';
-                    k.style.boxShadow = '0 5px 20px rgba(0,0,0,0.6)';
-                }
+            setTimeout(() => { center.src = item.img||window.CONFIG.PLACEHOLDER; center.style.opacity = 1; }, 200);
+            document.getElementById('dishTitle').innerText  = item.title;
+            document.getElementById('dishPrice').innerText  = new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',minimumFractionDigits:0}).format(Number(String(item.price).replace(/[^0-9.]/g,''))||0);
+            document.getElementById('dishDesc').innerText   = item.desc;
+            document.getElementById('chefName').innerText   = item.chef;
+            document.getElementById('chefLoc').innerText    = item.loc;
+            document.getElementById('chefImg').src          = item.avatar||window.CONFIG.PLACEHOLDER;
+            document.querySelectorAll('.katori-inner').forEach((k,i) => {
+                if (i===idx) { k.style.transform='scale(1.25)'; k.style.borderColor='#c5a059'; k.style.boxShadow='0 0 25px rgba(197,160,89,0.6)'; }
+                else         { k.style.transform='scale(1)';    k.style.borderColor='#8c6a38'; k.style.boxShadow='0 5px 20px rgba(0,0,0,0.6)'; }
             });
         }
 
-        function rotateThali(dir) {
-            let newIdx = currIdx + dir;
-            if (newIdx < 0) newIdx = items.length - 1;
-            if (newIdx >= items.length) newIdx = 0;
-            updateUI(newIdx);
-            resetTimer();
-        }
-
-        function resetTimer() {
-            clearInterval(autoRotate);
-            const isMobile = window.innerWidth < 640;
-            autoRotate = setInterval(() => rotateThali(1), isMobile ? 7000 : 5000);
-        }
-
-        function goToProduct() {
-            if (items[currIdx]) window.open(`product.html?id=${items[currIdx].id}`, '_blank');
-        }
+        function rotateThali(dir) { let n=currIdx+dir; if(n<0)n=items.length-1; if(n>=items.length)n=0; updateUI(n); resetTimer(); }
+        function resetTimer() { clearInterval(autoRotate); autoRotate=setInterval(()=>rotateThali(1),window.innerWidth<640?7000:5000); }
+        function goToProduct() { if(items[currIdx]) window.open(`product.html?id=${items[currIdx].id}`,'_blank'); }
 
         window.addEventListener('scroll', () => {
-            const nav = document.getElementById('navbar');
-            if (window.scrollY > 50) nav.classList.add('nav-glass'); else nav.classList.remove('nav-glass');
+            const nav=document.getElementById('navbar');
+            if(window.scrollY>50) nav.classList.add('nav-glass'); else nav.classList.remove('nav-glass');
         });
-
-        // Reload on resize to adjust radius
-        window.addEventListener('resize', () => { setupThali(); });
-
+        window.addEventListener('resize', () => setupThali());
         init();
     </script>
 
-    <!-- Why Gruhani - Soft CTA -->
+    <!-- Why Gruhani -->
     <section class="py-20 px-6 text-center">
         <div class="max-w-2xl mx-auto">
             <p class="font-playfair italic text-xl md:text-2xl text-gray-300 leading-relaxed mb-6">
                 From Narmadapuram's home kitchens to your plate.<br>
                 <span class="text-gold-main">Food made with trust, served with love.</span>
             </p>
-            <a href="about.html"
-                class="inline-block text-gold-main text-sm font-bold tracking-widest uppercase border-b border-gold-main pb-1 hover:text-white hover:border-white transition-colors">
+            <a href="about.html" class="inline-block text-gold-main text-sm font-bold tracking-widest uppercase border-b border-gold-main pb-1 hover:text-white hover:border-white transition-colors">
                 Read Our Story →
             </a>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="bg-[#0f0805] border-t border-gold-main/20 py-12 px-6 backdrop-blur-md">
+    <footer class="bg-[#0f0805] border-t border-gold-main/20 py-12 px-6">
         <div class="max-w-6xl mx-auto">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
                 <div>
                     <h4 class="font-cinzel text-gold-main font-bold text-sm mb-4">Explore</h4>
                     <ul class="space-y-2">
-                        <li><a href="menu.html"
-                                class="text-gray-400 text-sm hover:text-white transition-colors">Menu</a></li>
-                        <li><a href="menu.html" class="text-gray-400 text-sm hover:text-white transition-colors">Our
-                                Kitchens</a></li>
-                        <li><a href="about.html" class="text-gray-400 text-sm hover:text-white transition-colors">About
-                                Us</a></li>
+                        <li><a href="menu.html"  class="text-gray-400 text-sm hover:text-white transition-colors">Menu</a></li>
+                        <li><a href="menu.html"  class="text-gray-400 text-sm hover:text-white transition-colors">Our Kitchens</a></li>
+                        <li><a href="about.html" class="text-gray-400 text-sm hover:text-white transition-colors">About Us</a></li>
                     </ul>
                 </div>
                 <div>
                     <h4 class="font-cinzel text-gold-main font-bold text-sm mb-4">For Chefs</h4>
                     <ul class="space-y-2">
-                        <li><a href="menu.html"
-                                class="text-gray-400 text-sm hover:text-white transition-colors">Become a Home Chef</a>
-                        </li>
-                        <li><a href="login.html" class="text-gray-400 text-sm hover:text-white transition-colors">Seller
-                                Login</a></li>
+                        <li><a href="menu.html"  class="text-gray-400 text-sm hover:text-white transition-colors">Become a Home Chef</a></li>
+                        <li><a href="login.html" class="text-gray-400 text-sm hover:text-white transition-colors">Seller Login</a></li>
                     </ul>
                 </div>
                 <div>
@@ -875,47 +702,35 @@
             </div>
             <div class="border-t border-white/10 pt-8 text-center">
                 <p class="font-playfair italic text-sm text-gold-main/60">Gruhani — Ghar Jaisa Khana, Ghar Ke Log</p>
-                <p class="text-xs text-gray-500 mt-2 flex items-center justify-center gap-1">© 2026 Gruhani. Made with
-                    <i data-lucide="heart" class="w-3 h-3 text-red-500 fill-red-500"></i> in India.
+                <p class="text-xs text-gray-500 mt-2 flex items-center justify-center gap-1">
+                    © 2026 Gruhani. Made with <i data-lucide="heart" class="w-3 h-3 text-red-500 fill-red-500"></i> in India.
                 </p>
             </div>
         </div>
     </footer>
 
-    <!-- Mobile Bottom Navigation (Food App UX Pattern) -->
-    <nav class="fixed bottom-0 left-0 right-0 z-50 bg-[#0f0805]/95 backdrop-blur-xl border-t border-gold-main/20 py-2 px-4 lg:hidden"
-        id="mobileBottomNav">
+    <!-- Mobile Bottom Nav -->
+    <nav class="fixed bottom-0 left-0 right-0 z-50 bg-[#0f0805]/95 backdrop-blur-xl border-t border-gold-main/20 py-2 px-4 lg:hidden">
         <div class="flex justify-around items-center max-w-sm mx-auto">
-            <a href="index.html"
-                class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-gold-main transition-colors"
-                data-nav="home">
+            <a href="index.html" class="flex flex-col items-center gap-0.5 text-gold-main">
                 <i data-lucide="home" class="w-5 h-5"></i>
                 <span class="text-[9px] font-bold uppercase tracking-wide">Home</span>
             </a>
-            <a href="menu.html"
-                class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-gold-main transition-colors"
-                data-nav="menu">
+            <a href="menu.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-gold-main transition-colors">
                 <i data-lucide="utensils" class="w-5 h-5"></i>
                 <span class="text-[9px] font-bold uppercase tracking-wide">Menu</span>
             </a>
-            <a href="cart.html"
-                class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-gold-main transition-colors relative"
-                data-nav="cart">
+            <a href="cart.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-gold-main transition-colors relative">
                 <i data-lucide="shopping-bag" class="w-5 h-5"></i>
                 <span class="text-[9px] font-bold uppercase tracking-wide">Cart</span>
             </a>
-            <a href="orders.html"
-                class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-gold-main transition-colors"
-                data-nav="orders">
+            <a href="orders.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-gold-main transition-colors">
                 <i data-lucide="package" class="w-5 h-5"></i>
                 <span class="text-[9px] font-bold uppercase tracking-wide">Orders</span>
             </a>
         </div>
     </nav>
 
-    <!-- Initialize Lucide Icons -->
     <script>if (typeof lucide !== 'undefined') lucide.createIcons();</script>
-
 </body>
-
 </html>
