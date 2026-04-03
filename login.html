@@ -1,22 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gruhani – Login</title>
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Playfair+Display:wght@600;700&family=Lato:wght@400;700&display=swap"
-        rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Playfair+Display:wght@600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-
     <script src="js/config.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-
     <script>
         tailwind.config = {
             theme: {
@@ -37,220 +30,101 @@
             }
         }
     </script>
-
     <style>
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            border: 0;
-        }
-
-        body {
-            height: 100vh;
-            display: flex;
-            overflow: hidden;
-            background-color: #fffaf0;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-
-        input,
-        textarea {
-            user-select: text;
-        }
+        .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
+        body { height:100vh; display:flex; overflow:hidden; background-color:#fffaf0; user-select:none; -webkit-user-select:none; }
+        input, textarea { user-select:text; }
 
         .split-left {
             width: 30%;
             background-color: #fffaf0;
-            background-image: radial-gradient(#b45309 0.5px, transparent 0.5px), linear-gradient(to right, rgba(180, 83, 9, 0.05) 1px, transparent 1px);
+            background-image: radial-gradient(#b45309 0.5px, transparent 0.5px), linear-gradient(to right, rgba(180,83,9,0.05) 1px, transparent 1px);
             background-size: 20px 20px, 40px 100%;
             position: relative;
             border-right: 4px solid #b45309;
             z-index: 1;
         }
-
         .split-right {
-            width: 70%;
-            position: relative;
+            width: 70%; position: relative;
             background-color: #1a0f0a;
             background-image: url('background2.png');
-            background-size: cover;
-            background-position: center;
+            background-size: cover; background-position: center;
         }
-
         .split-right::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to left, rgba(26, 15, 10, 0.6), rgba(26, 15, 10, 0.9));
+            content: ""; position: absolute; inset: 0;
+            background: linear-gradient(to left, rgba(26,15,10,0.6), rgba(26,15,10,0.9));
         }
-
         .split-right::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(30% 50% at 30% 60%, rgba(255, 255, 255, 0.1), transparent 60%);
-            animation: steam 8s ease-in-out infinite;
-            pointer-events: none;
+            content: ""; position: absolute; inset: 0;
+            background: radial-gradient(30% 50% at 30% 60%, rgba(255,255,255,0.1), transparent 60%);
+            animation: steam 8s ease-in-out infinite; pointer-events: none;
         }
-
         @keyframes steam {
-            0% { opacity: 0.3; transform: translateY(10px); }
-            50% { opacity: 0.5; transform: translateY(-10px); }
-            100% { opacity: 0.3; transform: translateY(10px); }
+            0% { opacity:0.3; transform:translateY(10px); }
+            50% { opacity:0.5; transform:translateY(-10px); }
+            100% { opacity:0.3; transform:translateY(10px); }
         }
-
         @keyframes cardIn {
-            from { opacity: 0; transform: translate(-50%, -48%) scale(0.98); }
-            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            from { opacity:0; transform:translate(-50%,-48%) scale(0.98); }
+            to   { opacity:1; transform:translate(-50%,-50%) scale(1); }
         }
-
         .auth-container {
-            position: absolute;
-            top: 50%;
-            left: 30%;
+            position: absolute; top: 50%; left: 30%;
             transform: translate(-50%, -50%);
-            width: 400px;
-            max-height: 90vh;
-            overflow-y: auto;
+            width: 400px; max-height: 90vh; overflow-y: auto;
             background-color: #ffffff;
             border: 1px solid #e7d5c0;
-            box-shadow: 0 0 0 4px #fffaf0, 0 30px 60px -15px rgba(0, 0, 0, 0.6);
-            border-radius: 16px;
-            padding: 28px 32px;
-            z-index: 10;
+            box-shadow: 0 0 0 4px #fffaf0, 0 30px 60px -15px rgba(0,0,0,0.6);
+            border-radius: 16px; padding: 28px 32px; z-index: 10;
             animation: cardIn 0.5s ease-out;
-            scrollbar-width: thin;
-            scrollbar-color: #b45309 #f3f4f6;
+            scrollbar-width: thin; scrollbar-color: #b45309 #f3f4f6;
         }
+        .auth-container::-webkit-scrollbar { width:4px; }
+        .auth-container::-webkit-scrollbar-track { background:#f3f4f6; border-radius:4px; }
+        .auth-container::-webkit-scrollbar-thumb { background:#b45309; border-radius:4px; }
 
-        .auth-container::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .auth-container::-webkit-scrollbar-track {
-            background: #f3f4f6;
-            border-radius: 4px;
-        }
-
-        .auth-container::-webkit-scrollbar-thumb {
-            background: #b45309;
-            border-radius: 4px;
-        }
-
-        .input-group input,
-        .input-group textarea {
-            width: 100%;
-            padding: 12px 14px;
-            background: #fff;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            color: #1f2937;
-            font-family: 'Lato', sans-serif;
-            font-size: 14px;
+        .input-group input, .input-group textarea {
+            width: 100%; padding: 12px 14px;
+            background: #fff; border: 1px solid #d1d5db;
+            border-radius: 8px; color: #1f2937;
+            font-family: 'Lato', sans-serif; font-size: 14px;
             transition: all 0.2s;
         }
-
-        .input-group textarea {
-            resize: none;
-        }
-
-        .input-group input:focus,
-        .input-group textarea:focus {
+        .input-group textarea { resize: none; }
+        .input-group input:focus, .input-group textarea:focus {
             border-color: #b45309;
-            box-shadow: 0 0 0 3px rgba(180, 83, 9, 0.1);
+            box-shadow: 0 0 0 3px rgba(180,83,9,0.1);
             outline: none;
         }
+        .input-group input.error, .input-group textarea.error { border-color: #dc2626; }
 
-        .input-group input.error,
-        .input-group textarea.error {
-            border-color: #dc2626;
+        .address-section { border:1px solid #e7d5c0; border-radius:10px; padding:12px; margin-top:8px; background:#fffaf0; }
+        .address-section-label { font-family:'Lato',sans-serif; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:#b45309; margin-bottom:8px; }
+        .input-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+        #btn-submit:active:not(:disabled) { transform: scale(0.98); }
+
+        .spinner { border:2px solid #f3f4f6; border-top:2px solid #b45309; border-radius:50%; width:16px; height:16px; animation:spin 0.8s linear infinite; display:inline-block; margin-right:8px; }
+        @keyframes spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
+
+        /* Role info hint */
+        .role-hint { font-size:11px; color:#6b7280; text-align:center; margin-top:-8px; margin-bottom:4px; padding:6px 10px; background:#f9fafb; border-radius:8px; border:1px solid #e5e7eb; }
+        .role-hint.warn { background:#fef3c7; border-color:#fcd34d; color:#92400e; }
+
+        @media(max-width:900px) {
+            .split-left { display:none; }
+            .split-right { width:100%; }
+            .auth-container { left:50%; width:90%; max-width:420px; }
         }
-
-        /* Address section styling */
-        .address-section {
-            border: 1px solid #e7d5c0;
-            border-radius: 10px;
-            padding: 12px;
-            margin-top: 8px;
-            background: #fffaf0;
-        }
-
-        .address-section-label {
-            font-family: 'Lato', sans-serif;
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: #b45309;
-            margin-bottom: 8px;
-        }
-
-        .input-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-        }
-
-        #btn-submit:active:not(:disabled) {
-            transform: scale(0.98);
-        }
-
-        .spinner {
-            border: 2px solid #f3f4f6;
-            border-top: 2px solid #b45309;
-            border-radius: 50%;
-            width: 16px;
-            height: 16px;
-            animation: spin 0.8s linear infinite;
-            display: inline-block;
-            margin-right: 8px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @media(max-width: 900px) {
-            .split-left { display: none; }
-            .split-right { width: 100%; }
-            .auth-container {
-                left: 50%;
-                width: 90%;
-                max-width: 420px;
-            }
-        }
-    </style>
-
-    <style>
-        /* Mobile Bottom Sheet for Forgot Password */
-        @media (max-width: 640px) {
+        @media(max-width:640px) {
             #forgotPasswordModal .bg-cream {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                max-width: 100%;
-                border-radius: 24px 24px 0 0;
-                animation: slideUp 0.3s ease-out;
+                position:fixed; bottom:0; left:0; right:0; max-width:100%;
+                border-radius:24px 24px 0 0; animation:slideUp 0.3s ease-out;
             }
         }
-
-        @keyframes slideUp {
-            from { transform: translateY(100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
+        @keyframes slideUp { from{transform:translateY(100%);opacity:0} to{transform:translateY(0);opacity:1} }
     </style>
 </head>
-
 <body>
-
     <aside class="split-left" aria-hidden="true"></aside>
     <div class="split-right" role="img" aria-label="Authentic Indian Kitchen"></div>
 
@@ -261,32 +135,32 @@
                     <img src="public/Logo.png" alt="Gruhani" class="w-full h-full object-cover">
                 </div>
             </div>
-
             <h1 class="font-cinzel text-3xl text-royalBrown font-bold">Gruhani</h1>
             <p class="font-serif italic text-gray-500 text-xs mt-1">Ghar Jaisa Khana, Ghar Ke Log</p>
-            <p id="page-title" class="font-sans text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em] mt-2">
-                Unlock the Kitchen</p>
+            <p id="page-title" class="font-sans text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em] mt-2">Unlock the Kitchen</p>
         </div>
 
+        <!-- SUCCESS STATE -->
         <div id="success-section" class="hidden text-center py-4" role="alert">
             <div class="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-2">
                 <i data-lucide="soup" class="w-8 h-8 text-royalGold"></i>
             </div>
-            <h3 class="text-royalBrown font-cinzel text-lg font-bold">Welcome Home</h3>
-            <p class="text-xs text-gray-500 mt-1">Setting your table...</p>
+            <h3 class="text-royalBrown font-cinzel text-lg font-bold" id="successTitle">Welcome Home</h3>
+            <p class="text-xs text-gray-500 mt-1" id="successSub">Setting your table...</p>
         </div>
 
         <div id="auth-section">
-
-            <div class="bg-gray-100 p-1 rounded-lg flex mb-4 relative border border-gray-200" role="group">
-                <div id="glider"
-                    class="absolute top-1 left-1 w-[calc(50%-4px)] h-[calc(100%-8px)] bg-white shadow-md rounded-md transition-transform duration-300 z-0 border border-gray-100">
-                </div>
+            <!-- ROLE TOGGLE -->
+            <div class="bg-gray-100 p-1 rounded-lg flex mb-2 relative border border-gray-200" role="group">
+                <div id="glider" class="absolute top-1 left-1 w-[calc(50%-4px)] h-[calc(100%-8px)] bg-white shadow-md rounded-md transition-transform duration-300 z-0 border border-gray-100"></div>
                 <button type="button" onclick="AppState.setRole('customer')" id="btn-customer"
                     class="flex-1 py-2 text-[10px] font-bold uppercase tracking-wider relative z-10 text-royalBrown transition-colors">Customer</button>
                 <button type="button" onclick="AppState.setRole('seller')" id="btn-seller"
-                    class="flex-1 py-2 text-[10px] font-bold uppercase tracking-wider relative z-10 text-gray-400 transition-colors">Seller</button>
+                    class="flex-1 py-2 text-[10px] font-bold uppercase tracking-wider relative z-10 text-gray-400 transition-colors">Seller / Admin</button>
             </div>
+
+            <!-- Role hint -->
+            <div id="roleHint" class="role-hint mb-3">Login as a Customer to order food</div>
 
             <form onsubmit="Handlers.handleAuth(event)" class="space-y-3" novalidate>
                 <div id="extra-fields"></div>
@@ -295,19 +169,13 @@
                     <input type="email" id="email" placeholder="Email Address" required autocomplete="email">
                 </div>
                 <div class="input-group">
-                    <input type="password" id="password" placeholder="Password (min 6 characters)" required
-                        autocomplete="current-password">
+                    <input type="password" id="password" placeholder="Password (min 6 characters)" required autocomplete="current-password">
                 </div>
                 <div class="text-right -mt-2 mb-3">
-                    <button type="button" onclick="openForgotPassword()"
-                        class="text-xs text-royalGold hover:underline transition">
-                        Forgot Password?
-                    </button>
+                    <button type="button" onclick="openForgotPassword()" class="text-xs text-royalGold hover:underline transition">Forgot Password?</button>
                 </div>
 
-                <div id="form-error"
-                    class="text-errorRed text-xs text-center font-semibold hidden bg-red-50 p-2 rounded-lg border border-red-200"
-                    role="alert"></div>
+                <div id="form-error" class="text-errorRed text-xs text-center font-semibold hidden bg-red-50 p-2 rounded-lg border border-red-200" role="alert"></div>
 
                 <button id="btn-submit" type="submit"
                     class="w-full py-3 bg-gradient-to-r from-royalBrown to-[#4a2c20] text-white font-cinzel font-bold text-xs uppercase tracking-widest rounded-lg shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
@@ -318,481 +186,404 @@
             <div class="text-center mt-4">
                 <span id="footer-text" class="text-gray-500 text-xs">New to Gruhani?</span>
                 <button type="button" onclick="AppState.toggleMode()" id="footer-link"
-                    class="text-royalGold font-bold text-xs uppercase tracking-wide hover:underline ml-1">Create
-                    Account</button>
+                    class="text-royalGold font-bold text-xs uppercase tracking-wide hover:underline ml-1">Create Account</button>
             </div>
         </div>
     </main>
 
-    <div id="forgotPasswordModal"
-        class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <!-- FORGOT PASSWORD MODAL -->
+    <div id="forgotPasswordModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-cream rounded-2xl max-w-md w-full p-8 shadow-2xl border-4 border-royalGold relative">
-            <button onclick="closeForgotPassword()"
-                class="absolute top-4 right-4 text-gray-500 hover:text-royalGold transition">
+            <button onclick="closeForgotPassword()" class="absolute top-4 right-4 text-gray-500 hover:text-royalGold transition">
                 <i data-lucide="x" class="w-6 h-6"></i>
             </button>
-
             <h2 class="font-cinzel text-2xl text-royalBrown mb-2">Forgot Password?</h2>
             <p class="text-sm text-gray-600 mb-6">Enter your email to receive a password reset link</p>
-
             <form id="forgotPasswordForm" onsubmit="handleForgotPassword(event); return false;">
                 <input type="email" id="forgotEmail" placeholder="Your Email" required
                     class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-royalGold focus:outline-none transition mb-4">
-
-                <button type="submit"
-                    class="w-full bg-gradient-to-r from-royalGold to-amber-700 text-white font-bold py-3 rounded-lg hover:shadow-lg transition">
+                <button type="submit" class="w-full bg-gradient-to-r from-royalGold to-amber-700 text-white font-bold py-3 rounded-lg hover:shadow-lg transition">
                     Send Reset Link
                 </button>
             </form>
-
             <div id="forgotPasswordMessage" class="hidden mt-4 p-3 rounded-lg text-sm"></div>
         </div>
     </div>
 
     <script>
-        // =====================================================
-        // CONFIGURATION
-        // =====================================================
-        const CONFIG = {
-            BASE_URL: window.CONFIG?.BASE_URL || 'https://gruhani-backend.onrender.com'
-        };
+    /* ═══════════════════════════════════════════════
+       CONFIG
+    ═══════════════════════════════════════════════ */
+    const CONFIG = {
+        BASE_URL: window.CONFIG?.BASE_URL || 'https://gruhani-backend.onrender.com'
+    };
 
-        // =====================================================
-        // APPLICATION STATE
-        // =====================================================
-        const AppState = {
-            view: 'login',
-            role: 'customer',
-            isLoading: false,
+    /* ═══════════════════════════════════════════════
+       APP STATE
+    ═══════════════════════════════════════════════ */
+    const AppState = {
+        view: 'login',
+        role: 'customer',
+        isLoading: false,
 
-            setRole(newRole) {
-                this.role = newRole;
-                UI.updateRoleToggle(newRole);
-                UI.renderForm();
-                UI.clearError();
-            },
+        setRole(newRole) {
+            this.role = newRole;
+            UI.updateRoleToggle(newRole);
+            UI.updateRoleHint(newRole);
+            UI.renderForm();
+            UI.clearError();
+        },
+        toggleMode() {
+            this.view = this.view === 'login' ? 'register' : 'login';
+            UI.renderForm();
+            UI.clearError();
+        }
+    };
 
-            toggleMode() {
-                this.view = this.view === 'login' ? 'register' : 'login';
-                UI.renderForm();
-                UI.clearError();
-            }
-        };
+    /* ═══════════════════════════════════════════════
+       UI
+    ═══════════════════════════════════════════════ */
+    const UI = {
+        updateRoleToggle(role) {
+            const isSeller = role === 'seller';
+            document.getElementById('glider').style.transform = isSeller ? 'translateX(100%)' : 'translateX(0)';
+            document.getElementById('btn-customer').className =
+                `flex-1 py-2 text-[10px] font-bold uppercase tracking-wider relative z-10 transition-colors ${isSeller ? 'text-gray-400' : 'text-royalBrown'}`;
+            document.getElementById('btn-seller').className =
+                `flex-1 py-2 text-[10px] font-bold uppercase tracking-wider relative z-10 transition-colors ${isSeller ? 'text-royalBrown' : 'text-gray-400'}`;
+        },
 
-        // =====================================================
-        // UI HANDLERS
-        // =====================================================
-        const UI = {
-            updateRoleToggle(role) {
-                const isSeller = role === 'seller';
-                document.getElementById('glider').style.transform = isSeller ? 'translateX(100%)' : 'translateX(0)';
-                document.getElementById('btn-customer').className = `flex-1 py-2 text-[10px] font-bold uppercase tracking-wider relative z-10 transition-colors ${isSeller ? 'text-gray-400' : 'text-royalBrown'}`;
-                document.getElementById('btn-seller').className = `flex-1 py-2 text-[10px] font-bold uppercase tracking-wider relative z-10 transition-colors ${isSeller ? 'text-royalBrown' : 'text-gray-400'}`;
-            },
-
-            renderForm() {
-                const isReg = AppState.view === 'register';
-                const isSeller = AppState.role === 'seller';
-                const extraDiv = document.getElementById('extra-fields');
-
-                document.getElementById('page-title').innerText = isReg
-                    ? (isSeller ? "Join as a Chef" : "Join as a Foodie")
-                    : "Unlock the Kitchen";
-                document.getElementById('btn-submit').innerText = isReg ? "Create Account" : "Login";
-                document.getElementById('footer-text').innerText = isReg ? "Already registered?" : "New to Gruhani?";
-                document.getElementById('footer-link').innerText = isReg ? "Login" : "Create Account";
-
-                if (isReg) {
-                    const ic = "w-full p-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:border-royalGold focus:outline-none text-sm transition-all";
-
-                    let html = `
-                        <div class="input-group">
-                            <input type="text" id="name" placeholder="Full Name" required class="${ic}">
-                        </div>
-                        <div class="input-group mt-3">
-                            <input type="tel" id="contact" placeholder="Phone Number (10 digits)" required pattern="[0-9]{10}" class="${ic}">
-                        </div>`;
-
-                    if (isSeller) {
-                        html += `
-                        <div class="input-group mt-3">
-                            <input type="text" id="businessName" placeholder="Kitchen / Business Name" required class="${ic}">
-                        </div>
-                        <div class="input-group mt-3">
-                            <textarea id="description" placeholder="Describe your kitchen & specialties..." required class="${ic}" rows="2"></textarea>
-                        </div>`;
-                    }
-
-                    // Address section — shared by both customer and seller
-                    html += `
-                        <div class="address-section mt-3">
-                            <div class="address-section-label">📍 Delivery / Service Address</div>
-                            <div class="input-group">
-                                <input type="text" id="addressLine" placeholder="Address Line" required class="${ic}">
-                            </div>
-                            <div class="input-row mt-2">
-                                <div class="input-group">
-                                    <input type="text" id="city" placeholder="City" required class="${ic}">
-                                </div>
-                                <div class="input-group">
-                                    <input type="text" id="state" placeholder="State" required class="${ic}">
-                                </div>
-                            </div>
-                            <div class="input-group mt-2">
-                                <input type="text" id="pincode" placeholder="Pincode (6 digits)" required pattern="[0-9]{6}" class="${ic}">
-                            </div>
-                        </div>`;
-
-                    extraDiv.innerHTML = html;
-                } else {
-                    extraDiv.innerHTML = '';
-                }
-            },
-
-            showError(msg) {
-                const el = document.getElementById('form-error');
-                el.innerHTML = `<i data-lucide="alert-triangle" class="inline w-4 h-4 mr-1"></i><strong>Error:</strong> ${msg}`;
-                el.classList.remove('hidden');
-                if (typeof lucide !== 'undefined') lucide.createIcons();
-                el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            },
-
-            clearError() {
-                document.getElementById('form-error').classList.add('hidden');
-            },
-
-            setLoading(loading) {
-                AppState.isLoading = loading;
-                const btn = document.getElementById('btn-submit');
-                if (loading) {
-                    btn.innerHTML = `<span class="spinner"></span>Processing...`;
-                } else {
-                    btn.innerHTML = AppState.view === 'register' ? "Create Account" : "Login";
-                }
-                btn.disabled = loading;
-            },
-
-            showSuccessAndRedirect(role) {
-                document.getElementById('auth-section').style.display = 'none';
-                document.getElementById('success-section').classList.remove('hidden');
-                setTimeout(() => {
-                    const redirect = localStorage.getItem('redirectAfterLogin');
-                    if (redirect) {
-                        localStorage.removeItem('redirectAfterLogin');
-                        window.location.href = redirect;
-                    } else {
-                        window.location.href = role === 'SELLER' ? 'seller-dashboard-enhanced.html' : 'index.html';
-                    }
-                }, 1500);
-            }
-        };
-
-        // =====================================================
-        // AUTH HANDLERS
-        // =====================================================
-        const Handlers = {
-            async handleAuth(e) {
-                e.preventDefault();
-                if (AppState.isLoading) return;
-
-                UI.clearError();
-                UI.setLoading(true);
-
-                const email = document.getElementById('email').value.trim();
-                const password = document.getElementById('password').value;
-
-                if (!email || !password) {
-                    UI.showError('Please fill in all required fields');
-                    UI.setLoading(false);
-                    return;
-                }
-
-                if (password.length < 6) {
-                    UI.showError('Password must be at least 6 characters');
-                    UI.setLoading(false);
-                    return;
-                }
-
-                try {
-                    if (AppState.view === 'login') {
-                        localStorage.removeItem('userRole');
-                        localStorage.setItem('userRole', AppState.role === 'seller' ? 'SELLER' : 'CUSTOMER');
-                        await this.handleLogin(email, password);
-                    } else {
-                        await this.handleRegister(email, password);
-                    }
-                } catch (err) {
-                    console.error('❌ Auth error:', err);
-                    UI.showError(err.message || 'Something went wrong. Please try again.');
-                    UI.setLoading(false);
-                }
-            },
-
-            async handleLogin(email, password) {
-                console.log('🔐 Attempting login for:', email);
-
-                try {
-                    const response = await fetch(`${CONFIG.BASE_URL}/logins`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify({ email, password })
-                    });
-
-                    if (!response.ok) {
-                        let errorMsg = 'Invalid email or password';
-                        try {
-                            const errorData = await response.json();
-                            errorMsg = errorData.message || errorData.error || errorMsg;
-                        } catch (e) {}
-                        throw new Error(errorMsg);
-                    }
-
-                    const data = await response.json();
-                    console.log('✅ Login successful', data);
-
-                    if (data.token) {
-                        localStorage.setItem('authToken', data.token);
-
-                        let userName = data.name || email.split('@')[0];
-                        let userRole = localStorage.getItem('userRole') || 'CUSTOMER';
-
-                        if (data.role === 'SELLER' || (data.roles && data.roles.includes('ROLE_SELLER'))) {
-                            userRole = 'SELLER';
-                        }
-
-                        if (!data.role && !data.roles) {
-                            try {
-                                const payload = JSON.parse(atob(data.token.split('.')[1]));
-                                userName = payload.sub || payload.name || userName;
-                                if (payload.roles && Array.isArray(payload.roles) && payload.roles.includes('ROLE_SELLER')) {
-                                    userRole = 'SELLER';
-                                }
-                            } catch (e) {
-                                console.warn('⚠️ Could not decode token');
-                            }
-                        }
-
-                        localStorage.setItem('userName', userName);
-                        localStorage.setItem('userRole', userRole);
-                        console.log('👤 User:', userName, 'Role:', userRole);
-
-                        UI.showSuccessAndRedirect(userRole);
-                    } else {
-                        throw new Error('No token received from server');
-                    }
-
-                } catch (err) {
-                    console.error('❌ Login fetch error:', err);
-                    if (err.name === 'TypeError' && err.message.includes('fetch')) {
-                        throw new Error(`Cannot connect to ${CONFIG.BASE_URL}. Check if backend is running and CORS is enabled.`);
-                    }
-                    throw err;
-                }
-            },
-
-            async handleRegister(email, password) {
-                // ── Basic fields ──
-                const name        = document.getElementById('name')?.value.trim();
-                const contact     = document.getElementById('contact')?.value.trim();
-
-                // ── Address fields ──
-                const addressLine = document.getElementById('addressLine')?.value.trim();
-                const city        = document.getElementById('city')?.value.trim();
-                const state       = document.getElementById('state')?.value.trim();
-                const pincode     = document.getElementById('pincode')?.value.trim();
-
-                // ── Validation ──
-                if (!name || !contact) {
-                    throw new Error('Please fill in your name and phone number');
-                }
-                if (!/^[0-9]{10}$/.test(contact)) {
-                    throw new Error('Please enter a valid 10-digit phone number');
-                }
-                if (!addressLine || !city || !state || !pincode) {
-                    throw new Error('Please fill in all address fields');
-                }
-                if (!/^[0-9]{6}$/.test(pincode)) {
-                    throw new Error('Please enter a valid 6-digit pincode');
-                }
-
-                if (AppState.role === 'seller') {
-                    const businessName = document.getElementById('businessName')?.value.trim();
-                    const description  = document.getElementById('description')?.value.trim();
-                    if (!businessName) throw new Error('Please enter your kitchen / business name');
-                    if (!description)  throw new Error('Please add a description for your kitchen');
-                }
-
-                console.log('📝 Starting registration for:', email);
-
-                try {
-                    // ── Step 1: Register user ──
-                    const registerPayload = {
-                        name,
-                        email,
-                        password,
-                        contact,
-                        addressDto: {
-                            id: 0,
-                            addressLine,
-                            pincode,
-                            state,
-                            city
-                        }
-                    };
-
-                    console.log('📤 Register payload:', registerPayload);
-
-                    const regResponse = await fetch(`${CONFIG.BASE_URL}/register`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify(registerPayload)
-                    });
-
-                    if (!regResponse.ok) {
-                        let errorMsg = 'Registration failed';
-                        try {
-                            const errorData = await regResponse.json();
-                            if (typeof errorData === 'object' && !errorData.message) {
-                                errorMsg = Object.values(errorData).join(', ') || errorMsg;
-                            } else {
-                                errorMsg = errorData.message || errorData.error || errorMsg;
-                            }
-                        } catch (e) {}
-                        throw new Error(errorMsg);
-                    }
-
-                    console.log('✅ User registration successful');
-
-                    // ── Step 2: If seller, register as seller ──
-                    if (AppState.role === 'seller') {
-                        const businessName = document.getElementById('businessName').value.trim();
-                        const description  = document.getElementById('description').value.trim();
-
-                        const sellerPayload = {
-                            name,
-                            email,
-                            phone: contact,
-                            businessName,
-                            description,
-                            categories: ['ALL'],
-                            addressDto: {
-                                id: 0,
-                                addressLine,
-                                pincode,
-                                state,
-                                city
-                            }
-                        };
-
-                        console.log('📤 Seller payload:', sellerPayload);
-
-                        const sellerResponse = await fetch(`${CONFIG.BASE_URL}/register-seller`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/json'
-                            },
-                            body: JSON.stringify(sellerPayload)
-                        });
-
-                        if (!sellerResponse.ok) {
-                            let errorMsg = 'Seller registration failed';
-                            try {
-                                const errorData = await sellerResponse.json();
-                                errorMsg = errorData.message || errorData.error || errorMsg;
-                            } catch (e) {}
-                            throw new Error(errorMsg);
-                        }
-
-                        console.log('✅ Seller registration successful');
-                        localStorage.setItem('userRole', 'SELLER');
-                    }
-
-                    // ── Step 3: Auto-login ──
-                    console.log('🔐 Auto-logging in...');
-                    await this.handleLogin(email, password);
-
-                } catch (err) {
-                    if (err.name === 'TypeError' && err.message.includes('fetch')) {
-                        throw new Error(`Cannot connect to ${CONFIG.BASE_URL}. Check if backend is running and CORS is enabled.`);
-                    }
-                    throw err;
-                }
-            }
-        };
-
-        // =====================================================
-        // INITIALIZATION
-        // =====================================================
-        window.addEventListener('online',  () => console.log('✅ Network connected'));
-        window.addEventListener('offline', () => UI.showError('No internet connection. Please check your network.'));
-
-        // Auto-select role/mode from URL params
-        (function () {
-            const params = new URLSearchParams(window.location.search);
-            const mode = params.get('mode');
-            const role = params.get('role');
-
+        updateRoleHint(role) {
+            const hint = document.getElementById('roleHint');
             if (role === 'seller') {
-                AppState.role = 'seller';
-                UI.updateRoleToggle('seller');
+                hint.textContent = 'Login as Seller or Admin — your role is auto-detected';
+                hint.className = 'role-hint warn mb-3';
+            } else {
+                hint.textContent = 'Login as a Customer to browse & order food';
+                hint.className = 'role-hint mb-3';
             }
+        },
 
-            if (mode === 'register') {
-                AppState.view = 'register';
-                UI.renderForm();
+        renderForm() {
+            const isReg    = AppState.view === 'register';
+            const isSeller = AppState.role === 'seller';
+            const extraDiv = document.getElementById('extra-fields');
+
+            document.getElementById('page-title').innerText = isReg
+                ? (isSeller ? 'Join as a Chef' : 'Join as a Foodie')
+                : 'Unlock the Kitchen';
+            document.getElementById('btn-submit').innerText = isReg ? 'Create Account' : 'Login';
+            document.getElementById('footer-text').innerText = isReg ? 'Already registered?' : 'New to Gruhani?';
+            document.getElementById('footer-link').innerText = isReg ? 'Login' : 'Create Account';
+
+            if (isReg) {
+                const ic = 'w-full p-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:border-royalGold focus:outline-none text-sm transition-all';
+                let html = `
+                    <div class="input-group">
+                        <input type="text" id="name" placeholder="Full Name" required class="${ic}">
+                    </div>
+                    <div class="input-group mt-3">
+                        <input type="tel" id="contact" placeholder="Phone Number (10 digits)" required pattern="[0-9]{10}" class="${ic}">
+                    </div>`;
+
+                if (isSeller) {
+                    html += `
+                    <div class="input-group mt-3">
+                        <input type="text" id="businessName" placeholder="Kitchen / Business Name" required class="${ic}">
+                    </div>
+                    <div class="input-group mt-3">
+                        <textarea id="description" placeholder="Describe your kitchen & specialties..." required class="${ic}" rows="2"></textarea>
+                    </div>`;
+                }
+
+                html += `
+                    <div class="address-section mt-3">
+                        <div class="address-section-label">📍 Delivery / Service Address</div>
+                        <div class="input-group">
+                            <input type="text" id="addressLine" placeholder="Address Line" required class="${ic}">
+                        </div>
+                        <div class="input-row mt-2">
+                            <div class="input-group">
+                                <input type="text" id="city" placeholder="City" required class="${ic}">
+                            </div>
+                            <div class="input-group">
+                                <input type="text" id="state" placeholder="State" required class="${ic}">
+                            </div>
+                        </div>
+                        <div class="input-group mt-2">
+                            <input type="text" id="pincode" placeholder="Pincode (6 digits)" required pattern="[0-9]{6}" class="${ic}">
+                        </div>
+                    </div>`;
+
+                extraDiv.innerHTML = html;
+            } else {
+                extraDiv.innerHTML = '';
             }
-        })();
+        },
 
-        // Initialize Lucide Icons
-        if (typeof lucide !== 'undefined') lucide.createIcons();
-
-        // =====================================================
-        // FORGOT PASSWORD
-        // =====================================================
-        function openForgotPassword() {
-            document.getElementById('forgotPasswordModal').classList.remove('hidden');
-            document.getElementById('forgotEmail').value = '';
-            document.getElementById('forgotPasswordMessage').classList.add('hidden');
+        showError(msg) {
+            const el = document.getElementById('form-error');
+            el.innerHTML = `<i data-lucide="alert-triangle" class="inline w-4 h-4 mr-1"></i><strong>Error:</strong> ${msg}`;
+            el.classList.remove('hidden');
             if (typeof lucide !== 'undefined') lucide.createIcons();
-        }
+            el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        },
 
-        function closeForgotPassword() {
-            document.getElementById('forgotPasswordModal').classList.add('hidden');
-        }
+        clearError() {
+            document.getElementById('form-error').classList.add('hidden');
+        },
 
-        async function handleForgotPassword(e) {
+        setLoading(loading) {
+            AppState.isLoading = loading;
+            const btn = document.getElementById('btn-submit');
+            btn.innerHTML = loading
+                ? `<span class="spinner"></span>Processing...`
+                : (AppState.view === 'register' ? 'Create Account' : 'Login');
+            btn.disabled = loading;
+        },
+
+        showSuccessAndRedirect(role, name) {
+            document.getElementById('auth-section').style.display = 'none';
+            document.getElementById('success-section').classList.remove('hidden');
+            const titleEl = document.getElementById('successTitle');
+            if (role === 'ADMIN') {
+                titleEl.textContent = '👑 Welcome, Admin!';
+                document.getElementById('successSub').textContent = 'Loading admin dashboard...';
+            } else if (role === 'SELLER') {
+                titleEl.textContent = `Welcome, Chef ${(name || '').split(' ')[0] || ''}!`;
+                document.getElementById('successSub').textContent = 'Loading your kitchen...';
+            } else {
+                titleEl.textContent = `Welcome, ${(name || '').split(' ')[0] || 'Foodie'}!`;
+                document.getElementById('successSub').textContent = 'Setting your table...';
+            }
+
+            setTimeout(() => {
+                const redirect = localStorage.getItem('redirectAfterLogin');
+                if (redirect) {
+                    localStorage.removeItem('redirectAfterLogin');
+                    window.location.href = redirect;
+                    return;
+                }
+                if (role === 'ADMIN')  window.location.href = 'admin-dashboard-modern.html';
+                else if (role === 'SELLER') window.location.href = 'seller-dashboard-enhanced.html';
+                else window.location.href = 'index.html';
+            }, 1500);
+        }
+    };
+
+    /* ═══════════════════════════════════════════════
+       HANDLERS
+    ═══════════════════════════════════════════════ */
+    const Handlers = {
+        async handleAuth(e) {
             e.preventDefault();
-            const email = document.getElementById('forgotEmail').value;
-            const messageDiv = document.getElementById('forgotPasswordMessage');
+            if (AppState.isLoading) return;
+
+            UI.clearError();
+            UI.setLoading(true);
+
+            const email    = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!email || !password) {
+                UI.showError('Please fill in all required fields');
+                UI.setLoading(false);
+                return;
+            }
+            if (password.length < 6) {
+                UI.showError('Password must be at least 6 characters');
+                UI.setLoading(false);
+                return;
+            }
 
             try {
-                
-                const response = await fetch(`${CONFIG.BASE_URL}/forgot-password?email=${encodeURIComponent(email)}`, {
-                    method: 'POST'
-                });
-
-                if (response.ok) {
-                    messageDiv.className = 'mt-4 p-3 rounded-lg text-sm bg-green-100 text-green-800';
-                    messageDiv.textContent = '✅ Password reset link sent! Check your email.';
-                    messageDiv.classList.remove('hidden');
-                    setTimeout(() => closeForgotPassword(), 3000);
+                if (AppState.view === 'login') {
+                    await this.handleLogin(email, password);
                 } else {
-                    throw new Error('Email not found');
+                    await this.handleRegister(email, password);
                 }
-            } catch (error) {
-                messageDiv.className = 'mt-4 p-3 rounded-lg text-sm bg-red-100 text-red-800';
-                messageDiv.textContent = '❌ Email not found. Please check and try again.';
-                messageDiv.classList.remove('hidden');
+            } catch (err) {
+                console.error('Auth error:', err);
+                UI.showError(err.message || 'Something went wrong. Please try again.');
+                UI.setLoading(false);
             }
-        }
-    </script>
+        },
 
+        async handleLogin(email, password) {
+            const response = await fetch(`${CONFIG.BASE_URL}/logins`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({ email, password })
+            }).catch(err => {
+                throw new Error(`Cannot connect to server. Please check your internet connection.`);
+            });
+
+            if (!response.ok) {
+                let msg = 'Invalid email or password';
+                try { const d = await response.json(); msg = d.message || d.error || msg; } catch {}
+                throw new Error(msg);
+            }
+
+            const data = await response.json();
+
+            if (!data.token) throw new Error('No token received from server');
+
+            // ── Decode token to find actual role ──
+            let actualRole = 'CUSTOMER';
+            let userName   = data.name || email.split('@')[0];
+
+            // Try response fields first
+            if (data.role)  actualRole = data.role;
+            if (data.roles) {
+                if (data.roles.includes('ROLE_ADMIN'))  actualRole = 'ADMIN';
+                else if (data.roles.includes('ROLE_SELLER')) actualRole = 'SELLER';
+            }
+
+            // Decode JWT payload
+            try {
+                const payload = JSON.parse(atob(data.token.split('.')[1]));
+                userName = payload.sub || payload.name || payload.email || userName;
+
+                const jwtRoles = payload.roles || payload.authorities || [];
+                if (Array.isArray(jwtRoles)) {
+                    if (jwtRoles.some(r => r === 'ROLE_ADMIN'   || r === 'ADMIN'))  actualRole = 'ADMIN';
+                    else if (jwtRoles.some(r => r === 'ROLE_SELLER' || r === 'SELLER')) actualRole = 'SELLER';
+                    else if (jwtRoles.some(r => r === 'ROLE_USER'   || r === 'CUSTOMER')) actualRole = 'CUSTOMER';
+                }
+            } catch (e) { console.warn('Could not decode token payload'); }
+
+            // ── ✅ ROLE VALIDATION — core fix ──
+            const selectedRole = AppState.role; // 'customer' or 'seller'
+
+            if (selectedRole === 'customer' && actualRole === 'SELLER') {
+                throw new Error('This email is registered as a Seller/Chef. Please switch to "Seller / Admin" tab to login.');
+            }
+            if (selectedRole === 'customer' && actualRole === 'ADMIN') {
+                throw new Error('This is an Admin account. Please switch to "Seller / Admin" tab to login.');
+            }
+            if (selectedRole === 'seller' && actualRole === 'CUSTOMER') {
+                throw new Error('This email is a Customer account. Please switch to "Customer" tab to login, or register as a Seller.');
+            }
+
+            // ── Store & redirect ──
+            localStorage.setItem('authToken', data.token);
+            localStorage.setItem('userName',  userName);
+            localStorage.setItem('userRole',  actualRole);
+
+            console.log('✅ Login success — User:', userName, '| Role:', actualRole);
+            UI.showSuccessAndRedirect(actualRole, userName);
+        },
+
+        async handleRegister(email, password) {
+            const name        = document.getElementById('name')?.value.trim();
+            const contact     = document.getElementById('contact')?.value.trim();
+            const addressLine = document.getElementById('addressLine')?.value.trim();
+            const city        = document.getElementById('city')?.value.trim();
+            const state       = document.getElementById('state')?.value.trim();
+            const pincode     = document.getElementById('pincode')?.value.trim();
+
+            if (!name || !contact)             throw new Error('Please fill in your name and phone number');
+            if (!/^[0-9]{10}$/.test(contact))  throw new Error('Please enter a valid 10-digit phone number');
+            if (!addressLine || !city || !state || !pincode) throw new Error('Please fill in all address fields');
+            if (!/^[0-9]{6}$/.test(pincode))   throw new Error('Please enter a valid 6-digit pincode');
+
+            if (AppState.role === 'seller') {
+                const bn  = document.getElementById('businessName')?.value.trim();
+                const dsc = document.getElementById('description')?.value.trim();
+                if (!bn)  throw new Error('Please enter your kitchen / business name');
+                if (!dsc) throw new Error('Please add a description for your kitchen');
+            }
+
+            // Step 1: Register user
+            const regRes = await fetch(`${CONFIG.BASE_URL}/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({ name, email, password, contact, addressDto: { id:0, addressLine, pincode, state, city } })
+            });
+            if (!regRes.ok) {
+                let msg = 'Registration failed';
+                try {
+                    const d = await regRes.json();
+                    msg = typeof d === 'object' && !d.message ? Object.values(d).join(', ') : (d.message || d.error || msg);
+                } catch {}
+                throw new Error(msg);
+            }
+
+            // Step 2: Seller registration
+            if (AppState.role === 'seller') {
+                const businessName = document.getElementById('businessName').value.trim();
+                const description  = document.getElementById('description').value.trim();
+                const sellerRes = await fetch(`${CONFIG.BASE_URL}/register-seller`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({ name, email, phone: contact, businessName, description, categories: ['ALL'], addressDto: { id:0, addressLine, pincode, state, city } })
+                });
+                if (!sellerRes.ok) {
+                    let msg = 'Seller registration failed';
+                    try { const d = await sellerRes.json(); msg = d.message || d.error || msg; } catch {}
+                    throw new Error(msg);
+                }
+            }
+
+            // Step 3: Auto-login
+            await this.handleLogin(email, password);
+        }
+    };
+
+    /* ═══════════════════════════════════════════════
+       INIT
+    ═══════════════════════════════════════════════ */
+    window.addEventListener('offline', () => UI.showError('No internet connection.'));
+
+    // URL params: ?mode=register&role=seller
+    (function () {
+        const params = new URLSearchParams(window.location.search);
+        const mode   = params.get('mode');
+        const role   = params.get('role');
+
+        if (role === 'seller') {
+            AppState.role = 'seller';
+            UI.updateRoleToggle('seller');
+            UI.updateRoleHint('seller');
+        }
+        if (mode === 'register') {
+            AppState.view = 'register';
+            UI.renderForm();
+        }
+    })();
+
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    /* ═══════════════════════════════════════════════
+       FORGOT PASSWORD
+    ═══════════════════════════════════════════════ */
+    function openForgotPassword() {
+        document.getElementById('forgotPasswordModal').classList.remove('hidden');
+        document.getElementById('forgotEmail').value = '';
+        document.getElementById('forgotPasswordMessage').classList.add('hidden');
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+    function closeForgotPassword() {
+        document.getElementById('forgotPasswordModal').classList.add('hidden');
+    }
+    async function handleForgotPassword(e) {
+        e.preventDefault();
+        const email      = document.getElementById('forgotEmail').value;
+        const msgDiv     = document.getElementById('forgotPasswordMessage');
+        try {
+            const res = await fetch(`${CONFIG.BASE_URL}/forgot-password?email=${encodeURIComponent(email)}`, { method: 'POST' });
+            if (res.ok) {
+                msgDiv.className   = 'mt-4 p-3 rounded-lg text-sm bg-green-100 text-green-800';
+                msgDiv.textContent = '✅ Password reset link sent! Check your email.';
+                msgDiv.classList.remove('hidden');
+                setTimeout(() => closeForgotPassword(), 3000);
+            } else { throw new Error(); }
+        } catch {
+            msgDiv.className   = 'mt-4 p-3 rounded-lg text-sm bg-red-100 text-red-800';
+            msgDiv.textContent = '❌ Email not found. Please check and try again.';
+            msgDiv.classList.remove('hidden');
+        }
+    }
+    </script>
 </body>
 </html>
