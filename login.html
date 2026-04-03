@@ -106,7 +106,6 @@
         .spinner { border:2px solid #f3f4f6; border-top:2px solid #b45309; border-radius:50%; width:16px; height:16px; animation:spin 0.8s linear infinite; display:inline-block; margin-right:8px; }
         @keyframes spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
 
-        /* Role info hint */
         .role-hint { font-size:11px; color:#6b7280; text-align:center; margin-top:-8px; margin-bottom:4px; padding:6px 10px; background:#f9fafb; border-radius:8px; border:1px solid #e5e7eb; }
         .role-hint.warn { background:#fef3c7; border-color:#fcd34d; color:#92400e; }
 
@@ -159,12 +158,10 @@
                     class="flex-1 py-2 text-[10px] font-bold uppercase tracking-wider relative z-10 text-gray-400 transition-colors">Seller / Admin</button>
             </div>
 
-            <!-- Role hint -->
             <div id="roleHint" class="role-hint mb-3">Login as a Customer to order food</div>
 
             <form onsubmit="Handlers.handleAuth(event)" class="space-y-3" novalidate>
                 <div id="extra-fields"></div>
-
                 <div class="input-group">
                     <input type="email" id="email" placeholder="Email Address" required autocomplete="email">
                 </div>
@@ -174,9 +171,7 @@
                 <div class="text-right -mt-2 mb-3">
                     <button type="button" onclick="openForgotPassword()" class="text-xs text-royalGold hover:underline transition">Forgot Password?</button>
                 </div>
-
                 <div id="form-error" class="text-errorRed text-xs text-center font-semibold hidden bg-red-50 p-2 rounded-lg border border-red-200" role="alert"></div>
-
                 <button id="btn-submit" type="submit"
                     class="w-full py-3 bg-gradient-to-r from-royalBrown to-[#4a2c20] text-white font-cinzel font-bold text-xs uppercase tracking-widest rounded-lg shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
                     Login
@@ -211,16 +206,10 @@
     </div>
 
     <script>
-    /* ═══════════════════════════════════════════════
-       CONFIG
-    ═══════════════════════════════════════════════ */
     const CONFIG = {
         BASE_URL: window.CONFIG?.BASE_URL || 'https://gruhani-backend.onrender.com'
     };
 
-    /* ═══════════════════════════════════════════════
-       APP STATE
-    ═══════════════════════════════════════════════ */
     const AppState = {
         view: 'login',
         role: 'customer',
@@ -240,9 +229,6 @@
         }
     };
 
-    /* ═══════════════════════════════════════════════
-       UI
-    ═══════════════════════════════════════════════ */
     const UI = {
         updateRoleToggle(role) {
             const isSeller = role === 'seller';
@@ -325,11 +311,10 @@
             const el = document.getElementById('form-error');
             el.innerHTML = `<i data-lucide="alert-triangle" class="inline w-4 h-4 mr-1"></i><strong>Error:</strong> ${msg}`;
             el.classList.remove('hidden');
-        
-
             if (typeof lucide !== 'undefined') lucide.createIcons();
             el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         },
+
         clearError() {
             document.getElementById('form-error').classList.add('hidden');
         },
@@ -372,9 +357,6 @@
         }
     };
 
-    /* ═══════════════════════════════════════════════
-       HANDLERS
-    ═══════════════════════════════════════════════ */
     const Handlers = {
         async handleAuth(e) {
             e.preventDefault();
@@ -415,8 +397,8 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                 body: JSON.stringify({ email, password })
-            }).catch(err => {
-                throw new Error(`Cannot connect to server. Please check your internet connection.`);
+            }).catch(() => {
+                throw new Error('Cannot connect to server. Please check your internet connection.');
             });
 
             if (!response.ok) {
@@ -426,46 +408,48 @@
             }
 
             const data = await response.json();
-
             if (!data.token) throw new Error('No token received from server');
 
-            // ── Decode token to find actual role ──
             let actualRole = 'CUSTOMER';
             let userName   = data.name || email.split('@')[0];
 
-            // Try response fields first
             if (data.role)  actualRole = data.role;
             if (data.roles) {
                 if (data.roles.includes('ROLE_ADMIN'))  actualRole = 'ADMIN';
                 else if (data.roles.includes('ROLE_SELLER')) actualRole = 'SELLER';
             }
 
-            // Decode JWT payload
+            // ── Decode JWT — reads YOUR structure: payload.jwtClaims.roles ──
             try {
                 const payload = JSON.parse(atob(data.token.split('.')[1]));
                 userName = payload.sub || payload.name || payload.email || userName;
 
-                const jwtRoles = payload.roles || payload.authorities || [];
+                // ✅ FIXED: reads jwtClaims.roles from your Authutil.java structure
+                const jwtRoles = (payload.jwtClaims && payload.jwtClaims.roles)
+                    || payload.roles
+                    || payload.authorities
+                    || [];
+
                 if (Array.isArray(jwtRoles)) {
-                    if (jwtRoles.some(r => r === 'ROLE_ADMIN'   || r === 'ADMIN'))  actualRole = 'ADMIN';
+                    if (jwtRoles.some(r => r === 'ROLE_ADMIN'  || r === 'ADMIN'))   actualRole = 'ADMIN';
                     else if (jwtRoles.some(r => r === 'ROLE_SELLER' || r === 'SELLER')) actualRole = 'SELLER';
                     else if (jwtRoles.some(r => r === 'ROLE_USER'   || r === 'CUSTOMER')) actualRole = 'CUSTOMER';
                 }
             } catch (e) { console.warn('Could not decode token payload'); }
 
-            // ── ✅ ROLE VALIDATION — core fix ──
-            const selectedRole = AppState.role; // 'customer' or 'seller'
+            // ── Role validation ──
+            const selectedRole = AppState.role;
 
             if (selectedRole === 'customer' && actualRole === 'SELLER') {
-throw new Error('This is a Seller account. Please click the "Seller / Admin" tab at the top of this form, then login again.');            }
+                throw new Error('This is a Seller account. Please click the "Seller / Admin" tab at the top, then login again.');
+            }
             if (selectedRole === 'customer' && actualRole === 'ADMIN') {
-                throw new Error('This is an Admin account. Please switch to "Seller / Admin" tab to login.');
+                throw new Error('This is an Admin account. Please click the "Seller / Admin" tab to login.');
             }
             if (selectedRole === 'seller' && actualRole === 'CUSTOMER') {
-                throw new Error('This email is a Customer account. Please switch to "Customer" tab to login, or register as a Seller.');
+                throw new Error('This is a Customer account. Please switch to the "Customer" tab to login.');
             }
 
-            // ── Store & redirect ──
             localStorage.setItem('authToken', data.token);
             localStorage.setItem('userName',  userName);
             localStorage.setItem('userRole',  actualRole);
@@ -494,7 +478,6 @@ throw new Error('This is a Seller account. Please click the "Seller / Admin" tab
                 if (!dsc) throw new Error('Please add a description for your kitchen');
             }
 
-            // Step 1: Register user
             const regRes = await fetch(`${CONFIG.BASE_URL}/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
@@ -509,7 +492,6 @@ throw new Error('This is a Seller account. Please click the "Seller / Admin" tab
                 throw new Error(msg);
             }
 
-            // Step 2: Seller registration
             if (AppState.role === 'seller') {
                 const businessName = document.getElementById('businessName').value.trim();
                 const description  = document.getElementById('description').value.trim();
@@ -525,17 +507,13 @@ throw new Error('This is a Seller account. Please click the "Seller / Admin" tab
                 }
             }
 
-            // Step 3: Auto-login
             await this.handleLogin(email, password);
         }
     };
 
-    /* ═══════════════════════════════════════════════
-       INIT
-    ═══════════════════════════════════════════════ */
+    /* ── INIT ── */
     window.addEventListener('offline', () => UI.showError('No internet connection.'));
 
-    // URL params: ?mode=register&role=seller
     (function () {
         const params = new URLSearchParams(window.location.search);
         const mode   = params.get('mode');
@@ -553,7 +531,6 @@ throw new Error('This is a Seller account. Please click the "Seller / Admin" tab
     })();
 
     if (typeof lucide !== 'undefined') lucide.createIcons();
-      
 
     // Auto-select seller tab if previously logged in as seller
     const prevRole = localStorage.getItem('userRole');
@@ -561,12 +538,7 @@ throw new Error('This is a Seller account. Please click the "Seller / Admin" tab
         AppState.setRole('seller');
     }
 
-    /* ═══════════════════════════════════════════════
-       FORGOT PASSWORD
-
-    /* ═══════════════════════════════════════════════
-       FORGOT PASSWORD
-    ═══════════════════════════════════════════════ */
+    /* ── FORGOT PASSWORD ── */
     function openForgotPassword() {
         document.getElementById('forgotPasswordModal').classList.remove('hidden');
         document.getElementById('forgotEmail').value = '';
@@ -578,8 +550,8 @@ throw new Error('This is a Seller account. Please click the "Seller / Admin" tab
     }
     async function handleForgotPassword(e) {
         e.preventDefault();
-        const email      = document.getElementById('forgotEmail').value;
-        const msgDiv     = document.getElementById('forgotPasswordMessage');
+        const email  = document.getElementById('forgotEmail').value;
+        const msgDiv = document.getElementById('forgotPasswordMessage');
         try {
             const res = await fetch(`${CONFIG.BASE_URL}/forgot-password?email=${encodeURIComponent(email)}`, { method: 'POST' });
             if (res.ok) {
