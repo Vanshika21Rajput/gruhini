@@ -325,6 +325,11 @@
             const el = document.getElementById('form-error');
             el.innerHTML = `<i data-lucide="alert-triangle" class="inline w-4 h-4 mr-1"></i><strong>Error:</strong> ${msg}`;
             el.classList.remove('hidden');
+        
+const prevRole = localStorage.getItem('userRole');
+if (prevRole === 'SELLER' || prevRole === 'ADMIN') {
+    AppState.setRole('seller');
+}
             if (typeof lucide !== 'undefined') lucide.createIcons();
             el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         },
@@ -456,8 +461,7 @@
             const selectedRole = AppState.role; // 'customer' or 'seller'
 
             if (selectedRole === 'customer' && actualRole === 'SELLER') {
-                throw new Error('This email is registered as a Seller/Chef. Please switch to "Seller / Admin" tab to login.');
-            }
+throw new Error('This is a Seller account. Please click the "Seller / Admin" tab at the top of this form, then login again.');            }
             if (selectedRole === 'customer' && actualRole === 'ADMIN') {
                 throw new Error('This is an Admin account. Please switch to "Seller / Admin" tab to login.');
             }
