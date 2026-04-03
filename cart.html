@@ -519,7 +519,8 @@ async function placeOrder(body) {
         const data = await res.json();
         console.log('✅ Order placed:', data);
         const orderId = data.id || data.orderId || data.order_id || (data.order?.id) || null;
-        if (orderId) window.location.href = `order-status.html?orderId=${orderId}`;
+       orderInProgress = false; 
+      if (orderId) window.location.href = `order-status.html?orderId=${orderId}`;
         else { alert('Order placed! 🎉'); window.location.href = 'orders.html'; }
     } catch(e) {
         console.error(e);
