@@ -494,34 +494,42 @@
      Sends exactly: { "addressId": 5 }
      matches: orderReceiveDto { Long addressId }
   ── */
-  async function placeOrder(body) {
+  let orderInProgress = false;
+
+async function placeOrder(body) {
+    if (orderInProgress) return;   // prevents double fire
+    orderInProgress = true;
+
     const btn = document.getElementById('checkoutBtn');
     btn.innerHTML = `<span class="animate-pulse">Placing Order...</span>`;
     btn.disabled = true;
+
     console.log('🛒 POST /place-order:', JSON.stringify(body));
     try {
-      const res = await fetch(`${window.CONFIG.BASE_URL}/place-order`, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      });
-      if (!res.ok) {
-        let msg = `Error ${res.status}`;
-        try { const j = await res.json(); msg = j.message || JSON.stringify(j); } catch { msg = await res.text() || msg; }
-        throw new Error(msg);
-      }
-      const data = await res.json();
-      console.log('✅ Order placed:', data);
-      // OrderSellerResponseDto.id is the order id
-      const orderId = data.id || data.orderId || data.order_id || (data.order?.id) || null;
-      if (orderId) window.location.href = `order-status.html?orderId=${orderId}`;
-      else         { alert('Order placed! 🎉'); window.location.href = 'orders.html'; }
+        const res = await fetch(`${window.CONFIG.BASE_URL}/place-order`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+        if (!res.ok) {
+            let msg = `Error ${res.status}`;
+            try { const j = await res.json(); msg = j.message || JSON.stringify(j); } catch { msg = await res.text() || msg; }
+            throw new Error(msg);
+        }
+        const data = await res.json();
+        console.log('✅ Order placed:', data);
+        const orderId = data.id || data.orderId || data.order_id || (data.order?.id) || null;
+        if (orderId) window.location.href = `order-status.html?orderId=${orderId}`;
+        else { alert('Order placed! 🎉'); window.location.href = 'orders.html'; }
     } catch(e) {
-      console.error(e);
-      alert('Order failed: ' + (e.message || 'Please try again.'));
-      btn.innerHTML = 'Place Order'; btn.disabled = false;
+        console.error(e);
+        alert('Order failed: ' + (e.message || 'Please try again.'));
+        btn.innerHTML = 'Place Order';
+        btn.disabled = false;
+        orderInProgress = false;  // reset so user can retry
     }
-  }
+}
+     
 
   function showAddrError(msg) {
     document.getElementById('addrError').classList.remove('hidden');
