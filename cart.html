@@ -988,4 +988,59 @@ Sends exactly: { "addressId": 5 }
 
 matches: orderReceiveDto { Long addressId }
 
-── */
+── */   // ── PLACE ORDER (FINAL FINAL WORKING VERSION) ─────────────────
+async function placeOrder(body) {
+  const btn = document.getElementById('checkoutBtn');
+
+  if (btn.disabled) return;
+
+  btn.innerHTML = `<span class="animate-pulse">Placing Order...</span>`;
+  btn.disabled = true;
+
+  console.log('🛒 POST /place-order:', JSON.stringify(body));
+
+  try {
+    const res = await fetch(`${window.CONFIG.BASE_URL}/place-order`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+
+    if (!res.ok) {
+      let msg = `Error ${res.status}`;
+      try {
+        const j = await res.json();
+        msg = j.message || JSON.stringify(j);
+      } catch {
+        msg = await res.text() || msg;
+      }
+      throw new Error(msg);
+    }
+
+    const data = await res.json();
+    console.log('✅ Order placed:', data);
+
+    const orderId =
+      data.id ||
+      data.orderId ||
+      data.order_id ||
+      (data.order && data.order.id);
+
+    if (orderId) {
+      window.location.href = `order-status.html?orderId=${orderId}`;
+    } else {
+      alert('Order placed! 🎉');
+      window.location.href = 'orders.html';
+    }
+
+  } catch (e) {
+    console.error(e);
+    alert('Order failed: ' + e.message);
+
+    btn.innerHTML = 'Place Order';
+    btn.disabled = false;
+  }
+}
