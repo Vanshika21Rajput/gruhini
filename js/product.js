@@ -46,7 +46,7 @@ async function fetchProductData(productId) {
         const controller = new AbortController();
         setTimeout(() => controller.abort(), 10000);
 
-        const response = await fetch(`${window.CONFIG.BASE_URL}/product/${productId}`, {
+        const response = await fetch(`${window.CONFIG.BASE_URL}/products/${productId}`, {
             signal: controller.signal
         });
 
