@@ -58,7 +58,12 @@
       background: linear-gradient(180deg, rgba(15,8,5,0.3) 0%, rgba(15,8,5,0.8) 100%);
       pointer-events: none;
     }
-
+.modal-overlay {
+  pointer-events: none;
+}
+.modal-overlay.open {
+  pointer-events: all;
+}
     nav {
       position: fixed;
       top: 0;
@@ -128,7 +133,7 @@
     .approval-card { background: linear-gradient(135deg, rgba(212,175,55,0.05), rgba(212,175,55,0.01)); border: 2px solid var(--border); border-radius: 14px; padding: 18px; display: flex; align-items: flex-start; gap: 16px; transition: all 0.3s ease; cursor: pointer; }
     .approval-card:hover { border-color: var(--border2); background: linear-gradient(135deg, rgba(212,175,55,0.1), rgba(212,175,55,0.05)); transform: translateY(-2px); }
     .approval-card.selected { border-color: var(--gold-main); background: rgba(212,175,55,0.12); }
-    .approval-checkbox { margin-top: 4px; accent-color: var(--gold-main); width: 18px; height: 18px; flex-shrink: 0; cursor: pointer; pointer-events: none; }
+    .approval-checkbox { margin-top: 4px; accent-color: var(--gold-main); width: 18px; height: 18px; flex-shrink: 0; cursor: pointer; }
     .approval-body { flex: 1; min-width: 0; }
     .approval-name { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 15px; color: var(--text); margin-bottom: 4px; }
     .approval-meta { font-size: 12px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 8px; }
@@ -458,7 +463,9 @@ function switchTab(tab, btn) {
   btn.classList.add('active');
   lucide.createIcons();
 }
-
+window.onload = () => {
+  document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+};
 function statusClass(status) {
   const map = { 'APPROVED':'approved','PENDING':'pending','REJECTED':'rejected','DELIVERED':'delivered','ACCEPTED':'accepted','CANCELLED':'cancelled' };
   return map[(status || '').toUpperCase()] || 'pending';
