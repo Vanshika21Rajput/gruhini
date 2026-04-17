@@ -48,7 +48,7 @@ jwtfilter jf;
         return hs.csrf(o->o.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(h->h.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(o->o.requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll().requestMatchers("/logins","/register","/register-seller","/explore","/forgot-password","/verify-otp-forgetPassword","/error").permitAll()
+                .authorizeHttpRequests(o->o.requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll().requestMatchers("/logins","/register","/register-seller","/explore","/forgot-password","/verify-otp-forgetPassword","/error","/admin/**").permitAll()
                  ///logins","/register","/home","/api/**","/register-seller","/seller-login","/view-pending","/get-all-products","/add-product","/got-message","/upload"
                     .anyRequest().authenticated())
                 .addFilterBefore(jf, UsernamePasswordAuthenticationFilter.class)
@@ -60,7 +60,10 @@ jwtfilter jf;
     public CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("https://gruhini-app1.onrender.com,https://gruhani-app.onrender.com"));
+        configuration.setAllowedOrigins(Arrays.asList(
+                "https://gruhini-app1.onrender.com",
+                "https://gruhani-app.onrender.com"
+        ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(false);

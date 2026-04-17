@@ -48,6 +48,7 @@ public class jwtfilter extends OncePerRequestFilter {
                     || path.startsWith("/logins")
                     || path.startsWith("/register")
                     || path.startsWith("/explore")
+                    || path.startsWith("/admin")
                     || request.getMethod().equalsIgnoreCase("OPTIONS");
         }
 
