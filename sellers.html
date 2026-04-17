@@ -440,12 +440,11 @@
             { id: "3", title: "Mawa Slice Cake", price: "₹250", chef: "Sakshi Tolani", loc: "Pune, MH", desc: "Rich Parsi-style cake", img: "Sakshi Tolani/Sakshi Tolani/Mawa Slice Cakes as Gifts.jpeg", avatar: "Sakshi Tolani/Sakshi Tolani/Owner pic.jpeg", category: "Desserts" },
             { id: "4", title: "Herbal Bath Soap", price: "₹120", chef: "Dolly Aunty", loc: "Mumbai, MH", desc: "Handmade organic", img: "dolly aunty/herbal soap.jpeg", avatar: "dolly aunty/Owner pic.jpeg", category: "Crafts" }
         ];
-
         async function loadSellers() {
             try {
                 const controller = new AbortController();
                 const timeout = setTimeout(() => controller.abort(), 10000);
-                const res = await fetch(`${BASE_URL}/explore`, { signal: controller.signal });
+                const res = await fetch(`${BASE_URL}/get-allSellers`, { signal: controller.signal });
                 clearTimeout(timeout);
 
                 if (res.ok) {
@@ -480,36 +479,27 @@
             processData(MOCK_DATA);
         }
 
-        function processData(products) {
+        function processData(sellers) {
             const sellersMap = new Map();
 
-            products.forEach(item => {
-                const name = item.chef || item.seller?.businessName;
+            sellers.forEach(seller => {
+                const name = seller.businessName || seller.chef || seller.name;
                 if (!name) return;
 
                 if (!sellersMap.has(name)) {
                     sellersMap.set(name, {
                         name: name,
-                        loc: item.loc || item.seller?.location || 'Home Kitchen',
-                        avatar: item.avatar || item.seller?.avatar,
-                        specialty: item.category || 'Home Cooked',
-                        dishCount: 0,
-                        topDish: null,
+                        loc: seller.loc || seller.location || 'Home Kitchen',
+                        avatar: seller.profileImageUrl || seller.avatar,
+                        specialty: (seller.category && seller.category.length > 0) ? seller.category[0] : (seller.specialty || 'Home Cooked'),
+                        dishCount: 1,
+                        topDish: { name: name + ' Special' },
                         topDishes: []
                     });
                 }
-                const seller = sellersMap.get(name);
-                seller.dishCount++;
-                if (!seller.topDish) seller.topDish = item;
-                if (seller.topDishes.length < 3) {
-                    seller.topDishes.push({
-                        name: item.title || item.name, img: item.img ||
-                            item.image
-                    });
-                }
             }); document.getElementById('statKitchens').textContent = sellersMap.size;
-            document.getElementById('statDishes').textContent = products.length; render([...sellersMap.values()]);
-        } function
+            document.getElementById('statDishes').textContent = sellers.length; render([...sellersMap.values()]);
+        }function
             render(sellers) {
             const grid = document.getElementById('grid');
             document.getElementById('loading').classList.add('hidden'); grid.classList.remove('hidden'); grid.innerHTML = '';
