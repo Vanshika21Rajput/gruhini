@@ -498,7 +498,7 @@
                 const sellerRes = await fetch(`${CONFIG.BASE_URL}/register-seller`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify({ name, email, phone: contact, businessName, description, categories: ['ALL'], addressDto: { id:0, addressLine, pincode, state, city } })
+                    body: JSON.stringify({ name, email, phone: contact, businessName, categories: ['ALL'] })
                 });
                 if (!sellerRes.ok) {
                     let msg = 'Seller registration failed';
@@ -506,7 +506,7 @@
                     throw new Error(msg);
                 }
             }
-
+            
             await this.handleLogin(email, password);
         }
     };
