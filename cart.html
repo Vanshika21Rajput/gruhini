@@ -105,7 +105,6 @@
     </div>
   </div>
 
-  <!-- ADDRESS MODAL -->
   <div class="modal-backdrop" id="addressModal">
     <div class="modal-box">
       <div class="flex items-center justify-between mb-5">
@@ -219,7 +218,7 @@
     container.innerHTML = cartData.map(item => {
       const p     = item.product || item.p || item;
       const name  = p.productname || p.name  || item.productname || 'Unknown Item';
-      const chef  = p.chefname   || p.chef   || item.chefname    || 'Home Chef';
+      const chef  = p.chefname   || p.chef  || item.chefname    || 'Home Chef';
       const price = parseFloat(p.price || item.price || 0);
       const img   = p.image || p.img || item.image || 'https://placehold.co/150x150/1a0f0a/c5a059?text=Food';
       const id    = p.productid || p.id || item.productid || item.id;
@@ -304,18 +303,19 @@
 
   function closeAddressModal() { document.getElementById('addressModal').classList.remove('open'); }
 
-function renderAddressCards(addresses) {
+  // ALL MISSING FUNCTIONS RESTORED BELOW 👇
+
+  function renderAddressCards(addresses) {
     const displayEl = document.getElementById('addrDisplay');
     displayEl.classList.remove('hidden');
     if (addresses.length === 0) { openEditForm(null, true); return; }
 
-    // Dhyan de: backend se id ya addressId kuch bhi aa sakta hai
     selectedAddressId = addresses[0].id || addresses[0].addressId || 0;
     
     displayEl.innerHTML = `
       <p class="text-xs text-gray-400 uppercase tracking-widest font-bold mb-3">Your Saved Address</p>
       ${addresses.map((addr, idx) => {
-        const aId = addr.id || addr.addressId || 0; // Safe ID extraction
+        const aId = addr.id || addr.addressId || 0; 
         return `
         <div class="addr-card ${idx === 0 ? 'selected' : ''}" id="addrCard_${idx}"
           onclick="selectCard(${aId}, ${idx}, ${addresses.length})">
@@ -345,7 +345,85 @@ function renderAddressCards(addresses) {
     if (typeof lucide !== 'undefined') lucide.createIcons();
   }
 
-  // 2️⃣ UPDATE THIS FUNCTION (To extract new Address ID properly)
+  function selectCard(addrId, idx, total) {
+    selectedAddressId = addrId;
+    for (let i = 0; i < total; i++) {
+      const c = document.getElementById(`addrCard_${i}`);
+      if (c) c.classList.toggle('selected', i === idx);
+    }
+    const r = document.querySelector(`input[name="addrRadio"][value="${addrId}"]`);
+    if (r) r.checked = true;
+  }
+
+  function openEditFormFromData(idx, addresses) { openEditForm(addresses[idx], false); }
+
+  function openEditForm(addr, isNew) {
+    document.getElementById('editSection').classList.add('open');
+    document.getElementById('editLabel').innerText = isNew ? 'Enter New Address' : 'Edit Your Address';
+
+    if (addr && !isNew) {
+      savedAddressId = addr.id || addr.addressId || 0;
+      document.getElementById('addrLine').value = addr.addressLine || '';
+      document.getElementById('addrCity').value = addr.city        || '';
+      document.getElementById('addrPin').value  = addr.pincode     || '';
+      const sel = document.getElementById('addrState');
+      for (let opt of sel.options) {
+        if (opt.text.toLowerCase() === (addr.state || '').toLowerCase()) { sel.value = opt.value; break; }
+      }
+    } else {
+      savedAddressId = 0;
+      ['addrLine','addrCity','addrPin'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('addrState').value = '';
+      document.getElementById('pinStatus').innerHTML = '';
+      document.getElementById('pinStatus').className = 'pin-status';
+    }
+
+    document.getElementById('addrActions').innerHTML = `
+      <button id="saveOrderBtn" onclick="saveAndPlaceOrder()"
+        class="flex-1 py-3 bg-gradient-to-r from-gold-matte to-gold-main text-black font-cinzel font-bold uppercase tracking-widest rounded-xl hover:scale-[1.02] transition-all text-sm">
+        Save &amp; Place Order
+      </button>`;
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+
+  function onPincodeInput(val) {
+    const clean = val.replace(/\D/g, '');
+    document.getElementById('addrPin').value = clean;
+    clearTimeout(pincodeTimer);
+    const s = document.getElementById('pinStatus');
+    if (clean.length < 6) { s.className = 'pin-status'; s.innerHTML = ''; return; }
+    s.className = 'pin-status loading'; s.innerHTML = '⏳ Verifying pincode...';
+    pincodeTimer = setTimeout(() => validatePincode(clean), 600);
+  }
+
+  async function validatePincode(pin) {
+    const s = document.getElementById('pinStatus');
+    try {
+      const data = await (await fetch(`https://api.postalpincode.in/pincode/${pin}`)).json();
+      if (data[0].Status === 'Success' && data[0].PostOffice?.length > 0) {
+        const po = data[0].PostOffice[0];
+        const district = po.District || '', state = po.State || '';
+        const cityEl = document.getElementById('addrCity');
+        if (!cityEl.value) cityEl.value = district;
+        const sel = document.getElementById('addrState');
+        for (let opt of sel.options) {
+          if (opt.text.toLowerCase().includes(state.toLowerCase()) ||
+              state.toLowerCase().includes(opt.text.toLowerCase())) { sel.value = opt.value; break; }
+        }
+        s.className = 'pin-status success';
+        s.innerHTML = `✓ <strong>${district}</strong>, ${state} · ${data[0].PostOffice.length} post office(s) found`;
+      } else {
+        s.className = 'pin-status error'; s.innerHTML = '✗ Invalid pincode';
+      }
+    } catch { s.className = 'pin-status error'; s.innerHTML = '⚠ Could not verify pincode'; }
+  }
+
+  async function proceedWithSelected() {
+    if (!selectedAddressId) { showAddrError('Please select an address.'); return; }
+    closeAddressModal();
+    await placeOrder({ addressId: parseInt(selectedAddressId) });
+  }
+
   async function saveAndPlaceOrder() {
     hideAddrError();
     const addressLine = document.getElementById('addrLine').value.trim();
@@ -384,7 +462,6 @@ function renderAddressCards(addresses) {
         })).json();
         const addrs = profile.addresses || [];
         if (addrs.length > 0) {
-            // Safe extraction for newly added address
             const lastAddr = addrs[addrs.length - 1];
             finalAddressId = lastAddr.id || lastAddr.addressId || 0;
         }
@@ -395,11 +472,9 @@ function renderAddressCards(addresses) {
     await placeOrder({ addressId: parseInt(finalAddressId) });
   }
 
-  // 3️⃣ UPDATE THIS FUNCTION (Added Safety Check & Error Logging)
   async function placeOrder(body) {
     if (orderInProgress) return;
     
-    // 🚨 SAFETY CHECK: Agar addressId 0 ya null hai toh Backend ko hit hi mat karo!
     if (!body.addressId || body.addressId === 0) {
         alert("Error: Address ID missing! Please add a proper address.");
         return;
