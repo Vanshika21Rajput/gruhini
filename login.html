@@ -114,13 +114,6 @@
             .split-right { width:100%; }
             .auth-container { left:50%; width:90%; max-width:420px; }
         }
-        @media(max-width:640px) {
-            #forgotPasswordModal .bg-cream {
-                position:fixed; bottom:0; left:0; right:0; max-width:100%;
-                border-radius:24px 24px 0 0; animation:slideUp 0.3s ease-out;
-            }
-        }
-        @keyframes slideUp { from{transform:translateY(100%);opacity:0} to{transform:translateY(0);opacity:1} }
     </style>
 </head>
 <body>
@@ -251,9 +244,10 @@
         },
 
         renderForm() {
-            const isReg    = AppState.view === 'register';
+            const isReg = AppState.view === 'register';
             const isSeller = AppState.role === 'seller';
             const extraDiv = document.getElementById('extra-fields');
+            const ic = 'w-full p-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:border-royalGold focus:outline-none text-sm transition-all';
 
             document.getElementById('page-title').innerText = isReg
                 ? (isSeller ? 'Join as a Chef' : 'Join as a Foodie')
@@ -263,7 +257,6 @@
             document.getElementById('footer-link').innerText = isReg ? 'Login' : 'Create Account';
 
             if (isReg) {
-                const ic = 'w-full p-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:border-royalGold focus:outline-none text-sm transition-all';
                 let html = `
                     <div class="input-group">
                         <input type="text" id="name" placeholder="Full Name" required class="${ic}">
@@ -272,33 +265,33 @@
                         <input type="tel" id="contact" placeholder="Phone Number (10 digits)" required pattern="[0-9]{10}" class="${ic}">
                     </div>`;
 
-              if (isSeller) {
-    html += `
-    <div class="input-group mt-3">
-        <input type="text" id="businessName" placeholder="Kitchen / Business Name" required class="${ic}">
-    </div>
-    <div class="input-group mt-3">
-        <textarea id="description" placeholder="Describe your kitchen & specialties..." required class="${ic}" rows="2"></textarea>
-    </div>
-    
-    <div class="input-group mt-3 relative">
-        <label class="block text-[10px] font-bold text-royalGold uppercase mb-1 ml-1">Specialties (Select Multiple)</label>
-        <div class="border border-gray-300 rounded-lg bg-white p-3 space-y-2 max-h-40 overflow-y-auto shadow-sm">
-            <label class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-1 rounded transition">
-                <input type="checkbox" name="category" value="SNACKS" checked class="w-4 h-4 accent-royalGold">
-                <span class="text-sm text-gray-700 font-medium">Snacks & Starters</span>
-            </label>
-            <label class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-1 rounded transition">
-                <input type="checkbox" name="category" value="SWEETS" class="w-4 h-4 accent-royalGold">
-                <span class="text-sm text-gray-700 font-medium">Authentic Sweets</span>
-            </label>
-            <label class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-1 rounded transition">
-                <input type="checkbox" name="category" value="VRAT" class="w-4 h-4 accent-royalGold">
-                <span class="text-sm text-gray-700 font-medium">Vrat Special (Sattvic)</span>
-            </label>
-        </div>
-    </div>`;
-}
+                if (isSeller) {
+                    html += `
+                    <div class="input-group mt-3">
+                        <input type="text" id="businessName" placeholder="Kitchen / Business Name" required class="${ic}">
+                    </div>
+                    <div class="input-group mt-3">
+                        <textarea id="description" placeholder="Describe your kitchen & specialties..." required class="${ic}" rows="2"></textarea>
+                    </div>
+                    <div class="mt-4 px-1">
+                        <label class="block text-[10px] font-bold text-royalGold uppercase mb-2 tracking-wider">Select Your Specialties (Mandatory)</label>
+                        <div class="flex flex-wrap gap-2">
+                            <label class="cursor-pointer">
+                                <input type="checkbox" name="category" value="SNACKS" class="hidden peer">
+                                <div class="px-4 py-1.5 border border-gray-300 rounded-full text-xs font-medium text-gray-500 peer-checked:bg-royalGold peer-checked:text-white peer-checked:border-royalGold transition-all duration-200 shadow-sm">Snacks</div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="checkbox" name="category" value="SWEETS" class="hidden peer">
+                                <div class="px-4 py-1.5 border border-gray-300 rounded-full text-xs font-medium text-gray-500 peer-checked:bg-royalGold peer-checked:text-white peer-checked:border-royalGold transition-all duration-200 shadow-sm">Sweets</div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="checkbox" name="category" value="VRAT" class="hidden peer">
+                                <div class="px-4 py-1.5 border border-gray-300 rounded-full text-xs font-medium text-gray-500 peer-checked:bg-royalGold peer-checked:text-white peer-checked:border-royalGold transition-all duration-200 shadow-sm">Vrat Special</div>
+                            </label>
+                        </div>
+                        <p class="text-[9px] text-gray-400 mt-2 italic">* You can select multiple tags</p>
+                    </div>`;
+                }
 
                 html += `
                     <div class="address-section mt-3">
@@ -318,7 +311,6 @@
                             <input type="text" id="pincode" placeholder="Pincode (6 digits)" required pattern="[0-9]{6}" class="${ic}">
                         </div>
                     </div>`;
-
                 extraDiv.innerHTML = html;
             } else {
                 extraDiv.innerHTML = '';
@@ -379,11 +371,10 @@
         async handleAuth(e) {
             e.preventDefault();
             if (AppState.isLoading) return;
-
             UI.clearError();
             UI.setLoading(true);
 
-            const email    = document.getElementById('email').value.trim();
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
 
             if (!email || !password) {
@@ -404,24 +395,19 @@
                     await this.handleRegister(email, password);
                 }
             } catch (err) {
-                console.error('Auth error:', err);
-                UI.showError(err.message || 'Something went wrong. Please try again.');
+                UI.showError(err.message || 'Something went wrong.');
                 UI.setLoading(false);
             }
         },
 
-       async handleLogin(email, password, skipRoleCheck = false) {
-            // 👇 1. Login ke liye userType set kiya (Seller tab = 'seller', Customer tab = 'user')
+        async handleLogin(email, password, skipRoleCheck = false) {
             const loginUserType = AppState.role === 'seller' ? 'seller' : 'user';
 
             const response = await fetch(`${CONFIG.BASE_URL}/logins`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                // 👇 2. Yahan 'userType' backend ko bhej diya 👇
                 body: JSON.stringify({ email: email, password: password, userType: loginUserType }) 
-            }).catch(() => {
-                throw new Error('Cannot connect to server. Please check your internet connection.');
-            });
+            }).catch(() => { throw new Error('Cannot connect to server.'); });
 
             if (!response.ok) {
                 let msg = 'Invalid email or password';
@@ -430,155 +416,119 @@
             }
 
             const data = await response.json();
-            if (!data.token) throw new Error('No token received from server');
+            if (!data.token) throw new Error('No token received.');
 
             let actualRole = 'CUSTOMER';
-            let userName   = data.name || email.split('@')[0];
-
-            if (data.role)  actualRole = data.role;
-            if (data.roles) {
-                if (data.roles.includes('ROLE_ADMIN'))  actualRole = 'ADMIN';
-                else if (data.roles.includes('ROLE_SELLER')) actualRole = 'SELLER';
-            }
+            let userName = data.name || email.split('@')[0];
 
             try {
                 const payload = JSON.parse(atob(data.token.split('.')[1]));
                 userName = payload.sub || payload.name || payload.email || userName;
-
-                const jwtRoles = (payload.jwtClaims && payload.jwtClaims.roles)
-                    || payload.roles
-                    || payload.authorities
-                    || [];
+                const jwtRoles = (payload.jwtClaims && payload.jwtClaims.roles) || payload.roles || [];
 
                 if (Array.isArray(jwtRoles)) {
-                    if (jwtRoles.some(r => r === 'ROLE_ADMIN'  || r === 'ADMIN'))   actualRole = 'ADMIN';
+                    if (jwtRoles.some(r => r === 'ROLE_ADMIN' || r === 'ADMIN')) actualRole = 'ADMIN';
                     else if (jwtRoles.some(r => r === 'ROLE_SELLER' || r === 'SELLER')) actualRole = 'SELLER';
-                    else if (jwtRoles.some(r => r === 'ROLE_USER'   || r === 'CUSTOMER')) actualRole = 'CUSTOMER';
                 }
-            } catch (e) { console.warn('Could not decode token payload'); }
+            } catch (e) { console.warn('Token decode failed'); }
 
             const selectedRole = AppState.role;
-
             if (!skipRoleCheck && selectedRole === 'seller' && actualRole === 'CUSTOMER') {
-                throw new Error('This is a Customer account. Please switch to the "Customer" tab to login.');
+                throw new Error('Please switch to the "Customer" tab to login.');
             }
             if (selectedRole === 'customer' && actualRole === 'SELLER') {
-                throw new Error('This is a Seller account. Please click the "Seller / Admin" tab at the top, then login again.');
-            }
-            if (selectedRole === 'customer' && actualRole === 'ADMIN') {
-                throw new Error('This is an Admin account. Please click the "Seller / Admin" tab to login.');
+                throw new Error('This is a Seller account. Use the "Seller / Admin" tab.');
             }
 
             localStorage.setItem('authToken', data.token);
-            localStorage.setItem('userName',  userName);
-            localStorage.setItem('userRole',  actualRole);
-
-            console.log('✅ Login success — User:', userName, '| Role:', actualRole);
+            localStorage.setItem('userName', userName);
+            localStorage.setItem('userRole', actualRole);
             UI.showSuccessAndRedirect(actualRole, userName);
         },
 
-       async handleRegister(email, password) {
-            const name        = document.getElementById('name')?.value.trim();
-            const contact     = document.getElementById('contact')?.value.trim();
-            const addressLine = document.getElementById('addressLine')?.value.trim();
-            const city        = document.getElementById('city')?.value.trim();
-            const state       = document.getElementById('state')?.value.trim();
-            const pincode     = document.getElementById('pincode')?.value.trim();
+async handleRegister(email, password) {
+            const name = document.getElementById('name').value.trim();
+            const contact = document.getElementById('contact').value.trim();
+            const addressLine = document.getElementById('addressLine').value.trim();
+            const city = document.getElementById('city').value.trim();
+            const state = document.getElementById('state').value.trim();
+            const pincode = document.getElementById('pincode').value.trim();
 
-            if (!name || !contact)             throw new Error('Please fill in your name and phone number');
-            if (!/^[0-9]{10}$/.test(contact))  throw new Error('Please enter a valid 10-digit phone number');
-            if (!addressLine || !city || !state || !pincode) throw new Error('Please fill in all address fields');
-            if (!/^[0-9]{6}$/.test(pincode))   throw new Error('Please enter a valid 6-digit pincode');
-
-            if (AppState.role === 'seller') {
-                const bn  = document.getElementById('businessName')?.value.trim();
-                const dsc = document.getElementById('description')?.value.trim();
-                if (!bn)  throw new Error('Please enter your kitchen / business name');
-                if (!dsc) throw new Error('Please add a description for your kitchen');
+            if (!name || !contact || !addressLine || !city || !state || !pincode) {
+                throw new Error('Please fill in all fields');
             }
 
-            const userType = AppState.role === 'seller' ? 'seller' : 'user';
+            const addressObj = { id: 0, addressLine, pincode, state, city };
 
-            const regRes = await fetch(`${CONFIG.BASE_URL}/register`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                body: JSON.stringify({ 
-                    name, email, password, contact, userType,
-                    addressDto: { id:0, addressLine, pincode, state, city } 
-                })
-            });
-
-            if (!regRes.ok) {
-                let msg = 'Registration failed';
-                try {
+            // --- YAHAN SE CHANGES HAIN ---
+            
+            if (AppState.role === 'customer') {
+                // 1. CUSTOMER: Sirf /register call hoga
+                const regRes = await fetch(`${CONFIG.BASE_URL}/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        name, email, password, contact, 
+                        userType: 'user', 
+                        addressDto: addressObj 
+                    })
+                });
+                if (!regRes.ok) {
                     const d = await regRes.json();
-                    msg = typeof d === 'object' && !d.message ? Object.values(d).join(', ') : (d.message || d.error || msg);
-                } catch {}
-                throw new Error(msg);
-            }
-
-            if (AppState.role === 'seller') {
-                const businessName = document.getElementById('businessName').value.trim();
-                const description  = document.getElementById('description').value.trim();
-                const categoryCheckboxes = document.querySelectorAll('input[name="category"]:checked');
-const selectedCats = categoryCheckboxes.length > 0 
-    ? Array.from(categoryCheckboxes).map(cb => cb.value) 
-    : ['SNACKS'];
+                    throw new Error(d.message || 'Registration failed');
+                }
+            } 
+            else if (AppState.role === 'seller') {
+                // 2. SELLER: Sirf /register-seller call hoga (Skip /register)
+                const selectedCats = Array.from(document.querySelectorAll('input[name="category"]:checked')).map(cb => cb.value);
+                if (selectedCats.length === 0) throw new Error('Please select at least one specialty');
 
                 const sellerRes = await fetch(`${CONFIG.BASE_URL}/register-seller`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
-                        name: name, 
-                        email: email, 
+                        name, 
+                        email, 
+                        password, // Password bhi bhejna zaroori hai registration ke liye
                         phone: contact, 
-                        businessName: businessName, 
-                        description: description, 
-                        categories: selectedCats,
-                        addressDto: { id: 0, addressLine, pincode, state, city }
+                        businessName: document.getElementById('businessName').value.trim(), 
+                        description: document.getElementById('description').value.trim(), 
+                        categories: selectedCats, 
+                        addressDto: addressObj,
+                        userType: 'seller' 
                     })
                 });
-                
+
                 if (!sellerRes.ok) {
-                    let msg = 'Seller registration failed';
-                    try { const d = await sellerRes.json(); msg = d.message || d.error || msg; } catch {}
-                    throw new Error(msg);
+                    const d = await sellerRes.json();
+                    throw new Error(d.message || 'Seller registration failed');
                 }
             }
+
+            // Dono cases mein success ke baad auto-login
             await this.handleLogin(email, password, true);
         }
-    }; // <-- Yeh bracket Handlers object band karta hai
+    };
 
     /* ── INIT ── */
     window.addEventListener('offline', () => UI.showError('No internet connection.'));
 
     (function () {
         const params = new URLSearchParams(window.location.search);
-        const mode   = params.get('mode');
-        const role   = params.get('role');
-
-        if (role === 'seller') {
-            AppState.role = 'seller';
-            UI.updateRoleToggle('seller');
-            UI.updateRoleHint('seller');
-        }
-        if (mode === 'register') {
-            AppState.view = 'register';
-            UI.renderForm();
-        }
+        const mode = params.get('mode');
+        const role = params.get('role');
+        if (role === 'seller') AppState.setRole('seller');
+        if (mode === 'register') AppState.toggleMode();
+        UI.renderForm();
     })();
 
     if (typeof lucide !== 'undefined') lucide.createIcons();
 
     const prevRole = localStorage.getItem('userRole');
-    if (prevRole === 'SELLER' || prevRole === 'ADMIN') {
-        AppState.setRole('seller');
-    }
+    if (prevRole === 'SELLER' || prevRole === 'ADMIN') AppState.setRole('seller');
 
     function openForgotPassword() {
         document.getElementById('forgotPasswordModal').classList.remove('hidden');
-        document.getElementById('forgotEmail').value = '';
-        document.getElementById('forgotPasswordMessage').classList.add('hidden');
         if (typeof lucide !== 'undefined') lucide.createIcons();
     }
     function closeForgotPassword() {
@@ -586,19 +536,19 @@ const selectedCats = categoryCheckboxes.length > 0
     }
     async function handleForgotPassword(e) {
         e.preventDefault();
-        const email  = document.getElementById('forgotEmail').value;
+        const email = document.getElementById('forgotEmail').value;
         const msgDiv = document.getElementById('forgotPasswordMessage');
         try {
             const res = await fetch(`${CONFIG.BASE_URL}/forgot-password?email=${encodeURIComponent(email)}`, { method: 'POST' });
             if (res.ok) {
-                msgDiv.className   = 'mt-4 p-3 rounded-lg text-sm bg-green-100 text-green-800';
-                msgDiv.textContent = '✅ Password reset link sent! Check your email.';
+                msgDiv.className = 'mt-4 p-3 rounded-lg text-sm bg-green-100 text-green-800';
+                msgDiv.textContent = '✅ Reset link sent! Check your email.';
                 msgDiv.classList.remove('hidden');
                 setTimeout(() => closeForgotPassword(), 3000);
             } else { throw new Error(); }
         } catch {
-            msgDiv.className   = 'mt-4 p-3 rounded-lg text-sm bg-red-100 text-red-800';
-            msgDiv.textContent = '❌ Email not found. Please check and try again.';
+            msgDiv.className = 'mt-4 p-3 rounded-lg text-sm bg-red-100 text-red-800';
+            msgDiv.textContent = '❌ Email not found.';
             msgDiv.classList.remove('hidden');
         }
     }
