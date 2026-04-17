@@ -587,7 +587,7 @@ function renderOrder(order) {
     itemsContainer.innerHTML = order.orderItems.map(item => {
       const name  = item.productName || item.name || item.title || 'Item';
       const qty   = item.quantity || 1;
-      const price = parseFloat(item.price || item.unitPrice || 0);
+      const price = parseFloat(item.priceAtOrderTime || item.price || item.unitPrice || 0);
       return `
         <div class="order-item">
           <span>${name} <span style="color:var(--muted);font-size:11px;">× ${qty}</span></span>
