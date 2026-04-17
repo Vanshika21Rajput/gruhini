@@ -174,7 +174,8 @@
   window.cartTotal = 0;
   let pincodeTimer = null;
   let savedAddressId = 0;
-  let selectedAddressId = 0;
+  // FIX 1: was 0, now null so falsy check works correctly in proceedWithSelected
+  let selectedAddressId = null;
   let orderInProgress = false;
 
   if (!token) { window.location.href = 'login.html'; }
@@ -309,7 +310,12 @@
     displayEl.classList.remove('hidden');
     if (addresses.length === 0) { openEditForm(null, true); return; }
 
-    selectedAddressId = addresses[0].id || 0;
+    // FIX 1: store first address id properly
+    selectedAddressId = addresses[0].id || null;
+
+    // FIX 2: store cache BEFORE building innerHTML so onclick can reference it
+    window.addresses_cache = addresses;
+
     displayEl.innerHTML = `
       <p class="text-xs text-gray-400 uppercase tracking-widest font-bold mb-3">Your Saved Address</p>
       ${addresses.map((addr, idx) => `
@@ -322,7 +328,8 @@
               <p class="text-sm text-white font-semibold truncate">${addr.addressLine || '—'}</p>
               <p class="text-xs text-gray-400 mt-0.5">${[addr.city, addr.state, addr.pincode].filter(Boolean).join(', ')}</p>
             </div>
-            <button onclick="event.stopPropagation(); openEditFormFromData(${idx}, addresses_cache)"
+            <!-- FIX 2: use openEditFormFromData(idx) — no second arg, uses window.addresses_cache -->
+            <button onclick="event.stopPropagation(); openEditFormFromData(${idx})"
               class="text-gold-main/60 hover:text-gold-main text-xs underline whitespace-nowrap flex-shrink-0 ml-2 transition-colors">Edit</button>
           </div>
         </div>`).join('')}
@@ -331,7 +338,6 @@
         <i data-lucide="plus" class="w-3 h-3"></i> Add / use a different address
       </button>`;
 
-    window.addresses_cache = addresses;
     document.getElementById('addrActions').innerHTML = `
       <button onclick="proceedWithSelected()"
         class="flex-1 py-3 bg-gradient-to-r from-gold-matte to-gold-main text-black font-cinzel font-bold uppercase tracking-widest rounded-xl hover:scale-[1.02] transition-all text-sm">
@@ -350,7 +356,8 @@
     if (r) r.checked = true;
   }
 
-  function openEditFormFromData(idx, addresses) { openEditForm(addresses[idx], false); }
+  // FIX 2: removed second param — always reads from window.addresses_cache
+  function openEditFormFromData(idx) { openEditForm(window.addresses_cache[idx], false); }
 
   function openEditForm(addr, isNew) {
     document.getElementById('editSection').classList.add('open');
@@ -414,7 +421,11 @@
   }
 
   async function proceedWithSelected() {
-    if (!selectedAddressId) { showAddrError('Please select an address.'); return; }
+    // FIX 3: guard against null/0 selectedAddressId
+    if (!selectedAddressId || Number(selectedAddressId) === 0) {
+      showAddrError('Please select an address.');
+      return;
+    }
     closeAddressModal();
     await placeOrder({ addressId: parseInt(selectedAddressId) });
   }
@@ -451,7 +462,8 @@
     }
 
     let addressId = savedAddressId;
-    if (addressId === 0) {
+    // FIX 4: always refetch after save to get the real DB id for new addresses
+    if (!addressId || Number(addressId) === 0) {
       try {
         const profile = await (await fetch(`${window.CONFIG.BASE_URL}/view-profile`, {
           headers: { 'Authorization': `Bearer ${token}` }
@@ -461,7 +473,8 @@
       } catch(e) { console.warn('Profile refetch failed:', e); }
     }
 
-    if (!addressId) {
+    // FIX 4: strict guard — do not proceed with 0 or falsy id
+    if (!addressId || Number(addressId) === 0) {
       showAddrError('Address saved but ID not found. Please try again.');
       if (btn) { btn.innerHTML = 'Save &amp; Place Order'; btn.disabled = false; }
       return;
@@ -474,6 +487,13 @@
 
   async function placeOrder(body) {
     if (orderInProgress) return;
+
+    // FIX 5: final safety net — never send addressId 0 or null to backend
+    if (!body.addressId || Number(body.addressId) === 0) {
+      alert('No valid delivery address selected. Please try again.');
+      return;
+    }
+
     orderInProgress = true;
 
     const btn = document.getElementById('checkoutBtn');
@@ -494,9 +514,11 @@
       }
       const data = await res.json();
       console.log('✅ Order placed:', data);
+      // FIX 6: orderId comes from backend as data.id (OrderSellerResponseDto)
       const orderId = data.id || data.orderId || data.order_id || (data.order?.id) || null;
       orderInProgress = false;
-      if (orderId) window.location.href = `order-status.html?orderId=${orderId}`;
+      // redirect to orders page — change to order-status.html if that page exists
+      if (orderId) window.location.href = `orders.html`;
       else { alert('Order placed! 🎉'); window.location.href = 'orders.html'; }
     } catch(e) {
       console.error(e);
