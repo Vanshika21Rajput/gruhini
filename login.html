@@ -272,23 +272,33 @@
                         <input type="tel" id="contact" placeholder="Phone Number (10 digits)" required pattern="[0-9]{10}" class="${ic}">
                     </div>`;
 
-                if (isSeller) {
-                    html += `
-                    <div class="input-group mt-3">
-                        <input type="text" id="businessName" placeholder="Kitchen / Business Name" required class="${ic}">
-                    </div>
-                    <div class="input-group mt-3">
-                        <textarea id="description" placeholder="Describe your kitchen & specialties..." required class="${ic}" rows="2"></textarea>
-                    </div>
-                    <div class="input-group mt-3">
-                        <select id="categories" multiple required class="${ic}" style="height:80px" title="Hold Ctrl/Cmd to select multiple">
-                            <option value="SNACKS" selected>Snacks</option>
-                            <option value="SWEETS">Sweets</option>
-                            <option value="VRAT">Vrat</option>
-                        </select>
-                        <p style="font-size:10px;color:#6b7280;margin-top:2px">Hold Ctrl/Cmd to select multiple categories</p>
-                    </div>`;
-                }
+              if (isSeller) {
+    html += `
+    <div class="input-group mt-3">
+        <input type="text" id="businessName" placeholder="Kitchen / Business Name" required class="${ic}">
+    </div>
+    <div class="input-group mt-3">
+        <textarea id="description" placeholder="Describe your kitchen & specialties..." required class="${ic}" rows="2"></textarea>
+    </div>
+    
+    <div class="input-group mt-3 relative">
+        <label class="block text-[10px] font-bold text-royalGold uppercase mb-1 ml-1">Specialties (Select Multiple)</label>
+        <div class="border border-gray-300 rounded-lg bg-white p-3 space-y-2 max-h-40 overflow-y-auto shadow-sm">
+            <label class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-1 rounded transition">
+                <input type="checkbox" name="category" value="SNACKS" checked class="w-4 h-4 accent-royalGold">
+                <span class="text-sm text-gray-700 font-medium">Snacks & Starters</span>
+            </label>
+            <label class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-1 rounded transition">
+                <input type="checkbox" name="category" value="SWEETS" class="w-4 h-4 accent-royalGold">
+                <span class="text-sm text-gray-700 font-medium">Authentic Sweets</span>
+            </label>
+            <label class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-1 rounded transition">
+                <input type="checkbox" name="category" value="VRAT" class="w-4 h-4 accent-royalGold">
+                <span class="text-sm text-gray-700 font-medium">Vrat Special (Sattvic)</span>
+            </label>
+        </div>
+    </div>`;
+}
 
                 html += `
                     <div class="address-section mt-3">
@@ -510,8 +520,10 @@
             if (AppState.role === 'seller') {
                 const businessName = document.getElementById('businessName').value.trim();
                 const description  = document.getElementById('description').value.trim();
-                const catSelect = document.getElementById('categories');
-                const selectedCats = catSelect ? Array.from(catSelect.selectedOptions).map(o => o.value) : ['SNACKS'];
+                const categoryCheckboxes = document.querySelectorAll('input[name="category"]:checked');
+const selectedCats = categoryCheckboxes.length > 0 
+    ? Array.from(categoryCheckboxes).map(cb => cb.value) 
+    : ['SNACKS'];
 
                 const sellerRes = await fetch(`${CONFIG.BASE_URL}/register-seller`, {
                     method: 'POST',
