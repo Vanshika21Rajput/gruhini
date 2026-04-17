@@ -27,210 +27,101 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
+    
     body {
-      background: url('background2.png') center/cover fixed no-repeat,
-                  linear-gradient(135deg, #0f0805 0%, #1a0f0a 50%, #0f0805 100%);
+      background: url('background2.png') center/cover fixed no-repeat, linear-gradient(135deg, #0f0805 0%, #1a0f0a 50%, #0f0805 100%);
       background-blend-mode: overlay;
       min-height: 100vh;
       color: var(--text);
       font-family: 'Lato', sans-serif;
       line-height: 1.6;
     }
-
+    
     body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      z-index: -2;
-      background:
-        repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(212,175,55,0.02) 2px, rgba(212,175,55,0.02) 4px),
-        radial-gradient(circle at 20% 50%, rgba(212,175,55,0.08) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(212,175,55,0.06) 0%, transparent 50%);
+      content: ''; position: fixed; inset: 0; z-index: -2;
+      background: repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(212, 175, 55, 0.02) 2px, rgba(212, 175, 55, 0.02) 4px),
+                  radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.08) 0%, transparent 50%);
       pointer-events: none;
     }
-
-    body::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      z-index: -1;
-      background: linear-gradient(180deg, rgba(15,8,5,0.3) 0%, rgba(15,8,5,0.8) 100%);
-      pointer-events: none;
-    }
-.modal-overlay {
-  pointer-events: none;
-}
-.modal-overlay.open {
-  pointer-events: all;
-}
+    
     nav {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 32px;
-      background: linear-gradient(90deg, rgba(15,8,5,0.95), rgba(26,15,10,0.92));
-      backdrop-filter: blur(20px);
-      border-bottom: 2px solid var(--border);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      position: fixed; top: 0; width: 100%; z-index: 100; display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 32px; background: linear-gradient(90deg, rgba(15,8,5,0.95), rgba(26,15,10,0.92));
+      backdrop-filter: blur(20px); border-bottom: 2px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.4);
     }
-
+    
     .nav-brand { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--gold-main); letter-spacing: 0.15em; }
-    .nav-badge { font-family: 'Cinzel', serif; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; padding: 6px 14px; border-radius: 6px; background: linear-gradient(135deg, rgba(212,175,55,0.15), rgba(212,175,55,0.08)); color: var(--gold-main); border: 1px solid var(--border2); }
-
-    .nav-right { display: flex; align-items: center; gap: 24px; }
-    .nav-right a, .nav-right button { font-family: 'Cinzel', serif; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); text-decoration: none; background: none; border: none; cursor: pointer; transition: all 0.3s ease; }
-    .nav-right a:hover, .nav-right button:hover { color: var(--gold-main); }
-    .nav-right .logout { color: rgba(239,68,68,0.7); }
-    .nav-right .logout:hover { color: var(--red); }
-
+    .nav-badge { font-family: 'Cinzel', serif; font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 6px 14px; border-radius: 6px; background: rgba(212,175,55,0.1); color: var(--gold-main); border: 1px solid var(--border2); }
+    
     main { padding: 100px 40px 60px; max-width: 1400px; margin: 0 auto; }
-
-    .page-header { margin-bottom: 40px; text-align: center; }
-    .page-title { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 700; color: var(--text); margin-bottom: 8px; letter-spacing: -0.02em; }
-    .page-sub { font-family: 'Noto Sans Devanagari', sans-serif; font-size: 14px; color: var(--muted); font-weight: 500; }
-
+    
     .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px; }
-    .stat-card { background: linear-gradient(135deg, rgba(212,175,55,0.08), rgba(212,175,55,0.04)); border: 2px solid var(--border); border-radius: 16px; padding: 24px; transition: all 0.3s ease; position: relative; overflow: hidden; }
-    .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--gold-main), var(--gold-accent)); }
-    .stat-card:hover { border-color: var(--border2); transform: translateY(-4px); box-shadow: 0 12px 32px rgba(212,175,55,0.15); }
-    .stat-label { font-family: 'Cinzel', serif; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted2); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
-    .stat-value { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 700; color: var(--gold-main); margin-bottom: 6px; }
-    .stat-desc { font-size: 12px; color: var(--muted); font-style: italic; }
+    .stat-card { background: linear-gradient(135deg, rgba(212,175,55,0.08), rgba(212,175,55,0.04)); border: 2px solid var(--border); border-radius: 16px; padding: 24px; position: relative; }
+    .stat-value { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 700; color: var(--gold-main); }
 
-    .tabs-nav { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 32px; gap: 0; flex-wrap: wrap; overflow-x: auto; }
-    .tab-btn { display: flex; align-items: center; gap: 10px; padding: 14px 24px; border: none; background: transparent; color: var(--muted); font-family: 'Lato', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.3s ease; }
-    .tab-btn:hover { color: var(--gold-main); }
+    .tabs-nav { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 32px; overflow-x: auto; }
+    .tab-btn { padding: 14px 24px; border: none; background: transparent; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; font-weight: 600; transition: 0.3s; }
     .tab-btn.active { color: var(--gold-main); border-bottom-color: var(--gold-main); }
-    .tab-count { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 20px; padding: 0 6px; border-radius: 10px; font-size: 10px; font-weight: 700; background: rgba(212,175,55,0.15); color: var(--gold-main); }
-    .tab-panel { display: none; animation: fadeIn 0.3s ease; }
-    .tab-panel.active { display: block; }
 
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .toolbar { display: flex; align-items: center; justify-content: space-between; padding: 16px; background: rgba(212,175,55,0.05); border-radius: 12px; margin-bottom: 20px; flex-wrap: wrap; gap: 16px;}
+    .toolbar-left { display: flex; align-items: center; gap: 16px; }
+    .search-bar { background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; color: var(--text); font-family: 'Lato', sans-serif; font-size: 13px; width: 250px; transition: 0.3s; }
+    .search-bar:focus { outline: none; border-color: var(--gold-main); box-shadow: 0 0 0 2px rgba(212,175,55,0.2); }
 
-    .toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; padding: 16px; background: linear-gradient(135deg, rgba(212,175,55,0.06), rgba(212,175,55,0.02)); border: 1px solid var(--border); border-radius: 12px; }
-    .toolbar-left { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-
-    .select-all-label { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); cursor: pointer; user-select: none; }
-    .select-all-label input[type=checkbox] { accent-color: var(--gold-main); width: 18px; height: 18px; cursor: pointer; }
-    .selection-info { font-family: 'Cinzel', serif; font-size: 12px; color: var(--gold-main); font-weight: 600; }
-
-    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 10px; border: none; cursor: pointer; font-family: 'Lato', sans-serif; font-size: 13px; font-weight: 600; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 0.05em; }
-    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-    .btn-gold { background: linear-gradient(135deg, var(--gold-main), var(--gold-dim)); color: var(--dark); box-shadow: 0 4px 15px rgba(212,175,55,0.3); }
-    .btn-gold:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(212,175,55,0.4); }
-    .btn-green { background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(34,197,94,0.08)); border: 1px solid rgba(34,197,94,0.3); color: var(--green); }
-    .btn-green:hover:not(:disabled) { background: rgba(34,197,94,0.25); border-color: rgba(34,197,94,0.5); }
-    .btn-red { background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(239,68,68,0.08)); border: 1px solid rgba(239,68,68,0.3); color: var(--red); }
-    .btn-red:hover:not(:disabled) { background: rgba(239,68,68,0.25); border-color: rgba(239,68,68,0.5); }
-    .btn-sm { padding: 8px 16px; font-size: 12px; }
+    .btn { padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; text-transform: uppercase; border: none; transition: 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-size: 12px;}
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-green { background: linear-gradient(135deg, #166534, #22c55e); color: white; }
+    .btn-red { background: linear-gradient(135deg, #991b1b, #ef4444); color: white; }
+    .btn-gold { background: linear-gradient(135deg, var(--gold-main), var(--gold-dim)); color: var(--dark); }
+    .btn-gold:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(212,175,55,0.3); }
 
     .approval-list { display: flex; flex-direction: column; gap: 14px; }
-    .approval-card { background: linear-gradient(135deg, rgba(212,175,55,0.05), rgba(212,175,55,0.01)); border: 2px solid var(--border); border-radius: 14px; padding: 18px; display: flex; align-items: flex-start; gap: 16px; transition: all 0.3s ease; cursor: pointer; }
-    .approval-card:hover { border-color: var(--border2); background: linear-gradient(135deg, rgba(212,175,55,0.1), rgba(212,175,55,0.05)); transform: translateY(-2px); }
-    .approval-card.selected { border-color: var(--gold-main); background: rgba(212,175,55,0.12); }
-    .approval-checkbox { margin-top: 4px; accent-color: var(--gold-main); width: 18px; height: 18px; flex-shrink: 0; cursor: pointer; }
-    .approval-body { flex: 1; min-width: 0; }
-    .approval-name { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 15px; color: var(--text); margin-bottom: 4px; }
-    .approval-meta { font-size: 12px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 8px; }
-    .approval-meta span { display: flex; align-items: center; gap: 4px; }
-    .approval-desc { font-size: 12px; color: var(--muted2); line-height: 1.5; max-width: 500px; }
-    .approval-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+    .approval-card { background: rgba(212,175,55,0.05); border: 2px solid var(--border); border-radius: 14px; padding: 18px; display: flex; gap: 16px; cursor: pointer; transition: 0.3s; }
+    .approval-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+    .approval-card.selected { border-color: var(--gold-main); background: rgba(212,175,55,0.15); }
+    
+    /* MODAL SAFETY UX FIX */
+    .modal-overlay { position: fixed; inset: 0; z-index: 200; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px); padding: 20px; pointer-events: none; }
+    .modal-overlay.open { display: flex; animation: fadeIn 0.2s ease; pointer-events: all; }
+    .modal { background: #1a0f0a; border: 2px solid var(--border2); border-radius: 18px; padding: 32px; width: 100%; max-width: 550px; position: relative; max-height: 90vh; overflow-y: auto; }
+    
+    /* CHECKBOX FIX (Cursor added, bubbling handled in JS) */
+    .approval-checkbox { width: 18px; height: 18px; accent-color: var(--gold-main); cursor: pointer; }
 
-    .status-pill { display: inline-flex; align-items: center; gap: 4px; font-family: 'Cinzel', serif; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 4px 12px; border-radius: 20px; }
-    .status-pending  { background: rgba(245,158,11,0.15); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
-    .status-approved { background: rgba(34,197,94,0.15);  color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
-    .status-rejected { background: rgba(239,68,68,0.15);  color: var(--red);   border: 1px solid rgba(239,68,68,0.3); }
-    .status-delivered{ background: rgba(59,130,246,0.15); color: var(--blue);  border: 1px solid rgba(59,130,246,0.3); }
-    .status-cancelled{ background: rgba(239,68,68,0.15);  color: var(--red);   border: 1px solid rgba(239,68,68,0.3); }
-    .status-accepted { background: rgba(34,197,94,0.15);  color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    .modal-overlay { position: fixed; inset: 0; z-index: 200; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px); padding: 20px; }
-    .modal-overlay.open { display: flex; animation: fadeIn 0.2s ease; }
-    .modal { background: linear-gradient(135deg, #1a0f0a, #0f0805); border: 2px solid var(--border2); border-radius: 18px; padding: 32px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; position: relative; animation: slideUp 0.3s ease; }
-    @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    .modal-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: var(--text); margin-bottom: 20px; }
-    .modal-close { position: absolute; top: 20px; right: 20px; background: linear-gradient(135deg, rgba(212,175,55,0.1), rgba(212,175,55,0.05)); border: 1px solid var(--border); border-radius: 10px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--muted); transition: all 0.3s ease; }
-    .modal-close:hover { color: var(--gold-main); border-color: var(--border2); }
-
-    .form-group { margin-bottom: 18px; }
-    .form-label { display: block; font-family: 'Cinzel', serif; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 8px; }
-    .form-input, .form-textarea { width: 100%; background: linear-gradient(135deg, rgba(212,175,55,0.06), rgba(212,175,55,0.02)); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; color: var(--text); font-family: 'Lato', sans-serif; font-size: 13px; transition: all 0.3s ease; }
-    .form-input:focus, .form-textarea:focus { outline: none; border-color: var(--gold-main); box-shadow: 0 0 0 3px rgba(212,175,55,0.15); }
-    .form-textarea { resize: vertical; min-height: 100px; }
-    .form-actions { display: flex; gap: 12px; margin-top: 24px; }
-    .form-actions .btn { flex: 1; }
-
-    .empty-state { text-align: center; padding: 80px 20px; }
-    .empty-icon { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, rgba(212,175,55,0.1), rgba(212,175,55,0.05)); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; border: 2px solid var(--border); }
-    .empty-title { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 18px; color: var(--text); margin-bottom: 8px; }
-    .empty-sub { font-family: 'Noto Sans Devanagari', sans-serif; font-size: 13px; color: var(--muted); font-weight: 500; }
-
-    #toastContainer { position: fixed; top: 80px; right: 20px; z-index: 999; display: flex; flex-direction: column; gap: 10px; }
-    .toast { display: flex; align-items: center; gap: 12px; padding: 14px 18px; border-radius: 12px; font-size: 13px; font-weight: 600; min-width: 280px; backdrop-filter: blur(20px); animation: slideIn 0.3s ease; border: 1px solid rgba(212,175,55,0.3); }
-    @keyframes slideIn { from { transform: translateX(30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-    .toast-success { background: linear-gradient(135deg, rgba(34,197,94,0.9), rgba(34,197,94,0.7)); color: #fff; }
-    .toast-error   { background: linear-gradient(135deg, rgba(239,68,68,0.9), rgba(239,68,68,0.7)); color: #fff; }
-    .toast-info    { background: linear-gradient(135deg, rgba(212,175,55,0.9), rgba(212,175,55,0.7)); color: var(--dark); }
-
-    .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; }
+    .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: transparent; border-radius: 50%; animation: spin 0.7s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    .badge-pending { color: var(--amber); display: inline-flex; align-items: center; gap: 4px; font-size: 11px; background: rgba(245,158,11,0.1); padding: 2px 8px; border-radius: 12px; border: 1px solid rgba(245,158,11,0.3); }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--dark); }
+    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--gold-dim); }
+    
     .filter-chips { display: flex; gap: 8px; flex-wrap: wrap; }
     .chip { padding: 7px 16px; border-radius: 20px; font-family: 'Lato', sans-serif; font-size: 12px; font-weight: 600; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 0.05em; }
     .chip:hover, .chip.active { background: rgba(212,175,55,0.15); border-color: var(--border2); color: var(--gold-main); }
-
-    .seller-detail-img { width: 100%; height: 160px; border-radius: 12px; object-fit: cover; background: var(--dark2); border: 1px solid var(--border); margin-bottom: 20px; }
-    .detail-row { display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-start; font-size: 13px; }
-    .detail-row-label { font-family: 'Cinzel', serif; font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--muted2); min-width: 80px; margin-top: 2px; }
-    .detail-row-val { color: var(--text); flex: 1; }
-
-    @media (max-width: 768px) {
-      main { padding: 90px 20px 40px; }
-      .page-title { font-size: 2rem; }
-      .stats-grid { grid-template-columns: repeat(2, 1fr); }
-      .approval-card { flex-direction: column; }
-    }
-    @media (max-width: 480px) {
-      main { padding: 80px 16px 40px; }
-      .page-title { font-size: 1.5rem; }
-      .stats-grid { grid-template-columns: 1fr; }
-    }
   </style>
 </head>
 <body>
 
 <nav>
   <div style="display:flex;align-items:center;gap:12px;">
-    <div style="width:32px;height:32px;border-radius:50%;overflow:hidden;border:2px solid rgba(212,175,55,0.4);">
+    <div style="width:32px;height:32px;border-radius:50%;overflow:hidden;border:2px solid var(--gold-main);">
       <img src="public/logo.jpg" alt="gruhani" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">
     </div>
     <span class="nav-brand">GRUHANI</span>
     <span class="nav-badge">👑 ADMIN PORTAL</span>
   </div>
   <div class="nav-right">
-    <button onclick="refreshAll()" title="Refresh" style="padding:8px;border-radius:8px;border:1px solid var(--border);">
-      <i data-lucide="refresh-cw" style="width:16px;height:16px"></i>
-    </button>
-    <button class="logout" onclick="localStorage.clear(); window.location.href='login.html'">
-      <i data-lucide="log-out" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:6px"></i>Logout
-    </button>
+    <button onclick="refreshAll()" style="background:transparent; border:none; cursor:pointer; color:var(--muted);"><i data-lucide="refresh-cw" style="width:16px;"></i></button>
+    <button class="logout" onclick="localStorage.clear(); window.location.href='login.html'" style="background:transparent; border:none; cursor:pointer; color:var(--red); font-weight:600; font-family:'Cinzel', serif;">Logout</button>
   </div>
 </nav>
 
-<div id="toastContainer"></div>
-
-<script src="js/config.js"></script>
-<script>
-  if (!localStorage.getItem('authToken') || localStorage.getItem('userRole') !== 'ADMIN') {
-    window.location.href = 'login.html';
-  }
-  const BASE_URL = (window.CONFIG && window.CONFIG.BASE_URL) ? window.CONFIG.BASE_URL : 'https://gruhani-backend.onrender.com';
-</script>
+<div id="toastContainer" style="position:fixed; top:80px; right:20px; z-index:999;"></div>
 
 <main>
   <div class="page-header">
@@ -238,88 +129,48 @@
     <p class="page-sub">Manage platform • Approve dishes • Manage sellers • View orders</p>
   </div>
 
-  <!-- STATS -->
   <div class="stats-grid">
     <div class="stat-card">
-      <div class="stat-label"><i data-lucide="hourglass" style="width:12px;height:12px"></i> Pending</div>
-      <div class="stat-value" id="statPending">–</div>
-      <div class="stat-desc">Awaiting Approval</div>
+      <div class="stat-value" id="statSellers">0</div>
+      <div style="font-size:12px; color:var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700;">Pending Sellers</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label"><i data-lucide="check-circle" style="width:12px;height:12px"></i> Approved</div>
-      <div class="stat-value" id="statApproved">–</div>
-      <div class="stat-desc">Live on Platform</div>
+      <div class="stat-value" id="statPending">0</div>
+      <div style="font-size:12px; color:var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700;">Pending Dishes</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label"><i data-lucide="users" style="width:12px;height:12px"></i> Sellers</div>
-      <div class="stat-value" id="statSellers">–</div>
-      <div class="stat-desc">Registered Chefs</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label"><i data-lucide="shopping-bag" style="width:12px;height:12px"></i> Orders</div>
-      <div class="stat-value" id="statOrders">–</div>
-      <div class="stat-desc">Total Placed</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label"><i data-lucide="utensils" style="width:12px;height:12px"></i> Dishes</div>
-      <div class="stat-value" id="statAllProducts">–</div>
-      <div class="stat-desc">In Catalog</div>
+      <div class="stat-value" id="statOrders">0</div>
+      <div style="font-size:12px; color:var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700;">Total Orders</div>
     </div>
   </div>
 
-  <!-- TABS -->
   <div class="tabs-nav">
-    <button class="tab-btn active" onclick="switchTab('pending', this)">
-      <i data-lucide="inbox" style="width:14px;height:14px"></i> Pending Approvals
-      <span class="tab-count" id="pendingCount">0</span>
-    </button>
-    <button class="tab-btn" onclick="switchTab('products', this)">
-      <i data-lucide="utensils" style="width:14px;height:14px"></i> All Dishes
-      <span class="tab-count" id="allProductsCount">0</span>
-    </button>
-    <button class="tab-btn" onclick="switchTab('sellers', this)">
-      <i data-lucide="users" style="width:14px;height:14px"></i> Sellers
-      <span class="tab-count" id="sellersCount">0</span>
-    </button>
-    <button class="tab-btn" onclick="switchTab('orders', this)">
-      <i data-lucide="shopping-bag" style="width:14px;height:14px"></i> Orders
-      <span class="tab-count" id="ordersCount">0</span>
-    </button>
+    <button class="tab-btn" onclick="switchTab('pending', this)">Pending Approvals</button>
+    <button class="tab-btn" onclick="switchTab('products', this)">All Dishes</button>
+    <button class="tab-btn active" onclick="switchTab('sellers', this)">Sellers</button>
+    <button class="tab-btn" onclick="switchTab('orders', this)">Orders</button>
   </div>
 
-  <!-- TAB: PENDING PRODUCTS -->
-  <div id="tab-pending" class="tab-panel active">
+  <div id="tab-pending" class="tab-panel" style="display:none;">
     <div class="toolbar">
       <div class="toolbar-left">
-        <label class="select-all-label">
-          <input type="checkbox" id="selectAllPending" onchange="toggleSelectAll('pending', this.checked)">
-          Select All
-        </label>
-        <span class="selection-info" id="pendingSelectionInfo"></span>
+        <label style="cursor:pointer;"><input type="checkbox" id="selectAllPending" onchange="toggleSelectAll('pending', this.checked)"> Select All</label>
+        <span id="pendingSelectionInfo" style="margin-left:10px; color:var(--gold-main); font-weight:600;"></span>
       </div>
-      <div style="display:flex;gap:8px;">
-        <button class="btn btn-green" onclick="bulkApprove()" id="bulkApproveBtn" disabled>
-          <i data-lucide="check-circle" style="width:14px;height:14px"></i> Approve
-        </button>
-        <button class="btn btn-red btn-sm" onclick="openBulkRejectModal()" id="bulkRejectBtn" disabled>
-          <i data-lucide="x-circle" style="width:14px;height:14px"></i> Reject
-        </button>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-green" id="bulkApproveBtn" onclick="bulkApprove()" disabled>✅ Approve</button>
+        <button class="btn btn-red" id="bulkRejectBtn" onclick="openBulkRejectModal()" disabled>❌ Reject</button>
       </div>
     </div>
-    <div id="pendingList" class="approval-list" style="display:none"></div>
-    <div id="pendingLoading" class="empty-state">
-      <div class="empty-icon"><span class="spinner"></span></div>
-      <div class="empty-title">Loading Pending...</div>
-    </div>
-    <div id="noPending" class="empty-state" style="display:none">
-      <div class="empty-icon"><i data-lucide="check-circle" style="width:32px;height:32px;color:var(--green)"></i></div>
-      <div class="empty-title">All Set! ✅</div>
-      <div class="empty-sub">No pending dishes. All approved!</div>
+    <div id="pendingList" class="approval-list"></div>
+    <div id="noPending" style="display:none; text-align:center; padding:60px 20px; color:var(--muted);">
+      <i data-lucide="check-circle" style="width:48px;height:48px;color:var(--green);margin-bottom:16px;"></i>
+      <h3 style="color:var(--text);font-family:'Playfair Display',serif;font-size:20px;margin-bottom:8px;">All Set!</h3>
+      <p style="font-size:13px;">No pending dishes.</p>
     </div>
   </div>
 
-  <!-- TAB: ALL PRODUCTS -->
-  <div id="tab-products" class="tab-panel">
+  <div id="tab-products" class="tab-panel" style="display:none;">
     <div class="toolbar">
       <div class="toolbar-left">
         <label class="select-all-label">
@@ -333,46 +184,39 @@
       </button>
     </div>
     <div id="allProductsList" class="approval-list" style="display:none"></div>
-    <div id="allProductsLoading" class="empty-state">
-      <div class="empty-icon"><span class="spinner"></span></div>
-      <div class="empty-title">Loading Products...</div>
-    </div>
-    <div id="noAllProducts" class="empty-state" style="display:none">
-      <div class="empty-icon"><i data-lucide="package-x" style="width:32px;height:32px;color:var(--muted)"></i></div>
-      <div class="empty-title">No Dishes Yet</div>
-      <div class="empty-sub">No dishes in catalog yet.</div>
+    <div id="allProductsLoading" style="text-align:center; padding:60px;"><span class="spinner"></span></div>
+    <div id="noAllProducts" style="display:none; text-align:center; padding:60px 20px; color:var(--muted);">
+      <i data-lucide="package-x" style="width:48px;height:48px;margin-bottom:16px;"></i>
+      <h3 style="color:var(--text);font-family:'Playfair Display',serif;font-size:20px;">No Dishes Yet</h3>
     </div>
   </div>
 
-  <!-- TAB: SELLERS -->
-  <!-- FIX: Added checkbox-based bulk approve toolbar for sellers -->
-  <div id="tab-sellers" class="tab-panel">
+  <div id="tab-sellers" class="tab-panel" style="display:block;">
     <div class="toolbar">
       <div class="toolbar-left">
-        <label class="select-all-label">
-          <input type="checkbox" id="selectAllSellers" onchange="toggleSelectAllSellers(this.checked)">
+        <label style="cursor:pointer;">
+          <input type="checkbox" id="selectAllSellersCheckbox" onchange="toggleSelectAllSellers(this.checked)">
           Select All
         </label>
-        <span class="selection-info" id="sellerSelectionInfo"></span>
+        <span id="sellerSelectionInfo" style="margin-left:10px; color:var(--gold-main); font-weight:600;"></span>
       </div>
-      <button class="btn btn-green" id="approveSellerBtn" onclick="bulkApproveSellers()" disabled>
-        <i data-lucide="check-circle" style="width:14px;height:14px"></i> Approve Selected
-      </button>
+      
+      <div style="display:flex; gap:12px; align-items:center;">
+        <div style="position: relative;">
+          <i data-lucide="search" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 14px; color: var(--muted);"></i>
+          <input type="text" id="sellerSearchInput" class="search-bar" placeholder="Search sellers by name..." oninput="handleSellerSearch()" style="padding-left: 32px;">
+        </div>
+        <button class="btn btn-green" onclick="bulkApproveSellers()" id="approveSellerBtn" disabled>✅ Approve</button>
+      </div>
     </div>
-    <div id="sellersList" style="display:none;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;"></div>
-    <div id="sellersLoading" class="empty-state">
-      <div class="empty-icon"><span class="spinner"></span></div>
-      <div class="empty-title">Loading Sellers...</div>
-    </div>
-    <div id="noSellers" class="empty-state" style="display:none">
-      <div class="empty-icon"><i data-lucide="user-x" style="width:32px;height:32px;color:var(--muted)"></i></div>
-      <div class="empty-title">No Sellers Yet</div>
-      <div class="empty-sub">No sellers registered yet.</div>
+    <div id="sellersList" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:20px;"></div>
+    <div id="sellersLoading" style="text-align:center; padding:60px;">
+      <span class="spinner" style="width:24px; height:24px; border-width: 3px;"></span>
+      <p style="margin-top:12px; color:var(--muted);">Loading Sellers...</p>
     </div>
   </div>
 
-  <!-- TAB: ORDERS -->
-  <div id="tab-orders" class="tab-panel">
+  <div id="tab-orders" class="tab-panel" style="display:none;">
     <div class="toolbar">
       <div class="filter-chips">
         <button class="chip active" onclick="filterAdminOrders('', this)">All</button>
@@ -384,23 +228,18 @@
       </div>
     </div>
     <div id="adminOrdersList" class="approval-list" style="display:none"></div>
-    <div id="ordersLoading" class="empty-state">
-      <div class="empty-icon"><span class="spinner"></span></div>
-      <div class="empty-title">Loading Orders...</div>
-    </div>
-    <div id="noAdminOrders" class="empty-state" style="display:none">
-      <div class="empty-icon"><i data-lucide="inbox" style="width:32px;height:32px;color:var(--muted)"></i></div>
-      <div class="empty-title">No Orders Yet</div>
-      <div class="empty-sub">No orders to display.</div>
+    <div id="ordersLoading" style="text-align:center; padding:60px;"><span class="spinner"></span></div>
+    <div id="noAdminOrders" style="display:none; text-align:center; padding:60px 20px; color:var(--muted);">
+      <i data-lucide="inbox" style="width:48px;height:48px;margin-bottom:16px;"></i>
+      <h3 style="color:var(--text);font-family:'Playfair Display',serif;font-size:20px;">No Orders Yet</h3>
     </div>
   </div>
 </main>
 
-<!-- BULK REJECT MODAL -->
 <div id="bulkRejectModal" class="modal-overlay">
   <div class="modal">
     <button class="modal-close" onclick="closeBulkRejectModal()"><i data-lucide="x" style="width:18px;height:18px"></i></button>
-    <div class="modal-title">Reject Dishes</div>
+    <h2 style="color:var(--text); font-family:'Playfair Display',serif; margin-bottom:20px;">Reject Dishes</h2>
     <div class="form-group">
       <label class="form-label">Reason for Rejection</label>
       <textarea id="rejectReasonInput" class="form-textarea" placeholder="E.g. image quality issues, ingredient restricted..."></textarea>
@@ -412,81 +251,349 @@
   </div>
 </div>
 
-<!-- SELLER DETAIL MODAL -->
 <div id="sellerDetailModal" class="modal-overlay">
   <div class="modal" style="max-width:560px;">
-    <button class="modal-close" onclick="closeSellerModal()"><i data-lucide="x" style="width:18px;height:18px"></i></button>
-    <div id="sellerDetailContent">
-      <div style="text-align:center;padding:40px 0;">
-        <span class="spinner"></span>
-        <div style="margin-top:12px;color:var(--muted);font-size:13px;">Loading seller details...</div>
-      </div>
-    </div>
+    <button style="position:absolute; top:20px; right:20px; background:transparent; border:none; color:var(--muted); cursor:pointer;" onclick="closeSellerModal()">
+      <i data-lucide="x" style="width:20px; height:20px;"></i>
+    </button>
+    <div id="sellerDetailContent"></div>
   </div>
 </div>
 
-<!-- ORDER DETAIL MODAL -->
 <div id="orderDetailModal" class="modal-overlay">
   <div class="modal" style="max-width:560px;">
-    <button class="modal-close" onclick="closeOrderModal()"><i data-lucide="x" style="width:18px;height:18px"></i></button>
+    <button style="position:absolute; top:20px; right:20px; background:transparent; border:none; color:var(--muted); cursor:pointer;" onclick="closeOrderModal()">
+      <i data-lucide="x" style="width:20px; height:20px;"></i>
+    </button>
     <div id="orderDetailContent"></div>
   </div>
 </div>
 
+<script src="js/config.js"></script>
+
 <script>
-// ===== STATE =====
-let allPendingProducts = [];
-let allProducts        = [];
-let allSellers         = [];
-let allAdminOrders     = [];
-let selectedPendingIds = new Set();
-let selectedAllProdIds = new Set();
-let selectedSellerIds  = new Set();   // FIX: was missing
+// ===== GLOBAL STATE & CONFIG =====
+const BASE_URL = (window.CONFIG && window.CONFIG.BASE_URL) ? window.CONFIG.BASE_URL : 'https://gruhani-backend.onrender.com';
+
+let allPendingProducts = [], allProducts = [], allSellers = [], allAdminOrders = [];
+let filteredSellers = []; 
+let selectedPendingIds = new Set(), selectedAllProdIds = new Set(), selectedSellerIds = new Set();
 let currentOrderFilter = '';
 
-// ===== HELPERS =====
 function getToken() { return localStorage.getItem('authToken') || ''; }
 
 function toast(msg, type = 'success') {
   const c = document.getElementById('toastContainer');
   const t = document.createElement('div');
-  t.className = `toast toast-${type}`;
-  t.innerHTML = `<span>${msg}</span>`;
-  c.appendChild(t);
-  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3500);
+  t.className = `toast toast-${type}`; 
+  t.style.background = type === 'error' ? 'linear-gradient(135deg, #991b1b, #ef4444)' : 'linear-gradient(135deg, #166534, #22c55e)';
+  t.style.color = '#fff'; t.style.padding = '14px 20px'; t.style.borderRadius = '10px'; t.style.marginBottom = '10px';
+  t.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)'; t.style.display = 'flex'; t.style.alignItems = 'center'; t.style.gap = '8px';
+  t.style.transition = 'opacity 0.3s, transform 0.3s';
+  
+  const icon = type === 'error' ? '<i data-lucide="alert-circle" style="width:16px;"></i>' : '<i data-lucide="check-circle" style="width:16px;"></i>';
+  t.innerHTML = `${icon} <span style="font-size:13px; font-weight:600;">${msg}</span>`;
+  
+  c.appendChild(t); 
+  lucide.createIcons();
+  
+  setTimeout(() => { 
+    t.style.opacity = '0'; 
+    t.style.transform = 'translateX(20px)'; 
+    setTimeout(() => t.remove(), 300); 
+  }, 3500);
 }
 
 function switchTab(tab, btn) {
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('tab-' + tab).style.display = 'block';
   btn.classList.add('active');
   lucide.createIcons();
 }
-window.onload = () => {
-  document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
-};
+
 function statusClass(status) {
-  const map = { 'APPROVED':'approved','PENDING':'pending','REJECTED':'rejected','DELIVERED':'delivered','ACCEPTED':'accepted','CANCELLED':'cancelled' };
+  const map = {
+    'APPROVED': 'approved', 'PENDING': 'pending', 'REJECTED': 'rejected',
+    'DELIVERED': 'delivered', 'ACCEPTED': 'accepted', 'CANCELLED': 'cancelled'
+  };
   return map[(status || '').toUpperCase()] || 'pending';
 }
 
 function fmt(val) {
-  return new Intl.NumberFormat('en-IN', { style:'currency', currency:'INR', minimumFractionDigits:0 }).format(val || 0);
+  return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 }).format(val || 0);
 }
 
 function fmtDate(d) {
   if (!d) return '—';
-  try { return new Date(d).toLocaleString('en-IN', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }); }
+  try { return new Date(d).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }); }
   catch { return d; }
 }
 
 function show(id) { const el = document.getElementById(id); if (el) el.style.display = 'block'; }
 function hide(id) { const el = document.getElementById(id); if (el) el.style.display = 'none'; }
 
-// ===== PENDING PRODUCTS — GET /admin/view-pending =====
+// Force-close any stuck modals on load
+window.onload = () => {
+  document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+};
+
+// ==========================================
+// 1. SELLERS LOGIC (STRICT PENDING API)
+// ==========================================
+
+async function loadSellers() {
+  document.getElementById('sellersLoading').style.display = 'block';
+  document.getElementById('sellersList').style.display = 'none';
+  
+  try {
+    // Only fetch pending sellers, strictly aligned with backend capabilities
+    const res = await fetch(`${BASE_URL}/admin/pending-seller`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    
+    if (!res.ok) throw new Error(await res.text() || `HTTP error! status: ${res.status}`);
+    
+    const data = await res.json();
+    allSellers = Array.isArray(data) ? data : [];
+    filteredSellers = [...allSellers]; 
+    selectedSellerIds.clear();
+    
+    document.getElementById('statSellers').textContent = allSellers.length;
+    renderSellers();
+  } catch(e) { 
+    toast('Failed to load sellers: ' + e.message, 'error'); 
+  } finally {
+    document.getElementById('sellersLoading').style.display = 'none';
+  }
+}
+
+function handleSellerSearch() {
+  const query = document.getElementById('sellerSearchInput').value.toLowerCase();
+  filteredSellers = allSellers.filter(s => {
+    const bName = (s.businessName || '').toLowerCase();
+    const oName = (s.name || '').toLowerCase();
+    return bName.includes(query) || oName.includes(query);
+  });
+  
+  const selectAllBox = document.getElementById('selectAllSellersCheckbox');
+  if (selectAllBox) {
+    const allVisibleSelected = filteredSellers.length > 0 && filteredSellers.every(s => selectedSellerIds.has(s.id));
+    selectAllBox.checked = allVisibleSelected;
+  }
+  
+  renderSellers();
+}
+
+function renderSellers() {
+  const container = document.getElementById("sellersList");
+  container.style.display = 'grid';
+  
+  if (!filteredSellers.length) {
+    container.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align:center; padding:60px 20px; background:rgba(0,0,0,0.2); border-radius:16px; border:1px dashed var(--border);">
+        <i data-lucide="users" style="width:48px;height:48px;color:var(--muted);margin-bottom:16px;"></i>
+        <h3 style="color:var(--text);font-family:'Playfair Display',serif;font-size:20px;margin-bottom:8px;">No Sellers Found</h3>
+        <p style="color:var(--muted);font-size:13px;">${allSellers.length ? 'No sellers match your search.' : 'All sellers are processed or none are registered yet.'}</p>
+      </div>
+    `;
+    lucide.createIcons();
+    return;
+  }
+
+  container.innerHTML = filteredSellers.map(s => {
+    const isSelected = selectedSellerIds.has(s.id);
+    const addr = s.address || {};
+    const loc = [addr.city, addr.state].filter(Boolean).join(', ') || 'Address not provided';
+    
+    // Explicitly hardcoded pending since this is the pending-seller endpoint route
+    const badgeHTML = `<span class="badge-pending"><i data-lucide="clock" style="width:12px;"></i> Pending</span>`;
+    const descText = s.description || s.Description || 'No details provided by the chef.';
+
+    return `
+      <div class="approval-card ${isSelected ? 'selected' : ''}" onclick="toggleSellerSelection(${s.id})" style="flex-direction:column; padding:0; overflow:hidden;">
+        
+        <div style="padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; align-items:flex-start;">
+          <div style="display:flex; gap:12px;">
+            <div style="width:48px; height:48px; background:var(--dark2); border:1px solid var(--border); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:24px; overflow:hidden;">
+              ${s.image ? `<img src="${s.image}" style="width:100%;height:100%;object-fit:cover;">` : '👨‍🍳'}
+            </div>
+            <div>
+              <h3 style="font-size:16px; color:var(--text); font-family:'Playfair Display', serif;">${s.businessName || s.name}</h3>
+              <p style="font-size:11px; color:var(--gold-main); font-weight:600; margin-top:2px;">Owner: ${s.name}</p>
+            </div>
+          </div>
+          <input type="checkbox" class="approval-checkbox" ${isSelected ? 'checked' : ''} onclick="event.stopPropagation(); toggleSellerSelection(${s.id})">
+        </div>
+
+        <div style="padding: 16px; flex: 1;">
+          <div style="margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+             ${badgeHTML}
+             <span style="font-size:11px; color:var(--muted);"><i data-lucide="phone" style="width:10px; margin-right:4px;"></i>${s.contact}</span>
+          </div>
+          <p style="font-size:12px; color:var(--muted); margin-bottom:8px; display:flex; gap:6px;"><i data-lucide="map-pin" style="width:12px; flex-shrink:0;"></i> ${loc}</p>
+          <div style="font-size:11px; color:var(--muted2); line-height:1.5; background:rgba(0,0,0,0.3); padding:8px 10px; border-radius:6px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">
+            ${descText}
+          </div>
+        </div>
+        
+        <div style="padding: 12px 16px; background: rgba(212,175,55,0.02); border-top: 1px solid var(--border);">
+          <button class="btn btn-gold" style="width:100%; font-size:11px; padding:8px;" onclick="event.stopPropagation(); openSellerModal(${s.id})">
+             👁️ View Full Profile
+          </button>
+        </div>
+
+      </div>
+    `;
+  }).join("");
+
+  updateSellerSelectionUI();
+  lucide.createIcons();
+}
+
+function toggleSellerSelection(id) {
+  selectedSellerIds.has(id) ? selectedSellerIds.delete(id) : selectedSellerIds.add(id);
+  
+  const selectAllBox = document.getElementById('selectAllSellersCheckbox');
+  if (selectAllBox) {
+    const allVisibleSelected = filteredSellers.length > 0 && filteredSellers.every(s => selectedSellerIds.has(s.id));
+    selectAllBox.checked = allVisibleSelected;
+  }
+  
+  renderSellers();
+}
+
+function toggleSelectAllSellers(checked) {
+  if (checked) {
+    filteredSellers.forEach(s => selectedSellerIds.add(s.id));
+  } else {
+    filteredSellers.forEach(s => selectedSellerIds.delete(s.id));
+  }
+  renderSellers();
+}
+
+function updateSellerSelectionUI() {
+  const count = selectedSellerIds.size;
+  document.getElementById("sellerSelectionInfo").innerText = count > 0 ? `${count} selected` : "";
+  document.getElementById("approveSellerBtn").disabled = count === 0;
+}
+
+async function bulkApproveSellers() {
+  if (!selectedSellerIds.size) return;
+  
+  const msg = prompt("Enter approval message for selected chefs:");
+  if (msg === null) return; 
+  
+  const btn = document.getElementById("approveSellerBtn");
+  const originalHtml = btn.innerHTML;
+  btn.innerHTML = `<span class="spinner" style="border-top-color:white;"></span> Processing...`;
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(`${BASE_URL}/admin/approve-seller`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${getToken()}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ selectedProducts: Array.from(selectedSellerIds), message: msg || "Account verified." })
+    });
+    
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText || "Server returned an error");
+    }
+    
+    toast(`✅ ${selectedSellerIds.size} Sellers Approved`);
+    selectedSellerIds.clear();
+    
+    document.getElementById('sellerSearchInput').value = '';
+    await loadSellers();
+  } catch (e) { 
+    toast("Approval Failed: " + e.message, "error"); 
+  } finally {
+    btn.innerHTML = originalHtml;
+    updateSellerSelectionUI();
+  }
+}
+
+// ===== SELLER DETAIL MODAL =====
+async function openSellerModal(id) {
+  document.getElementById('sellerDetailModal').classList.add('open');
+  const content = document.getElementById('sellerDetailContent');
+  content.innerHTML = `<div style="text-align:center; padding:40px;"><span class="spinner"></span><p style="margin-top:10px; color:var(--muted); font-size:12px;">Loading Details...</p></div>`;
+  
+  try {
+    const res = await fetch(`${BASE_URL}/admin/view-seller/${id}`, { headers: { Authorization: `Bearer ${getToken()}` } });
+    if (!res.ok) throw new Error(await res.text() || `Status: ${res.status}`);
+    
+    const s = await res.json();
+    const addr = s.address || {};
+    const fullLoc = [addr.addressLine, addr.city, addr.state, addr.pincode].filter(Boolean).join(', ') || 'N/A';
+    
+    content.innerHTML = `
+      <div style="display:flex; align-items:center; gap:16px; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid var(--border);">
+        <div style="width:64px; height:64px; border-radius:16px; background:var(--dark2); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:32px; overflow:hidden;">
+          ${s.image ? `<img src="${s.image}" style="width:100%;height:100%;object-fit:cover;">` : '👨‍🍳'}
+        </div>
+        <div>
+          <h2 style="color:var(--text); font-family:'Playfair Display',serif; font-size:24px; margin-bottom:4px;">${s.businessName || s.name}</h2>
+          <span style="font-size:12px; color:var(--gold-main); font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">Owner: ${s.name}</span>
+        </div>
+      </div>
+      
+      <div style="display:grid; grid-template-columns: 100px 1fr; gap:12px; font-size:13px; margin-bottom:24px;">
+        <span style="color:var(--muted); font-weight:600;">Contact</span><span style="color:var(--text);">${s.contact || 'N/A'}</span>
+        <span style="color:var(--muted); font-weight:600;">Address</span><span style="color:var(--text);">${fullLoc}</span>
+      </div>
+      
+      <div style="background:rgba(212,175,55,0.05); padding:16px; border-radius:12px; border:1px solid var(--border2); margin-bottom:24px;">
+        <span style="display:block; font-size:11px; color:var(--gold-main); font-weight:700; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;">About the Kitchen</span>
+        <p style="color:var(--muted); font-size:13px; line-height:1.6;">${s.description || s.Description || 'No detailed description provided by this chef.'}</p>
+      </div>
+
+      <div style="display:flex; gap:12px;">
+        <button class="btn btn-red" style="flex:1;" onclick="deleteSellerSingle(${s.id})"><i data-lucide="trash-2" style="width:14px;"></i> Delete Account</button>
+        <button class="btn btn-gold" style="flex:1;" onclick="closeSellerModal()">Close Profile</button>
+      </div>
+    `;
+    lucide.createIcons();
+  } catch(e) { 
+    content.innerHTML = `<div style="text-align:center; padding:40px; color:var(--red);">Failed to load profile details.<br><span style="font-size:11px;">${e.message}</span></div>`; 
+  }
+}
+
+function closeSellerModal() { document.getElementById('sellerDetailModal').classList.remove('open'); }
+
+// Strictly single delete utilizing Path Variable format
+async function deleteSellerSingle(id) {
+  if (!confirm('Delete this seller and all their data? This cannot be undone.')) return;
+
+  try {
+    const res = await fetch(`${BASE_URL}/admin/delete-seller/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText || "Server error");
+    }
+    
+    toast(`🗑 Seller Removed`);
+    closeSellerModal();
+    selectedSellerIds.delete(id);
+    await loadSellers();
+  } catch (e) { 
+    toast("Delete Failed: " + e.message, "error"); 
+  }
+}
+
+// ==========================================
+// 2. DISHES & PENDING LOGIC 
+// ==========================================
+
 async function loadPending() {
-  show('pendingLoading'); hide('pendingList'); hide('noPending');
+  document.getElementById('pendingList').style.display = 'none';
+  document.getElementById('noPending').style.display = 'none';
+  
   try {
     const res = await fetch(`${BASE_URL}/admin/view-pending`, {
       headers: { Authorization: `Bearer ${getToken()}` }
@@ -495,63 +602,60 @@ async function loadPending() {
     const data = await res.json();
     allPendingProducts = Array.isArray(data) ? data : [];
     selectedPendingIds.clear();
-    hide('pendingLoading');
+    
     renderPending();
     document.getElementById('pendingCount').textContent = allPendingProducts.length;
-    document.getElementById('statPending').textContent  = allPendingProducts.length;
+    document.getElementById('statPending').textContent = allPendingProducts.length;
   } catch(e) {
-    hide('pendingLoading');
-    const el = document.getElementById('noPending');
-    el.style.display = 'block';
-    el.innerHTML = `
+    document.getElementById('noPending').style.display = 'block';
+    document.getElementById('noPending').innerHTML = `
       <div class="empty-icon"><i data-lucide="alert-circle" style="width:32px;height:32px;color:var(--red)"></i></div>
-      <div class="empty-title">Could not load</div>
-      <div class="empty-sub">${e.message}</div>
-      <button onclick="loadPending()" style="margin-top:16px;padding:8px 20px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--gold-main);cursor:pointer;font-weight:600;font-size:12px;">🔄 Retry</button>`;
+      <h3 style="color:var(--text);font-size:20px;margin-bottom:8px;">Could not load</h3>
+      <p style="color:var(--muted);font-size:13px;">${e.message}</p>
+    `;
     lucide.createIcons();
   }
 }
 
 function renderPending() {
-  const list  = document.getElementById('pendingList');
+  const list = document.getElementById('pendingList');
   const empty = document.getElementById('noPending');
-  if (!allPendingProducts.length) { hide('pendingList'); show('noPending'); return; }
-  hide('noPending'); show('pendingList');
+  
+  if (!allPendingProducts.length) { 
+    list.style.display = 'none'; 
+    empty.style.display = 'block'; 
+    return; 
+  }
+  
+  empty.style.display = 'none'; 
+  list.style.display = 'flex';
 
   list.innerHTML = allPendingProducts.map(p => `
-    <div class="approval-card ${selectedPendingIds.has(p.id) ? 'selected' : ''}"
-         onclick="togglePendingCheckbox(${p.id})">
-      <input type="checkbox" class="approval-checkbox"
-             ${selectedPendingIds.has(p.id) ? 'checked' : ''}
-             onclick="event.stopPropagation()">
+    <div class="approval-card ${selectedPendingIds.has(p.id) ? 'selected' : ''}" onclick="togglePendingCheckbox(${p.id})">
+      <input type="checkbox" class="approval-checkbox" ${selectedPendingIds.has(p.id) ? 'checked' : ''} onclick="event.stopPropagation(); togglePendingCheckbox(${p.id})">
       <div style="width:70px;height:70px;border-radius:12px;background:var(--dark2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;">
-        ${p.image
-          ? `<img src="${p.image}" style="width:70px;height:70px;border-radius:12px;object-fit:cover;" onerror="this.parentNode.innerHTML='<i data-lucide=\\'image\\' style=\\'width:28px;height:28px;color:var(--muted2)\\'></i>'">`
-          : `<i data-lucide="utensils" style="width:28px;height:28px;color:var(--muted2)"></i>`}
+        ${p.image ? `<img src="${p.image}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentNode.innerHTML='<i data-lucide=\\'image\\' style=\\'width:28px;height:28px;color:var(--muted2)\\'></i>'">` : `<i data-lucide="utensils" style="width:28px;height:28px;color:var(--muted2)"></i>`}
       </div>
       <div class="approval-body">
         <div class="approval-name">${p.productName || p.name || 'Untitled'}</div>
         <div class="approval-meta">
           <span><i data-lucide="user" style="width:11px;height:11px"></i> ${p.sellerName || '—'}</span>
           <span><i data-lucide="tag" style="width:11px;height:11px"></i> ${fmt(p.price)}</span>
-          ${p.stock != null ? `<span><i data-lucide="layers" style="width:11px;height:11px"></i> Stock: ${p.stock}</span>` : ''}
         </div>
-        <div class="approval-desc">${p.description || p.Description || 'No description'}</div>
-      </div>
-      <div class="approval-actions">
-        <button class="btn btn-green btn-sm" onclick="event.stopPropagation(); approveSingle(${p.id})">
-          <i data-lucide="check" style="width:12px;height:12px"></i> Approve
-        </button>
+        <div class="approval-desc" style="display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${p.description || p.Description || 'No description'}</div>
       </div>
     </div>`).join('');
   lucide.createIcons();
-  updateSelectionInfo('pending');
+  updatePendingSelectionInfo();
 }
 
 function togglePendingCheckbox(id) {
   selectedPendingIds.has(id) ? selectedPendingIds.delete(id) : selectedPendingIds.add(id);
-  const box = document.getElementById('selectAllPending');
-  if (box) box.checked = allPendingProducts.length > 0 && selectedPendingIds.size === allPendingProducts.length;
+  
+  const selectAllBox = document.getElementById('selectAllPending');
+  if (selectAllBox) {
+    selectAllBox.checked = allPendingProducts.length > 0 && selectedPendingIds.size === allPendingProducts.length;
+  }
   renderPending();
 }
 
@@ -560,46 +664,26 @@ function toggleSelectAll(tab, checked) {
     selectedPendingIds.clear();
     if (checked) allPendingProducts.forEach(p => selectedPendingIds.add(p.id));
     renderPending();
-    updateSelectionInfo('pending');
-  } else {
+  } else if (tab === 'allProds') {
     selectedAllProdIds.clear();
     if (checked) allProducts.forEach(p => selectedAllProdIds.add(p.id));
     renderAllProducts();
-    updateSelectionInfo('allProds');
   }
 }
 
-function updateSelectionInfo(tab) {
-  const isPending = tab === 'pending';
-  const count = isPending ? selectedPendingIds.size : selectedAllProdIds.size;
-  document.getElementById(isPending ? 'pendingSelectionInfo' : 'allProdsSelectionInfo').textContent =
-    count > 0 ? `${count} selected` : '';
-  const btn1 = document.getElementById(isPending ? 'bulkApproveBtn' : 'bulkDeleteBtn');
-  const btn2 = isPending ? document.getElementById('bulkRejectBtn') : null;
-  if (btn1) btn1.disabled = count === 0;
-  if (btn2) btn2.disabled = count === 0;
-}
-
-// POST /admin/accept-item
-async function approveSingle(id) {
-  try {
-    const res = await fetch(`${BASE_URL}/admin/accept-item`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${getToken()}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ selectedProducts: [id] })
-    });
-    if (!res.ok) throw new Error(await res.text());
-    toast('✅ Dish approved!');
-    loadPending(); loadAllProducts();
-  } catch(e) { toast('Error: ' + e.message, 'error'); }
+function updatePendingSelectionInfo() {
+  const count = selectedPendingIds.size;
+  document.getElementById('pendingSelectionInfo').textContent = count > 0 ? `${count} selected` : '';
+  document.getElementById('bulkApproveBtn').disabled = count === 0;
+  document.getElementById('bulkRejectBtn').disabled = count === 0;
 }
 
 async function bulkApprove() {
   if (!selectedPendingIds.size) return;
   const btn = document.getElementById('bulkApproveBtn');
-  const orig = btn.innerHTML;
-  btn.innerHTML = `<span class="spinner"></span>`;
-  btn.disabled = true;
+  const original = btn.innerHTML;
+  btn.innerHTML = `<span class="spinner" style="border-top-color:white;"></span>`;
+  
   try {
     const res = await fetch(`${BASE_URL}/admin/accept-item`, {
       method: 'POST',
@@ -611,18 +695,16 @@ async function bulkApprove() {
     selectedPendingIds.clear();
     loadPending(); loadAllProducts();
   } catch(e) { toast('Error: ' + e.message, 'error'); }
-  finally { btn.innerHTML = orig; updateSelectionInfo('pending'); }
+  finally { btn.innerHTML = original; }
 }
 
 function openBulkRejectModal() {
   if (!selectedPendingIds.size) return;
   document.getElementById('bulkRejectModal').classList.add('open');
   document.getElementById('rejectReasonInput').value = '';
-  lucide.createIcons();
 }
 function closeBulkRejectModal() { document.getElementById('bulkRejectModal').classList.remove('open'); }
 
-// POST /admin/reject-item
 async function submitBulkReject() {
   const message = document.getElementById('rejectReasonInput').value.trim();
   if (!message) { toast('Please provide a reason!', 'error'); return; }
@@ -640,9 +722,15 @@ async function submitBulkReject() {
   } catch(e) { toast('Error: ' + e.message, 'error'); }
 }
 
-// ===== ALL PRODUCTS — GET /admin/products-viewAll =====
+// ==========================================
+// 3. ALL PRODUCTS LOGIC
+// ==========================================
+
 async function loadAllProducts() {
-  show('allProductsLoading'); hide('allProductsList'); hide('noAllProducts');
+  document.getElementById('allProductsLoading').style.display = 'block';
+  document.getElementById('allProductsList').style.display = 'none';
+  document.getElementById('noAllProducts').style.display = 'none';
+  
   try {
     const res = await fetch(`${BASE_URL}/admin/products-viewAll`, {
       headers: { Authorization: `Bearer ${getToken()}` }
@@ -651,62 +739,71 @@ async function loadAllProducts() {
     const data = await res.json();
     allProducts = Array.isArray(data) ? data : [];
     selectedAllProdIds.clear();
-    hide('allProductsLoading');
-    renderAllProducts();
+    
     document.getElementById('allProductsCount').textContent = allProducts.length;
-    document.getElementById('statAllProducts').textContent  = allProducts.length;
-    document.getElementById('statApproved').textContent     = allProducts.filter(p => (p.status || p.productStatus || '').toUpperCase() === 'APPROVED').length;
+    renderAllProducts();
   } catch(e) {
-    hide('allProductsLoading'); show('noAllProducts');
-    toast('Could not load products: ' + e.message, 'error');
+    document.getElementById('noAllProducts').style.display = 'block';
+  } finally {
+    document.getElementById('allProductsLoading').style.display = 'none';
   }
 }
 
 function renderAllProducts() {
-  const list  = document.getElementById('allProductsList');
-  if (!allProducts.length) { hide('allProductsList'); show('noAllProducts'); return; }
-  hide('noAllProducts'); show('allProductsList');
+  const list = document.getElementById('allProductsList');
+  const empty = document.getElementById('noAllProducts');
+  
+  if (!allProducts.length) { 
+    list.style.display = 'none'; 
+    empty.style.display = 'block'; 
+    return; 
+  }
+  empty.style.display = 'none'; 
+  list.style.display = 'flex';
 
   list.innerHTML = allProducts.map(p => `
-    <div class="approval-card ${selectedAllProdIds.has(p.id) ? 'selected' : ''}"
-         onclick="toggleProductCheckbox(${p.id})">
-      <input type="checkbox" class="approval-checkbox"
-             ${selectedAllProdIds.has(p.id) ? 'checked' : ''}
-             onclick="event.stopPropagation()">
+    <div class="approval-card ${selectedAllProdIds.has(p.id) ? 'selected' : ''}" onclick="toggleProductCheckbox(${p.id})">
+      <input type="checkbox" class="approval-checkbox" ${selectedAllProdIds.has(p.id) ? 'checked' : ''} onclick="event.stopPropagation(); toggleProductCheckbox(${p.id})">
       <div style="width:70px;height:70px;border-radius:12px;background:var(--dark2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;">
-        ${p.image
-          ? `<img src="${p.image}" style="width:70px;height:70px;border-radius:12px;object-fit:cover;" onerror="this.parentNode.innerHTML='<i data-lucide=\\'utensils\\' style=\\'width:28px;height:28px;color:var(--muted2)\\'></i>'">`
-          : `<i data-lucide="utensils" style="width:28px;height:28px;color:var(--muted2)"></i>`}
+        ${p.image ? `<img src="${p.image}" style="width:100%;height:100%;object-fit:cover;">` : `<i data-lucide="utensils" style="width:28px;height:28px;color:var(--muted2)"></i>`}
       </div>
       <div class="approval-body">
         <div class="approval-name">${p.productName || p.name || 'Untitled'}</div>
         <div class="approval-meta">
           <span><i data-lucide="user" style="width:11px;height:11px"></i> ${p.sellerName || '—'}</span>
           <span><i data-lucide="tag" style="width:11px;height:11px"></i> ${fmt(p.price)}</span>
-          <span><span class="status-pill status-${statusClass(p.status || p.productStatus)}">${p.status || p.productStatus || '—'}</span></span>
+          <span><span class="status-pill status-${statusClass(p.productStatus)}">${p.productStatus || '—'}</span></span>
         </div>
-        <div class="approval-desc">Stock: ${p.stock ?? '—'} | ${p.description || p.Description || ''}</div>
+        <div class="approval-desc" style="display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${p.description || p.Description || 'No description'}</div>
       </div>
     </div>`).join('');
   lucide.createIcons();
-  updateSelectionInfo('allProds');
+  updateProdSelectionInfo();
 }
 
 function toggleProductCheckbox(id) {
   selectedAllProdIds.has(id) ? selectedAllProdIds.delete(id) : selectedAllProdIds.add(id);
-  const box = document.getElementById('selectAllProducts');
-  if (box) box.checked = allProducts.length > 0 && selectedAllProdIds.size === allProducts.length;
+  const selectAllBox = document.getElementById('selectAllProducts');
+  if (selectAllBox) {
+    selectAllBox.checked = allProducts.length > 0 && selectedAllProdIds.size === allProducts.length;
+  }
   renderAllProducts();
 }
 
-// DELETE /admin/delete-product
+function updateProdSelectionInfo() {
+  const count = selectedAllProdIds.size;
+  document.getElementById('allProdsSelectionInfo').textContent = count > 0 ? `${count} selected` : '';
+  document.getElementById('bulkDeleteBtn').disabled = count === 0;
+}
+
 async function bulkDeleteProducts() {
   if (!selectedAllProdIds.size) return;
   if (!confirm(`Delete ${selectedAllProdIds.size} product(s)? This cannot be undone.`)) return;
+  
   const btn = document.getElementById('bulkDeleteBtn');
-  const orig = btn.innerHTML;
-  btn.innerHTML = `<span class="spinner"></span>`;
-  btn.disabled = true;
+  const original = btn.innerHTML;
+  btn.innerHTML = `<span class="spinner" style="border-top-color:white;"></span>`;
+  
   try {
     const res = await fetch(`${BASE_URL}/admin/delete-product`, {
       method: 'DELETE',
@@ -718,300 +815,18 @@ async function bulkDeleteProducts() {
     selectedAllProdIds.clear();
     loadAllProducts();
   } catch(e) { toast('Error: ' + e.message, 'error'); }
-  finally { btn.innerHTML = orig; updateSelectionInfo('allProds'); }
+  finally { btn.innerHTML = original; }
 }
 
-// ===== SELLERS — GET /admin/Sellers-viewAll =====
-// SellerDetailsDto: id, name, contact, address{id,addressLine,city,state,pincode}, businessName, image, Description
-async function loadSellers() {
-  show('sellersLoading'); hide('sellersList'); hide('noSellers');
-  try {
-    const res = await fetch(`${BASE_URL}/admin/Sellers-viewAll`, {
-      headers: { Authorization: `Bearer ${getToken()}` }
-    });
-    if (!res.ok) throw new Error(`Server ${res.status}`);
-    const data = await res.json();
-    allSellers = Array.isArray(data) ? data : [];
-    selectedSellerIds.clear();
-    hide('sellersLoading');
-    renderSellers();
-    document.getElementById('sellersCount').textContent = allSellers.length;
-    document.getElementById('statSellers').textContent  = allSellers.length;
-  } catch(e) {
-    hide('sellersLoading'); show('noSellers');
-    toast('Could not load sellers: ' + e.message, 'error');
-  }
-}
+// ==========================================
+// 4. ORDERS LOGIC
+// ==========================================
 
-// FIX: Full renderSellers with checkboxes, no per-card approve/reject buttons
-function renderSellers() {
-  const list  = document.getElementById('sellersList');
-  const empty = document.getElementById('noSellers');
-  if (!allSellers.length) { list.style.display = 'none'; show('noSellers'); return; }
-  hide('noSellers');
-  list.style.display = 'grid';
-
-  list.innerHTML = allSellers.map(s => {
-    const city     = s.address ? (s.address.city    || '') : '';
-    const state    = s.address ? (s.address.state   || '') : '';
-    const pincode  = s.address ? (s.address.pincode || '') : '';
-    const location = [city, state, pincode].filter(Boolean).join(', ') || 'Location not set';
-    const isSelected = selectedSellerIds.has(s.id);
-
-    return `
-    <div style="background:linear-gradient(135deg,rgba(212,175,55,${isSelected ? '0.18' : '0.08'}),rgba(212,175,55,0.04));
-                border:2px solid ${isSelected ? 'var(--gold-main)' : 'var(--border)'};
-                border-radius:16px;padding:20px;transition:all 0.3s;display:flex;flex-direction:column;gap:12px;cursor:pointer;"
-         onclick="toggleSellerSelection(${s.id})"
-         onmouseover="this.style.transform='translateY(-4px)'"
-         onmouseout="this.style.transform=''">
-
-      <!-- Checkbox row -->
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <input type="checkbox" ${isSelected ? 'checked' : ''}
-               style="accent-color:var(--gold-main);width:18px;height:18px;cursor:pointer;"
-               onclick="event.stopPropagation(); toggleSellerSelection(${s.id})">
-        <span style="font-size:10px;
-                     color:${s.isApproved ? 'var(--green)' : 'var(--amber)'};
-                     background:${s.isApproved ? 'rgba(34,197,94,0.1)' : 'rgba(245,158,11,0.1)'};
-                     border:1px solid ${s.isApproved ? 'rgba(34,197,94,0.3)' : 'rgba(245,158,11,0.3)'};
-                     padding:3px 10px;border-radius:12px;font-weight:700;font-family:'Cinzel',serif;text-transform:uppercase;">
-          ${s.isApproved ? '✓ Verified' : '⏳ Pending'}
-        </span>
-      </div>
-
-      <!-- Image -->
-      <div style="width:100%;height:120px;border-radius:12px;overflow:hidden;background:linear-gradient(135deg,rgba(212,175,55,0.2),rgba(212,175,55,0.1));border:1px solid var(--border);display:flex;align-items:center;justify-content:center;">
-        ${s.image
-          ? `<img src="${s.image}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentNode.innerHTML='<span style=font-size:40px>👨‍🍳</span>'">`
-          : `<span style="font-size:40px">👨‍🍳</span>`}
-      </div>
-
-      <!-- Name -->
-      <div>
-        <div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:2px;">
-          ${s.businessName || 'Unknown Kitchen'}
-        </div>
-        <div style="font-size:12px;color:var(--gold-main);font-weight:600;">by ${s.name || '—'}</div>
-      </div>
-
-      <!-- Location -->
-      <div style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:4px;">
-        <i data-lucide="map-pin" style="width:12px;height:12px;flex-shrink:0;"></i> ${location}
-      </div>
-
-      <!-- Contact -->
-      <div style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:4px;">
-        <i data-lucide="phone" style="width:12px;height:12px;flex-shrink:0;"></i> ${s.contact || 'No contact'}
-      </div>
-
-      <!-- Description — capital D from SellerDetailsDto -->
-      <div style="font-size:12px;color:var(--muted2);line-height:1.5;padding:8px 10px;background:rgba(0,0,0,0.2);border-radius:8px;min-height:36px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
-        ${s.Description || s.description || 'No description provided.'}
-      </div>
-
-      <!-- Action: View Details + individual Delete -->
-      <div style="display:flex;gap:8px;margin-top:4px;">
-        <button style="flex:1;padding:9px;background:linear-gradient(135deg,var(--gold-main),var(--gold-dim));color:var(--dark);border:none;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em;"
-                onclick="event.stopPropagation(); openSellerModal(${s.id})">
-          👁️ View Details
-        </button>
-        <!-- FIX: individual delete uses DELETE /admin/delete-seller/{id} -->
-        <button style="padding:9px 14px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:8px;color:var(--red);cursor:pointer;font-size:12px;transition:all 0.2s;"
-                onclick="event.stopPropagation(); deleteSeller(${s.id})" title="Delete Seller">
-          <i data-lucide="trash-2" style="width:13px;height:13px;"></i>
-        </button>
-      </div>
-    </div>`;
-  }).join('');
-
-  lucide.createIcons();
-  updateSellerSelectionUI();
-}
-
-// FIX: Seller selection helpers
-function toggleSellerSelection(id) {
-  selectedSellerIds.has(id) ? selectedSellerIds.delete(id) : selectedSellerIds.add(id);
-  const box = document.getElementById('selectAllSellers');
-  if (box) box.checked = allSellers.length > 0 && allSellers.every(s => selectedSellerIds.has(s.id));
-  renderSellers();
-}
-
-function toggleSelectAllSellers(checked) {
-  selectedSellerIds.clear();
-  if (checked) allSellers.forEach(s => selectedSellerIds.add(s.id));
-  renderSellers();
-}
-
-function updateSellerSelectionUI() {
-  const count = selectedSellerIds.size;
-  document.getElementById('sellerSelectionInfo').textContent = count > 0 ? `${count} selected` : '';
-  document.getElementById('approveSellerBtn').disabled = count === 0;
-}
-
-// FIX: POST /admin/approve-seller  body: { selectedProducts: [ids], message: "" }
-async function bulkApproveSellers() {
-  if (!selectedSellerIds.size) return;
-  const msg = prompt('Approval message (optional):');
-  if (msg === null) return; // cancelled
-  const btn = document.getElementById('approveSellerBtn');
-  const orig = btn.innerHTML;
-  btn.innerHTML = `<span class="spinner"></span> Processing...`;
-  btn.disabled = true;
-  try {
-    const res = await fetch(`${BASE_URL}/admin/approve-seller`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${getToken()}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ selectedProducts: Array.from(selectedSellerIds), message: msg || 'Approved' })
-    });
-    if (!res.ok) throw new Error(await res.text());
-    toast(`✅ ${selectedSellerIds.size} seller(s) approved`);
-    selectedSellerIds.clear();
-    await loadSellers();
-  } catch(e) { toast('Error: ' + e.message, 'error'); }
-  finally { btn.innerHTML = orig; updateSellerSelectionUI(); }
-}
-
-// ===== SELLER DETAIL MODAL — GET /admin/view-seller/{id} =====
-async function openSellerModal(sellerId) {
-  document.getElementById('sellerDetailModal').classList.add('open');
-  document.getElementById('sellerDetailContent').innerHTML = `
-    <div style="text-align:center;padding:40px 0;">
-      <span class="spinner"></span>
-      <div style="margin-top:12px;color:var(--muted);font-size:13px;">Loading seller details...</div>
-    </div>`;
-
-  try {
-    const res = await fetch(`${BASE_URL}/admin/view-seller/${sellerId}`, {
-      headers: { Authorization: `Bearer ${getToken()}` }
-    });
-    if (!res.ok) throw new Error(`Server ${res.status}`);
-    const s = await res.json();
-
-    // SellerDetailsDto fields: id, name, contact, address, businessName, image, Description
-    const addr    = s.address || {};
-    const fullAddr = [addr.addressLine, addr.city, addr.state, addr.pincode].filter(Boolean).join(', ') || '—';
-
-    document.getElementById('sellerDetailContent').innerHTML = `
-      <div style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--text);margin-bottom:20px;">
-        🍽️ Seller Profile
-      </div>
-
-      ${s.image ? `<img src="${s.image}" class="seller-detail-img" onerror="this.style.display='none'">` : ''}
-
-      <div class="detail-row">
-        <span class="detail-row-label">Business</span>
-        <span class="detail-row-val" style="font-weight:700;color:var(--gold-main);">${s.businessName || '—'}</span>
-      </div>
-      <div class="detail-row">
-        <span class="detail-row-label">Owner</span>
-        <span class="detail-row-val">${s.name || '—'}</span>
-      </div>
-      <div class="detail-row">
-        <span class="detail-row-label">Contact</span>
-        <span class="detail-row-val">${s.contact || '—'}</span>
-      </div>
-      <div class="detail-row">
-        <span class="detail-row-label">Address</span>
-        <span class="detail-row-val">${fullAddr}</span>
-      </div>
-      <div class="detail-row">
-        <span class="detail-row-label">About</span>
-        <span class="detail-row-val" style="color:var(--muted);">${s.Description || s.description || 'No description'}</span>
-      </div>
-
-      <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
-        <!-- FIX: individual delete only, no bulk from modal -->
-        <button class="btn btn-red btn-sm" onclick="deleteSeller(${s.id}); closeSellerModal()">
-          <i data-lucide="trash-2" style="width:13px;height:13px;"></i> Delete Seller
-        </button>
-        <button class="btn btn-gold btn-sm" onclick="loadSellerOrders(${s.id})">
-          <i data-lucide="shopping-bag" style="width:13px;height:13px;"></i> View Orders
-        </button>
-        <button class="btn btn-sm" style="border:1px solid var(--border);background:transparent;color:var(--muted);" onclick="closeSellerModal()">Close</button>
-      </div>
-
-      <div id="sellerOrdersSection" style="display:none;margin-top:20px;border-top:1px solid var(--border);padding-top:16px;">
-        <div style="font-family:'Cinzel',serif;font-size:11px;font-weight:700;text-transform:uppercase;color:var(--muted2);margin-bottom:12px;">Seller Orders</div>
-        <div id="sellerOrdersList"></div>
-      </div>`;
-
-    lucide.createIcons();
-  } catch(e) {
-    document.getElementById('sellerDetailContent').innerHTML = `
-      <div style="text-align:center;padding:40px 0;color:var(--red);">
-        <div style="font-size:14px;">Failed to load seller: ${e.message}</div>
-        <button onclick="openSellerModal(${sellerId})" style="margin-top:12px;padding:8px 16px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--gold-main);cursor:pointer;font-size:12px;">Retry</button>
-      </div>`;
-  }
-}
-
-function closeSellerModal() { document.getElementById('sellerDetailModal').classList.remove('open'); }
-
-// FIX: correct URL /admin/view-orders/seller/{id}
-async function loadSellerOrders(sellerId) {
-  const section = document.getElementById('sellerOrdersSection');
-  const listEl  = document.getElementById('sellerOrdersList');
-  section.style.display = 'block';
-  listEl.innerHTML = `<div style="color:var(--muted);font-size:13px;display:flex;align-items:center;gap:8px;"><span class="spinner"></span> Loading orders...</div>`;
-
-  try {
-    const res = await fetch(`${BASE_URL}/admin/view-orders/seller/${sellerId}`, {
-      headers: { Authorization: `Bearer ${getToken()}` }
-    });
-    if (!res.ok) throw new Error(`Server ${res.status}`);
-    const orders = await res.json();
-    const arr = Array.isArray(orders) ? orders : [];
-
-    if (!arr.length) {
-      listEl.innerHTML = `<div style="color:var(--muted);font-size:13px;">No orders for this seller yet.</div>`;
-      return;
-    }
-
-    listEl.innerHTML = arr.map(o => {
-      const user  = o.userDetails || {};
-      const items = Array.isArray(o.orderItems) ? o.orderItems : [];
-      return `
-        <div style="border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;background:rgba(0,0,0,0.2);">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-            <span style="font-family:'Cinzel',serif;font-size:11px;color:var(--gold-main);font-weight:700;">
-              #${String(o.id || '').slice(-6) || '—'}
-            </span>
-            <span class="status-pill status-${statusClass(o.orderStatus)}">${o.orderStatus || '—'}</span>
-          </div>
-          <div style="font-size:12px;color:var(--muted);margin-bottom:4px;">
-            👤 ${user.name || '—'} | ${user.contact || ''}
-          </div>
-          <div style="font-size:12px;color:var(--muted);margin-bottom:6px;">
-            ${fmtDate(o.placedAt)} | <strong style="color:var(--gold-main)">${fmt(o.orderValue)}</strong>
-          </div>
-          ${items.length ? `<div style="font-size:11px;color:var(--muted2);">${items.map(i => `${i.productName} × ${i.quantity}`).join(', ')}</div>` : ''}
-        </div>`;
-    }).join('');
-    lucide.createIcons();
-  } catch(e) {
-    listEl.innerHTML = `<div style="color:var(--red);font-size:12px;">Could not load orders: ${e.message}</div>`;
-  }
-}
-
-// FIX: DELETE /admin/delete-seller/{id} — individual only
-async function deleteSeller(id) {
-  if (!confirm('Delete this seller and all their data? This cannot be undone.')) return;
-  try {
-    const res = await fetch(`${BASE_URL}/admin/delete-seller/${id}`, {
-      method: 'DELETE',
-      headers: { Authorization: `Bearer ${getToken()}` }
-    });
-    if (!res.ok) throw new Error(await res.text());
-    toast('🗑️ Seller deleted');
-    selectedSellerIds.delete(id);
-    loadSellers();
-  } catch(e) { toast('Error: ' + e.message, 'error'); }
-}
-
-// ===== ORDERS — GET /admin/view-orders =====
 async function loadAdminOrders() {
-  show('ordersLoading'); hide('adminOrdersList'); hide('noAdminOrders');
+  document.getElementById('ordersLoading').style.display = 'block';
+  document.getElementById('adminOrdersList').style.display = 'none';
+  document.getElementById('noAdminOrders').style.display = 'none';
+  
   try {
     const res = await fetch(`${BASE_URL}/admin/view-orders`, {
       headers: { Authorization: `Bearer ${getToken()}` }
@@ -1019,13 +834,14 @@ async function loadAdminOrders() {
     if (!res.ok) throw new Error(`Server ${res.status}`);
     const data = await res.json();
     allAdminOrders = Array.isArray(data) ? data : [];
-    hide('ordersLoading');
-    renderAdminOrders(allAdminOrders);
+    
     document.getElementById('ordersCount').textContent = allAdminOrders.length;
-    document.getElementById('statOrders').textContent  = allAdminOrders.length;
+    document.getElementById('statOrders').textContent = allAdminOrders.length;
+    renderAdminOrders(allAdminOrders);
   } catch(e) {
-    hide('ordersLoading'); show('noAdminOrders');
-    toast('Could not load orders: ' + e.message, 'error');
+    document.getElementById('noAdminOrders').style.display = 'block';
+  } finally {
+    document.getElementById('ordersLoading').style.display = 'none';
   }
 }
 
@@ -1033,27 +849,30 @@ function filterAdminOrders(status, btn) {
   currentOrderFilter = status;
   document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
   btn.classList.add('active');
-  const filtered = status
-    ? allAdminOrders.filter(o => (o.orderStatus || '').toUpperCase() === status.toUpperCase())
-    : allAdminOrders;
+  const filtered = status ? allAdminOrders.filter(o => (o.orderStatus || '').toUpperCase() === status.toUpperCase()) : allAdminOrders;
   renderAdminOrders(filtered);
 }
 
 function renderAdminOrders(orders) {
-  const list  = document.getElementById('adminOrdersList');
+  const list = document.getElementById('adminOrdersList');
   const empty = document.getElementById('noAdminOrders');
-  hide('ordersLoading');
-  if (!orders.length) { hide('adminOrdersList'); show('noAdminOrders'); return; }
-  hide('noAdminOrders'); show('adminOrdersList');
+  
+  if (!orders.length) { 
+    list.style.display = 'none'; 
+    empty.style.display = 'block'; 
+    return; 
+  }
+  empty.style.display = 'none'; 
+  list.style.display = 'flex';
 
   list.innerHTML = orders.map(o => {
-    const user  = o.userDetails || {};
+    const user = o.userDetails || {};
     const items = Array.isArray(o.orderItems) ? o.orderItems : [];
-    const addr  = o.deliveryAddress || {};
+    const addr = o.deliveryAddress || {};
     const addrStr = [addr.city, addr.state].filter(Boolean).join(', ') || '—';
 
     return `
-      <div class="approval-card" onclick='openOrderModal(${JSON.stringify(o).replace(/"/g,"&quot;")})'>
+      <div class="approval-card" onclick='openOrderModal(${JSON.stringify(o).replace(/'/g, "&#39;")})' style="cursor:pointer;">
         <div style="width:70px;height:70px;border-radius:12px;background:var(--dark2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
           <i data-lucide="shopping-bag" style="width:28px;height:28px;color:var(--gold-main)"></i>
         </div>
@@ -1064,12 +883,10 @@ function renderAdminOrders(orders) {
           </div>
           <div class="approval-meta">
             <span><i data-lucide="user" style="width:11px;height:11px"></i> ${user.name || '—'}</span>
-            <span><i data-lucide="phone" style="width:11px;height:11px"></i> ${user.contact || '—'}</span>
             <span><i data-lucide="map-pin" style="width:11px;height:11px"></i> ${addrStr}</span>
           </div>
           <div class="approval-desc">
-            ${fmt(o.orderValue)} | ${items.length} item(s) | ${fmtDate(o.placedAt)}
-            ${items.length ? `<br><span style="color:var(--muted2)">${items.map(i => `${i.productName} ×${i.quantity}`).join(', ')}</span>` : ''}
+            <strong style="color:var(--gold-main)">${fmt(o.orderValue)}</strong> | ${items.length} item(s) | ${fmtDate(o.placedAt)}
           </div>
         </div>
       </div>`;
@@ -1078,9 +895,9 @@ function renderAdminOrders(orders) {
 }
 
 function openOrderModal(o) {
-  const user  = o.userDetails  || {};
+  const user = o.userDetails || {};
   const items = Array.isArray(o.orderItems) ? o.orderItems : [];
-  const addr  = o.deliveryAddress || {};
+  const addr = o.deliveryAddress || {};
   const addrStr = [addr.addressLine, addr.city, addr.state, addr.pincode].filter(Boolean).join(', ') || '—';
 
   document.getElementById('orderDetailContent').innerHTML = `
@@ -1089,11 +906,9 @@ function openOrderModal(o) {
       <span class="status-pill status-${statusClass(o.orderStatus)}" style="margin-left:10px;font-size:11px;">${o.orderStatus || '—'}</span>
     </div>
     <div class="detail-row"><span class="detail-row-label">Customer</span><span class="detail-row-val">${user.name || '—'}</span></div>
-    <div class="detail-row"><span class="detail-row-label">Email</span><span class="detail-row-val">${user.email || '—'}</span></div>
     <div class="detail-row"><span class="detail-row-label">Contact</span><span class="detail-row-val">${user.contact || '—'}</span></div>
     <div class="detail-row"><span class="detail-row-label">Address</span><span class="detail-row-val">${addrStr}</span></div>
     <div class="detail-row"><span class="detail-row-label">Placed</span><span class="detail-row-val">${fmtDate(o.placedAt)}</span></div>
-    <div class="detail-row"><span class="detail-row-label">Delivery</span><span class="detail-row-val">${o.deliveryTime || '—'}</span></div>
     <div class="detail-row"><span class="detail-row-label">Total</span><span class="detail-row-val" style="color:var(--gold-main);font-weight:700;">${fmt(o.orderValue)}</span></div>
 
     <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px;">
@@ -1104,7 +919,6 @@ function openOrderModal(o) {
           <span style="color:var(--gold-main);font-weight:700;">${fmt((i.priceAtOrderTime || 0) * (i.quantity || 1))}</span>
         </div>`).join('')}
     </div>
-
     <button class="btn btn-gold" style="width:100%;margin-top:20px;" onclick="closeOrderModal()">Close</button>`;
 
   document.getElementById('orderDetailModal').classList.add('open');
@@ -1113,15 +927,23 @@ function openOrderModal(o) {
 
 function closeOrderModal() { document.getElementById('orderDetailModal').classList.remove('open'); }
 
-// ===== INIT =====
+// ==========================================
+// 5. INIT
+// ==========================================
+
 async function refreshAll() {
-  await Promise.all([loadPending(), loadAllProducts(), loadSellers(), loadAdminOrders()]);
-  toast('✅ Data refreshed!', 'info');
+  await Promise.all([
+    loadSellers(), 
+    loadPending(),
+    loadAllProducts(),
+    loadAdminOrders()
+  ]); 
+  toast('Data synchronized with server', 'info');
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
+  refreshAll();
   lucide.createIcons();
-  await refreshAll();
 });
 </script>
 </body>
