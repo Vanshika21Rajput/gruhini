@@ -22,7 +22,7 @@ public class MailService {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-        helper.setFrom("your-email@gmail.com");
+        helper.setFrom("gruhani214@gmail.com");
         helper.setTo(toEmail);
         helper.setSubject("Gruhani Order OTP - #" + orderId);
 
