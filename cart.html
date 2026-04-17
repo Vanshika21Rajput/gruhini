@@ -304,19 +304,23 @@
 
   function closeAddressModal() { document.getElementById('addressModal').classList.remove('open'); }
 
-  function renderAddressCards(addresses) {
+function renderAddressCards(addresses) {
     const displayEl = document.getElementById('addrDisplay');
     displayEl.classList.remove('hidden');
     if (addresses.length === 0) { openEditForm(null, true); return; }
 
-    selectedAddressId = addresses[0].id || 0;
+    // Dhyan de: backend se id ya addressId kuch bhi aa sakta hai
+    selectedAddressId = addresses[0].id || addresses[0].addressId || 0;
+    
     displayEl.innerHTML = `
       <p class="text-xs text-gray-400 uppercase tracking-widest font-bold mb-3">Your Saved Address</p>
-      ${addresses.map((addr, idx) => `
+      ${addresses.map((addr, idx) => {
+        const aId = addr.id || addr.addressId || 0; // Safe ID extraction
+        return `
         <div class="addr-card ${idx === 0 ? 'selected' : ''}" id="addrCard_${idx}"
-          onclick="selectCard(${addr.id || idx}, ${idx}, ${addresses.length})">
+          onclick="selectCard(${aId}, ${idx}, ${addresses.length})">
           <div class="flex items-start gap-3">
-            <input type="radio" name="addrRadio" value="${addr.id}" ${idx === 0 ? 'checked' : ''}
+            <input type="radio" name="addrRadio" value="${aId}" ${idx === 0 ? 'checked' : ''}
               style="accent-color:#c5a059;margin-top:3px;flex-shrink:0;">
             <div class="flex-1 min-w-0">
               <p class="text-sm text-white font-semibold truncate">${addr.addressLine || '—'}</p>
@@ -325,7 +329,8 @@
             <button onclick="event.stopPropagation(); openEditFormFromData(${idx}, addresses_cache)"
               class="text-gold-main/60 hover:text-gold-main text-xs underline whitespace-nowrap flex-shrink-0 ml-2 transition-colors">Edit</button>
           </div>
-        </div>`).join('')}
+        </div>`
+      }).join('')}
       <button onclick="openEditForm(null, true)"
         class="w-full mt-1 py-2.5 border border-dashed border-gold-main/30 hover:border-gold-main/60 rounded-xl text-xs text-gray-400 hover:text-gold-main transition-all flex items-center justify-center gap-2">
         <i data-lucide="plus" class="w-3 h-3"></i> Add / use a different address
@@ -340,85 +345,7 @@
     if (typeof lucide !== 'undefined') lucide.createIcons();
   }
 
-  function selectCard(addrId, idx, total) {
-    selectedAddressId = addrId;
-    for (let i = 0; i < total; i++) {
-      const c = document.getElementById(`addrCard_${i}`);
-      if (c) c.classList.toggle('selected', i === idx);
-    }
-    const r = document.querySelector(`input[name="addrRadio"][value="${addrId}"]`);
-    if (r) r.checked = true;
-  }
-
-  function openEditFormFromData(idx, addresses) { openEditForm(addresses[idx], false); }
-
-  function openEditForm(addr, isNew) {
-    document.getElementById('editSection').classList.add('open');
-    document.getElementById('editLabel').innerText = isNew ? 'Enter New Address' : 'Edit Your Address';
-
-    if (addr && !isNew) {
-      savedAddressId = addr.id || 0;
-      document.getElementById('addrLine').value = addr.addressLine || '';
-      document.getElementById('addrCity').value = addr.city        || '';
-      document.getElementById('addrPin').value  = addr.pincode     || '';
-      const sel = document.getElementById('addrState');
-      for (let opt of sel.options) {
-        if (opt.text.toLowerCase() === (addr.state || '').toLowerCase()) { sel.value = opt.value; break; }
-      }
-    } else {
-      savedAddressId = 0;
-      ['addrLine','addrCity','addrPin'].forEach(id => document.getElementById(id).value = '');
-      document.getElementById('addrState').value = '';
-      document.getElementById('pinStatus').innerHTML = '';
-      document.getElementById('pinStatus').className = 'pin-status';
-    }
-
-    document.getElementById('addrActions').innerHTML = `
-      <button id="saveOrderBtn" onclick="saveAndPlaceOrder()"
-        class="flex-1 py-3 bg-gradient-to-r from-gold-matte to-gold-main text-black font-cinzel font-bold uppercase tracking-widest rounded-xl hover:scale-[1.02] transition-all text-sm">
-        Save &amp; Place Order
-      </button>`;
-    if (typeof lucide !== 'undefined') lucide.createIcons();
-  }
-
-  function onPincodeInput(val) {
-    const clean = val.replace(/\D/g, '');
-    document.getElementById('addrPin').value = clean;
-    clearTimeout(pincodeTimer);
-    const s = document.getElementById('pinStatus');
-    if (clean.length < 6) { s.className = 'pin-status'; s.innerHTML = ''; return; }
-    s.className = 'pin-status loading'; s.innerHTML = '⏳ Verifying pincode...';
-    pincodeTimer = setTimeout(() => validatePincode(clean), 600);
-  }
-
-  async function validatePincode(pin) {
-    const s = document.getElementById('pinStatus');
-    try {
-      const data = await (await fetch(`https://api.postalpincode.in/pincode/${pin}`)).json();
-      if (data[0].Status === 'Success' && data[0].PostOffice?.length > 0) {
-        const po = data[0].PostOffice[0];
-        const district = po.District || '', state = po.State || '';
-        const cityEl = document.getElementById('addrCity');
-        if (!cityEl.value) cityEl.value = district;
-        const sel = document.getElementById('addrState');
-        for (let opt of sel.options) {
-          if (opt.text.toLowerCase().includes(state.toLowerCase()) ||
-              state.toLowerCase().includes(opt.text.toLowerCase())) { sel.value = opt.value; break; }
-        }
-        s.className = 'pin-status success';
-        s.innerHTML = `✓ <strong>${district}</strong>, ${state} · ${data[0].PostOffice.length} post office(s) found`;
-      } else {
-        s.className = 'pin-status error'; s.innerHTML = '✗ Invalid pincode';
-      }
-    } catch { s.className = 'pin-status error'; s.innerHTML = '⚠ Could not verify pincode'; }
-  }
-
-  async function proceedWithSelected() {
-    if (!selectedAddressId) { showAddrError('Please select an address.'); return; }
-    closeAddressModal();
-    await placeOrder({ addressId: parseInt(selectedAddressId) });
-  }
-
+  // 2️⃣ UPDATE THIS FUNCTION (To extract new Address ID properly)
   async function saveAndPlaceOrder() {
     hideAddrError();
     const addressLine = document.getElementById('addrLine').value.trim();
@@ -426,16 +353,15 @@
     const state       = document.getElementById('addrState').value.trim();
     const pincode     = document.getElementById('addrPin').value.trim();
 
-    if (!addressLine) { showAddrError('Please enter your house / street address.'); return; }
-    if (!city)        { showAddrError('Please enter the district or city.'); return; }
-    if (!state)       { showAddrError('Please select your state.'); return; }
-    if (!/^\d{6}$/.test(pincode)) { showAddrError('Pincode must be exactly 6 digits.'); return; }
+    if (!addressLine || !city || !state || !/^\d{6}$/.test(pincode)) { 
+        showAddrError('Please fill all address fields correctly.'); 
+        return; 
+    }
 
     const btn = document.getElementById('saveOrderBtn');
     if (btn) { btn.innerHTML = 'Saving...'; btn.disabled = true; }
 
     const addressDto = { id: savedAddressId, addressLine, city, state, pincode };
-    console.log('📍 PATCH /add-address:', addressDto);
 
     try {
       const saveRes = await fetch(`${window.CONFIG.BASE_URL}/add-address`, {
@@ -443,63 +369,76 @@
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify(addressDto)
       });
-      if (!saveRes.ok) throw new Error(await saveRes.text() || `${saveRes.status}`);
+      if (!saveRes.ok) throw new Error("Failed to save address");
     } catch(e) {
       showAddrError('Could not save address: ' + e.message);
       if (btn) { btn.innerHTML = 'Save &amp; Place Order'; btn.disabled = false; }
       return;
     }
 
-    let addressId = savedAddressId;
-    if (addressId === 0) {
+    let finalAddressId = savedAddressId;
+    if (finalAddressId === 0) {
       try {
         const profile = await (await fetch(`${window.CONFIG.BASE_URL}/view-profile`, {
           headers: { 'Authorization': `Bearer ${token}` }
         })).json();
         const addrs = profile.addresses || [];
-        if (addrs.length > 0) addressId = addrs[addrs.length - 1].id || 0;
+        if (addrs.length > 0) {
+            // Safe extraction for newly added address
+            const lastAddr = addrs[addrs.length - 1];
+            finalAddressId = lastAddr.id || lastAddr.addressId || 0;
+        }
       } catch(e) { console.warn('Profile refetch failed:', e); }
     }
 
-    if (!addressId) {
-      showAddrError('Address saved but ID not found. Please try again.');
-      if (btn) { btn.innerHTML = 'Save &amp; Place Order'; btn.disabled = false; }
-      return;
-    }
-
-    console.log('✅ addressId resolved:', addressId);
     closeAddressModal();
-    await placeOrder({ addressId: parseInt(addressId) });
+    await placeOrder({ addressId: parseInt(finalAddressId) });
   }
 
+  // 3️⃣ UPDATE THIS FUNCTION (Added Safety Check & Error Logging)
   async function placeOrder(body) {
     if (orderInProgress) return;
-    orderInProgress = true;
+    
+    // 🚨 SAFETY CHECK: Agar addressId 0 ya null hai toh Backend ko hit hi mat karo!
+    if (!body.addressId || body.addressId === 0) {
+        alert("Error: Address ID missing! Please add a proper address.");
+        return;
+    }
 
+    orderInProgress = true;
     const btn = document.getElementById('checkoutBtn');
     btn.innerHTML = `<span class="animate-pulse">Placing Order...</span>`;
     btn.disabled = true;
 
-    console.log('🛒 POST /place-order:', JSON.stringify(body));
+    console.log('🛒 POST /place-order PAYLOAD:', body);
+
     try {
       const res = await fetch(`${window.CONFIG.BASE_URL}/place-order`, {
         method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        headers: { 
+            'Authorization': `Bearer ${token}`, 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
         body: JSON.stringify(body)
       });
+      
       if (!res.ok) {
         let msg = `Error ${res.status}`;
-        try { const j = await res.json(); msg = j.message || JSON.stringify(j); } catch { msg = await res.text() || msg; }
+        try { const j = await res.json(); msg = j.message || j.error || msg; } catch { }
         throw new Error(msg);
       }
+      
       const data = await res.json();
       console.log('✅ Order placed:', data);
       const orderId = data.id || data.orderId || data.order_id || (data.order?.id) || null;
+      
       orderInProgress = false;
       if (orderId) window.location.href = `order-status.html?orderId=${orderId}`;
       else { alert('Order placed! 🎉'); window.location.href = 'orders.html'; }
+      
     } catch(e) {
-      console.error(e);
+      console.error("❌ Checkout Crash:", e);
       alert('Order failed: ' + (e.message || 'Please try again.'));
       btn.innerHTML = 'Place Order';
       btn.disabled = false;
