@@ -75,7 +75,7 @@
         @media(max-width:900px) { .thali-widget { grid-template-columns:1fr; } .plate-ring { width:320px; height:320px; margin:0; } .plate-center { width:130px; height:130px; } .katori { width:70px; height:70px; margin-left:-35px; margin-top:-35px; } }
         @media(max-width:768px) { #navLinks { gap:0.75rem!important; } #navLinks a,#navLinks button { font-size:8px!important; padding:6px 10px!important; } }
         @media(max-width:640px) { nav span.font-cinzel { font-size:1.25rem!important; } nav a div:first-child { width:2.5rem!important; height:2.5rem!important; } .thali-widget { min-height:400px; border-radius:24px; margin:0 1rem; } .plate-ring { width:300px; height:300px; } .plate-center { width:120px; height:120px; } .katori { width:65px; height:65px; margin-left:-32.5px; margin-top:-32.5px; } }
-        @media(max-width:480px) { .ticker-anim { font-size:9px; } .font-hindi { font-size:2.25rem!important; } nav { padding-left:12px!important; padding-right:12px!important; } #navLinks { gap:4px!important; flex-wrap:nowrap!important; } #navLinks a,#navLinks button { font-size:7px!important; padding:4px 6px!important; white-space:nowrap; } .thali-widget { max-width:100%; overflow:visible; min-height:auto; margin:0 8px; } .plate-ring { width:220px; height:220px; } .plate-center { width:90px; height:90px; } .katori { width:50px; height:50px; margin-left:-25px; margin-top:-25px; } }
+.thali-widget { max-width:100%; overflow:hidden; min-height:auto; margin:0 8px; } .plate-ring { width:240px; height:240px; } .plate-center { width:90px; height:90px; } .katori { width:52px; height:52px; margin-left:-26px; margin-top:-26px; }
     </style>
 </head>
 <body>
@@ -610,7 +610,7 @@
         function setupThali() {
             const plate = document.getElementById('plate');
             plate.innerHTML = '';
-            const r = window.innerWidth < 900 ? 150 : 180;
+const r = window.innerWidth < 480 ? 92 : window.innerWidth < 640 ? 125 : window.innerWidth < 900 ? 145 : 180;
             items.forEach((item, i) => {
                 const el  = document.createElement('div');
                 el.className = 'katori';
