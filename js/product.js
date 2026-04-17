@@ -41,81 +41,63 @@ async function init() {
 
 // ============ DATA FETCHING ============
 async function fetchProductData(productId) {
-    // Try backend first with 10-second timeout (Render cold start)
-    try {
-        const controller = new AbortController();
-        setTimeout(() => controller.abort(), 10000);
+    const token = localStorage.getItem('authToken');
+    const role = localStorage.getItem('userRole');
 
-        const response = await fetch(`${window.CONFIG.BASE_URL}/products/${productId}`, {
-            signal: controller.signal
-        });
+    let url = `${window.CONFIG.BASE_URL}/products/${productId}`;
 
-        if (response.ok) {
-            currentProduct = await response.json();
-            return;
-        }
-    } catch (e) {
-        console.log('Backend unavailable, falling back to local data');
+    // 🔥 Seller/Admin preview
+    if (token && (role === "SELLER" || role === "ADMIN")) {
+        url = `${window.CONFIG.BASE_URL}/view-product/${productId}`;
     }
 
-    // Fallback to local JSON
     try {
-        const localRes = await fetch('real-products.json');
-        if (localRes.ok) {
-            allProducts = await localRes.json();
-            currentProduct = allProducts.find(p => String(p.id) === String(productId));
+        const response = await fetch(url, {
+            headers: token ? {
+                Authorization: `Bearer ${token}`
+            } : {}
+        });
 
-            // Normalize local data to match expected structure
-            if (currentProduct) {
-                currentProduct = normalizeProductData(currentProduct);
-            }
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
         }
+
+      const data = await response.json();
+currentProduct = normalizeBackendProduct(data);
+
     } catch (e) {
-        console.error('Local data fetch failed:', e);
+        console.error("Backend fetch failed:", e);
+
+        // ❌ DO NOT silently fallback
+        throw e;
     }
 }
 
 /**
  * Normalize local JSON data to match backend DTO structure
  */
-function normalizeProductData(item) {
+function normalizeBackendProduct(data) {
     return {
-        id: item.id,
-        title: item.title || item.name,
-        subtitle: item.subtitle || `${item.time || 'Fresh'} · ${item.category || 'Home Cooked'}`,
-        price: Number(String(item.price).replace(/[^0-9.]/g, '')) || 0,
-        serves: item.serves || '1',
-        image: getImgPath(item.img || item.image),
-        images: item.images || [],
+        id: data.id,
+        title: data.name,
+        subtitle: `${data.deliveryTime || 'Fresh'} · ${data.category || 'Home Cooked'}`,
+        price: Number(data.price),
+        serves: "1",
+        image: data.image,
         chef: {
-            name: item.chef || 'Home Chef',
-            avatar: getImgPath(item.avatar),
-            location: item.loc || 'India',
-            since: item.since || '',
-            verified: true,
-            stat: item.trustStat || 'Verified Kitchen',
-            quote: item.quote || '"Ghar ka khana, dil se banaya."'
+            name: "Home Chef",
+            avatar: window.CONFIG.PLACEHOLDER,
+            location: "India",
+            stat: "Verified Kitchen",
+            quote: data.message || "Ghar ka khana, dil se."
         },
-        audio: item.audio || null,
-        description: item.desc || item.description || '',
-        whatYouGet: item.whatYouGet || {
-            portion: 'Single meal',
-            packaging: 'Sealed & hygienic',
-            spiceLevel: 'Medium',
-            shelfLife: 'Best consumed same day'
-        },
-        ingredients: item.ingredients || ['Home Recipe', 'No Preservatives', 'Fresh Ingredients'],
-        exclusions: item.exclusions || ['Preservatives', 'Artificial Colors', 'MSG / Ajinomoto'],
-        recommends: [],
-        reviews: item.reviews || [
-            { name: 'Rohit', city: 'Delhi', rating: 5, text: 'Bilkul ghar jaisa taste.' },
-            { name: 'Sneha', city: 'Mumbai', rating: 5, text: 'Meri mummy ko bhi pasand aaya!' }
-        ],
-        stock: item.stock || 10,
-        category: item.category || 'Meals'
+        description: data.description,
+        ingredients: ["Fresh Ingredients", "No Preservatives"],
+        reviews: [],
+        category: data.category,
+        status: data.status 
     };
 }
-
 // ============ RENDERING ============
 function renderProduct(product) {
     // Hero Image
@@ -170,7 +152,11 @@ function renderProduct(product) {
 
     // Featured Review (single, prominent)
     renderFeaturedReview(product.reviews);
-
+if (currentProduct.status === "PENDING") {
+    const btn = document.getElementById('addToPlateBtn');
+    btn.disabled = true;
+    btn.innerText = "Under Review ⏳";
+}
     // Voice note (optional - elements may not exist in new design)
     const voiceSection = document.getElementById('voiceNoteSection');
     const chefsNoteSection = document.getElementById('chefsNoteSection');
