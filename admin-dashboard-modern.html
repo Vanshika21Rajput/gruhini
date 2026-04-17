@@ -128,8 +128,7 @@
     .approval-card { background: linear-gradient(135deg, rgba(212,175,55,0.05), rgba(212,175,55,0.01)); border: 2px solid var(--border); border-radius: 14px; padding: 18px; display: flex; align-items: flex-start; gap: 16px; transition: all 0.3s ease; cursor: pointer; }
     .approval-card:hover { border-color: var(--border2); background: linear-gradient(135deg, rgba(212,175,55,0.1), rgba(212,175,55,0.05)); transform: translateY(-2px); }
     .approval-card.selected { border-color: var(--gold-main); background: rgba(212,175,55,0.12); }
-    .approval-checkbox { margin-top: 4px; accent-color: var(--gold-main); width: 18px; height: 18px; flex-shrink: 0; cursor: pointer; }
-    .approval-img { width: 70px; height: 70px; border-radius: 12px; object-fit: cover; flex-shrink: 0; background: var(--dark2); border: 1px solid var(--border); }
+    .approval-checkbox { margin-top: 4px; accent-color: var(--gold-main); width: 18px; height: 18px; flex-shrink: 0; cursor: pointer; pointer-events: none; }
     .approval-body { flex: 1; min-width: 0; }
     .approval-name { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 15px; color: var(--text); margin-bottom: 4px; }
     .approval-meta { font-size: 12px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 8px; }
@@ -138,12 +137,12 @@
     .approval-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
 
     .status-pill { display: inline-flex; align-items: center; gap: 4px; font-family: 'Cinzel', serif; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 4px 12px; border-radius: 20px; }
-    .status-pending { background: rgba(245,158,11,0.15); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
-    .status-approved { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
-    .status-rejected { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
-    .status-delivered { background: rgba(59,130,246,0.15); color: var(--blue); border: 1px solid rgba(59,130,246,0.3); }
-    .status-cancelled { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
-    .status-accepted { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+    .status-pending  { background: rgba(245,158,11,0.15); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+    .status-approved { background: rgba(34,197,94,0.15);  color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+    .status-rejected { background: rgba(239,68,68,0.15);  color: var(--red);   border: 1px solid rgba(239,68,68,0.3); }
+    .status-delivered{ background: rgba(59,130,246,0.15); color: var(--blue);  border: 1px solid rgba(59,130,246,0.3); }
+    .status-cancelled{ background: rgba(239,68,68,0.15);  color: var(--red);   border: 1px solid rgba(239,68,68,0.3); }
+    .status-accepted { background: rgba(34,197,94,0.15);  color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
 
     .modal-overlay { position: fixed; inset: 0; z-index: 200; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px); padding: 20px; }
     .modal-overlay.open { display: flex; animation: fadeIn 0.2s ease; }
@@ -170,8 +169,8 @@
     .toast { display: flex; align-items: center; gap: 12px; padding: 14px 18px; border-radius: 12px; font-size: 13px; font-weight: 600; min-width: 280px; backdrop-filter: blur(20px); animation: slideIn 0.3s ease; border: 1px solid rgba(212,175,55,0.3); }
     @keyframes slideIn { from { transform: translateX(30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     .toast-success { background: linear-gradient(135deg, rgba(34,197,94,0.9), rgba(34,197,94,0.7)); color: #fff; }
-    .toast-error { background: linear-gradient(135deg, rgba(239,68,68,0.9), rgba(239,68,68,0.7)); color: #fff; }
-    .toast-info { background: linear-gradient(135deg, rgba(212,175,55,0.9), rgba(212,175,55,0.7)); color: var(--dark); }
+    .toast-error   { background: linear-gradient(135deg, rgba(239,68,68,0.9), rgba(239,68,68,0.7)); color: #fff; }
+    .toast-info    { background: linear-gradient(135deg, rgba(212,175,55,0.9), rgba(212,175,55,0.7)); color: var(--dark); }
 
     .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
@@ -180,7 +179,6 @@
     .chip { padding: 7px 16px; border-radius: 20px; font-family: 'Lato', sans-serif; font-size: 12px; font-weight: 600; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 0.05em; }
     .chip:hover, .chip.active { background: rgba(212,175,55,0.15); border-color: var(--border2); color: var(--gold-main); }
 
-    /* Seller detail modal specific */
     .seller-detail-img { width: 100%; height: 160px; border-radius: 12px; object-fit: cover; background: var(--dark2); border: 1px solid var(--border); margin-bottom: 20px; }
     .detail-row { display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-start; font-size: 13px; }
     .detail-row-label { font-family: 'Cinzel', serif; font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--muted2); min-width: 80px; margin-top: 2px; }
@@ -191,9 +189,7 @@
       .page-title { font-size: 2rem; }
       .stats-grid { grid-template-columns: repeat(2, 1fr); }
       .approval-card { flex-direction: column; }
-      .approval-img { width: 60px; height: 60px; }
     }
-
     @media (max-width: 480px) {
       main { padding: 80px 16px 40px; }
       .page-title { font-size: 1.5rem; }
@@ -344,9 +340,19 @@
   </div>
 
   <!-- TAB: SELLERS -->
+  <!-- FIX: Added checkbox-based bulk approve toolbar for sellers -->
   <div id="tab-sellers" class="tab-panel">
     <div class="toolbar">
-      <span style="font-size:13px;color:var(--muted)">👨‍🍳 All Registered Sellers — click a card to view full profile</span>
+      <div class="toolbar-left">
+        <label class="select-all-label">
+          <input type="checkbox" id="selectAllSellers" onchange="toggleSelectAllSellers(this.checked)">
+          Select All
+        </label>
+        <span class="selection-info" id="sellerSelectionInfo"></span>
+      </div>
+      <button class="btn btn-green" id="approveSellerBtn" onclick="bulkApproveSellers()" disabled>
+        <i data-lucide="check-circle" style="width:14px;height:14px"></i> Approve Selected
+      </button>
     </div>
     <div id="sellersList" style="display:none;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;"></div>
     <div id="sellersLoading" class="empty-state">
@@ -401,7 +407,7 @@
   </div>
 </div>
 
-<!-- SELLER DETAIL MODAL — uses GET /admin/view-seller/{id} -->
+<!-- SELLER DETAIL MODAL -->
 <div id="sellerDetailModal" class="modal-overlay">
   <div class="modal" style="max-width:560px;">
     <button class="modal-close" onclick="closeSellerModal()"><i data-lucide="x" style="width:18px;height:18px"></i></button>
@@ -430,6 +436,7 @@ let allSellers         = [];
 let allAdminOrders     = [];
 let selectedPendingIds = new Set();
 let selectedAllProdIds = new Set();
+let selectedSellerIds  = new Set();   // FIX: was missing
 let currentOrderFilter = '';
 
 // ===== HELPERS =====
@@ -441,7 +448,7 @@ function toast(msg, type = 'success') {
   t.className = `toast toast-${type}`;
   t.innerHTML = `<span>${msg}</span>`;
   c.appendChild(t);
-  setTimeout(() => t.remove(), 3500);
+  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3500);
 }
 
 function switchTab(tab, btn) {
@@ -453,22 +460,22 @@ function switchTab(tab, btn) {
 }
 
 function statusClass(status) {
-  const map = {
-    'APPROVED': 'approved', 'PENDING': 'pending', 'REJECTED': 'rejected',
-    'DELIVERED': 'delivered', 'ACCEPTED': 'accepted', 'CANCELLED': 'cancelled'
-  };
+  const map = { 'APPROVED':'approved','PENDING':'pending','REJECTED':'rejected','DELIVERED':'delivered','ACCEPTED':'accepted','CANCELLED':'cancelled' };
   return map[(status || '').toUpperCase()] || 'pending';
 }
 
 function fmt(val) {
-  return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 }).format(val || 0);
+  return new Intl.NumberFormat('en-IN', { style:'currency', currency:'INR', minimumFractionDigits:0 }).format(val || 0);
 }
 
 function fmtDate(d) {
   if (!d) return '—';
-  try { return new Date(d).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }); }
+  try { return new Date(d).toLocaleString('en-IN', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }); }
   catch { return d; }
 }
+
+function show(id) { const el = document.getElementById(id); if (el) el.style.display = 'block'; }
+function hide(id) { const el = document.getElementById(id); if (el) el.style.display = 'none'; }
 
 // ===== PENDING PRODUCTS — GET /admin/view-pending =====
 async function loadPending() {
@@ -499,19 +506,18 @@ async function loadPending() {
 }
 
 function renderPending() {
-  const list = document.getElementById('pendingList');
+  const list  = document.getElementById('pendingList');
   const empty = document.getElementById('noPending');
   if (!allPendingProducts.length) { hide('pendingList'); show('noPending'); return; }
   hide('noPending'); show('pendingList');
 
-  // p.productName, p.sellerName, p.price, p.description, p.id (from pending DTO)
   list.innerHTML = allPendingProducts.map(p => `
     <div class="approval-card ${selectedPendingIds.has(p.id) ? 'selected' : ''}"
          onclick="togglePendingCheckbox(${p.id})">
       <input type="checkbox" class="approval-checkbox"
              ${selectedPendingIds.has(p.id) ? 'checked' : ''}
              onclick="event.stopPropagation()">
-      <div style="width:70px;height:70px;border-radius:12px;background:var(--dark2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      <div style="width:70px;height:70px;border-radius:12px;background:var(--dark2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;">
         ${p.image
           ? `<img src="${p.image}" style="width:70px;height:70px;border-radius:12px;object-fit:cover;" onerror="this.parentNode.innerHTML='<i data-lucide=\\'image\\' style=\\'width:28px;height:28px;color:var(--muted2)\\'></i>'">`
           : `<i data-lucide="utensils" style="width:28px;height:28px;color:var(--muted2)"></i>`}
@@ -532,12 +538,14 @@ function renderPending() {
       </div>
     </div>`).join('');
   lucide.createIcons();
+  updateSelectionInfo('pending');
 }
 
 function togglePendingCheckbox(id) {
   selectedPendingIds.has(id) ? selectedPendingIds.delete(id) : selectedPendingIds.add(id);
+  const box = document.getElementById('selectAllPending');
+  if (box) box.checked = allPendingProducts.length > 0 && selectedPendingIds.size === allPendingProducts.length;
   renderPending();
-  updateSelectionInfo('pending');
 }
 
 function toggleSelectAll(tab, checked) {
@@ -565,7 +573,7 @@ function updateSelectionInfo(tab) {
   if (btn2) btn2.disabled = count === 0;
 }
 
-// POST /admin/accept-item — body: { selectedProducts: [id] }
+// POST /admin/accept-item
 async function approveSingle(id) {
   try {
     const res = await fetch(`${BASE_URL}/admin/accept-item`, {
@@ -575,13 +583,16 @@ async function approveSingle(id) {
     });
     if (!res.ok) throw new Error(await res.text());
     toast('✅ Dish approved!');
-    loadPending();
-    loadAllProducts();
+    loadPending(); loadAllProducts();
   } catch(e) { toast('Error: ' + e.message, 'error'); }
 }
 
 async function bulkApprove() {
   if (!selectedPendingIds.size) return;
+  const btn = document.getElementById('bulkApproveBtn');
+  const orig = btn.innerHTML;
+  btn.innerHTML = `<span class="spinner"></span>`;
+  btn.disabled = true;
   try {
     const res = await fetch(`${BASE_URL}/admin/accept-item`, {
       method: 'POST',
@@ -590,8 +601,10 @@ async function bulkApprove() {
     });
     if (!res.ok) throw new Error(await res.text());
     toast(`✅ ${selectedPendingIds.size} dishes approved!`);
+    selectedPendingIds.clear();
     loadPending(); loadAllProducts();
   } catch(e) { toast('Error: ' + e.message, 'error'); }
+  finally { btn.innerHTML = orig; updateSelectionInfo('pending'); }
 }
 
 function openBulkRejectModal() {
@@ -602,7 +615,7 @@ function openBulkRejectModal() {
 }
 function closeBulkRejectModal() { document.getElementById('bulkRejectModal').classList.remove('open'); }
 
-// POST /admin/reject-item — body: { selectedProducts: [id], message: "reason" }
+// POST /admin/reject-item
 async function submitBulkReject() {
   const message = document.getElementById('rejectReasonInput').value.trim();
   if (!message) { toast('Please provide a reason!', 'error'); return; }
@@ -615,6 +628,7 @@ async function submitBulkReject() {
     if (!res.ok) throw new Error(await res.text());
     toast(`❌ ${selectedPendingIds.size} dishes rejected`);
     closeBulkRejectModal();
+    selectedPendingIds.clear();
     loadPending(); loadAllProducts();
   } catch(e) { toast('Error: ' + e.message, 'error'); }
 }
@@ -634,7 +648,7 @@ async function loadAllProducts() {
     renderAllProducts();
     document.getElementById('allProductsCount').textContent = allProducts.length;
     document.getElementById('statAllProducts').textContent  = allProducts.length;
-    document.getElementById('statApproved').textContent     = allProducts.filter(p => (p.productStatus || '').toUpperCase() === 'APPROVED').length;
+    document.getElementById('statApproved').textContent     = allProducts.filter(p => (p.status || p.productStatus || '').toUpperCase() === 'APPROVED').length;
   } catch(e) {
     hide('allProductsLoading'); show('noAllProducts');
     toast('Could not load products: ' + e.message, 'error');
@@ -642,7 +656,7 @@ async function loadAllProducts() {
 }
 
 function renderAllProducts() {
-  const list = document.getElementById('allProductsList');
+  const list  = document.getElementById('allProductsList');
   if (!allProducts.length) { hide('allProductsList'); show('noAllProducts'); return; }
   hide('noAllProducts'); show('allProductsList');
 
@@ -652,7 +666,7 @@ function renderAllProducts() {
       <input type="checkbox" class="approval-checkbox"
              ${selectedAllProdIds.has(p.id) ? 'checked' : ''}
              onclick="event.stopPropagation()">
-      <div style="width:70px;height:70px;border-radius:12px;background:var(--dark2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      <div style="width:70px;height:70px;border-radius:12px;background:var(--dark2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;">
         ${p.image
           ? `<img src="${p.image}" style="width:70px;height:70px;border-radius:12px;object-fit:cover;" onerror="this.parentNode.innerHTML='<i data-lucide=\\'utensils\\' style=\\'width:28px;height:28px;color:var(--muted2)\\'></i>'">`
           : `<i data-lucide="utensils" style="width:28px;height:28px;color:var(--muted2)"></i>`}
@@ -662,24 +676,30 @@ function renderAllProducts() {
         <div class="approval-meta">
           <span><i data-lucide="user" style="width:11px;height:11px"></i> ${p.sellerName || '—'}</span>
           <span><i data-lucide="tag" style="width:11px;height:11px"></i> ${fmt(p.price)}</span>
-          <span><span class="status-pill status-${statusClass(p.productStatus)}">${p.productStatus || '—'}</span></span>
+          <span><span class="status-pill status-${statusClass(p.status || p.productStatus)}">${p.status || p.productStatus || '—'}</span></span>
         </div>
         <div class="approval-desc">Stock: ${p.stock ?? '—'} | ${p.description || p.Description || ''}</div>
       </div>
     </div>`).join('');
   lucide.createIcons();
+  updateSelectionInfo('allProds');
 }
 
 function toggleProductCheckbox(id) {
   selectedAllProdIds.has(id) ? selectedAllProdIds.delete(id) : selectedAllProdIds.add(id);
+  const box = document.getElementById('selectAllProducts');
+  if (box) box.checked = allProducts.length > 0 && selectedAllProdIds.size === allProducts.length;
   renderAllProducts();
-  updateSelectionInfo('allProds');
 }
 
-// DELETE /admin/delete-product — body: { selectedProducts: [id] }
+// DELETE /admin/delete-product
 async function bulkDeleteProducts() {
   if (!selectedAllProdIds.size) return;
   if (!confirm(`Delete ${selectedAllProdIds.size} product(s)? This cannot be undone.`)) return;
+  const btn = document.getElementById('bulkDeleteBtn');
+  const orig = btn.innerHTML;
+  btn.innerHTML = `<span class="spinner"></span>`;
+  btn.disabled = true;
   try {
     const res = await fetch(`${BASE_URL}/admin/delete-product`, {
       method: 'DELETE',
@@ -688,13 +708,14 @@ async function bulkDeleteProducts() {
     });
     if (!res.ok) throw new Error(await res.text());
     toast(`🗑️ ${selectedAllProdIds.size} dishes deleted`);
+    selectedAllProdIds.clear();
     loadAllProducts();
   } catch(e) { toast('Error: ' + e.message, 'error'); }
+  finally { btn.innerHTML = orig; updateSelectionInfo('allProds'); }
 }
 
 // ===== SELLERS — GET /admin/Sellers-viewAll =====
-// Response is List<SellerDetailsDto>:
-//   id, name, contact, address{id,addressLine,city,state,pincode}, businessName, image, Description
+// SellerDetailsDto: id, name, contact, address{id,addressLine,city,state,pincode}, businessName, image, Description
 async function loadSellers() {
   show('sellersLoading'); hide('sellersList'); hide('noSellers');
   try {
@@ -704,6 +725,7 @@ async function loadSellers() {
     if (!res.ok) throw new Error(`Server ${res.status}`);
     const data = await res.json();
     allSellers = Array.isArray(data) ? data : [];
+    selectedSellerIds.clear();
     hide('sellersLoading');
     renderSellers();
     document.getElementById('sellersCount').textContent = allSellers.length;
@@ -714,6 +736,7 @@ async function loadSellers() {
   }
 }
 
+// FIX: Full renderSellers with checkboxes, no per-card approve/reject buttons
 function renderSellers() {
   const list  = document.getElementById('sellersList');
   const empty = document.getElementById('noSellers');
@@ -721,29 +744,43 @@ function renderSellers() {
   hide('noSellers');
   list.style.display = 'grid';
 
-  // ✅ Using correct SellerDetailsDto fields:
-  //    s.id, s.name (owner), s.businessName, s.contact,
-  //    s.address.city, s.address.state, s.address.pincode, s.address.addressLine
-  //    s.image, s.Description (capital D)
   list.innerHTML = allSellers.map(s => {
-    const city    = s.address ? (s.address.city  || '') : '';
-    const state   = s.address ? (s.address.state || '') : '';
-    const pincode = s.address ? (s.address.pincode || '') : '';
+    const city     = s.address ? (s.address.city    || '') : '';
+    const state    = s.address ? (s.address.state   || '') : '';
+    const pincode  = s.address ? (s.address.pincode || '') : '';
     const location = [city, state, pincode].filter(Boolean).join(', ') || 'Location not set';
+    const isSelected = selectedSellerIds.has(s.id);
 
     return `
-    <div style="background:linear-gradient(135deg,rgba(212,175,55,0.08),rgba(212,175,55,0.04));border:2px solid var(--border);border-radius:16px;padding:20px;transition:all 0.3s;display:flex;flex-direction:column;gap:12px;"
-         onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 24px rgba(212,175,55,0.2)'"
-         onmouseout="this.style.transform='';this.style.boxShadow=''">
+    <div style="background:linear-gradient(135deg,rgba(212,175,55,${isSelected ? '0.18' : '0.08'}),rgba(212,175,55,0.04));
+                border:2px solid ${isSelected ? 'var(--gold-main)' : 'var(--border)'};
+                border-radius:16px;padding:20px;transition:all 0.3s;display:flex;flex-direction:column;gap:12px;cursor:pointer;"
+         onclick="toggleSellerSelection(${s.id})"
+         onmouseover="this.style.transform='translateY(-4px)'"
+         onmouseout="this.style.transform=''">
 
-      <!-- Image or placeholder -->
-      <div style="width:100%;height:130px;border-radius:12px;overflow:hidden;background:linear-gradient(135deg,rgba(212,175,55,0.2),rgba(212,175,55,0.1));border:1px solid var(--border);display:flex;align-items:center;justify-content:center;">
-        ${s.image
-          ? `<img src="${s.image}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentNode.innerHTML='<span style=font-size:48px>👨‍🍳</span>'">`
-          : `<span style="font-size:48px">👨‍🍳</span>`}
+      <!-- Checkbox row -->
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <input type="checkbox" ${isSelected ? 'checked' : ''}
+               style="accent-color:var(--gold-main);width:18px;height:18px;cursor:pointer;"
+               onclick="event.stopPropagation(); toggleSellerSelection(${s.id})">
+        <span style="font-size:10px;
+                     color:${s.isApproved ? 'var(--green)' : 'var(--amber)'};
+                     background:${s.isApproved ? 'rgba(34,197,94,0.1)' : 'rgba(245,158,11,0.1)'};
+                     border:1px solid ${s.isApproved ? 'rgba(34,197,94,0.3)' : 'rgba(245,158,11,0.3)'};
+                     padding:3px 10px;border-radius:12px;font-weight:700;font-family:'Cinzel',serif;text-transform:uppercase;">
+          ${s.isApproved ? '✓ Verified' : '⏳ Pending'}
+        </span>
       </div>
 
-      <!-- Business name + owner name -->
+      <!-- Image -->
+      <div style="width:100%;height:120px;border-radius:12px;overflow:hidden;background:linear-gradient(135deg,rgba(212,175,55,0.2),rgba(212,175,55,0.1));border:1px solid var(--border);display:flex;align-items:center;justify-content:center;">
+        ${s.image
+          ? `<img src="${s.image}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentNode.innerHTML='<span style=font-size:40px>👨‍🍳</span>'">`
+          : `<span style="font-size:40px">👨‍🍳</span>`}
+      </div>
+
+      <!-- Name -->
       <div>
         <div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:2px;">
           ${s.businessName || 'Unknown Kitchen'}
@@ -751,37 +788,30 @@ function renderSellers() {
         <div style="font-size:12px;color:var(--gold-main);font-weight:600;">by ${s.name || '—'}</div>
       </div>
 
-      <!-- Location from address DTO -->
+      <!-- Location -->
       <div style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:4px;">
-        <i data-lucide="map-pin" style="width:12px;height:12px;flex-shrink:0;"></i>
-        ${location}
+        <i data-lucide="map-pin" style="width:12px;height:12px;flex-shrink:0;"></i> ${location}
       </div>
 
       <!-- Contact -->
       <div style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:4px;">
-        <i data-lucide="phone" style="width:12px;height:12px;flex-shrink:0;"></i>
-        ${s.contact || 'No contact'}
+        <i data-lucide="phone" style="width:12px;height:12px;flex-shrink:0;"></i> ${s.contact || 'No contact'}
       </div>
 
-      <!-- Description — note capital D in SellerDetailsDto -->
-      <div style="font-size:12px;color:var(--muted2);line-height:1.5;padding:10px;background:rgba(0,0,0,0.2);border-radius:8px;min-height:38px;">
+      <!-- Description — capital D from SellerDetailsDto -->
+      <div style="font-size:12px;color:var(--muted2);line-height:1.5;padding:8px 10px;background:rgba(0,0,0,0.2);border-radius:8px;min-height:36px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
         ${s.Description || s.description || 'No description provided.'}
       </div>
 
-      <!-- Action buttons -->
+      <!-- Action: View Details + individual Delete -->
       <div style="display:flex;gap:8px;margin-top:4px;">
-        <button style="flex:1;padding:9px;background:linear-gradient(135deg,var(--gold-main),var(--gold-dim));color:var(--dark);border:none;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;transition:all 0.2s;text-transform:uppercase;letter-spacing:0.05em;"
-                onclick="openSellerModal(${s.id})">
+        <button style="flex:1;padding:9px;background:linear-gradient(135deg,var(--gold-main),var(--gold-dim));color:var(--dark);border:none;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em;"
+                onclick="event.stopPropagation(); openSellerModal(${s.id})">
           👁️ View Details
         </button>
-
-        <button style="flex:1;padding:9px;background:var(--green);color:white;border:none;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;" 
-          onclick="approveSellerAccount(${s.id})">
-    ✅ Verify Chef
-  </button>
-
+        <!-- FIX: individual delete uses DELETE /admin/delete-seller/{id} -->
         <button style="padding:9px 14px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:8px;color:var(--red);cursor:pointer;font-size:12px;transition:all 0.2s;"
-                onclick="deleteSeller(${s.id})" title="Delete Seller">
+                onclick="event.stopPropagation(); deleteSeller(${s.id})" title="Delete Seller">
           <i data-lucide="trash-2" style="width:13px;height:13px;"></i>
         </button>
       </div>
@@ -789,10 +819,53 @@ function renderSellers() {
   }).join('');
 
   lucide.createIcons();
+  updateSellerSelectionUI();
+}
+
+// FIX: Seller selection helpers
+function toggleSellerSelection(id) {
+  selectedSellerIds.has(id) ? selectedSellerIds.delete(id) : selectedSellerIds.add(id);
+  const box = document.getElementById('selectAllSellers');
+  if (box) box.checked = allSellers.length > 0 && allSellers.every(s => selectedSellerIds.has(s.id));
+  renderSellers();
+}
+
+function toggleSelectAllSellers(checked) {
+  selectedSellerIds.clear();
+  if (checked) allSellers.forEach(s => selectedSellerIds.add(s.id));
+  renderSellers();
+}
+
+function updateSellerSelectionUI() {
+  const count = selectedSellerIds.size;
+  document.getElementById('sellerSelectionInfo').textContent = count > 0 ? `${count} selected` : '';
+  document.getElementById('approveSellerBtn').disabled = count === 0;
+}
+
+// FIX: POST /admin/approve-seller  body: { selectedProducts: [ids], message: "" }
+async function bulkApproveSellers() {
+  if (!selectedSellerIds.size) return;
+  const msg = prompt('Approval message (optional):');
+  if (msg === null) return; // cancelled
+  const btn = document.getElementById('approveSellerBtn');
+  const orig = btn.innerHTML;
+  btn.innerHTML = `<span class="spinner"></span> Processing...`;
+  btn.disabled = true;
+  try {
+    const res = await fetch(`${BASE_URL}/admin/approve-seller`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${getToken()}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ selectedProducts: Array.from(selectedSellerIds), message: msg || 'Approved' })
+    });
+    if (!res.ok) throw new Error(await res.text());
+    toast(`✅ ${selectedSellerIds.size} seller(s) approved`);
+    selectedSellerIds.clear();
+    await loadSellers();
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+  finally { btn.innerHTML = orig; updateSellerSelectionUI(); }
 }
 
 // ===== SELLER DETAIL MODAL — GET /admin/view-seller/{id} =====
-// Returns SellerDetailsDto: id, name, contact, address, businessName, image, Description
 async function openSellerModal(sellerId) {
   document.getElementById('sellerDetailModal').classList.add('open');
   document.getElementById('sellerDetailContent').innerHTML = `
@@ -808,7 +881,8 @@ async function openSellerModal(sellerId) {
     if (!res.ok) throw new Error(`Server ${res.status}`);
     const s = await res.json();
 
-    const addr = s.address || {};
+    // SellerDetailsDto fields: id, name, contact, address, businessName, image, Description
+    const addr    = s.address || {};
     const fullAddr = [addr.addressLine, addr.city, addr.state, addr.pincode].filter(Boolean).join(', ') || '—';
 
     document.getElementById('sellerDetailContent').innerHTML = `
@@ -840,6 +914,7 @@ async function openSellerModal(sellerId) {
       </div>
 
       <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
+        <!-- FIX: individual delete only, no bulk from modal -->
         <button class="btn btn-red btn-sm" onclick="deleteSeller(${s.id}); closeSellerModal()">
           <i data-lucide="trash-2" style="width:13px;height:13px;"></i> Delete Seller
         </button>
@@ -866,8 +941,7 @@ async function openSellerModal(sellerId) {
 
 function closeSellerModal() { document.getElementById('sellerDetailModal').classList.remove('open'); }
 
-// ===== SELLER ORDERS (inside modal) — GET /admin/view-orders-seller/{id} =====
-// Returns List<OrderUserResponseDto>: id, orderValue, placedAt, orderStatus, userDetails{name,email,contact}, orderItems[{productName,quantity,priceAtOrderTime}]
+// FIX: correct URL /admin/view-orders/seller/{id}
 async function loadSellerOrders(sellerId) {
   const section = document.getElementById('sellerOrdersSection');
   const listEl  = document.getElementById('sellerOrdersList');
@@ -875,7 +949,7 @@ async function loadSellerOrders(sellerId) {
   listEl.innerHTML = `<div style="color:var(--muted);font-size:13px;display:flex;align-items:center;gap:8px;"><span class="spinner"></span> Loading orders...</div>`;
 
   try {
-    const res = await fetch(`${BASE_URL}/admin/view-orders-seller/${sellerId}`, {
+    const res = await fetch(`${BASE_URL}/admin/view-orders/seller/${sellerId}`, {
       headers: { Authorization: `Bearer ${getToken()}` }
     });
     if (!res.ok) throw new Error(`Server ${res.status}`);
@@ -888,8 +962,6 @@ async function loadSellerOrders(sellerId) {
     }
 
     listEl.innerHTML = arr.map(o => {
-      // OrderUserResponseDto fields: id, orderValue, placedAt, orderStatus,
-      //   userDetails{name,email,contact}, orderItems[{productName,quantity,priceAtOrderTime}]
       const user  = o.userDetails || {};
       const items = Array.isArray(o.orderItems) ? o.orderItems : [];
       return `
@@ -901,7 +973,7 @@ async function loadSellerOrders(sellerId) {
             <span class="status-pill status-${statusClass(o.orderStatus)}">${o.orderStatus || '—'}</span>
           </div>
           <div style="font-size:12px;color:var(--muted);margin-bottom:4px;">
-            <i data-lucide="user" style="width:10px;height:10px;"></i> ${user.name || '—'} | ${user.contact || ''}
+            👤 ${user.name || '—'} | ${user.contact || ''}
           </div>
           <div style="font-size:12px;color:var(--muted);margin-bottom:6px;">
             ${fmtDate(o.placedAt)} | <strong style="color:var(--gold-main)">${fmt(o.orderValue)}</strong>
@@ -915,7 +987,7 @@ async function loadSellerOrders(sellerId) {
   }
 }
 
-// DELETE /admin/delete-seller/{id}
+// FIX: DELETE /admin/delete-seller/{id} — individual only
 async function deleteSeller(id) {
   if (!confirm('Delete this seller and all their data? This cannot be undone.')) return;
   try {
@@ -924,31 +996,13 @@ async function deleteSeller(id) {
       headers: { Authorization: `Bearer ${getToken()}` }
     });
     if (!res.ok) throw new Error(await res.text());
-    toast('Seller deleted');
+    toast('🗑️ Seller deleted');
+    selectedSellerIds.delete(id);
     loadSellers();
   } catch(e) { toast('Error: ' + e.message, 'error'); }
 }
-async function approveSellerAccount(id) {
-  if (!confirm('Approve and activate this chef account?')) return;
-  
-  try {
-    const res = await fetch(`${BASE_URL}/admin/approve-seller/${id}`, {
-      method: 'POST', 
-      headers: { Authorization: `Bearer ${getToken()}` }
-    });
 
-    if (!res.ok) throw new Error(await res.text());
-    
-    toast('✅ Chef verified successfully!');
-    loadSellers(); // This reloads the cards so the button disappears/updates
-  } catch (e) {
-    toast('Verification failed: ' + e.message, 'error');
-  }
-}
 // ===== ORDERS — GET /admin/view-orders =====
-// Returns List<OrderUserResponseDto>:
-//   id, orderValue, placedAt, message, userDetails{name,email,contact},
-//   orderStatus, deliveryTime, deliveryAddress{...}, orderItems[{productName,quantity,priceAtOrderTime}]
 async function loadAdminOrders() {
   show('ordersLoading'); hide('adminOrdersList'); hide('noAdminOrders');
   try {
@@ -986,14 +1040,13 @@ function renderAdminOrders(orders) {
   hide('noAdminOrders'); show('adminOrdersList');
 
   list.innerHTML = orders.map(o => {
-    // ✅ Correct OrderUserResponseDto fields:
     const user  = o.userDetails || {};
     const items = Array.isArray(o.orderItems) ? o.orderItems : [];
     const addr  = o.deliveryAddress || {};
     const addrStr = [addr.city, addr.state].filter(Boolean).join(', ') || '—';
 
     return `
-      <div class="approval-card" onclick="openOrderModal(${JSON.stringify(o).replace(/"/g,'&quot;')})">
+      <div class="approval-card" onclick='openOrderModal(${JSON.stringify(o).replace(/"/g,"&quot;")})'>
         <div style="width:70px;height:70px;border-radius:12px;background:var(--dark2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
           <i data-lucide="shopping-bag" style="width:28px;height:28px;color:var(--gold-main)"></i>
         </div>
@@ -1052,10 +1105,6 @@ function openOrderModal(o) {
 }
 
 function closeOrderModal() { document.getElementById('orderDetailModal').classList.remove('open'); }
-
-// ===== DOM UTILS =====
-function show(id) { const el = document.getElementById(id); if (el) el.style.display = 'block'; }
-function hide(id) { const el = document.getElementById(id); if (el) el.style.display = 'none'; }
 
 // ===== INIT =====
 async function refreshAll() {
