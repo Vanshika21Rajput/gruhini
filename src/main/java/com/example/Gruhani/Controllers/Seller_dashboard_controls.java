@@ -91,8 +91,8 @@ public class Seller_dashboard_controls {
    @PostMapping("/accept-order")
            public ResponseEntity<?> acceptOrder(@RequestBody List<Long>orderIds)
    {
-           orderService.acceptOrder(orderIds);
-           return ResponseEntity.ok("ORDER ACCEPTED");
+               orderService.acceptOrder(orderIds);
+               return ResponseEntity.ok("ORDER ACCEPTED");
 
    }
     @PostMapping("/reject-order")
@@ -121,7 +121,7 @@ public class Seller_dashboard_controls {
            return ResponseEntity.ok("OTP NOT VERIFIED ENTER CORRET ONE");
     }
     @PostMapping("/update-profile")
-    public ResponseEntity<?> updateSeller(@RequestBody SellerReceiveDto sellerReceiveDto)
+   public ResponseEntity<?> updateSeller(@RequestBody SellerReceiveDto sellerReceiveDto)
     {
       profileService.updateSellerProfile(sellerReceiveDto);
         return ResponseEntity.ok("UPDATED PROFILE SUCCESFULLY");
