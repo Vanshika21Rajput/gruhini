@@ -136,13 +136,14 @@
 
         async function loadOrders() {
             try {
-                const res = await fetch(`${window.CONFIG.BASE_URL}/get-orders`, {
+                const res = await fetch(`${window.CONFIG.BASE_URL}/view-order-user`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 
                 if (!res.ok) throw new Error('Failed to load orders');
 
-                const orders = await res.json();
+                const responseData = await res.json();
+                const orders = responseData['Seller-Details'] || [];
                 const container = document.getElementById('ordersContainer');
 
                 if (orders.length === 0) {
