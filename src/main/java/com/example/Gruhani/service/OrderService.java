@@ -111,7 +111,8 @@ public class OrderService {
             emailSent=true;
         } catch (Exception e) {
             emailSent=false;
-            throw new RuntimeException("Email failed again, please check your email address");
+            e.printStackTrace();
+            //throw new RuntimeException("Email failed again, please check your email address");
 
         }
         try {
