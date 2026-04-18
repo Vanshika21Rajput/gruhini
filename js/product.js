@@ -41,7 +41,23 @@ async function fetchProductData(productId) {
     const token = localStorage.getItem('authToken');
     const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
-    // Try backend
+    // Fetch explore for recommendations (do this first, always)
+    try {
+        const exploreRes = await fetch(`${window.CONFIG.BASE_URL}/explore`, { headers });
+        if (exploreRes.ok) {
+            allProducts = await exploreRes.json();
+            // Try to find product in explore data
+            const found = allProducts.find(p => String(p.id) === String(productId));
+            if (found) {
+                currentProduct = await normalizeFromBackend(found);
+                return;
+            }
+        }
+    } catch (e) {
+        console.log('Explore fetch failed:', e.message);
+    }
+
+    // Try backend if not found in explore
     try {
         const controller = new AbortController();
         setTimeout(() => controller.abort(), 15000);
@@ -53,30 +69,11 @@ async function fetchProductData(productId) {
         if (response.ok) {
             const dto = await response.json();
             currentProduct = await normalizeFromBackend(dto);
-
-            // Fetch explore for recommendations
-            try {
-                const allRes = await fetch(`${window.CONFIG.BASE_URL}/explore`, { headers });
-                if (allRes.ok) allProducts = await allRes.json();
-            } catch {}
             return;
         }
     } catch (e) {
-        console.log('Backend product fetch failed, trying explore:', e.message);
+        console.log('Backend product fetch failed:', e.message);
     }
-
-    // Fallback: try /explore and find by ID
-    try {
-        const exploreRes = await fetch(`${window.CONFIG.BASE_URL}/explore`, { headers });
-        if (exploreRes.ok) {
-            allProducts = await exploreRes.json();
-            const found = allProducts.find(p => String(p.id) === String(productId));
-            if (found) {
-                currentProduct = await normalizeFromBackend(found);
-                return;
-            }
-        }
-    } catch {}
 
     // Final fallback: local JSON
     try {
