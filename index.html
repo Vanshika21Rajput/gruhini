@@ -566,12 +566,15 @@
 
         let items = [...MOCK_DATA], currIdx = 0, autoRotate;
 
-        function pickOnePerChef(products) {
-            const chefMap = new Map();
-            products.forEach(p => { const c = p.chef || 'Unknown'; if (!chefMap.has(c)) chefMap.set(c, p); });
-            const max = window.innerWidth < 900 ? 4 : 5;
-            return Array.from(chefMap.values()).slice(0, max);
-        }
+       function pickOnePerChef(products) {
+    const chefMap = new Map();
+    products.forEach(p => {
+        const c = p.sellerId || p.chef || 'Unknown';
+        if (!chefMap.has(c)) chefMap.set(c, p);
+    });
+    const max = window.innerWidth < 900 ? 4 : 5;
+    return Array.from(chefMap.values()).slice(0, max);
+}
 
         async function init() {
             try {
@@ -584,10 +587,12 @@
                     if (data.length > 0) {
                         items = pickOnePerChef(data).map(i => ({
                             ...i,
-                            title:  i.title  || i.name,
-                            desc:   i.desc   || i.description,
-                            img:    (i.img   || '').startsWith('http') ? i.img   : `public/${i.img   || 'placeholder.jpg'}`,
-                            avatar: (i.avatar|| '').startsWith('http') ? i.avatar: `public/${i.avatar|| 'placeholder.jpg'}`
+                            title:  i.name        || i.title  || 'Dish',
+    desc:   i.description || i.desc   || '',
+    img:    i.image       || window.CONFIG.PLACEHOLDER, 
+    chef:   i.sellerName  || i.chef   || 'Home Chef',
+    loc:    i.loc         || '',
+    avatar: i.avatar      || window.CONFIG.PLACEHOLDER,
                         }));
                         setupThali(); return;
                     }
