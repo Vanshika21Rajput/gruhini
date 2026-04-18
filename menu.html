@@ -536,10 +536,10 @@
             const price = new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',minimumFractionDigits:0}).format(safePrice);
             const img   = item.image||item.img||window.CONFIG.PLACEHOLDER;
             const chefAvatar = item.avatar
-                ? (item.avatar.startsWith('http') ? item.avatar : `public/${item.avatar}`)
-                : `https://ui-avatars.com/api/?name=${encodeURIComponent(item.chef||'Chef')}&background=d97706&color=fff&size=64`;
+    ? (item.avatar.startsWith('http') ? item.avatar : `public/${item.avatar}`)
+    : `https://ui-avatars.com/api/?name=${encodeURIComponent(item.sellerName||item.chef||'Chef')}&background=d97706&color=fff&size=64`;
             const safeName  = (item.name||item.title||'Delicious Dish').replace(/'/g,"\\'");
-            const safeChef  = (item.chef||'Home Chef').replace(/'/g,"\\'");
+            const safeChef  = (item.sellerName||item.chef||'Home Chef').replace(/'/g,"\\'");
             const safeImage = item.image||item.img||'';
 
             const descLower = ((item.desc||item.description||'')+' '+(item.name||item.title||'')).toLowerCase();
@@ -592,7 +592,7 @@
                     ${badgeHtml?`<div class="flex flex-wrap gap-1 mb-2">${badgeHtml}</div>`:''}
                     <div class="flex items-center gap-2 mb-3">
                         <img src="${chefAvatar}" class="w-7 h-7 rounded-full border border-amber-200 object-cover">
-                        <span class="text-xs text-gray-500 uppercase tracking-widest">By ${item.chef||'Home Chef'}</span>
+<span class="text-xs text-gray-500 uppercase tracking-widest">By ${item.sellerName||item.chef||'Home Chef'}</span>
                     </div>
                     <p class="text-sm text-gray-600 line-clamp-2 italic mb-6 font-light leading-relaxed h-10">${item.desc||item.description||'Authentic homemade delicacy.'}</p>
                     <div class="flex justify-between items-center pt-4 border-t border-gray-100">
