@@ -91,11 +91,11 @@ function normalizeProductData(item) {
         subtitle: item.subtitle || `${item.time || 'Fresh'} · ${item.category || 'Home Cooked'}`,
         price: Number(String(item.price).replace(/[^0-9.]/g, '')) || 0,
         serves: item.serves || '1',
-        image: getImgPath(item.img || item.image),
+        image: getImageUrl(item.img || item.image),
         images: item.images || [],
         chef: {
             name: item.chef || 'Home Chef',
-            avatar: getImgPath(item.avatar),
+            avatar: getAvatarUrl(item.avatar, item.chef || 'Home Chef'),
             location: item.loc || 'India',
             since: item.since || '',
             verified: true,
@@ -179,10 +179,28 @@ async function normalizeFromBackend(dto) {
     };
 }
 
+// Helper: Format image URLs (same as sellers.html)
+function getImageUrl(img) {
+    if (!img) return window.CONFIG.PLACEHOLDER;
+    if (img.startsWith('http')) return img;
+    const encodedPath = img.split('/').map(part => encodeURIComponent(part)).join('/');
+    return `public/${encodedPath}`;
+}
+
+// Helper: Format avatar URLs with fallback initials
+function getAvatarUrl(avatar, name) {
+    if (!avatar) return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=8c6a38&color=fff&size=150&bold=true`;
+    if (avatar.startsWith('http')) return avatar;
+    const encodedPath = avatar.split('/').map(part => encodeURIComponent(part)).join('/');
+    const avatarPath = `public/${encodedPath}`;
+    return avatarPath;
+}
+
 function renderProduct(product) {
-    // Hero Image
+    // Hero Image (with proper URL formatting)
     const heroImg = document.getElementById('heroImg');
-    heroImg.src = product.image;
+    const imageUrl = getImageUrl(product.image);
+    heroImg.src = imageUrl;
     heroImg.alt = `${product.title} by ${product.chef.name} - ${product.chef.location}`;
     heroImg.onerror = () => { heroImg.src = window.CONFIG.PLACEHOLDER; };
 
@@ -199,11 +217,14 @@ function renderProduct(product) {
     // Mobile sticky bar
     document.getElementById('stickyPrice').textContent = formatPrice(product.price);
 
-    // Chef Card
+    // Chef Card (with proper avatar URL formatting + ui-avatars fallback)
     const chefAvatar = document.getElementById('chefAvatar');
-    chefAvatar.src = product.chef.avatar;
+    const avatarUrl = getAvatarUrl(product.chef.avatar, product.chef.name);
+    chefAvatar.src = avatarUrl;
     chefAvatar.alt = product.chef.name;
-    chefAvatar.onerror = () => { chefAvatar.src = window.CONFIG.PLACEHOLDER; };
+    chefAvatar.onerror = () => { 
+        chefAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(product.chef.name)}&background=8c6a38&color=fff&size=150&bold=true`;
+    };
 
     document.getElementById('chefName').textContent = product.chef.name;
     document.getElementById('chefLocation').textContent = product.chef.location + ' · Home Kitchen';
@@ -293,7 +314,7 @@ function renderRecommendations() {
     document.getElementById('recommendsList').innerHTML = recommendations
         .map(p => `
             <div class="recommend-item" onclick="window.location.href='product.html?id=${p.id}'">
-                <img src="${getImgPath(p.img || p.image)}" alt="${p.title || p.name}" 
+                <img src="${getImageUrl(p.img || p.image)}" alt="${p.title || p.name}" 
                      onerror="this.src='${window.CONFIG.PLACEHOLDER}'" loading="lazy">
                 <span class="name">${p.title || p.name}</span>
                 <span class="price">${formatPrice(p.price)}</span>
