@@ -142,6 +142,12 @@ public class UserController {
         userService.resetPassword(resetPasswordDto);
         return ResponseEntity.ok("New Password is Set Successfully");
     }
+    @GetMapping("/products/{id}")
+    public ResponseEntity<?> viewSingleProduct(@PathVariable("id") Long id) {
+        System.out.println("ijndide priduct");
+        ProductDto productDto = userService.viewSingleProduct(id);
+        return ResponseEntity.ok().body(productDto);
+    }
 
 
 

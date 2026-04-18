@@ -1,14 +1,13 @@
 package com.example.Gruhani.service;
 
+import com.example.Gruhani.Exceptions.ProductNotFoundException;
 import com.example.Gruhani.Exceptions.UserNotFoundException;
 import com.example.Gruhani.Repositories.PasswordResetOtpRepository;
+import com.example.Gruhani.Repositories.ProductRepo;
 import com.example.Gruhani.Repositories.SellerRepo;
 import com.example.Gruhani.Repositories.UserRepo;
 import com.example.Gruhani.dtos.*;
-import com.example.Gruhani.models.Address;
-import com.example.Gruhani.models.PasswordResetOtp;
-import com.example.Gruhani.models.Seller;
-import com.example.Gruhani.models.Users;
+import com.example.Gruhani.models.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -31,6 +30,8 @@ public class UserService {
     BCryptPasswordEncoder bcp;
     @Autowired
     MailService emailService;
+    @Autowired
+    ProductRepo productRepo;
 
     public SellerDetailsDto searchSeller(Long id)
     {
@@ -158,5 +159,31 @@ public class UserService {
         sellerSummaryDto.setProfileImageUrl(seller.getUser().getProfileImageUrl());
         sellerSummaryDto.setId(seller.getId());
         return  sellerSummaryDto;
+    }
+    private ProductDto mapToProductDto(Product product) {
+        ProductDto dto = new ProductDto();
+        dto.setId(product.getId());
+        dto.setName(product.getName());
+        dto.setPrice(product.getPrice());
+        dto.setCategory(product.getCategory());
+        dto.setSubcategory(product.getSubcategory());
+        dto.setDescription(product.getDescription());
+        dto.setStock(product.getStock());
+        dto.setStatus(product.getStatus());
+        dto.setRating(product.getRating());
+        dto.setDiscount(product.getDiscount());
+        dto.setVerified(product.getVerified());
+        dto.setDeliveryTime(product.getDeliveryTime());
+        dto.setBadge(product.getBadge());
+        // quantity has no matching field in Product — set default or remove from DTO
+
+        dto.setSellerId(product.getSeller().getId());
+        return dto;
+    }
+    public ProductDto viewSingleProduct(Long id)
+    {
+        Product product=productRepo.findById(id).orElseThrow(()->new ProductNotFoundException("NOT FOUND"));
+        ProductDto  productdto=mapToProductDto(product);
+        return productdto;
     }
 }

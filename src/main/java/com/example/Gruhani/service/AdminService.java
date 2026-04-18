@@ -34,12 +34,12 @@ public class AdminService {
     {
         List<Product> l = productRepo.findAllByStatus(ProductStatus.PENDING);
             List<ProductDto> productDtos = l.stream()
-                    .map(this::mapToDto)
+                    .map(this::mapToProductDto)
                     .collect(Collectors.toList());
             return productDtos;
     }
 
-    private ProductDto mapToDto(Product product) {
+    private ProductDto mapToProductDto(Product product) {
         ProductDto dto = new ProductDto();
         dto.setId(product.getId());
         dto.setName(product.getName());
@@ -59,12 +59,7 @@ public class AdminService {
         dto.setSellerId(product.getSeller().getId());
         return dto;
     }
-    public ProductDto viewSingleProduct(Long id)
-    {
-        Product product=productRepo.findById(id).orElseThrow(()->new ProductNotFoundException("NOT FOUND"));
-                           ProductDto  productdto=mapToDto(product);
-                           return productdto;
-    }
+
     //we have not used transactional because in db for this query is already annotated wit transactional
     public void acceptItem(SelectedItemsByAdmin selectedItemsByAdmin)
     {
@@ -80,7 +75,7 @@ public class AdminService {
 
     public List<ProductDto> viewAllProducts() {
         List<Product>productList=productRepo.findAll();
-        List<ProductDto>products=productList.stream().map(this::mapToDto).collect(Collectors.toList());
+        List<ProductDto>products=productList.stream().map(this::mapToProductDto).collect(Collectors.toList());
         return products;
     }
 

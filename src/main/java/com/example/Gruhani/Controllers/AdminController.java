@@ -57,11 +57,7 @@ public class AdminController {
     }
     //VIEW ORDER BY SELLER group by selller ids so that admin can see the stats
 
-    @GetMapping("/products/{id}")
-    public ResponseEntity<?> viewSingleProduct(@PathVariable("id") Long id) {
-        ProductDto productDto = adminService.viewSingleProduct(id);
-        return ResponseEntity.ok().body(productDto);
-    }
+
 
     @GetMapping("/products-viewAll")
     public ResponseEntity<?> viewAll() {
