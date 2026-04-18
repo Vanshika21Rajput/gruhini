@@ -76,11 +76,25 @@ public class UserController {
     public ResponseEntity<?> method() {
         List<Product> l = prepo.findAllByStatus(ProductStatus.APPROVED);
         Map<String, Object> response = new HashMap<>();
-
-        List<ProductDto>s= l.stream()
+        List<ProductDto> s = l.stream()
                 .map(product -> {
                     ProductDto dto = new ProductDto();
-                    BeanUtils.copyProperties(product, dto);
+                    dto.setId(product.getId());
+                    dto.setName(product.getName());
+                    dto.setDescription(product.getDescription());
+                    dto.setPrice(product.getPrice());
+                    dto.setRating(product.getRating());
+                    dto.setCategory(product.getCategory());
+                    dto.setSubcategory(product.getSubcategory());
+                    dto.setStock(product.getStock());
+                    dto.setStatus(product.getStatus());
+                    dto.setDiscount(product.getDiscount());
+                    dto.setVerified(product.getVerified());
+                    dto.setMessage(product.getMessage());
+                    dto.setDeliveryTime(product.getDeliveryTime());
+                    dto.setBadge(product.getBadge());
+                    dto.setImage(product.getImage());
+
                     if (product.getSeller() != null) {
                         dto.setSellerId(product.getSeller().getId());
                     }
@@ -88,7 +102,6 @@ public class UserController {
                 })
                 .collect(Collectors.toList());
         return ResponseEntity.ok().body(s);
-
     }
     @PostMapping("/save-fcm-token")
     public ResponseEntity<String> saveFcmToken(
