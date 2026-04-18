@@ -487,6 +487,30 @@
         { id:"dolly-soap",      title:"Herbal Bath Soap",     price:"₹120", chef:"Dolly Aunty",       loc:"Mumbai, MH",  desc:"Handmade organic soap with natural herbs.", img:"public/dolly aunty/herbal soap.jpeg", avatar:"dolly aunty/Owner pic.jpeg", category:"Crafts", time:"Handmade" }
     ];
 
+    /* ── Seller cache: { sellerId: SellerDetailsDto } ── */
+    window._sellerCache = window._sellerCache || {};
+
+    async function _fetchSeller(sellerId) {
+        if (!sellerId) return null;
+        const key = String(sellerId);
+        if (window._sellerCache[key]) return window._sellerCache[key];
+        try {
+            const token = localStorage.getItem('authToken');
+            const hdrs  = token ? { Authorization: `Bearer ${token}` } : {};
+            const res   = await fetch(`${window.CONFIG.BASE_URL}/get-seller/${key}`, { headers: hdrs });
+            if (!res.ok) return null;
+            const data = await res.json();
+            window._sellerCache[key] = data;
+            return data;
+        } catch { return null; }
+    }
+
+    async function _fetchAllSellers(items) {
+        const uniqueIds = [...new Set(items.map(i => i.sellerId).filter(Boolean))];
+        await Promise.all(uniqueIds.map(id => _fetchSeller(id)));
+    }
+
+    /* ── Replace the existing init() function ── */
     async function init() {
         let elapsed = 0;
         const timerEl = document.getElementById('loadingTimer');
@@ -494,11 +518,12 @@
         const txtEl   = document.getElementById('loadingText');
         const timerInterval = setInterval(() => {
             elapsed++;
-            if (timerEl) timerEl.textContent = elapsed+'s elapsed';
-            if (elapsed===10 && txtEl) txtEl.textContent='Kitchen is starting up...';
-            if (elapsed===25 && txtEl) txtEl.textContent='Almost there, hang on...';
-            if (elapsed===40 && subEl) subEl.innerHTML='Taking a bit longer — Render cold start can take up to 60s. Still waiting... ☕';
+            if (timerEl) timerEl.textContent = elapsed + 's elapsed';
+            if (elapsed === 10 && txtEl) txtEl.textContent = 'Kitchen is starting up...';
+            if (elapsed === 25 && txtEl) txtEl.textContent = 'Almost there, hang on...';
+            if (elapsed === 40 && subEl) subEl.innerHTML = 'Taking a bit longer — Render cold start can take up to 60s. Still waiting... ☕';
         }, 1000);
+
         try {
             try {
                 const controller = new AbortController();
@@ -507,98 +532,141 @@
                 clearTimeout(timeoutId);
                 if (res.ok) {
                     const data = await res.json();
-                    if (data && data.length > 0) { allItems = data; clearInterval(timerInterval); render(allItems); return; }
+                    if (data && data.length > 0) {
+                        allItems = data;
+                        clearInterval(timerInterval);
+                        // Fetch all seller details before rendering
+                        await _fetchAllSellers(allItems);
+                        render(allItems);
+                        return;
+                    }
                     throw new Error('Empty');
-                } else throw new Error('HTTP '+res.status);
+                } else throw new Error('HTTP ' + res.status);
             } catch(e) {
                 console.warn('Backend unavailable:', e.message);
                 try {
                     const lr = await fetch('real-products.json');
                     if (lr.ok) {
                         const ld = await lr.json();
-                        if (ld && ld.length>0) { allItems=ld.map(i=>({...i,image:i.img?.startsWith('http')?i.img:'public/'+i.img})); clearInterval(timerInterval); render(allItems); return; }
+                        if (ld && ld.length > 0) {
+                            allItems = ld.map(i => ({ ...i, image: i.img?.startsWith('http') ? i.img : 'public/' + i.img }));
+                            clearInterval(timerInterval);
+                            render(allItems);
+                            return;
+                        }
                     }
                     throw new Error('Local JSON empty');
                 } catch { allItems = MOCK_DATA; }
             }
-            clearInterval(timerInterval); render(allItems);
-        } catch(err) { clearInterval(timerInterval); allItems=MOCK_DATA; render(allItems); }
+            clearInterval(timerInterval);
+            render(allItems);
+        } catch(err) { clearInterval(timerInterval); allItems = MOCK_DATA; render(allItems); }
     }
 
+    /* ── Replace the existing render() function ── */
     function render(items) {
         document.getElementById('loading').classList.add('hidden');
         const grid = document.getElementById('menuGrid');
         grid.classList.remove('hidden');
-        if (items.length===0) { grid.innerHTML='<div class="col-span-full text-center text-gray-400 italic py-10">No items found.</div>'; return; }
+        if (items.length === 0) {
+            grid.innerHTML = '<div class="col-span-full text-center text-gray-400 italic py-10">No items found.</div>';
+            return;
+        }
 
         grid.innerHTML = items.map(item => {
-            const safePrice = Number(String(item.price).replace(/[^0-9.]/g,''))||0;
-            const price = new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',minimumFractionDigits:0}).format(safePrice);
-            const img   = item.image||item.img||window.CONFIG.PLACEHOLDER;
-            const chefAvatar = item.avatar
-    ? (item.avatar.startsWith('http') ? item.avatar : `public/${item.avatar}`)
-    : `https://ui-avatars.com/api/?name=${encodeURIComponent(item.sellerName||item.chef||'Chef')}&background=d97706&color=fff&size=64`;
-            const safeName  = (item.name||item.title||'Delicious Dish').replace(/'/g,"\\'");
-            const safeChef  = (item.sellerName||item.chef||'Home Chef').replace(/'/g,"\\'");
-            const safeImage = item.image||item.img||'';
+            const safePrice = Number(String(item.price).replace(/[^0-9.]/g, '')) || 0;
+            const price     = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 }).format(safePrice);
+            const img       = item.image || item.img || window.CONFIG.PLACEHOLDER;
+            const strId     = String(item.id);
 
-            const descLower = ((item.desc||item.description||'')+' '+(item.name||item.title||'')).toLowerCase();
-            const badges=[];
-            if (descLower.includes('ghee')||descLower.includes('desi')) badges.push({text:'Desi Ghee',color:'bg-green-100 text-green-700 border-green-200'});
-            if (descLower.includes('handmade')||descLower.includes('hand made')) badges.push({text:'Handmade',color:'bg-amber-100 text-amber-700 border-amber-200'});
-            if (descLower.includes('vrat')||descLower.includes('falahari')||descLower.includes('upwas')) badges.push({text:'Vrat Special',color:'bg-purple-100 text-purple-700 border-purple-200'});
-            if (descLower.includes('organic')||descLower.includes('natural')) badges.push({text:'Organic',color:'bg-lime-100 text-lime-700 border-lime-200'});
-            const badgeHtml=badges.slice(0,2).map(b=>`<span class="text-[8px] font-bold px-1.5 py-0.5 rounded border ${b.color} uppercase">${b.text}</span>`).join('');
+            // ── Seller details from cache ──
+            const seller       = window._sellerCache[String(item.sellerId)] || {};
+            const businessName = seller.businessName || item.sellerName || item.chef || 'Home Kitchen';
+            const ownerName    = seller.name         || item.chef       || '';
+            // Avatar: seller image → ui-avatars initials (never blank)
+            const sellerImage  = seller.image;
+            const avatarInitials = businessName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+            const chefAvatarSrc = sellerImage
+                ? sellerImage
+                : (item.avatar
+                    ? (item.avatar.startsWith('http') ? item.avatar : `public/${item.avatar}`)
+                    : `https://ui-avatars.com/api/?name=${encodeURIComponent(avatarInitials)}&background=8c6a38&color=fff&size=64&bold=true&font-size=0.45`);
 
-            const loc=(item.loc||'').toLowerCase(), cat=(item.category||'').toLowerCase();
-            const city=loc.includes('indore')?'Indore':loc.includes('bhopal')?'Bhopal':loc.includes('pune')?'Pune':loc.includes('mumbai')?'Mumbai':'';
-            let originLabel='';
+            // Safe strings for onclick
+            const safeName    = (item.name || item.title || 'Delicious Dish').replace(/'/g, "\\'");
+            const safeChef    = businessName.replace(/'/g, "\\'");
+            const safeImage   = (item.image || item.img || '').replace(/'/g, "\\'");
+
+            // Desc badges
+            const descLower = ((item.desc || item.description || '') + ' ' + (item.name || item.title || '')).toLowerCase();
+            const badges = [];
+            if (descLower.includes('ghee') || descLower.includes('desi'))           badges.push({ text: 'Desi Ghee',   color: 'bg-green-100 text-green-700 border-green-200' });
+            if (descLower.includes('handmade') || descLower.includes('hand made'))  badges.push({ text: 'Handmade',    color: 'bg-amber-100 text-amber-700 border-amber-200' });
+            if (descLower.includes('vrat') || descLower.includes('upwas'))          badges.push({ text: 'Vrat Special',color: 'bg-purple-100 text-purple-700 border-purple-200' });
+            if (descLower.includes('organic') || descLower.includes('natural'))     badges.push({ text: 'Organic',     color: 'bg-lime-100 text-lime-700 border-lime-200' });
+            const badgeHtml = badges.slice(0, 2).map(b => `<span class="text-[8px] font-bold px-1.5 py-0.5 rounded border ${b.color} uppercase">${b.text}</span>`).join('');
+
+            // Origin stamp
+            const loc = (item.loc || '').toLowerCase(), cat = (item.category || '').toLowerCase();
+            const city = loc.includes('indore') ? 'Indore' : loc.includes('bhopal') ? 'Bhopal' : loc.includes('pune') ? 'Pune' : loc.includes('mumbai') ? 'Mumbai' : '';
+            let originLabel = '';
             if (city) {
-                if (cat.includes('craft')||cat.includes('soap')) originLabel=`HANDCRAFTED · ${city.toUpperCase()}`;
-                else if (cat.includes('snack')||cat.includes('namkeen')) originLabel=city==='Indore'?'INDORI SWAD':city==='Bhopal'?'BHOPALI SNACKS':`${city.toUpperCase()} MUNCHIES`;
-                else if (cat.includes('sweet')||cat.includes('dessert')) originLabel=`${city.toUpperCase()} MITHAI`;
-                else if (cat.includes('thali')||cat.includes('meal')) originLabel=city==='Indore'?'INDORI ZAYKA':city==='Bhopal'?'BHOPALI DAAWAT':`${city.toUpperCase()} SPECIAL`;
-                else originLabel=`FROM ${city.toUpperCase()}`;
+                if (cat.includes('craft') || cat.includes('soap'))          originLabel = `HANDCRAFTED · ${city.toUpperCase()}`;
+                else if (cat.includes('snack') || cat.includes('namkeen'))  originLabel = city === 'Indore' ? 'INDORI SWAD' : `${city.toUpperCase()} MUNCHIES`;
+                else if (cat.includes('sweet') || cat.includes('dessert'))  originLabel = `${city.toUpperCase()} MITHAI`;
+                else if (cat.includes('thali') || cat.includes('meal'))     originLabel = city === 'Indore' ? 'INDORI ZAYKA' : `${city.toUpperCase()} SPECIAL`;
+                else                                                         originLabel = `FROM ${city.toUpperCase()}`;
             }
-            const originStamp=originLabel?`<div class="absolute bottom-2 left-2 bg-black/80 text-white text-[8px] font-bold px-2 py-1 rounded border border-amber-500/50 flex items-center gap-1"><i data-lucide="map-pin" class="w-2 h-2"></i> ${originLabel}</div>`:'';
+            const originStamp = originLabel
+                ? `<div class="absolute bottom-2 left-2 bg-black/80 text-white text-[8px] font-bold px-2 py-1 rounded border border-amber-500/50 flex items-center gap-1"><i data-lucide="map-pin" class="w-2 h-2"></i> ${originLabel}</div>`
+                : '';
 
-            // Show current cart count on button if already in cart
-            const strId = String(item.id);
-            const inCart = window._cartQty && window._cartQty[strId] ? window._cartQty[strId] : 0;
-            const btnHtml = inCart > 0
+            // Cart state
+            const inCart   = window._cartQty && window._cartQty[strId] ? window._cartQty[strId] : 0;
+            const btnHtml  = inCart > 0
                 ? `<span style="font-size:14px;font-weight:800">${inCart}</span><span style="font-size:9px">× in cart</span>`
                 : `Add <span class="text-gold" aria-hidden="true">+</span>`;
-            const btnStyle = inCart > 0 ? 'bg-amber-700 hover:bg-amber-600' : 'bg-gray-900 hover:bg-amber-700 group-hover:bg-amber-800';
+            const btnBase  = inCart > 0 ? 'bg-amber-700 hover:bg-amber-600' : 'bg-gray-900 hover:bg-amber-700 group-hover:bg-amber-800';
 
             return `
             <div class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 group hover:-translate-y-2 border border-gray-100">
                 <div class="h-60 overflow-hidden relative cursor-pointer" onclick="window.open('product.html?id=${item.id}','_blank')">
-                    <img src="${img}" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <img src="${img}" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="this.src='${window.CONFIG.PLACEHOLDER}'">
                     <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4 backdrop-blur-[2px]">
                         <span class="text-gold font-cinzel text-lg border-b border-gold pb-1 mb-1">View Details</span>
                     </div>
-                    <div class="absolute top-3 right-3 bg-white/90 backdrop-blur text-[10px] font-bold px-2 py-1 rounded text-amber-900 shadow-sm uppercase tracking-wide">${item.time||'Fresh'}</div>
+                    <div class="absolute top-3 right-3 bg-white/90 backdrop-blur text-[10px] font-bold px-2 py-1 rounded text-amber-900 shadow-sm uppercase tracking-wide">${item.time || 'Fresh'}</div>
                     <button onclick="event.stopPropagation();toggleFavorite('${item.id}','${safeName}','${safeImage}',${safePrice},'${safeChef}',this)"
                         class="absolute top-3 left-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur shadow-sm flex items-center justify-center hover:scale-110 transition-transform cursor-pointer z-10 group/fav border border-gray-100">
                         <i data-lucide="heart" class="w-4 h-4 text-gray-400 group-hover/fav:text-red-500 transition-colors"></i>
                     </button>
                     ${originStamp}
                 </div>
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-2">
-                        <h3 class="font-cinzel text-lg text-gray-900 font-bold leading-tight truncate pr-2">${item.name||item.title}</h3>
-                        <span class="text-amber-600 text-xs font-bold bg-amber-50 px-2 py-1 rounded border border-amber-100">${item.category||'Veg'}</span>
+                <div class="p-5">
+                    <div class="flex justify-between items-start mb-1.5">
+                        <h3 class="font-cinzel text-lg text-gray-900 font-bold leading-tight truncate pr-2">${item.name || item.title}</h3>
+                        <span class="text-amber-600 text-xs font-bold bg-amber-50 px-2 py-1 rounded border border-amber-100 flex-shrink-0">${item.category || 'Homemade'}</span>
                     </div>
-                    ${badgeHtml?`<div class="flex flex-wrap gap-1 mb-2">${badgeHtml}</div>`:''}
-                    <div class="flex items-center gap-2 mb-3">
-                        <img src="${chefAvatar}" class="w-7 h-7 rounded-full border border-amber-200 object-cover">
-<span class="text-xs text-gray-500 uppercase tracking-widest">By ${item.sellerName||item.chef||'Home Chef'}</span>
+                    ${badgeHtml ? `<div class="flex flex-wrap gap-1 mb-2">${badgeHtml}</div>` : ''}
+
+                    <!-- ── Seller row: avatar + businessName + ownerName ── -->
+                    <div class="flex items-center gap-2.5 mb-3 bg-amber-50/60 rounded-lg px-2.5 py-1.5 border border-amber-100">
+                        <div class="w-8 h-8 rounded-full flex-shrink-0 overflow-hidden border border-amber-200 bg-amber-100">
+                            <img src="${chefAvatarSrc}" class="w-full h-full object-cover"
+                                 onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\\'font-size:13px;font-weight:800;color:#8c6a38;width:100%;height:100%;display:flex;align-items:center;justify-content:center;\\'>${avatarInitials}</span>'">
+                        </div>
+                        <div class="min-w-0">
+                            <div class="text-[11px] font-bold text-amber-800 truncate leading-tight">${businessName}</div>
+                            ${ownerName ? `<div class="text-[9px] text-gray-400 uppercase tracking-widest truncate">${ownerName}</div>` : ''}
+                        </div>
                     </div>
-                    <p class="text-sm text-gray-600 line-clamp-2 italic mb-6 font-light leading-relaxed h-10">${item.desc||item.description||'Authentic homemade delicacy.'}</p>
-                    <div class="flex justify-between items-center pt-4 border-t border-gray-100">
+
+                    <p class="text-sm text-gray-600 line-clamp-2 italic mb-4 font-light leading-relaxed h-10">${item.desc || item.description || 'Authentic homemade delicacy.'}</p>
+
+                    <div class="flex justify-between items-center pt-3.5 border-t border-gray-100">
                         <span class="text-2xl font-cinzel text-amber-800 font-bold">${price}</span>
                         <button id="cartBtn_${strId}" onclick="addToCart('${item.id}', this)"
-                            class="${btnStyle} text-white px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg transition-all flex items-center gap-2">
+                            class="${btnBase} text-white px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg transition-all flex items-center gap-2">
                             ${btnHtml}
                         </button>
                     </div>
