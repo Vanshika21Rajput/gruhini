@@ -91,11 +91,11 @@ function normalizeProductData(item) {
         subtitle: item.subtitle || `${item.time || 'Fresh'} · ${item.category || 'Home Cooked'}`,
         price: Number(String(item.price).replace(/[^0-9.]/g, '')) || 0,
         serves: item.serves || '1',
-        image: getImageUrl(item.img || item.image),
+        image: item.img || item.image,
         images: item.images || [],
         chef: {
             name: item.chef || 'Home Chef',
-            avatar: getAvatarUrl(item.avatar, item.chef || 'Home Chef'),
+            avatar: item.avatar,
             location: item.loc || 'India',
             since: item.since || '',
             verified: true,
@@ -182,7 +182,11 @@ async function normalizeFromBackend(dto) {
 // Helper: Format image URLs (same as sellers.html)
 function getImageUrl(img) {
     if (!img) return window.CONFIG.PLACEHOLDER;
+    // If it's already a full URL (Cloudinary), return as-is
     if (img.startsWith('http')) return img;
+    // If it's the placeholder string that starts with /, handle specially
+    if (img.startsWith('/')) return img;
+    // For relative paths, encode and prepend public/
     const encodedPath = img.split('/').map(part => encodeURIComponent(part)).join('/');
     return `public/${encodedPath}`;
 }
@@ -190,10 +194,13 @@ function getImageUrl(img) {
 // Helper: Format avatar URLs with fallback initials
 function getAvatarUrl(avatar, name) {
     if (!avatar) return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=8c6a38&color=fff&size=150&bold=true`;
+    // If it's a full HTTP URL, return as-is
     if (avatar.startsWith('http')) return avatar;
+    // If it starts with /, return as-is (absolute path)
+    if (avatar.startsWith('/')) return avatar;
+    // For relative paths, encode and prepend public/
     const encodedPath = avatar.split('/').map(part => encodeURIComponent(part)).join('/');
-    const avatarPath = `public/${encodedPath}`;
-    return avatarPath;
+    return `public/${encodedPath}`;
 }
 
 function renderProduct(product) {
