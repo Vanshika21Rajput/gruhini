@@ -240,7 +240,7 @@
         fetch(`${BASE}/get-cart`, { headers: { Authorization: `Bearer ${token}` } })
             .then(r => r.ok ? r.json() : [])
             .then(data => {
-                const count = Array.isArray(data) ? data.length : 0;
+                const count = Array.isArray(data) ? data.reduce((sum, i) => sum + (parseInt(i.quantity)||1), 0) : 0;
                 if (count > 0) {
                     const badge = document.getElementById('cartCountBadge');
                     const dropdown = document.getElementById('cartCountDropdown');
@@ -541,42 +541,144 @@
                 </div>
                 <h2 id="dishTitle" class="font-playfair text-4xl md:text-5xl text-white mb-4 leading-tight">Loading...</h2>
                 <p id="dishDesc" class="font-sans text-gray-400 text-sm leading-7 mb-10 border-l-2 border-gold-matte pl-6 italic max-w-md h-16 overflow-hidden">Waking up the kitchen...</p>
-                <div class="flex items-center justify-between border-t border-white/10 pt-8">
+                <div class="flex items-center justify-between border-t border-white/10 pt-8 flex-wrap gap-4">
                     <span id="dishPrice" class="font-cinzel text-4xl text-gold-main font-bold">--</span>
                     <div class="flex gap-3">
                         <button onclick="rotateThali(-1)" class="w-12 h-12 rounded-full border border-gray-600 text-white hover:border-gold-main transition-colors text-xl flex items-center justify-center pb-1">&larr;</button>
                         <button onclick="rotateThali(1)"  class="w-12 h-12 rounded-full border border-gray-600 text-white hover:border-gold-main transition-colors text-xl flex items-center justify-center pb-1">&rarr;</button>
                     </div>
-                    <button onclick="goToProduct()" class="bg-gradient-to-r from-gold-matte to-gold-main text-black px-8 py-4 rounded-full font-bold text-xs uppercase tracking-[0.2em] hover:shadow-[0_0_20px_rgba(197,160,89,0.3)] transition-all">
-                        View Details
-                    </button>
+                    <div class="flex gap-3 items-center">
+                        <button id="thaliCartBtn"
+                            onclick="_addThaliToCart()"
+                            class="bg-gray-900 hover:bg-amber-700 text-white px-6 py-3 rounded-full font-bold text-xs uppercase tracking-[0.15em] transition-all flex items-center gap-2 border border-white/10">
+                            Add to Cart
+                        </button>
+                        <button onclick="goToProduct()"
+                            class="bg-gradient-to-r from-gold-matte to-gold-main text-black px-8 py-4 rounded-full font-bold text-xs uppercase tracking-[0.2em] hover:shadow-[0_0_20px_rgba(197,160,89,0.3)] transition-all">
+                            View Details
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <script>
+        /* ── Shared seller cache (same pattern as menu.html) ── */
+        window._sellerCache = window._sellerCache || {};
+        window._cartQty     = window._cartQty     || {};
+
+        async function _fetchSeller(sellerId) {
+            if (!sellerId) return null;
+            const key = String(sellerId);
+            if (window._sellerCache[key]) return window._sellerCache[key];
+            try {
+                const token = localStorage.getItem('authToken');
+                const hdrs  = token ? { Authorization: `Bearer ${token}` } : {};
+                const res   = await fetch(`${window.CONFIG.BASE_URL}/get-seller/${key}`, { headers: hdrs });
+                if (!res.ok) return null;
+                const data  = await res.json();
+                window._sellerCache[key] = data;
+                return data;
+            } catch { return null; }
+        }
+
+        async function _fetchAllSellers(items) {
+            const uniqueIds = [...new Set(items.map(i => i.sellerId).filter(Boolean))];
+            await Promise.all(uniqueIds.map(id => _fetchSeller(id)));
+        }
+
+        /* ── Cart count for index page ── */
+        function _loadIndexCartCount() {
+            const token = localStorage.getItem('authToken');
+            if (!token) return;
+            fetch(`${window.CONFIG.BASE_URL}/get-cart`, { headers: { Authorization: `Bearer ${token}` } })
+                .then(r => r.ok ? r.json() : [])
+                .then(data => {
+                    if (!Array.isArray(data)) return;
+                    data.forEach(item => {
+                        const id = String(item.productid || item.product?.id || item.id || '');
+                        if (id) window._cartQty[id] = (window._cartQty[id] || 0) + (parseInt(item.quantity) || 1);
+                    });
+                    _updateThaliCartBtn();
+                }).catch(() => {});
+        }
+
+        function _updateThaliCartBtn() {
+            if (!items || !items[currIdx]) return;
+            const strId  = String(items[currIdx].id);
+            const inCart = window._cartQty[strId] || 0;
+            const btn    = document.getElementById('thaliCartBtn');
+            if (!btn) return;
+            if (inCart > 0) {
+                btn.innerHTML = `<span style="font-size:15px;font-weight:800">${inCart}</span><span style="font-size:9px;letter-spacing:.05em">× in cart</span>`;
+                btn.className = btn.className.replace('bg-gray-900', 'bg-amber-700');
+            } else {
+                btn.innerHTML = `Add to Cart`;
+                btn.className = btn.className.replace('bg-amber-700', 'bg-gray-900');
+            }
+        }
+
+        async function _addThaliToCart() {
+            const token = localStorage.getItem('authToken');
+            if (!token) { localStorage.setItem('redirectAfterLogin', window.location.href); window.location.href='login.html'; return; }
+            const item  = items[currIdx];
+            if (!item)  return;
+            const btn   = document.getElementById('thaliCartBtn');
+            const prev  = btn.innerHTML;
+            btn.innerHTML = 'Adding...'; btn.disabled = true;
+            try {
+                const res = await fetch(`${window.CONFIG.BASE_URL}/add-to-cart`, {
+                    method:  'POST',
+                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                    body:    JSON.stringify({ productid: parseInt(item.id, 10), quantity: 1 })
+                });
+                if (!res.ok) {
+                    if (res.status === 403) { localStorage.removeItem('authToken'); window.location.href = 'login.html'; return; }
+                    const ed = await res.json().catch(() => ({}));
+                    throw new Error(ed.message || 'Failed');
+                }
+                const strId = String(item.id);
+                window._cartQty[strId] = (window._cartQty[strId] || 0) + 1;
+                _updateThaliCartBtn();
+                // Flash confirmation
+                btn.style.background = 'linear-gradient(135deg,#22c55e,#16a34a)';
+                setTimeout(() => { btn.style.background = ''; _updateThaliCartBtn(); }, 1200);
+                // Update navbar badge if it exists
+                const badge = document.getElementById('cartCountBadge');
+                if (badge) {
+                    const total = Object.values(window._cartQty).reduce((a,b)=>a+b,0);
+                    badge.textContent = total; badge.classList.add('show');
+                }
+            } catch(e) {
+                btn.innerHTML = 'Error ✕'; btn.style.background = '#dc2626';
+                setTimeout(() => { btn.style.background = ''; btn.innerHTML = prev; }, 2000);
+            } finally { btn.disabled = false; }
+        }
+
+        /* ── Mock data (same as before) ── */
         const MOCK_DATA = [
-            { id:"1", title:"Dal Makhani",       price:299, chef:"Mrs. Singh",  loc:"Amritsar",  desc:"Black lentils cooked overnight on charcoal.",            img:window.CONFIG.PLACEHOLDER, avatar:window.CONFIG.PLACEHOLDER },
-            { id:"2", title:"Hyderabadi Biryani", price:450, chef:"Mrs. Reddy",  loc:"Hyderabad", desc:"Aromatic basmati rice sealed with dough.",                img:window.CONFIG.PLACEHOLDER, avatar:window.CONFIG.PLACEHOLDER },
-            { id:"3", title:"Gajar Halwa",        price:199, chef:"Mrs. Gupta",  loc:"Delhi",     desc:"Winter carrots slow cooked in pure Desi Ghee.",           img:window.CONFIG.PLACEHOLDER, avatar:window.CONFIG.PLACEHOLDER },
-            { id:"4", title:"Shahi Paneer",       price:349, chef:"Mrs. Kapoor", loc:"Jaipur",    desc:"Cottage cheese in a royal creamy sauce.",                 img:window.CONFIG.PLACEHOLDER, avatar:window.CONFIG.PLACEHOLDER },
-            { id:"5", title:"Rajma Chawal",       price:240, chef:"Nani's Kitchen", loc:"Punjab", desc:"Comfort food at its finest.",                             img:window.CONFIG.PLACEHOLDER, avatar:window.CONFIG.PLACEHOLDER }
+            { id:"1", title:"Dal Makhani",       price:299, chef:"Mrs. Singh",     businessName:"Singh's Kitchen", loc:"Amritsar",  desc:"Black lentils cooked overnight on charcoal.", img:window.CONFIG.PLACEHOLDER, avatar:window.CONFIG.PLACEHOLDER },
+            { id:"2", title:"Hyderabadi Biryani",price:450, chef:"Mrs. Reddy",     businessName:"Reddy's Kitchen", loc:"Hyderabad", desc:"Aromatic basmati rice sealed with dough.",   img:window.CONFIG.PLACEHOLDER, avatar:window.CONFIG.PLACEHOLDER },
+            { id:"3", title:"Gajar Halwa",       price:199, chef:"Mrs. Gupta",     businessName:"Gupta's Mithai",  loc:"Delhi",     desc:"Winter carrots slow cooked in pure Desi Ghee.", img:window.CONFIG.PLACEHOLDER, avatar:window.CONFIG.PLACEHOLDER },
+            { id:"4", title:"Shahi Paneer",      price:349, chef:"Mrs. Kapoor",    businessName:"Royal Rasoi",     loc:"Jaipur",    desc:"Cottage cheese in a royal creamy sauce.",    img:window.CONFIG.PLACEHOLDER, avatar:window.CONFIG.PLACEHOLDER },
+            { id:"5", title:"Rajma Chawal",      price:240, chef:"Nani's Kitchen", businessName:"Nani's Kitchen",  loc:"Punjab",    desc:"Comfort food at its finest.",                img:window.CONFIG.PLACEHOLDER, avatar:window.CONFIG.PLACEHOLDER }
         ];
 
         let items = [...MOCK_DATA], currIdx = 0, autoRotate;
 
-       function pickOnePerChef(products) {
-    const chefMap = new Map();
-    products.forEach(p => {
-        const c = p.sellerId || p.chef || 'Unknown';
-        if (!chefMap.has(c)) chefMap.set(c, p);
-    });
-    const max = window.innerWidth < 900 ? 4 : 5;
-    return Array.from(chefMap.values()).slice(0, max);
-}
+        function pickOnePerChef(products) {
+            const chefMap = new Map();
+            products.forEach(p => {
+                const c = p.sellerId || p.chef || 'Unknown';
+                if (!chefMap.has(c)) chefMap.set(c, p);
+            });
+            const max = window.innerWidth < 900 ? 4 : 5;
+            return Array.from(chefMap.values()).slice(0, max);
+        }
 
         async function init() {
+            _loadIndexCartCount();
             try {
                 const ctrl = new AbortController();
                 const tid  = setTimeout(() => ctrl.abort(), 10000);
@@ -585,76 +687,133 @@
                 if (res.ok) {
                     const data = await res.json();
                     if (data.length > 0) {
-                        items = pickOnePerChef(data).map(i => ({
-                            ...i,
-                            title:  i.name        || i.title  || 'Dish',
-    desc:   i.description || i.desc   || '',
-    img:    i.image       || window.CONFIG.PLACEHOLDER, 
-    chef:   i.sellerName  || i.chef   || 'Home Chef',
-    loc:    i.loc         || '',
-    avatar: i.avatar      || window.CONFIG.PLACEHOLDER,
-                        }));
-                        setupThali(); return;
+                        const picked = pickOnePerChef(data);
+                        // Fetch all seller details before building the thali
+                        await _fetchAllSellers(picked);
+                        items = picked.map(i => {
+                            const seller = window._sellerCache[String(i.sellerId)] || {};
+                            return {
+                                ...i,
+                                title:        i.name         || i.title  || 'Dish',
+                                desc:         i.description  || i.desc   || '',
+                                img:          i.image        || window.CONFIG.PLACEHOLDER,
+                                chef:         seller.name    || i.sellerName || i.chef || 'Home Chef',
+                                businessName: seller.businessName || i.sellerName || i.chef || 'Home Kitchen',
+                                loc:          i.loc          || '',
+                                // Avatar: seller image → initials fallback
+                                avatar: seller.image
+                                    ? seller.image
+                                    : (i.avatar || null)
+                            };
+                        });
+                        setupThali();
+                        return;
                     }
                 }
             } catch {}
+            // Fallback
             try {
                 const res = await fetch('real-products.json');
                 if (res.ok) {
                     const data = await res.json();
                     items = pickOnePerChef(data).map(i => ({
-                        ...i, title: i.title||i.name, desc: i.desc||i.description,
-                        img:    i.img    ? (i.img.startsWith('http')    ? i.img    : `public/${i.img}`)    : window.CONFIG.PLACEHOLDER,
-                        avatar: i.avatar ? (i.avatar.startsWith('http') ? i.avatar : `public/${i.avatar}`) : window.CONFIG.PLACEHOLDER
+                        ...i,
+                        title: i.title || i.name,
+                        desc:  i.desc  || i.description,
+                        img:   i.img   ? (i.img.startsWith('http')    ? i.img    : `public/${i.img}`)    : window.CONFIG.PLACEHOLDER,
+                        avatar:i.avatar? (i.avatar.startsWith('http') ? i.avatar : `public/${i.avatar}`) : null,
+                        businessName: i.businessName || i.chef || 'Home Kitchen'
                     }));
                 }
             } catch {}
             setupThali();
         }
 
+        function _avatarSrc(item) {
+            if (item.avatar && !item.avatar.includes('CONFIG')) return item.avatar;
+            const initials = (item.businessName || item.chef || 'HK').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+            return `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=8c6a38&color=ffe&size=64&bold=true&font-size=0.45`;
+        }
+
         function setupThali() {
             const plate = document.getElementById('plate');
             plate.innerHTML = '';
-const r = window.innerWidth < 480 ? 92 : window.innerWidth < 640 ? 125 : window.innerWidth < 900 ? 145 : 180;
+            const r = window.innerWidth < 480 ? 92 : window.innerWidth < 640 ? 125 : window.innerWidth < 900 ? 145 : 180;
             items.forEach((item, i) => {
-                const el  = document.createElement('div');
+                const el = document.createElement('div');
                 el.className = 'katori';
-                el.style.transform = `rotate(${(360/items.length)*i}deg) translate(${r}px) rotate(-${(360/items.length)*i}deg)`;
-                el.innerHTML = `<div class="katori-inner"><img src="${item.img||window.CONFIG.PLACEHOLDER}" onerror="this.src='${window.CONFIG.PLACEHOLDER}'"></div>`;
+                el.style.transform = `rotate(${(360 / items.length) * i}deg) translate(${r}px) rotate(-${(360 / items.length) * i}deg)`;
+                const imgSrc = item.img || window.CONFIG.PLACEHOLDER;
+                el.innerHTML = `<div class="katori-inner"><img src="${imgSrc}" onerror="this.src='${window.CONFIG.PLACEHOLDER}'"></div>`;
                 el.onclick = () => { updateUI(i); resetTimer(); };
                 plate.appendChild(el);
             });
-            updateUI(0); resetTimer();
+            updateUI(0);
+            resetTimer();
         }
 
         function updateUI(idx) {
             currIdx = idx;
-            const item = items[idx]; if (!item) return;
-            document.getElementById('plate').style.transform = `translate(-50%, -50%) rotate(-${(360/items.length)*idx}deg)`;
+            const item = items[idx];
+            if (!item) return;
+
+            document.getElementById('plate').style.transform = `translate(-50%, -50%) rotate(-${(360 / items.length) * idx}deg)`;
+
             const center = document.getElementById('centerImg');
             center.style.opacity = 0;
-            setTimeout(() => { center.src = item.img||window.CONFIG.PLACEHOLDER; center.style.opacity = 1; }, 200);
+            setTimeout(() => {
+                center.src = item.img || window.CONFIG.PLACEHOLDER;
+                center.style.opacity = 1;
+            }, 200);
+
             document.getElementById('dishTitle').innerText  = item.title;
-            document.getElementById('dishPrice').innerText  = new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',minimumFractionDigits:0}).format(Number(String(item.price).replace(/[^0-9.]/g,''))||0);
+            document.getElementById('dishPrice').innerText  = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 }).format(Number(String(item.price).replace(/[^0-9.]/g, '')) || 0);
             document.getElementById('dishDesc').innerText   = item.desc;
-            document.getElementById('chefName').innerText   = item.chef;
-            document.getElementById('chefLoc').innerText    = item.loc;
-            document.getElementById('chefImg').src          = item.avatar||window.CONFIG.PLACEHOLDER;
-            document.querySelectorAll('.katori-inner').forEach((k,i) => {
-                if (i===idx) { k.style.transform='scale(1.25)'; k.style.borderColor='#c5a059'; k.style.boxShadow='0 0 25px rgba(197,160,89,0.6)'; }
-                else         { k.style.transform='scale(1)';    k.style.borderColor='#8c6a38'; k.style.boxShadow='0 5px 20px rgba(0,0,0,0.6)'; }
+
+            // ── Business name (big) + owner name (small) ──
+            const chefNameEl = document.getElementById('chefName');
+            const chefLocEl  = document.getElementById('chefLoc');
+            chefNameEl.innerText = item.businessName || item.chef || 'Home Kitchen';
+            chefLocEl.innerText  = item.chef && item.businessName && item.chef !== item.businessName
+                ? `by ${item.chef}${item.loc ? ' · ' + item.loc : ''}`
+                : (item.loc || '');
+
+            // ── Avatar ──
+            const chefImgEl = document.getElementById('chefImg');
+            const src = _avatarSrc(item);
+            chefImgEl.src = src;
+            chefImgEl.onerror = function() {
+                // Final fallback: colored div with initials
+                const initials = (item.businessName || 'HK').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+                this.outerHTML = `<div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#c5a059,#8c6a38);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;color:#fff;flex-shrink:0;border:2px solid rgba(197,160,89,0.5);">${initials}</div>`;
+            };
+
+            // ── Update cart button state ──
+            _updateThaliCartBtn();
+
+            document.querySelectorAll('.katori-inner').forEach((k, i) => {
+                if (i === idx) {
+                    k.style.transform  = 'scale(1.25)';
+                    k.style.borderColor= '#c5a059';
+                    k.style.boxShadow  = '0 0 25px rgba(197,160,89,0.6)';
+                } else {
+                    k.style.transform  = 'scale(1)';
+                    k.style.borderColor= '#8c6a38';
+                    k.style.boxShadow  = '0 5px 20px rgba(0,0,0,0.6)';
+                }
             });
         }
 
-        function rotateThali(dir) { let n=currIdx+dir; if(n<0)n=items.length-1; if(n>=items.length)n=0; updateUI(n); resetTimer(); }
-        function resetTimer() { clearInterval(autoRotate); autoRotate=setInterval(()=>rotateThali(1),window.innerWidth<640?7000:5000); }
-        function goToProduct() { if(items[currIdx]) window.open(`product.html?id=${items[currIdx].id}`,'_blank'); }
+        function rotateThali(dir) { let n = currIdx + dir; if (n < 0) n = items.length - 1; if (n >= items.length) n = 0; updateUI(n); resetTimer(); }
+        function resetTimer()     { clearInterval(autoRotate); autoRotate = setInterval(() => rotateThali(1), window.innerWidth < 640 ? 7000 : 5000); }
+        function goToProduct()    { if (items[currIdx]) window.open(`product.html?id=${items[currIdx].id}`, '_blank'); }
 
         window.addEventListener('scroll', () => {
-            const nav=document.getElementById('navbar');
-            if(window.scrollY>50) nav.classList.add('nav-glass'); else nav.classList.remove('nav-glass');
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) nav.classList.add('nav-glass'); else nav.classList.remove('nav-glass');
         });
         window.addEventListener('resize', () => setupThali());
+
         init();
     </script>
 
