@@ -31,18 +31,22 @@
 
     * { box-sizing:border-box; margin:0; padding:0; }
 
-    body {
-      background: var(--dark);
-      background-image:
-        radial-gradient(ellipse 100% 60% at 5% 5%, rgba(212,175,55,0.2) 0%, transparent 50%),
-        radial-gradient(ellipse 80% 50% at 95% 95%, rgba(212,175,55,0.15) 0%, transparent 50%),
-        radial-gradient(ellipse 60% 70% at 50% 50%, rgba(212,175,55,0.08) 0%, transparent 70%);
-      background-attachment: fixed;
-      min-height: 100vh;
-      color: var(--text);
-      font-family: 'Lato', sans-serif;
-      line-height: 1.6;
-    }
+   body {
+  background:
+    radial-gradient(ellipse 100% 60% at 5% 5%, rgba(212,175,55,0.2), transparent 50%),
+    radial-gradient(ellipse 80% 50% at 95% 95%, rgba(212,175,55,0.15), transparent 50%),
+    radial-gradient(ellipse 60% 70% at 50% 50%, rgba(212,175,55,0.08), transparent 70%),
+
+    linear-gradient(135deg, rgba(15,8,5,0.9), rgba(26,15,10,0.95), rgba(15,8,5,0.9)),
+
+    url('background2.png') center/cover no-repeat;
+
+  background-attachment: fixed;
+  min-height: 100vh;
+  color: var(--text);
+  font-family: 'Lato', sans-serif;
+  line-height: 1.6;
+}
 
     /* NAV */
     nav {
