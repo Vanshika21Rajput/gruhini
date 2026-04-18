@@ -41,64 +41,144 @@ async function init() {
 
 // ============ DATA FETCHING ============
 async function fetchProductData(productId) {
-    const token = localStorage.getItem('authToken');
-    const role = localStorage.getItem('userRole');
-
-    let url = `${window.CONFIG.BASE_URL}/products/${productId}`;
-
-    // 🔥 Seller/Admin preview
-    if (token && (role === "SELLER" || role === "ADMIN")) {
-        url = `${window.CONFIG.BASE_URL}/view-product/${productId}`;
-    }
-
     try {
-        const response = await fetch(url, {
-            headers: token ? {
-                Authorization: `Bearer ${token}`
-            } : {}
+        const controller = new AbortController();
+        setTimeout(() => controller.abort(), 15000);
+        const token = localStorage.getItem('authToken');
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
+
+        const response = await fetch(`${window.CONFIG.BASE_URL}/products/${productId}`, {
+            signal: controller.signal, headers
         });
 
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
+        if (response.ok) {
+            const dto = await response.json();
+            currentProduct = await normalizeFromBackend(dto);
+            
+            // Also fetch explore for recommendations
+            try {
+                const allRes = await fetch(`${window.CONFIG.BASE_URL}/explore`, { headers });
+                if (allRes.ok) {
+                    allProducts = await allRes.json();
+                }
+            } catch {}
+            return;
         }
-
-      const data = await response.json();
-currentProduct = normalizeBackendProduct(data);
-
     } catch (e) {
-        console.error("Backend fetch failed:", e);
+        console.log('Backend unavailable, falling back to local data');
+    }
 
-        // ❌ DO NOT silently fallback
-        throw e;
+    // Fallback to local JSON
+    try {
+        const localRes = await fetch('real-products.json');
+        if (localRes.ok) {
+            allProducts = await localRes.json();
+            currentProduct = allProducts.find(p => String(p.id) === String(productId));
+            if (currentProduct) currentProduct = normalizeProductData(currentProduct);
+        }
+    } catch (e) {
+        console.error('Local data fetch failed:', e);
     }
 }
 
 /**
  * Normalize local JSON data to match backend DTO structure
  */
-function normalizeBackendProduct(data) {
+function normalizeProductData(item) {
     return {
-        id: data.id,
-        title: data.name,
-        subtitle: `${data.deliveryTime || 'Fresh'} · ${data.category || 'Home Cooked'}`,
-        price: Number(data.price),
-        serves: "1",
-        image: data.image,
+        id: item.id,
+        title: item.title || item.name,
+        subtitle: item.subtitle || `${item.time || 'Fresh'} · ${item.category || 'Home Cooked'}`,
+        price: Number(String(item.price).replace(/[^0-9.]/g, '')) || 0,
+        serves: item.serves || '1',
+        image: getImgPath(item.img || item.image),
+        images: item.images || [],
         chef: {
-            name: "Home Chef",
-            avatar: window.CONFIG.PLACEHOLDER,
-            location: "India",
-            stat: "Verified Kitchen",
-            quote: data.message || "Ghar ka khana, dil se."
+            name: item.chef || 'Home Chef',
+            avatar: getImgPath(item.avatar),
+            location: item.loc || 'India',
+            since: item.since || '',
+            verified: true,
+            stat: item.trustStat || 'Verified Kitchen',
+            quote: item.quote || '"Ghar ka khana, dil se banaya."'
         },
-        description: data.description,
-        ingredients: ["Fresh Ingredients", "No Preservatives"],
-        reviews: [],
-        category: data.category,
-        status: data.status 
+        audio: item.audio || null,
+        description: item.desc || item.description || '',
+        whatYouGet: item.whatYouGet || {
+            portion: 'Single meal',
+            packaging: 'Sealed & hygienic',
+            spiceLevel: 'Medium',
+            shelfLife: 'Best consumed same day'
+        },
+        ingredients: item.ingredients || ['Home Recipe', 'No Preservatives', 'Fresh Ingredients'],
+        exclusions: item.exclusions || ['Preservatives', 'Artificial Colors', 'MSG / Ajinomoto'],
+        recommends: [],
+        reviews: item.reviews || [
+            { name: 'Rohit', city: 'Delhi', rating: 5, text: 'Bilkul ghar jaisa taste.' },
+            { name: 'Sneha', city: 'Mumbai', rating: 5, text: 'Meri mummy ko bhi pasand aaya!' }
+        ],
+        stock: item.stock || 10,
+        category: item.category || 'Meals'
     };
 }
-// ============ RENDERING ============
+
+async function normalizeFromBackend(dto) {
+    // Fetch seller details using sellerId from ProductDto
+    let chefName = 'Home Kitchen', ownerName = '', avatar = window.CONFIG.PLACEHOLDER;
+    let location = 'India', quote = '"Ghar ka khana, dil se banaya."';
+
+    if (dto.sellerId) {
+        try {
+            const token = localStorage.getItem('authToken');
+            const hdrs = token ? { Authorization: `Bearer ${token}` } : {};
+            const res = await fetch(`${window.CONFIG.BASE_URL}/get-seller/${dto.sellerId}`, { headers: hdrs });
+            if (res.ok) {
+                const s = await res.json();
+                chefName  = s.businessName || s.name || chefName;
+                ownerName = s.name || '';
+                avatar    = s.image || avatar;
+                if (s.address) {
+                    location = [s.address.city, s.address.state].filter(Boolean).join(', ') || location;
+                }
+                quote = s.Description || s.description || quote;
+            }
+        } catch {}
+    }
+
+    return {
+        id:          dto.id,
+        title:       dto.name || 'Dish',
+        subtitle:    `${dto.deliveryTime || 'Fresh'} · ${dto.category || 'Homemade'}`,
+        price:       Number(dto.price) || 0,
+        serves:      '1–2',
+        image:       dto.image || window.CONFIG.PLACEHOLDER,
+        images:      [],
+        chef: {
+            name:     chefName,
+            avatar:   avatar,
+            location: location,
+            since:    '',
+            verified: dto.verified || false,
+            stat:     ownerName ? `by ${ownerName}` : 'Verified Kitchen',
+            quote:    quote
+        },
+        audio:       null,
+        description: dto.description || '',
+        whatYouGet: {
+            portion:    'Single serving',
+            packaging:  'Sealed & hygienic',
+            spiceLevel: 'Medium',
+            shelfLife:  dto.deliveryTime || 'Same day'
+        },
+        ingredients: ['Home Recipe', 'No Preservatives', 'Fresh Ingredients'],
+        exclusions:  ['Preservatives', 'Artificial Colors', 'MSG / Ajinomoto'],
+        recommends:  [],
+        reviews:     [],
+        stock:       dto.stock || 0,
+        category:    dto.category || 'Meals'
+    };
+}
+
 function renderProduct(product) {
     // Hero Image
     const heroImg = document.getElementById('heroImg');
@@ -134,7 +214,7 @@ function renderProduct(product) {
     document.getElementById('dishDescription').textContent = product.description;
 
     // Details Grid (compact 4-column)
-    const wyg = product.whatYouGet;
+    const wyg = product.whatYouGet || {};
     const detailPortion = document.getElementById('detailPortion');
     const detailSpice = document.getElementById('detailSpice');
     const detailPackaging = document.getElementById('detailPackaging');
@@ -152,11 +232,7 @@ function renderProduct(product) {
 
     // Featured Review (single, prominent)
     renderFeaturedReview(product.reviews);
-if (currentProduct.status === "PENDING") {
-    const btn = document.getElementById('addToPlateBtn');
-    btn.disabled = true;
-    btn.innerText = "Under Review ⏳";
-}
+
     // Voice note (optional - elements may not exist in new design)
     const voiceSection = document.getElementById('voiceNoteSection');
     const chefsNoteSection = document.getElementById('chefsNoteSection');
@@ -259,7 +335,7 @@ async function addToCart() {
                 'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify({
-                productId: currentProduct.id,
+                productid: currentProduct.id,
                 quantity: 1
             })
         });
@@ -323,7 +399,7 @@ async function addRecommendToCart(productId) {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ productId, quantity: 1 })
+            body: JSON.stringify({ productid, quantity: 1 })
         });
 
         showToast('Added to plate!', 'success');
