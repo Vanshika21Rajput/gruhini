@@ -190,18 +190,13 @@ async function normalizeFromBackend(dto) {
 
 function getImageUrl(img) {
     if (!img) return null;
-    if (img.startsWith('http')) return img;
-    if (img.startsWith('/')) return img;
-    const encodedPath = img.split('/').map(p => encodeURIComponent(p)).join('/');
-    return `public/${encodedPath}`;
+    // Already works for Cloudinary URLs, relative paths, etc.
+    // No processing needed — just return as-is
+    return img;
 }
 
 function getAvatarUrl(avatar, name) {
-    if (avatar && avatar.startsWith('http')) return avatar;
-    if (avatar) {
-        const encodedPath = avatar.split('/').map(p => encodeURIComponent(p)).join('/');
-        return `public/${encodedPath}`;
-    }
+    if (avatar) return avatar;
     // Always return ui-avatars as fallback — never blank
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(name || 'HK')}&background=8c6a38&color=fff&size=150&bold=true`;
 }
