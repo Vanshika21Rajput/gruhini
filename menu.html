@@ -728,6 +728,15 @@
             // Update all navbar badges
             updateAllCartBadges();
 
+            // Desktop cart toast — find the item from allItems
+            if (typeof window._showCartToast === 'function') {
+                const toastItem = allItems.find(i => String(i.id) === strId);
+                if (toastItem) window._showCartToast(
+                    toastItem.name || toastItem.title || 'Dish',
+                    toastItem.image || toastItem.img || ''
+                );
+            }
+
         } catch(e) {
             console.error('Add to cart error:', e);
             btn.innerHTML = 'Error ✕';
@@ -797,7 +806,7 @@
             const price=Number(String(item.price).replace(/[^0-9.]/g,''))||0;
             return `<a href="product.html?id=${item.id}" class="flex items-center gap-4 p-4 bg-white/5 rounded-xl hover:bg-amber-500/10 transition-all border border-transparent hover:border-amber-500/30">
                 <img src="${img}" loading="lazy" class="w-16 h-16 rounded-lg object-cover">
-                <div class="flex-1"><h4 class="font-cinzel text-white font-bold">${item.name||item.title}</h4><p class="text-xs text-gray-400">By ${window._sellerCache[String(item.sellerId)]?.businessName || item.sellerName || 'Home Chef'} · ${item.loc||''}</p>
+                <div class="flex-1"><h4 class="font-cinzel text-white font-bold">${item.name||item.title}</h4><p class="text-xs text-gray-400">By ${item.sellerName||item.chef||'Home Chef'} · ${item.loc||''}</p>
 </p></div>
                 <span class="font-cinzel text-amber-500 font-bold">₹${price}</span>
             </a>`;
@@ -861,6 +870,113 @@
             <a href="orders.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-gold transition-colors"><i data-lucide="package" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-wide">Orders</span></a>
         </div>
     </nav>
+
+    <!-- ═══ DESKTOP CART TOAST (shows when item added) ═══ -->
+    <div id="cartToast" style="
+      position: fixed;
+      bottom: -120px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999;
+      transition: bottom 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+      pointer-events: none;
+      display: none;
+    " class="lg:block hidden">
+      <div style="
+        background: linear-gradient(135deg, #1a0f0a, #2c1810);
+        border: 1px solid rgba(197,160,89,0.5);
+        border-radius: 100px;
+        padding: 12px 20px 12px 14px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(197,160,89,0.15), inset 0 1px 0 rgba(255,255,255,0.06);
+        min-width: 320px;
+        max-width: 460px;
+        pointer-events: all;
+      ">
+        <!-- Dish image -->
+        <div style="
+          width: 46px; height: 46px; border-radius: 50%;
+          overflow: hidden; border: 2px solid rgba(197,160,89,0.5);
+          flex-shrink: 0; background: #0f0805;
+        ">
+          <img id="cartToastImg" src="" style="width:100%;height:100%;object-fit:cover;" alt="">
+        </div>
+        <!-- Text -->
+        <div style="flex: 1; min-width: 0;">
+          <div style="font-size:10px;color:rgba(197,160,89,0.7);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:2px;">Added to cart ✓</div>
+          <div id="cartToastName" style="font-family:'Cinzel',serif;font-size:13px;font-weight:700;color:#f5f0e8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
+        </div>
+        <!-- Count bubble -->
+        <div id="cartToastCount" style="
+          background: rgba(197,160,89,0.15);
+          border: 1px solid rgba(197,160,89,0.3);
+          border-radius: 20px;
+          padding: 3px 10px;
+          font-size: 11px;
+          color: #c5a059;
+          font-weight: 700;
+          white-space: nowrap;
+          flex-shrink: 0;
+        ">0 items</div>
+        <!-- CTA button -->
+        <a href="cart.html" style="
+          background: linear-gradient(135deg, #c5a059, #8c6a38);
+          color: #0f0805;
+          font-family: 'Cinzel', serif;
+          font-size: 11px;
+          font-weight: 700;
+          padding: 10px 18px;
+          border-radius: 50px;
+          text-decoration: none;
+          white-space: nowrap;
+          flex-shrink: 0;
+          letter-spacing: 0.04em;
+          transition: opacity 0.2s;
+        " onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+          Go to Cart →
+        </a>
+      </div>
+    </div>
+
+    <script>
+    (function() {
+      let _toastTimer = null;
+
+      window._showCartToast = function(dishName, dishImg) {
+        const toast   = document.getElementById('cartToast');
+        const nameEl  = document.getElementById('cartToastName');
+        const imgEl   = document.getElementById('cartToastImg');
+        const countEl = document.getElementById('cartToastCount');
+        if (!toast) return;
+
+        // Update content
+        nameEl.textContent = dishName || 'Dish';
+        imgEl.src = dishImg || '';
+        imgEl.style.display = dishImg ? 'block' : 'none';
+
+        // Count total items in cart
+        const total = window._cartQty
+          ? Object.values(window._cartQty).reduce((a, b) => a + b, 0)
+          : 1;
+        countEl.textContent = total + (total === 1 ? ' item' : ' items');
+
+        // Slide up
+        toast.style.display = 'block';
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => { toast.style.bottom = '28px'; });
+        });
+
+        // Auto-dismiss after 4s
+        clearTimeout(_toastTimer);
+        _toastTimer = setTimeout(() => {
+          toast.style.bottom = '-120px';
+          setTimeout(() => { toast.style.display = 'none'; }, 460);
+        }, 4000);
+      };
+    })();
+    </script>
 
     <script>if (typeof lucide !== 'undefined') lucide.createIcons();</script>
 </body>
