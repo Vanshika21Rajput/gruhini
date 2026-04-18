@@ -729,7 +729,8 @@
             const price=Number(String(item.price).replace(/[^0-9.]/g,''))||0;
             return `<a href="product.html?id=${item.id}" class="flex items-center gap-4 p-4 bg-white/5 rounded-xl hover:bg-amber-500/10 transition-all border border-transparent hover:border-amber-500/30">
                 <img src="${img}" loading="lazy" class="w-16 h-16 rounded-lg object-cover">
-                <div class="flex-1"><h4 class="font-cinzel text-white font-bold">${item.name||item.title}</h4><p class="text-xs text-gray-400">By ${item.chef||'Home Chef'} · ${item.loc||''}</p></div>
+                <div class="flex-1"><h4 class="font-cinzel text-white font-bold">${item.name||item.title}</h4><p class="text-xs text-gray-400">By ${item.sellerName||item.chef||'Home Chef'} · ${item.loc||''}</p>
+</p></div>
                 <span class="font-cinzel text-amber-500 font-bold">₹${price}</span>
             </a>`;
         }).join('');
