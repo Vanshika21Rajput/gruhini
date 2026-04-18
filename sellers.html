@@ -458,8 +458,12 @@
             // Map products to construct/update sellers
             if (Array.isArray(products)) {
                 products.forEach(item => {
-                    const name = item.chef || (item.seller ? item.seller.businessName : null);
-                    if (!name) return;
+                    let name = item.chef || (item.seller ? item.seller.businessName : null) || item.sellerName || item.brand;
+                    if (!name) {
+                        // Sometimes the product itself acts as the seller locally, or the data is malformed
+                        // Ensure we don't completely drop products that have no chef name attached
+                        name = "Gruhani Chef"; 
+                    }
 
                     if (!sellersMap.has(name)) {
                         sellersMap.set(name, {
@@ -480,10 +484,10 @@
                     const seller = sellersMap.get(name);
                     
                     if (seller.loc === 'Home Kitchen' && (item.loc || (item.seller ? item.seller.location : null))) {
-                        seller.loc = item.loc || item.seller.location;
+                        seller.loc = item.loc || (item.seller ? item.seller.location : null);
                     }
                     if (!seller.avatar && (item.avatar || (item.seller ? item.seller.avatar : null))) {
-                        seller.avatar = item.avatar || item.seller.avatar;
+                        seller.avatar = item.avatar || (item.seller ? item.seller.avatar : null);
                     }
 
                     seller.dishCount++;
