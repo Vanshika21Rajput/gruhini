@@ -440,19 +440,24 @@
             { id: "3", title: "Mawa Slice Cake", price: "₹250", chef: "Sakshi Tolani", loc: "Pune, MH", desc: "Rich Parsi-style cake", img: "Sakshi Tolani/Sakshi Tolani/Mawa Slice Cakes as Gifts.jpeg", avatar: "Sakshi Tolani/Sakshi Tolani/Owner pic.jpeg", category: "Desserts" },
             { id: "4", title: "Herbal Bath Soap", price: "₹120", chef: "Dolly Aunty", loc: "Mumbai, MH", desc: "Handmade organic", img: "dolly aunty/herbal soap.jpeg", avatar: "dolly aunty/Owner pic.jpeg", category: "Crafts" }
         ];
+
         async function loadSellers() {
             try {
-                const controller = new AbortController();
-                const timeout = setTimeout(() => controller.abort(), 10000);
-                const res = await fetch(`${BASE_URL}/get-allSellers`, { signal: controller.signal });
-                clearTimeout(timeout);
-
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data && data.length > 0) {
-                        processData(data);
-                        return;
-                    }
+                // Fetch both products and sellers simultaneously
+                const [exploreRes, sellersRes] = await Promise.all([
+                    fetch(`${BASE_URL}/explore`).catch(() => ({ ok: false, json: () => [] })),
+                    fetch(`${BASE_URL}/get-allSellers`).catch(() => ({ ok: false, json: () => [] }))
+                ]);
+                
+                let products = [];
+                let backendSellers = [];
+                
+                if (exploreRes.ok) products = await exploreRes.json();
+                if (sellersRes.ok) backendSellers = await sellersRes.json();
+                
+                if (products.length > 0 || backendSellers.length > 0) {
+                    processCombinedData(products, backendSellers);
+                    return;
                 }
                 throw new Error('Backend empty');
             } catch (e) {
@@ -467,40 +472,90 @@
                 if (res.ok) {
                     const data = await res.json();
                     if (data && data.length > 0) {
-                        processData(data);
+                        processCombinedData(data, []);
                         return;
                     }
                 }
             } catch (e) {
                 console.warn('Local JSON failed, using MOCK_DATA');
             }
-            // Ultimate fallback: use inline MOCK_DATA
             console.log('Using inline MOCK_DATA as fallback');
-            processData(MOCK_DATA);
+            processCombinedData(MOCK_DATA, []);
         }
 
-        function processData(sellers) {
+        function processCombinedData(products, backendSellers) {
             const sellersMap = new Map();
 
-            sellers.forEach(seller => {
-                const name = seller.businessName || seller.chef || seller.name;
-                if (!name) return;
-
-                if (!sellersMap.has(name)) {
-                    sellersMap.set(name, {
-                        name: name,
-                        loc: seller.loc || seller.location || 'Home Kitchen',
-                        avatar: seller.profileImageUrl || seller.avatar,
-                        specialty: (seller.category && seller.category.length > 0) ? seller.category[0] : (seller.specialty || 'Home Cooked'),
-                        dishCount: 1,
-                        topDish: { name: name + ' Special' },
+            // 1. Add all registered sellers
+            if (Array.isArray(backendSellers)) {
+                backendSellers.forEach(s => {
+                    if (!s.businessName) return;
+                    sellersMap.set(s.businessName, {
+                        name: s.businessName,
+                        loc: s.location || 'Home Kitchen',
+                        avatar: s.profileImageUrl,
+                        specialty: (s.category && s.category.length > 0) ? s.category[0] : 'Home Cooked',
+                        bio: s.bio || '',
+                        isApproved: true,
+                        dishCount: 0,
+                        topDish: null,
                         topDishes: []
                     });
-                }
-            }); document.getElementById('statKitchens').textContent = sellersMap.size;
-            document.getElementById('statDishes').textContent = sellers.length; render([...sellersMap.values()]);
-        }function
-            render(sellers) {
+                });
+            }
+
+            // 2. Map products to their respective sellers
+            if (Array.isArray(products)) {
+                products.forEach(item => {
+                    const name = item.chef || item.seller?.businessName;
+                    if (!name) return;
+
+                    if (!sellersMap.has(name)) {
+                        sellersMap.set(name, {
+                            name: name,
+                            loc: item.loc || item.seller?.location || 'Home Kitchen',
+                            avatar: item.avatar || item.seller?.avatar,
+                            specialty: item.category || 'Home Cooked',
+                            bio: '',
+                            isApproved: true,
+                            dishCount: 0,
+                            topDish: null,
+                            topDishes: []
+                        });
+                    }
+                    
+                    const seller = sellersMap.get(name);
+                    
+                    if (seller.loc === 'Home Kitchen' && (item.loc || item.seller?.location)) {
+                        seller.loc = item.loc || item.seller?.location;
+                    }
+                    if (!seller.avatar && (item.avatar || item.seller?.avatar)) {
+                        seller.avatar = item.avatar || item.seller?.avatar;
+                    }
+
+                    seller.dishCount++;
+                    if (!seller.topDish) seller.topDish = item;
+                    if (seller.topDishes.length < 3) {
+                        seller.topDishes.push({
+                            name: item.title || item.name, 
+                            img: item.img || item.image
+                        });
+                    }
+                });
+            }
+
+            document.getElementById('statKitchens').textContent = sellersMap.size;
+            document.getElementById('statDishes').textContent = Array.isArray(products) ? products.length : 0;
+            
+            const sellersArray = [...sellersMap.values()];
+            loadedSellers = sellersArray;
+            
+            render(sellersArray);
+            renderFeaturedSeller(sellersArray);
+            renderStories(sellersArray);
+        }
+        
+        function render(sellers) {
             const grid = document.getElementById('grid');
             document.getElementById('loading').classList.add('hidden'); grid.classList.remove('hidden'); grid.innerHTML = '';
             if (sellers.length === 0) { document.getElementById('empty').classList.remove('hidden'); return; }
@@ -602,26 +657,7 @@
             return `public/${encodedPath}`;
         }
 
-        // Fetch sellers data for dynamic sections (Featured Seller, Kitchen Stories)
-        async function loadDynamicSections() {
-            try {
-                const res = await fetch(`${BASE_URL}/sellers`);
-                if (res.ok) {
-                    const sellers = await res.json();
-                    loadedSellers = sellers;
-                    renderFeaturedSeller(sellers);
-                    renderStories(sellers);
-                    return;
-                }
-            } catch (e) {
-                console.log('Sellers endpoint not available:', e.message);
-            }
-            // Fallback: Show empty state for stories
-            renderStories([]);
-        }
-
         // Initialize
-        loadDynamicSections();
         loadSellers();
 
         // Initialize Lucide icons
