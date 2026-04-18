@@ -81,35 +81,6 @@
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
         }
 
-        .glass:hover {
-            transform: translateY(-4px);
-            border-color: rgba(197, 160, 89, 0.5);
-        }
-
-        /* Filter Buttons */
-        .filter-btn {
-            padding: 0.5rem 1.5rem;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(197, 160, 89, 0.3);
-            color: white;
-            border-radius: 9999px;
-            font-size: 0.875rem;
-            font-weight: bold;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-
-        .filter-btn:hover {
-            background: rgba(197, 160, 89, 0.2);
-            border-color: rgba(197, 160, 89, 0.6);
-        }
-
-        .filter-btn.active {
-            background: linear-gradient(135deg, #c5a059 0%, #a0824a 100%);
-            border-color: #c5a059;
-            box-shadow: 0 4px 12px rgba(197, 160, 89, 0.4);
-        }
-
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -324,7 +295,7 @@
         </div>
     </section>
 
-    <!-- SELLERS GRID -->
+    <!-- SELLERS GRID AND SEARCH -->
     <section class="max-w-6xl mx-auto px-4 pb-10 sm:pb-14">
         <h2 class="text-center text-gray-400 text-sm sm:text-base mb-6 sm:mb-8 flex items-center justify-center gap-3">
             <span class="w-8 sm:w-12 h-px bg-gradient-to-r from-transparent to-gold/50"></span>
@@ -332,6 +303,24 @@
                     class="w-4 h-4 text-gold"></i> हमारी रसोइयाँ</span>
             <span class="w-8 sm:w-12 h-px bg-gradient-to-l from-transparent to-gold/50"></span>
         </h2>
+
+        <!-- Search Bar -->
+        <div class="max-w-2xl mx-auto mb-6">
+            <div class="relative">
+                <input type="text" id="sellerSearch" onkeyup="searchSellers()" 
+                    placeholder="Search by name, cuisine, or location..."
+                    class="w-full px-6 py-4 pl-14 bg-white/10 backdrop-blur-sm border border-gold/30 rounded-full text-white placeholder-gray-400 focus:outline-none focus:border-gold transition">
+                <i data-lucide="search" class="w-5 h-5 text-gray-400 absolute left-5 top-1/2 -translate-y-1/2"></i>
+            </div>
+        </div>
+
+        <!-- Filter Buttons -->
+        <div class="flex justify-center gap-3 mb-8 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide" id="filterButtons">
+            <button onclick="filterSellers('all', event)" class="filter-btn active snap-start flex-shrink-0" data-filter="all">All Chefs</button>
+            <button onclick="filterSellers('veg', event)" class="filter-btn snap-start flex-shrink-0" data-filter="veg">🥗 Veg Only</button>
+            <button onclick="filterSellers('nonveg', event)" class="filter-btn snap-start flex-shrink-0" data-filter="nonveg">🍗 Non-Veg</button>
+            <button onclick="filterSellers('Thalis', event)" class="filter-btn snap-start flex-shrink-0" data-filter="Thalis">🥘 Thalis</button>
+        </div>
 
         <div id="loading" class="text-center py-12 sm:py-16 text-gray-400 font-hindi">
             <div class="w-10 h-10 border-4 border-gold/30 border-t-gold rounded-full animate-spin mx-auto mb-4"></div>
@@ -378,147 +367,49 @@
 
     <script>
         const BASE_URL = window.CONFIG?.BASE_URL || 'https://gruhani-backend.onrender.com';
+        
+        let allSellers = [];
+        let currentFilter = 'all';
 
-        // Global sellers data for dynamic rendering
-        let loadedSellers = [];
-
-        // Render Featured Seller (first seller with most dishes OR random)
-        function renderFeaturedSeller(sellers) {
-            if (!sellers || sellers.length === 0) return;
-
-            // Pick the seller with most dishes or first one
-            const featured = sellers.reduce((best, s) =>
-                (s.dishCount > (best.dishCount || 0)) ? s : best, sellers[0]);
-
-            const section = document.getElementById('featuredSellerSection');
-            const card = document.getElementById('featuredSellerCard');
-
-            const avatarUrl = featured.avatar ||
-                `https://ui-avatars.com/api/?name=${encodeURIComponent(featured.name)}&background=8c6a38&color=fff&size=150`;
-
-            const years = featured.yearsExperience || 1;
-            const bio = featured.bio || 'घर का खाना, प्यार से बना। हमारी रसोई में आपका स्वागत है।';
-            const categories = featured.categories || ['Home Cooked'];
-
-            card.innerHTML = `
-    <div class="flex flex-col md:flex-row items-center gap-6">
-        <div class="relative">
-            <img src="${avatarUrl}" alt="${featured.name}"
-                class="w-28 h-28 md:w-36 md:h-36 rounded-full object-cover border-4 border-gold/50 shadow-xl"
-                onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(featured.name)}&background=8c6a38&color=fff&size=150'">
-            ${featured.isApproved ? `
-            <div
-                class="absolute -bottom-2 -right-2 bg-green-500 text-white text-[8px] font-bold px-2 py-1 rounded-full">
-                ✓ VERIFIED
-            </div>` : ''}
-        </div>
-        <div class="flex-1 text-center md:text-left">
-            <h1 class="text-4xl md:text-5xl font-cinzel text-white font-bold mb-3 tracking-tight">Gruhani Kitchens</h1>
-        <p class="text-gray-300 max-w-2xl mx-auto mb-8">Discover verified home chefs in your neighborhood</p>
-
-        <!-- Search Bar -->
-        <div class="max-w-2xl mx-auto mb-8">
-            <div class="relative">
-                <input type="text" id="sellerSearch" onkeyup="searchSellers()" 
-                    placeholder="Search by name, cuisine, or location..."
-                    class="w-full px-6 py-4 pl-14 bg-white/10 backdrop-blur-sm border-2 border-gold-main/30 rounded-full text-white placeholder-gray-400 focus:outline-none focus:border-gold-main transition">
-                <i data-lucide="search" class="w-5 h-5 text-gray-400 absolute left-5 top-1/2 -translate-y-1/2"></i>
-            </div>
-        </div>
-
-        <!-- Filter Buttons -->
-        <div class="flex gap-3 mb-10 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide" 
-             id="filterButtons" style="-webkit-overflow-scrolling: touch;">
-            <button onclick="filterSellers('all', event)" class="filter-btn active snap-start flex-shrink-0" data-filter="all">
-                All Chefs
-            </button>
-            <button onclick="filterSellers('veg', event)" class="filter-btn snap-start flex-shrink-0" data-filter="veg">
-                🥗 Veg Only
-            </button>
-            <button onclick="filterSellers('nonveg', event)" class="filter-btn snap-start flex-shrink-0" data-filter="nonveg">
-                🍗 Non-Veg
-            </button>
-            <button onclick="filterSellers('North Indian', event)" class="filter-btn snap-start flex-shrink-0" data-filter="North Indian">
-                🫓 North Indian
-            </button>
-            <button onclick="filterSellers('South Indian', event)" class="filter-btn snap-start flex-shrink-0" data-filter="South Indian">
-                🍛 South Indian
-            </button>
-        </div>
-
-        <!-- Seller Grid -->:justify-start gap-1"><i data-lucide="trophy" class="w-4 h-4"></i> ${years}+ Years · ${featured.dishCount} Dishes · ${featured.location}
-            </p>
-            <p class="font-hindi text-gray-300 text-sm mb-4 italic">"${bio}"</p>
-            <div class="flex flex-wrap gap-2 justify-center md:justify-start">
-                ${categories.slice(0, 3).map(cat =>
-                `<span
-                    class="bg-amber-500/20 text-amber-400 text-[10px] font-bold px-3 py-1 rounded-full">${cat}</span>`
-            ).join('')}
-            </div>
-        </div>
-        <a href="seller-profile.html?id=${seller.id}"
-            class="bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white font-bold py-3 px-6 rounded-full text-sm transition-all shadow-lg">
-            Profile देखें →
-        </a>
-    </div>
-    `;
-
-            section.classList.remove('hidden');
+        // Helper Image Functions
+        function getAvatarUrl(avatar, name) {
+            if (!avatar) return `https://ui-avatars.com/api/?name=${encodeURIComponent(name || 'Chef')}&background=d97706&color=fff&size=200&bold=true`;
+            if (avatar.startsWith('http')) return avatar;
+            const encodedPath = avatar.split('/').map(part => encodeURIComponent(part)).join('/');
+            return `public/${encodedPath}`;
         }
 
-        // Render Kitchen Stories from sellers bio data
-        function renderStories(sellers) {
-            const container = document.getElementById('storiesSection');
-
-            if (!sellers || sellers.length === 0) {
-                container.innerHTML = `<p class="text-center text-gray-500 font-hindi col-span-2">जल्द ही और कहानियाँ आएंगी...</p>`;
-                return;
-            }
-
-            // Take first 4 sellers who have bio
-            const stories = sellers.filter(s => s.bio).slice(0, 4);
-
-            if (stories.length === 0) {
-                container.innerHTML = `<p class="text-center text-gray-500 font-hindi col-span-2">जल्द ही और कहानियाँ आएंगी...</p>`;
-                return;
-            }
-
-            container.innerHTML = stories.map((seller, i) => `
-                <div class="story-card rounded-xl p-5 animate-in" style="animation-delay: ${i * 100}ms">
-                    <p class="font-hindi text-gray-300 text-sm italic mb-3">"${seller.bio}"</p>
-                    <div class="flex items-center justify-between">
-                        <span class="font-bold text-white text-sm">${seller.name}</span>
-                        <span class="text-[10px] text-gold uppercase tracking-widest">${seller.categories?.[0] || 'Home Cooked'}</span>
-                    </div>
-                </div>
-            `).join('');
+        function getImageUrl(img) {
+            if (!img) return '';
+            if (img.startsWith('http') || img.startsWith('data:')) return img;
+            const encodedPath = img.split('/').map(part => encodeURIComponent(part)).join('/');
+            return `public/${encodedPath}`;
         }
 
-        // MOCK_DATA fallback when all sources fail
-        const MOCK_DATA = [
-            { id: "1", title: "Dal Bati Churma", price: "₹350", chef: "Neelam Joshi", loc: "Indore, MP", desc: "Authentic Rajasthani", img: "Neelam Joshi/Daal Bhati Churma.jpeg", avatar: "Neelam Joshi/Owner pic.png", category: "Thalis" },
-            { id: "2", title: "Mini Dry Samosa", price: "₹120", chef: "Manju Vijayvargiye", loc: "Bhopal, MP", desc: "Crispy dry samosas", img: "Manju vijayvargiye/Chote Samose.jpeg", avatar: "Manju vijayvargiye/OWNER PIC.jpeg", category: "Snacks" },
-            { id: "3", title: "Mawa Slice Cake", price: "₹250", chef: "Sakshi Tolani", loc: "Pune, MH", desc: "Rich Parsi-style cake", img: "Sakshi Tolani/Sakshi Tolani/Mawa Slice Cakes as Gifts.jpeg", avatar: "Sakshi Tolani/Sakshi Tolani/Owner pic.jpeg", category: "Desserts" },
-            { id: "4", title: "Herbal Bath Soap", price: "₹120", chef: "Dolly Aunty", loc: "Mumbai, MH", desc: "Handmade organic", img: "dolly aunty/herbal soap.jpeg", avatar: "dolly aunty/Owner pic.jpeg", category: "Crafts" }
-        ];
-
+        // --- Logic starts ---
         async function loadSellers() {
             try {
-                const controller = new AbortController();
-                const timeout = setTimeout(() => controller.abort(), 10000);
-                const res = await fetch(`${BASE_URL}/explore`, { signal: controller.signal });
-                clearTimeout(timeout);
+                const token = localStorage.getItem('authToken');
+                const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
 
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data && data.length > 0) {
-                        processData(data);
-                        return;
-                    }
+                const [exploreRes, sellersRes] = await Promise.all([
+                    fetch(`${BASE_URL}/explore`, { headers }).catch(() => ({ ok: false, json: () => [] })),
+                    fetch(`${BASE_URL}/sellers`, { headers }).catch(() => ({ ok: false, json: () => [] })) // Check /sellers
+                ]);
+                
+                let products = [];
+                let backendSellers = [];
+                
+                if (exploreRes.ok) products = await exploreRes.json();
+                if (sellersRes.ok) backendSellers = await sellersRes.json();
+                
+                if (products.length > 0 || backendSellers.length > 0) {
+                    processCombinedData(products, backendSellers);
+                    return;
                 }
-                throw new Error('Backend empty');
+                throw new Error('Backend returns empty arrays');
             } catch (e) {
-                console.warn('Using local data:', e.message);
+                console.warn('Fallback to local json:', e.message);
                 loadFallback();
             }
         }
@@ -529,213 +420,271 @@
                 if (res.ok) {
                     const data = await res.json();
                     if (data && data.length > 0) {
-                        processData(data);
+                        processCombinedData(data, []);
                         return;
                     }
                 }
-            } catch (e) {
-                console.warn('Local JSON failed, using MOCK_DATA');
-            }
-            // Ultimate fallback: use inline MOCK_DATA
-            console.log('Using inline MOCK_DATA as fallback');
-            processData(MOCK_DATA);
+            } catch (e) { }
+            console.log('No data available');
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('empty').classList.remove('hidden');
         }
 
-        function processData(products) {
+        function processCombinedData(products, backendSellers) {
             const sellersMap = new Map();
 
-            products.forEach(item => {
-                const name = item.chef || item.seller?.businessName;
-                if (!name) return;
-
-                if (!sellersMap.has(name)) {
+            // Map backend Sellers
+            if (Array.isArray(backendSellers)) {
+                backendSellers.forEach(s => {
+                    const name = s.businessName || s.name;
+                    if (!name) return;
                     sellersMap.set(name, {
-                        id: item.sellerId,  // ← IMPORTANT: Store sellerId for correct linking
+                        id: s.id || name,
                         name: name,
-                        loc: item.loc || item.seller?.location || 'Home Kitchen',
-                        avatar: item.avatar || item.seller?.avatar,
-                        specialty: item.category || 'Home Cooked',
+                        loc: s.location || (s.address ? s.address.city : null) || 'Home Kitchen',
+                        avatar: s.profileImageUrl || s.image,
+                        specialty: (s.categories && s.categories.length > 0) ? s.categories[0] : 'Home Cooked',
+                        bio: s.Description || s.description || s.bio || '',
+                        isApproved: s.approved !== false,
                         dishCount: 0,
                         topDish: null,
-                        topDishes: []
+                        topDishes: [],
+                        isVeg: true
                     });
-                }
-                const seller = sellersMap.get(name);
-                seller.dishCount++;
-                if (!seller.topDish) seller.topDish = item;
-                if (seller.topDishes.length < 3) {
-                    seller.topDishes.push({
-                        name: item.title || item.name, img: item.img ||
-                            item.image
-                    });
-                }
-            }); document.getElementById('statKitchens').textContent = sellersMap.size;
-            document.getElementById('statDishes').textContent = products.length; render([...sellersMap.values()]);
-        } function
-            render(sellers) {
+                });
+            }
+
+            // Map products to construct/update sellers
+            if (Array.isArray(products)) {
+                products.forEach(item => {
+                    const name = item.chef || (item.seller ? item.seller.businessName : null);
+                    if (!name) return;
+
+                    if (!sellersMap.has(name)) {
+                        sellersMap.set(name, {
+                            id: item.sellerId || name,
+                            name: name,
+                            loc: item.loc || (item.seller ? item.seller.location : null) || 'Home Kitchen',
+                            avatar: item.avatar || (item.seller ? item.seller.avatar : null) || item.sellerAvatar,
+                            specialty: item.category || 'Home Cooked',
+                            bio: '',
+                            isApproved: true,
+                            dishCount: 0,
+                            topDish: null,
+                            topDishes: [],
+                            isVeg: true
+                        });
+                    }
+                    
+                    const seller = sellersMap.get(name);
+                    
+                    if (seller.loc === 'Home Kitchen' && (item.loc || (item.seller ? item.seller.location : null))) {
+                        seller.loc = item.loc || item.seller.location;
+                    }
+                    if (!seller.avatar && (item.avatar || (item.seller ? item.seller.avatar : null))) {
+                        seller.avatar = item.avatar || item.seller.avatar;
+                    }
+
+                    seller.dishCount++;
+                    if (!seller.topDish) seller.topDish = item;
+                    if (seller.topDishes.length < 3) {
+                        seller.topDishes.push({
+                            name: item.title || item.name, 
+                            img: item.img || item.image || item.imageUrl
+                        });
+                    }
+                });
+            }
+
+            allSellers = [...sellersMap.values()];
+            console.log("Processed Sellers count:", allSellers.length);
+            
+            const statK = document.getElementById('statKitchens');
+            const statD = document.getElementById('statDishes');
+            if (statK) statK.textContent = allSellers.length;
+            if (statD) statD.textContent = Array.isArray(products) ? products.length : 0;
+            
+            renderFeaturedSeller(allSellers);
+            renderStories(allSellers);
+            applyFilters(allSellers); // This handles the grid rendering
+        }
+
+        function renderFeaturedSeller(sellers) {
+            const section = document.getElementById('featuredSellerSection');
+            const card = document.getElementById('featuredSellerCard');
+            if (!section || !card) return;
+
+            if (!sellers || sellers.length === 0) {
+                section.classList.add('hidden');
+                return;
+            }
+
+            const featured = sellers.reduce((best, s) => (s.dishCount > (best.dishCount || 0)) ? s : best, sellers[0]);
+            const avatarUrl = getAvatarUrl(featured.avatar, featured.name);
+            const bio = featured.bio || 'घर का खाना, प्यार से बना। हमारी रसोई में आपका स्वागत है।';
+            const cat = featured.specialty || 'Home Cooked';
+
+            card.innerHTML = `
+            <div class="flex flex-col md:flex-row items-center gap-6">
+                <div class="relative">
+                    <img src="${avatarUrl}" alt="${featured.name}" class="w-28 h-28 md:w-36 md:h-36 rounded-full object-cover border-4 border-gold/50 shadow-xl" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(featured.name)}&background=8c6a38&color=fff&size=150'">
+                    ${featured.isApproved ? '<div class="absolute -bottom-2 -right-2 bg-green-500 text-white text-[8px] font-bold px-2 py-1 rounded-full">✓ VERIFIED</div>' : ''}
+                </div>
+                <div class="flex-1 text-center md:text-left">
+                    <h3 class="font-cinzel text-xl sm:text-2xl text-white font-bold mb-1">${featured.name}</h3>
+                    <p class="text-gold text-sm mb-3 flex items-center justify-center md:justify-start gap-1"><i data-lucide="trophy" class="w-4 h-4"></i> ${featured.dishCount} Dishes · ${featured.loc}</p>
+                    <p class="font-hindi text-gray-300 text-sm mb-4 italic">"${bio}"</p>
+                    <div class="flex flex-wrap gap-2 justify-center md:justify-start">
+                        <span class="bg-amber-500/20 text-amber-400 text-[10px] font-bold px-3 py-1 rounded-full">${cat}</span>
+                    </div>
+                </div>
+                <a href="seller-profile.html?seller=${encodeURIComponent(featured.name)}" class="bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white font-bold py-3 px-6 rounded-full text-sm transition-all shadow-lg">
+                    Profile देखें →
+                </a>
+            </div>`;
+            section.classList.remove('hidden');
+        }
+
+        function renderStories(sellers) {
+            const container = document.getElementById('storiesSection');
+            if (!container) return;
+
+            if (!sellers || sellers.length === 0) {
+                container.innerHTML = '<p class="text-center text-gray-500 font-hindi col-span-2">जल्द ही और कहानियाँ आएंगी...</p>';
+                return;
+            }
+
+            const stories = sellers.filter(s => s.bio).slice(0, 4);
+            if (stories.length === 0) {
+                container.innerHTML = '<p class="text-center text-gray-500 font-hindi col-span-2">जल्द ही और कहानियाँ आएंगी...</p>';
+                return;
+            }
+
+            container.innerHTML = stories.map((seller, i) => `
+                <div class="story-card rounded-xl p-5 animate-in" style="animation-delay: ${i * 100}ms">
+                    <p class="font-hindi text-gray-300 text-sm italic mb-3">"${seller.bio}"</p>
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-white text-sm">${seller.name}</span>
+                        <span class="text-[10px] text-gold uppercase tracking-widest">${seller.specialty}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- Filtering and Search Mechanism ---
+        function searchSellers() {
+            const searchEl = document.getElementById('sellerSearch');
+            const query = searchEl ? searchEl.value.toLowerCase() : '';
+            const filtered = allSellers.filter(seller => {
+                const name = (seller.name || '').toLowerCase();
+                const loc = (seller.loc || '').toLowerCase();
+                const spec = (seller.specialty || '').toLowerCase();
+                return name.includes(query) || loc.includes(query) || spec.includes(query);
+            });
+            applyFilters(filtered);
+        }
+
+        function filterSellers(type, event) {
+            currentFilter = type;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            if (event && event.target) event.target.classList.add('active');
+            searchSellers(); // Chain filters with search
+        }
+
+        function applyFilters(filteredSellersList) {
+            let filtered = [...filteredSellersList];
+            if (currentFilter === 'veg') {
+                filtered = filtered.filter(s => s.isVeg !== false);
+            } else if (currentFilter === 'nonveg') {
+                filtered = filtered.filter(s => s.isVeg === false);
+            } else if (currentFilter !== 'all') {
+                filtered = filtered.filter(s => (s.specialty || '').includes(currentFilter));
+            }
+            render(filtered);
+        }
+
+        function render(sellers) {
             const grid = document.getElementById('grid');
-            document.getElementById('loading').classList.add('hidden'); grid.classList.remove('hidden'); grid.innerHTML = '';
-            if (sellers.length === 0) { document.getElementById('empty').classList.remove('hidden'); return; }
+            const loading = document.getElementById('loading');
+            const empty = document.getElementById('empty');
+            
+            if (!grid) return;
+            
+            if (loading) loading.classList.add('hidden');
+            grid.classList.remove('hidden');
+            grid.innerHTML = '';
+            
+            if (sellers.length === 0) { 
+                if (empty) empty.classList.remove('hidden'); 
+                return; 
+            } else {
+                if (empty) empty.classList.add('hidden'); 
+            }
+
             sellers.forEach((seller, i) => {
                 const avatarUrl = getAvatarUrl(seller.avatar, seller.name);
                 const topDishImg = seller.topDish ? getImageUrl(seller.topDish.img || seller.topDish.image) : '';
-
                 const dishThumbs = seller.topDishes.slice(0, 3).map(d => {
                     const imgUrl = getImageUrl(d.img);
-                    return imgUrl ? `<img src="${imgUrl}" alt="${d.name}" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg object-cover border border-white/10" onerror="this.style.display='none'">` : '';
+                    return imgUrl ? '<img src="' + imgUrl + '" alt="' + d.name + '" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg object-cover border border-white/10" onerror="this.style.display=\\'none\\'">' : '';
                 }).join('');
 
                 const card = document.createElement('div');
                 card.className = 'seller-card glass rounded-2xl overflow-hidden cursor-pointer animate-in';
-                card.style.animationDelay = `${i * 100}ms`;
+                card.style.animationDelay = `${i * 50}ms`;
+                card.onclick = () => { window.location.href = 'seller-profile.html?seller=' + encodeURIComponent(seller.name); };
 
                 card.innerHTML = `
-        <!-- Top Dish Banner -->
-        ${topDishImg ? `
-        <div class="h-32 sm:h-40 relative overflow-hidden">
-            <img src="${topDishImg}" alt="Top dish" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-            <div class="absolute bottom-3 left-4 right-4">
-                <div class="inline-flex items-center gap-1 bg-amber-600 text-white text-[9px] font-bold px-2 py-1 rounded-full mb-1">
-                    <i data-lucide="flame" class="w-3 h-3"></i> आज का विशेष
-                </div>
-                <p class="text-white text-sm font-bold truncate">${seller.topDish.title || seller.topDish.name}</p>
-            </div>
-        </div>
-        ` : ''}
-
-        <div class="p-4 sm:p-5">
-            <!-- Chef Info -->
-            <div class="flex items-start gap-3 sm:gap-4 mb-4">
-                <img src="${avatarUrl}" alt="${seller.name}"
-                    class="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover border-2 border-gold/40 flex-shrink-0"
-                    onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(seller.name)}&background=d97706&color=fff'">
-                    <div class="flex-1 min-w-0">
-                        <h3 class="font-cinzel text-base sm:text-lg text-white truncate">${seller.name}</h3>
-                        <p class="text-[9px] sm:text-[10px] text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> ${seller.loc}
-                        </p>
-                        <div class="trust-chip inline-flex items-center gap-1 px-2 py-0.5 rounded-full">
-                            <span class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
-                            <span class="text-[8px] sm:text-[9px] text-green-400 font-bold uppercase">जाँची गई</span>
+                    ${topDishImg ? `
+                    <div class="h-32 sm:h-40 relative overflow-hidden">
+                        <img src="${topDishImg}" alt="Top dish" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                        <div class="absolute bottom-3 left-4 right-4">
+                            <div class="inline-flex items-center gap-1 bg-amber-600 text-white text-[9px] font-bold px-2 py-1 rounded-full mb-1">
+                                <i data-lucide="flame" class="w-3 h-3"></i> आज का विशेष
+                            </div>
+                            <p class="text-white text-sm font-bold truncate">${seller.topDish.title || seller.topDish.name}</p>
                         </div>
+                    </div>` : ''}
+
+                    <div class="p-4 sm:p-5">
+                        <div class="flex items-start gap-3 sm:gap-4 mb-4">
+                            <img src="${avatarUrl}" alt="${seller.name}" class="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover border-2 border-gold/40 flex-shrink-0" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(seller.name)}&background=d97706&color=fff'">
+                            <div class="flex-1 min-w-0">
+                                <h3 class="font-cinzel text-base sm:text-lg text-white truncate">${seller.name}</h3>
+                                <p class="text-[9px] sm:text-[10px] text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> ${seller.loc}</p>
+                                <div class="trust-chip inline-flex items-center gap-1 px-2 py-0.5 rounded-full">
+                                    <span class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
+                                    <span class="text-[8px] sm:text-[9px] text-green-400 font-bold uppercase">जाँची गई</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Activity + Stats -->
+                        <div class="flex items-center justify-between mb-4 border-t border-white/5 pt-3">
+                            <div class="flex items-center gap-1.5 text-amber-400/80 text-[10px] sm:text-xs font-hindi">
+                                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> आज खाना बना रही हैं
+                            </div>
+                            <span class="text-[10px] sm:text-xs text-gray-400 font-hindi">${seller.dishCount} व्यंजन</span>
+                        </div>
+
+                        ${dishThumbs ? '<div class="flex gap-1 mb-4">' + dishThumbs + '</div>' : ''}
+
+                        <button class="w-full text-[9px] sm:text-[10px] tracking-[0.1em] uppercase py-2.5 sm:py-3 bg-gradient-to-r from-amber-600/20 to-amber-700/20 hover:from-amber-600/40 hover:to-amber-700/40 border border-gold/30 rounded-xl transition font-bold text-gold flex items-center justify-center gap-2">
+                            <span class="font-hindi">प्रोफ़ाइल देखें</span>
+                            <span>→</span>
+                        </button>
                     </div>
-            </div>
-
-            <!-- What makes different chips -->
-            <div class="flex flex-wrap gap-1.5 mb-4">
-                <span class="text-[8px] sm:text-[9px] bg-white/5 text-gray-400 px-2 py-1 rounded-full flex items-center gap-1"><i data-lucide="leaf" class="w-2 h-2"></i> ताज़ी सामग्री</span>
-                <span class="text-[8px] sm:text-[9px] bg-white/5 text-gray-400 px-2 py-1 rounded-full flex items-center gap-1"><i data-lucide="ban" class="w-2 h-2"></i> No Reheating</span>
-                <span class="text-[8px] sm:text-[9px] bg-white/5 text-gray-400 px-2 py-1 rounded-full flex items-center gap-1"><i data-lucide="cooking-pot" class="w-2 h-2"></i> छोटे बैच</span>
-            </div>
-
-            <!-- Activity + Stats -->
-            <div class="flex items-center justify-between mb-4 border-t border-white/5 pt-3">
-                <div class="flex items-center gap-1.5 text-amber-400/80 text-[10px] sm:text-xs font-hindi">
-                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                    आज खाना बना रही हैं
-                </div>
-                <span class="text-[10px] sm:text-xs text-gray-400 font-hindi">${seller.dishCount} व्यंजन</span>
-            </div>
-
-            <!-- Dish previews -->
-            ${dishThumbs ? `<div class="flex gap-1 mb-4">${dishThumbs}</div>` : ''}
-
-            <!-- CTA -->
-            <button
-                class="w-full text-[9px] sm:text-[10px] tracking-[0.1em] uppercase py-2.5 sm:py-3 bg-gradient-to-r from-amber-600/20 to-amber-700/20 hover:from-amber-600/40 hover:to-amber-700/40 border border-gold/30 rounded-xl transition font-bold text-gold flex items-center justify-center gap-2">
-                <span class="font-hindi">प्रोफ़ाइल देखें</span>
-                <span>→</span>
-            </button>
-        </div>
-        `;
-
-                card.onclick = () => {
-                    window.location.href = `seller-profile.html?id=${seller.id}`;
-                };
-
+                `;
                 grid.appendChild(card);
             });
 
-            // Re-initialize Lucide icons for dynamic content
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
-        function getAvatarUrl(avatar, name) {
-            if (!avatar) return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=d97706&color=fff&size=200&bold=true`;
-            if (avatar.startsWith('http')) return avatar;
-            const encodedPath = avatar.split('/').map(part => encodeURIComponent(part)).join('/');
-            return `public/${encodedPath}`;
-        }
-
-        function getImageUrl(img) {
-            if (!img) return '';
-            if (img.startsWith('http')) return img;
-            const encodedPath = img.split('/').map(part => encodeURIComponent(part)).join('/');
-            return `public/${encodedPath}`;
-        }
-
-        // Global variable for all sellers
-        let allSellers = [];
-        const MOCK_SELLERS = []; // Define MOCK_SELLERS if not already defined
-
-        // Fetch sellers data for dynamic sections (Featured Seller, Kitchen Stories)
-        async function loadDynamicSections() {
-            try {
-
-                function searchSellers() {
-                    const query = document.getElementById('sellerSearch').value.toLowerCase();
-
-                    const filtered = allSellers.filter(seller => {
-                        const name = (seller.name || '').toLowerCase();
-                        const cuisine = (seller.cuisine || '').toLowerCase();
-                        const location = (seller.location || '').toLowerCase();
-
-                        return name.includes(query) || cuisine.includes(query) || location.includes(query);
-                    });
-
-                    applyFilters(filtered);
-                }
-
-                function filterSellers(type, event) {
-                    currentFilter = type;
-
-                    // Update active button
-                    document.querySelectorAll('.filter-btn').forEach(btn => {
-                        btn.classList.remove('active');
-                    });
-                    if (event && event.target) {
-                        event.target.classList.add('active');
-                    }
-
-                    applyFilters(allSellers);
-                }
-
-                function applyFilters(sellers) {
-                    let filtered = [...sellers];
-
-                    if (currentFilter !== 'all') {
-                        filtered = filtered.filter(s => {
-                            if (currentFilter === 'veg') return s.isVeg === true;
-                            if (currentFilter === 'nonveg') return s.isVeg === false;
-                            return (s.cuisine || '').includes(currentFilter);
-                        });
-                    }
-
-                    renderSellers(filtered);
-                }
-
-                // Store sellers globally when loaded
-                async function init() { }
-            } catch (e) {
-                console.log('Sellers endpoint not available:', e.message);
-            }
-            // Fallback: Show empty state for stories
-            renderStories([]);
-        }
-
         // Initialize
-        loadDynamicSections();
         loadSellers();
+
 
         // Initialize Lucide icons
         lucide.createIcons();
