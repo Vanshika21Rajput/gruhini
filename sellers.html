@@ -395,7 +395,7 @@
 
                 const [exploreRes, sellersRes] = await Promise.all([
                     fetch(`${BASE_URL}/explore`, { headers }).catch(() => ({ ok: false, json: () => [] })),
-                    fetch(`${BASE_URL}/sellers`, { headers }).catch(() => ({ ok: false, json: () => [] })) // Check /sellers
+                    fetch(`${BASE_URL}/get-allSellers`, { headers }).catch(() => ({ ok: false, json: () => [] })) // Restored /get-allSellers for production
                 ]);
                 
                 let products = [];
