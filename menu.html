@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gruhani - The Menu</title>
+    <title>Gruhini - The Menu</title>
     <link rel="preload" href="public/background.jpg" as="image" type="image/jpeg">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Lato:wght@400;700&display=swap"
+        rel="stylesheet">
+    <!-- Professional Vector Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -13,450 +16,286 @@
     </script>
     <script src="js/config.js"></script>
     <style>
-        .font-hindi { font-family:'Noto Sans Devanagari',sans-serif; font-weight:500; line-height:1.8; letter-spacing:0.02em; }
-        [data-lucide] { vertical-align:middle; margin-top:-2px; }
-        html { scroll-behavior:smooth; }
-        body { line-height:1.6; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
-        ::selection { background:rgba(212,175,55,0.3); color:#FDF8F0; }
-        h1,h2,h3 { font-family:'Cinzel',serif; line-height:1.2; }
-        .hide-scroll::-webkit-scrollbar { display:none; }
+        /* ========== GLOBAL PROFESSIONAL POLISH ========== */
+        /* PREMIUM HINDI FONT & ICON ALIGNMENT */
+        .font-hindi {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            font-weight: 500;
+            line-height: 1.8;
+            letter-spacing: 0.02em;
+        }
 
-        /* Cart badge */
-        .cart-nav-pill { position:relative; display:flex; align-items:center; justify-content:center; }
-        .cart-badge { position:absolute; top:-6px; right:-6px; background:#ef4444; color:#fff; font-size:8px; font-weight:700; min-width:15px; height:15px; border-radius:8px; display:none; align-items:center; justify-content:center; padding:0 3px; border:1.5px solid #FDF8F0; }
-        .cart-badge.show { display:flex; }
-        .mobile-cart-badge { position:absolute; top:-4px; right:-4px; background:#ef4444; color:#fff; font-size:8px; font-weight:700; min-width:14px; height:14px; border-radius:8px; display:none; align-items:center; justify-content:center; padding:0 3px; border:1px solid #1a0f0a; }
+        [data-lucide] {
+            vertical-align: middle;
+            margin-top: -2px;
+        }
 
-        /* Modals */
-        .g-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.78); z-index:500; align-items:center; justify-content:center; padding:16px; backdrop-filter:blur(4px); }
-        .g-modal.open { display:flex; }
-        .g-modal-box { background:#1a0f0a; border:1px solid rgba(197,160,89,0.3); border-radius:18px; padding:28px; width:100%; max-width:420px; max-height:90vh; overflow-y:auto; position:relative; }
-        .g-modal-box::-webkit-scrollbar { width:4px; }
-        .g-modal-box::-webkit-scrollbar-thumb { background:#8c6a38; border-radius:4px; }
-        .g-lbl { display:block; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:rgba(197,160,89,0.6); margin-bottom:4px; margin-top:12px; }
-        .g-inp { width:100%; padding:10px 12px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f5f0e8; font-size:13px; outline:none; box-sizing:border-box; transition:border-color 0.2s; }
-        .g-inp:focus { border-color:#c5a059; }
-        .g-inp::placeholder { color:rgba(255,255,255,0.25); }
-        select.g-inp { appearance:none; }
-        select.g-inp option { background:#1a0f0a; }
-        .g-err { display:none; color:#ef4444; font-size:11px; margin-top:8px; background:rgba(239,68,68,0.08); padding:8px 10px; border-radius:6px; }
-        .g-pin-status { font-size:11px; min-height:15px; margin-top:4px; display:flex; align-items:center; gap:4px; }
+        html {
+            scroll-behavior: smooth;
+        }
 
-        @media(max-width:768px) { .h-\[55vh\] { height:45vh!important; min-height:350px!important; } #navLinks { gap:0.5rem!important; } #navLinks a,#navLinks span,#navLinks button { font-size:8px!important; padding:5px 10px!important; } #menuGrid { grid-template-columns:repeat(2,1fr)!important; gap:1rem!important; } }
-        @media(max-width:640px) { nav span.font-cinzel { font-size:1rem!important; } nav a div:first-child { width:2.5rem!important; height:2.5rem!important; } #menuGrid { grid-template-columns:1fr!important; } .h-\[55vh\] { height:35vh!important; min-height:280px!important; } h1.font-cinzel { font-size:1.5rem!important; } .h-60 { height:200px!important; } .tab-btn { padding:10px 16px!important; font-size:10px!important; } }
-        .tab-btn { min-width:65px; flex-shrink:0; }
-        @media(max-width:480px) { .tab-btn { padding:8px 12px!important; font-size:9px!important; min-width:55px; } .hide-scroll { scroll-snap-type:x mandatory; scroll-padding-left:16px; } .tab-btn:first-child { scroll-snap-align:start; } }
+        body {
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        ::selection {
+            background: rgba(212, 175, 55, 0.3);
+            color: #FDF8F0;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Cinzel', serif;
+            line-height: 1.2;
+        }
+
+        .hide-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        @media(max-width: 768px) {
+            .h-\[55vh\] {
+                height: 45vh !important;
+                min-height: 350px !important;
+            }
+
+            #navLinks {
+                gap: 0.5rem !important;
+            }
+
+            #navLinks a,
+            #navLinks span,
+            #navLinks button {
+                font-size: 8px !important;
+                padding: 5px 10px !important;
+            }
+
+            #menuGrid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 1rem !important;
+            }
+        }
+
+        @media(max-width: 640px) {
+            nav span.font-cinzel {
+                font-size: 1rem !important;
+            }
+
+            nav a div:first-child {
+                width: 2.5rem !important;
+                height: 2.5rem !important;
+            }
+
+            #menuGrid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .h-\[55vh\] {
+                height: 35vh !important;
+                min-height: 280px !important;
+            }
+
+            h1.font-cinzel {
+                font-size: 1.5rem !important;
+            }
+
+            .h-60 {
+                height: 200px !important;
+            }
+
+            .tab-btn {
+                padding: 10px 16px !important;
+                font-size: 10px !important;
+            }
+        }
+
+        .tab-btn {
+            min-width: 65px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 480px) {
+
+            .tab-btn {
+                padding: 8px 12px !important;
+                font-size: 9px !important;
+                min-width: 55px;
+            }
+
+            .hide-scroll {
+                scroll-snap-type: x mandatory;
+                scroll-padding-left: 16px;
+            }
+
+            .tab-btn:first-child {
+                scroll-snap-align: start;
+            }
+        }
     </style>
 </head>
+
 <body class="bg-cream text-gray-900 font-sans min-h-screen">
 
     <div class="relative w-full h-[55vh] min-h-[450px] overflow-hidden">
         <div class="absolute inset-0 bg-[url('public/background.jpg')] bg-cover bg-center"></div>
+
         <div class="absolute inset-0 bg-black/60"></div>
-        <div class="absolute bottom-0 left-0 w-full h-48 bg-gradient-to-t from-[#FDF8F0] via-[#FDF8F0]/60 to-transparent"></div>
+
+        <div
+            class="absolute bottom-0 left-0 w-full h-48 bg-gradient-to-t from-[#FDF8F0] via-[#FDF8F0]/60 to-transparent">
+        </div>
 
         <nav class="absolute top-0 w-full z-50 px-6 py-6 flex justify-between items-center">
+
             <a href="index.html" class="flex items-center gap-3 group">
-                <div class="w-12 h-12 rounded-full overflow-hidden relative shadow-[0_0_15px_rgba(197,160,89,0.4)] group-hover:shadow-[0_0_25px_rgba(197,160,89,0.6)] transition-all duration-500 border border-gold/30">
-                    <img src="public/logo.jpg" alt="Gruhani" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                <div
+                    class="w-12 h-12 rounded-full overflow-hidden relative shadow-[0_0_15px_rgba(197,160,89,0.4)] group-hover:shadow-[0_0_25px_rgba(197,160,89,0.6)] transition-all duration-500 border border-gold/30">
+                    <img src="public/logo.jpg" alt="Gruhini"
+                        class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-black/10 to-transparent pointer-events-none">
+                    </div>
                 </div>
-                <span class="font-cinzel text-xl font-bold text-gold tracking-widest group-hover:text-white transition-colors duration-300 drop-shadow-md">GRUHANI</span>
+                <span
+                    class="font-cinzel text-xl font-bold text-gold tracking-widest group-hover:text-white transition-colors duration-300 drop-shadow-md">GRUHINI</span>
             </a>
+
             <div class="flex items-center gap-4" id="navLinks"></div>
         </nav>
 
         <script>
-        (function () {
-            const token    = localStorage.getItem('authToken');
-            const role     = localStorage.getItem('userRole');
-            const userName = localStorage.getItem('userName') || 'User';
-            const navLinks = document.getElementById('navLinks');
-            const BASE     = window.CONFIG.BASE_URL;
+                (function () {
+                    const token = localStorage.getItem('authToken');
+                    const role = localStorage.getItem('userRole');
+                    const userName = localStorage.getItem('userName') || 'User';
+                    const navLinks = document.getElementById('navLinks');
 
-            const linkClass   = "text-[9px] sm:text-xs font-bold uppercase tracking-widest text-white/70 hover:text-gold transition-colors px-1 sm:px-2";
-            const activeClass = "text-[9px] sm:text-xs font-bold uppercase tracking-widest text-gold border-b border-gold pb-1 px-1 sm:px-2";
-            const btnClass    = "border border-gold/40 px-3 sm:px-5 py-1.5 sm:py-2 rounded-full text-gold text-[9px] sm:text-xs font-bold tracking-widest hover:bg-gold/10 hover:text-white transition-all uppercase";
-            const chevron     = `<svg class="w-3 h-3 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>`;
-            const navContent  = `
-                <span class="${activeClass}">Menu</span>
-                <a href="sellers.html" class="${linkClass}">Kitchens</a>
-                <a href="about.html"   class="${linkClass}">About</a>`;
+                    const linkClass = "text-[9px] sm:text-xs font-bold uppercase tracking-widest text-white/70 hover:text-gold transition-colors px-1 sm:px-2";
+                    const activeClass = "text-[9px] sm:text-xs font-bold uppercase tracking-widest text-gold border-b border-gold pb-1 px-1 sm:px-2";
+                    const btnClass = "border border-gold/40 px-3 sm:px-5 py-1.5 sm:py-2 rounded-full text-gold text-[9px] sm:text-xs font-bold tracking-widest hover:bg-gold/10 hover:text-white transition-all uppercase";
 
-            function setupToggle() {
-                setTimeout(() => {
-                    const btn = document.getElementById('userProfileBtn');
-                    const dd  = document.getElementById('userDropdown');
-                    if (btn && dd) {
-                        btn.addEventListener('click', e => { e.stopPropagation(); dd.classList.toggle('hidden'); });
-                        document.addEventListener('click', () => dd.classList.add('hidden'));
-                    }
-                }, 80);
-            }
+                    const navContent = `
+                        <span class="${activeClass}">Menu</span>
+                        <a href="sellers.html" class="${linkClass}">Kitchens</a>
+                        <a href="about.html" class="${linkClass}">About</a>
+                    `;
 
-            /* ── NO TOKEN ── */
-            if (!token) {
-                navLinks.innerHTML = `${navContent}<a href="login.html" class="${btnClass}">Login</a>`;
-                return;
-            }
-
-            /* ── SELLER ── */
-            if (role === 'SELLER') {
-                const init = userName.charAt(0).toUpperCase();
-                navLinks.innerHTML = `
-                ${navContent}
-                <div class="relative" id="userProfileWrapper">
-                    <button id="userProfileBtn" class="flex items-center gap-2 px-2 py-1 rounded-full hover:bg-white/10 transition-all">
-                        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-white text-xs font-bold shadow-lg border border-amber-400/30">
-                            <span class="nav-initial">${init}</span>
-                        </div>
-                        <span class="nav-real-name hidden sm:block text-[10px] text-white/80 font-medium max-w-[80px] truncate">${userName.split('@')[0]}</span>
-                        ${chevron}
-                    </button>
-                    <div id="userDropdown" class="hidden absolute right-0 top-full mt-2 w-48 bg-[#1a0f0a]/95 backdrop-blur-xl rounded-xl border border-amber-500/20 shadow-2xl overflow-hidden z-50">
-                        <div class="px-4 py-3 border-b border-white/10">
-                            <p class="nav-real-name text-white font-bold text-sm truncate">${userName.split('@')[0]}</p>
-                            <p class="text-gray-400 text-[10px]">🍳 Home Chef</p>
-                        </div>
-                        <div class="py-2">
-                            <a href="seller-dashboard-enhanced.html" class="flex items-center gap-3 px-4 py-2.5 text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 transition-all text-xs font-bold">
-                                <i data-lucide="layout-dashboard" class="w-4 h-4"></i> My Dashboard
-                            </a>
-                            <a href="seller-profile-modern.html" class="flex items-center gap-3 px-4 py-2.5 text-white/80 hover:text-white hover:bg-amber-500/10 transition-all text-xs">
-                                <i data-lucide="user" class="w-4 h-4"></i> My Profile
-                            </a>
-                        </div>
-                        <div class="border-t border-white/10 py-2">
-                            <button onclick="localStorage.clear();window.location.href='login.html'" class="flex items-center gap-3 px-4 py-2.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all text-xs w-full">
-                                <i data-lucide="log-out" class="w-4 h-4"></i> Logout
+                    if (!token) {
+                        navLinks.innerHTML = `
+                        ${navContent}
+                        <a href="login.html" class="${btnClass}">Login</a>
+                    `;
+                    } else if (role === 'SELLER') {
+                        navLinks.innerHTML = `
+                        ${navContent}
+                        <a href="seller-dashboard.html" class="${btnClass}">Dashboard</a>
+                    `;
+                    } else {
+                        const initials = userName.charAt(0).toUpperCase();
+                        navLinks.innerHTML = `
+                        ${navContent}
+                        <a href="cart.html" class="${linkClass} relative flex items-center">
+                            Cart
+                            <span id="cartCountBadge" class="hidden absolute -top-2 -right-3 bg-red-600 text-white text-[8px] w-4 h-4 flex items-center justify-center rounded-full border border-royal-dark font-bold shadow-sm">0</span>
+                        </a>
+                        <div class="relative" id="userProfileWrapper">
+                            <button id="userProfileBtn" class="flex items-center gap-2 px-2 py-1 rounded-full hover:bg-white/10 transition-all">
+                                <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-white text-xs font-bold shadow-lg border border-amber-400/30">
+                                    ${initials}
+                                </div>
+                                <span class="hidden sm:block text-[10px] text-white/80 font-medium max-w-[80px] truncate">${userName.split('@')[0]}</span>
+                                <svg class="w-3 h-3 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                </svg>
                             </button>
+                            <div id="userDropdown" class="hidden absolute right-0 top-full mt-2 w-48 bg-[#1a0f0a]/95 backdrop-blur-xl rounded-xl border border-amber-500/20 shadow-2xl overflow-hidden z-50">
+                                <div class="px-4 py-3 border-b border-white/10">
+                                    <p class="text-white font-bold text-sm truncate">${userName.split('@')[0]}</p>
+                                    <p class="text-gray-400 text-[10px] truncate">${userName}</p>
+                                </div>
+                                <div class="py-2">
+                                    <a href="cart.html" class="flex items-center gap-3 px-4 py-2.5 text-white/80 hover:text-white hover:bg-amber-500/10 transition-all text-xs">
+                                        <i data-lucide="shopping-cart" class="w-4 h-4"></i> My Cart
+                                    </a>
+                                    <a href="orders.html" class="flex items-center gap-3 px-4 py-2.5 text-white/80 hover:text-white hover:bg-amber-500/10 transition-all text-xs">
+                                        <i data-lucide="package" class="w-4 h-4"></i> Previous Orders
+                                    </a>
+                                    <a href="favorites.html" class="flex items-center gap-3 px-4 py-2.5 text-white/80 hover:text-white hover:bg-amber-500/10 transition-all text-xs">
+                                        <i data-lucide="heart" class="w-4 h-4"></i> Favorites
+                                    </a>
+                                </div>
+                                <div class="border-t border-white/10 py-2">
+                                    <button onclick="localStorage.clear(); window.location.href='login.html'" class="flex items-center gap-3 px-4 py-2.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all text-xs w-full">
+                                        <i data-lucide="log-out" class="w-4 h-4"></i> Logout
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>`;
-                setupToggle();
-                loadNavProfile(token, BASE);
-                return;
-            }
+                        </div>
+                    `;
 
-            /* ── CUSTOMER (default) ── */
-            const init = userName.charAt(0).toUpperCase();
-            navLinks.innerHTML = `
-            ${navContent}
+                        fetch(`${window.CONFIG.BASE_URL}/get-cart`, {
+                            headers: { 'Authorization': `Bearer ${token}` }
+                        }).then(res => res.json())
+                            .then(data => {
+                                if (data && Array.isArray(data) && data.length > 0) {
+                                    const badge = document.getElementById('cartCountBadge');
+                                    if (badge) {
+                                        badge.innerText = data.length;
+                                        badge.classList.remove('hidden');
+                                    }
+                                }
+                            }).catch(e => {
+                                console.log('Cart fetch error', e);
+                                // Cart count will remain at previous value on error
+                            });
 
-            <a href="cart.html" class="cart-nav-pill" aria-label="My Cart">
-                <div class="w-9 h-9 rounded-full bg-white/10 hover:bg-gold/20 border border-white/20 hover:border-gold/50 transition-all flex items-center justify-center">
-                    <i data-lucide="shopping-bag" style="width:16px;height:16px;color:#c5a059;"></i>
-                </div>
-                <span id="cartCountBadge" class="cart-badge">0</span>
-            </a>
-
-            <div class="relative" id="userProfileWrapper">
-                <button id="userProfileBtn" class="flex items-center gap-2 px-2 py-1 rounded-full hover:bg-white/10 transition-all">
-                    <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-white text-xs font-bold shadow-lg border border-amber-400/30">
-                        <span class="nav-initial">${init}</span>
-                    </div>
-                    <span class="nav-real-name hidden sm:block text-[10px] text-white/80 font-medium max-w-[80px] truncate">${userName.split('@')[0]}</span>
-                    ${chevron}
-                </button>
-                <div id="userDropdown" class="hidden absolute right-0 top-full mt-2 w-52 bg-[#1a0f0a]/95 backdrop-blur-xl rounded-xl border border-amber-500/20 shadow-2xl overflow-hidden z-50">
-                    <div class="px-4 py-3 border-b border-white/10">
-                        <p class="nav-real-name text-white font-bold text-sm truncate">${userName.split('@')[0]}</p>
-                        <p class="nav-real-email text-gray-400 text-[10px] truncate"></p>
-                    </div>
-                    <div class="py-2">
-                        <a href="cart.html" class="flex items-center gap-3 px-4 py-2.5 text-white/80 hover:text-white hover:bg-amber-500/10 transition-all text-xs">
-                            <i data-lucide="shopping-cart" class="w-4 h-4"></i> My Cart
-                            <span id="cartCountDropdown" class="ml-auto bg-red-500/80 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
-                        </a>
-                        <a href="orders.html" class="flex items-center gap-3 px-4 py-2.5 text-white/80 hover:text-white hover:bg-amber-500/10 transition-all text-xs">
-                            <i data-lucide="package" class="w-4 h-4"></i> Previous Orders
-                        </a>
-                        <button onclick="openMenuEditProfile()" class="flex items-center gap-3 px-4 py-2.5 text-white/80 hover:text-white hover:bg-amber-500/10 transition-all text-xs w-full text-left">
-                            <i data-lucide="user-pen" class="w-4 h-4"></i> Edit Profile
-                        </button>
-                        <button onclick="openMenuEditAddress()" class="flex items-center gap-3 px-4 py-2.5 text-white/80 hover:text-white hover:bg-amber-500/10 transition-all text-xs w-full text-left">
-                            <i data-lucide="map-pin" class="w-4 h-4"></i> Edit Address
-                        </button>
-                        <a href="favorites.html" class="flex items-center gap-3 px-4 py-2.5 text-white/80 hover:text-white hover:bg-amber-500/10 transition-all text-xs">
-                            <i data-lucide="heart" class="w-4 h-4"></i> Favorites
-                        </a>
-                    </div>
-                    <div class="border-t border-white/10 py-2">
-                        <button onclick="localStorage.clear();window.location.href='login.html'" class="flex items-center gap-3 px-4 py-2.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all text-xs w-full">
-                            <i data-lucide="log-out" class="w-4 h-4"></i> Logout
-                        </button>
-                    </div>
-                </div>
-            </div>`;
-
-            setupToggle();
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-
-            loadNavProfile(token, BASE);
-            loadCartCountNav(token, BASE);
-        })();
-
-        function loadNavProfile(token, BASE) {
-            fetch(`${BASE}/view-profile`, { headers: { Authorization: `Bearer ${token}` } })
-                .then(r => r.ok ? r.json() : null)
-                .then(p => {
-                    if (!p) return;
-                    const name  = p.name  || localStorage.getItem('userName') || 'User';
-                    const email = p.email || '';
-                    if (name) localStorage.setItem('userName', name);
-                    const display = name.includes('@') ? name.split('@')[0] : name.split(' ')[0];
-                    const initial = display.charAt(0).toUpperCase();
-                    document.querySelectorAll('.nav-real-name').forEach(el => el.textContent = display);
-                    document.querySelectorAll('.nav-real-email').forEach(el => el.textContent = email);
-                    document.querySelectorAll('.nav-initial').forEach(el => el.textContent = initial);
-                }).catch(() => {});
-        }
-
-        function loadCartCountNav(token, BASE) {
-            fetch(`${BASE}/get-cart`, { headers: { Authorization: `Bearer ${token}` } })
-                .then(r => r.ok ? r.json() : [])
-                .then(data => {
-                    if (!Array.isArray(data)) return;
-                    window._cartQty = window._cartQty || {};
-                    data.forEach(item => {
-                        const id = String(item.productid || item.product?.id || item.id || '');
-                        if (id) window._cartQty[id] = (window._cartQty[id] || 0) + (parseInt(item.quantity) || 1);
-                    });
-                    updateAllCartBadges();
-                }).catch(() => {});
-        }
-
-        // Master function to update all badges
-        function updateAllCartBadges() {
-            if (!window._cartQty) return;
-            const total = Object.values(window._cartQty).reduce((a,b)=>a+b,0);
-            
-            const badgeDesktop = document.getElementById('cartCountBadge');
-            const dropdown = document.getElementById('cartCountDropdown');
-            const badgeMobile = document.getElementById('mobileCartCountBadge');
-            
-            if (total > 0) {
-                if (badgeDesktop) { badgeDesktop.textContent = total; badgeDesktop.classList.add('show'); }
-                if (dropdown)     { dropdown.textContent = total; dropdown.classList.remove('hidden'); }
-                if (badgeMobile)  { badgeMobile.textContent = total; badgeMobile.style.display = 'flex'; }
-            } else {
-                if (badgeDesktop) badgeDesktop.classList.remove('show');
-                if (dropdown)     dropdown.classList.add('hidden');
-                if (badgeMobile)  badgeMobile.style.display = 'none';
-            }
-        }
-        </script>
-
-        <div id="menuEditProfileModal" class="g-modal">
-            <div class="g-modal-box">
-                <button onclick="closeGModal('menuEditProfileModal')" style="position:absolute;top:14px;right:14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;width:30px;height:30px;cursor:pointer;color:#aaa;font-size:16px;display:flex;align-items:center;justify-content:center;">✕</button>
-                <h3 style="font-family:'Cinzel',serif;color:#c5a059;font-size:1.05rem;font-weight:700;margin-bottom:4px;">👤 Edit Profile</h3>
-                <p style="font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:12px;">Saved to your account instantly.</p>
-                <label class="g-lbl">Full Name</label>
-                <input id="mep_name" class="g-inp" placeholder="Your full name">
-                <label class="g-lbl">Phone Number</label>
-                <div style="display:flex;gap:8px;">
-                    <div style="display:flex;align-items:center;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:0 10px;font-size:13px;color:#c5a059;font-weight:700;white-space:nowrap;">+91</div>
-                    <input id="mep_contact" class="g-inp" placeholder="10-digit mobile" maxlength="10" inputmode="tel" oninput="this.value=this.value.replace(/\D/g,'')">
-                </div>
-                <div id="mep_err" class="g-err"></div>
-                <div style="display:flex;gap:10px;margin-top:16px;">
-                    <button onclick="closeGModal('menuEditProfileModal')" style="flex:1;padding:10px;background:transparent;border:1px solid rgba(255,255,255,0.12);color:#aaa;border-radius:8px;cursor:pointer;font-size:12px;">Cancel</button>
-                    <button onclick="menuSaveProfile()" id="mep_btn" style="flex:1;padding:10px;background:linear-gradient(135deg,#c5a059,#8c6a38);color:#0f0805;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Cinzel',serif;font-size:12px;">Save Changes</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="menuEditAddressModal" class="g-modal">
-            <div class="g-modal-box">
-                <button onclick="closeGModal('menuEditAddressModal')" style="position:absolute;top:14px;right:14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;width:30px;height:30px;cursor:pointer;color:#aaa;font-size:16px;display:flex;align-items:center;justify-content:center;">✕</button>
-                <h3 style="font-family:'Cinzel',serif;color:#c5a059;font-size:1.05rem;font-weight:700;margin-bottom:4px;">📍 Edit Address</h3>
-                <p style="font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:12px;">Your default delivery address.</p>
-
-                <label class="g-lbl">Pincode *</label>
-                <input id="mea_pin" class="g-inp" placeholder="6-digit pincode" maxlength="6" inputmode="numeric" oninput="onMeaPincode(this.value)">
-                <div id="mea_pin_status" class="g-pin-status"></div>
-
-                <label class="g-lbl">State *</label>
-                <select id="mea_state" class="g-inp">
-                    <option value="">— Select State —</option>
-                    <option>Andhra Pradesh</option><option>Arunachal Pradesh</option><option>Assam</option>
-                    <option>Bihar</option><option>Chhattisgarh</option><option>Goa</option>
-                    <option>Gujarat</option><option>Haryana</option><option>Himachal Pradesh</option>
-                    <option>Jharkhand</option><option>Karnataka</option><option>Kerala</option>
-                    <option>Madhya Pradesh</option><option>Maharashtra</option><option>Manipur</option>
-                    <option>Meghalaya</option><option>Mizoram</option><option>Nagaland</option>
-                    <option>Odisha</option><option>Punjab</option><option>Rajasthan</option>
-                    <option>Sikkim</option><option>Tamil Nadu</option><option>Telangana</option>
-                    <option>Tripura</option><option>Uttar Pradesh</option><option>Uttarakhand</option>
-                    <option>West Bengal</option><option>Andaman &amp; Nicobar Islands</option>
-                    <option>Chandigarh</option><option>Dadra &amp; Nagar Haveli and Daman &amp; Diu</option>
-                    <option>Delhi (NCT)</option><option>Jammu &amp; Kashmir</option>
-                    <option>Ladakh</option><option>Lakshadweep</option><option>Puducherry</option>
-                </select>
-
-                <label class="g-lbl">District / City *</label>
-                <input id="mea_city" class="g-inp" placeholder="Auto-filled from pincode, or type">
-
-                <label class="g-lbl">House / Flat / Street *</label>
-                <input id="mea_line" class="g-inp" placeholder="e.g. Flat 4B, Shanti Nagar, MG Road">
-
-                <div id="mea_err" class="g-err"></div>
-                <div style="display:flex;gap:10px;margin-top:16px;">
-                    <button onclick="closeGModal('menuEditAddressModal')" style="flex:1;padding:10px;background:transparent;border:1px solid rgba(255,255,255,0.12);color:#aaa;border-radius:8px;cursor:pointer;font-size:12px;">Cancel</button>
-                    <button onclick="menuSaveAddress()" id="mea_btn" style="flex:1;padding:10px;background:linear-gradient(135deg,#c5a059,#8c6a38);color:#0f0805;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Cinzel',serif;font-size:12px;">Save Address</button>
-                </div>
-            </div>
-        </div>
-
-        <script>
-        const _MBASE = window.CONFIG.BASE_URL;
-        const _mTok  = () => localStorage.getItem('authToken');
-        let _meaAddrId = 0, _meaPinTimer = null;
-
-        function closeGModal(id) { document.getElementById(id).classList.remove('open'); }
-        function openGModal(id)  { document.getElementById(id).classList.add('open'); if (typeof lucide !== 'undefined') lucide.createIcons(); }
-
-        document.querySelectorAll('.g-modal').forEach(m => {
-            m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
-        });
-
-        function showMenuToast(msg, isErr) {
-            const t = document.createElement('div');
-            t.textContent = msg;
-            t.style.cssText = `position:fixed;bottom:90px;right:24px;z-index:9999;padding:12px 18px;background:${isErr?'rgba(239,68,68,0.92)':'rgba(34,197,94,0.92)'};color:#fff;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,0.3);transition:opacity 0.3s;`;
-            document.body.appendChild(t);
-            setTimeout(() => { t.style.opacity='0'; setTimeout(() => t.remove(), 300); }, 3000);
-        }
-
-        /* ── EDIT PROFILE ── */
-        async function openMenuEditProfile() {
-            document.getElementById('userDropdown')?.classList.add('hidden');
-            document.getElementById('mep_err').style.display = 'none';
-            try {
-                const p = await fetch(`${_MBASE}/view-profile`, { headers: { Authorization: `Bearer ${_mTok()}` } }).then(r => r.json());
-                document.getElementById('mep_name').value    = p.name    || '';
-                document.getElementById('mep_contact').value = (p.contact || '').replace(/^\+91/, '');
-            } catch { showMenuToast('Could not load profile', true); return; }
-            openGModal('menuEditProfileModal');
-        }
-
-        async function menuSaveProfile() {
-            const name    = document.getElementById('mep_name').value.trim();
-            const contact = document.getElementById('mep_contact').value.trim();
-            const errEl   = document.getElementById('mep_err');
-            errEl.style.display = 'none';
-            if (!name) { errEl.textContent='Name is required'; errEl.style.display='block'; return; }
-            if (contact && !/^\d{10}$/.test(contact)) { errEl.textContent='Phone must be 10 digits'; errEl.style.display='block'; return; }
-            const btn = document.getElementById('mep_btn');
-            btn.textContent='Saving...'; btn.disabled=true;
-            try {
-                const p = await fetch(`${_MBASE}/view-profile`, { headers: { Authorization: `Bearer ${_mTok()}` } }).then(r => r.json());
-                const res = await fetch(`${_MBASE}/update-profile`, {
-                    method: 'PATCH',
-                    headers: { Authorization: `Bearer ${_mTok()}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, email: p.email||'', contact: contact ? '+91'+contact : (p.contact||'') })
-                });
-                if (!res.ok) throw new Error(await res.text());
-                localStorage.setItem('userName', name);
-                const display = name.split(' ')[0];
-                document.querySelectorAll('.nav-real-name').forEach(el => el.textContent = display);
-                document.querySelectorAll('.nav-initial').forEach(el => el.textContent = display.charAt(0).toUpperCase());
-                closeGModal('menuEditProfileModal');
-                showMenuToast('✅ Profile updated!');
-            } catch(e) { errEl.textContent='Update failed: '+(e.message||'Try again'); errEl.style.display='block'; }
-            finally { btn.textContent='Save Changes'; btn.disabled=false; }
-        }
-
-        /* ── EDIT ADDRESS ── */
-        async function openMenuEditAddress() {
-            document.getElementById('userDropdown')?.classList.add('hidden');
-            document.getElementById('mea_err').style.display = 'none';
-            document.getElementById('mea_pin_status').innerHTML = '';
-            try {
-                const p = await fetch(`${_MBASE}/view-profile`, { headers: { Authorization: `Bearer ${_mTok()}` } }).then(r => r.json());
-                const a = (p.addresses||[])[0] || {};
-                _meaAddrId = a.id || 0;
-                document.getElementById('mea_line').value = a.addressLine || '';
-                document.getElementById('mea_city').value = a.city        || '';
-                document.getElementById('mea_pin').value  = a.pincode     || '';
-                const sel = document.getElementById('mea_state');
-                for (let opt of sel.options) {
-                    if (opt.text.toLowerCase() === (a.state||'').toLowerCase()) { sel.value = opt.value; break; }
-                }
-            } catch { showMenuToast('Could not load address', true); return; }
-            openGModal('menuEditAddressModal');
-        }
-
-        function onMeaPincode(val) {
-            const clean = val.replace(/\D/g,'');
-            document.getElementById('mea_pin').value = clean;
-            clearTimeout(_meaPinTimer);
-            const s = document.getElementById('mea_pin_status');
-            if (clean.length < 6) { s.innerHTML=''; return; }
-            s.style.color='#c5a059'; s.innerHTML='⏳ Verifying...';
-            _meaPinTimer = setTimeout(async () => {
-                try {
-                    const data = await (await fetch(`https://api.postalpincode.in/pincode/${clean}`)).json();
-                    if (data[0].Status==='Success' && data[0].PostOffice?.length>0) {
-                        const po=data[0].PostOffice[0], district=po.District||'', state=po.State||'';
-                        const cityEl=document.getElementById('mea_city');
-                        if (!cityEl.value) cityEl.value=district;
-                        const sel=document.getElementById('mea_state');
-                        for (let opt of sel.options) {
-                            if (opt.text.toLowerCase().includes(state.toLowerCase())||state.toLowerCase().includes(opt.text.toLowerCase())) { sel.value=opt.value; break; }
-                        }
-                        s.style.color='#4ade80'; s.innerHTML=`✓ <strong>${district}</strong>, ${state}`;
-                    } else { s.style.color='#f87171'; s.innerHTML='✗ Invalid pincode'; }
-                } catch { s.style.color='#f87171'; s.innerHTML='⚠ Could not verify'; }
-            }, 600);
-        }
-
-        async function menuSaveAddress() {
-            const addressLine = document.getElementById('mea_line').value.trim();
-            const city        = document.getElementById('mea_city').value.trim();
-            const state       = document.getElementById('mea_state').value.trim();
-            const pincode     = document.getElementById('mea_pin').value.trim();
-            const errEl       = document.getElementById('mea_err');
-            errEl.style.display = 'none';
-            if (!addressLine) { errEl.textContent='Enter your street/house address'; errEl.style.display='block'; return; }
-            if (!city)        { errEl.textContent='Enter city/district'; errEl.style.display='block'; return; }
-            if (!state)       { errEl.textContent='Select your state'; errEl.style.display='block'; return; }
-            if (!/^\d{6}$/.test(pincode)) { errEl.textContent='Pincode must be 6 digits'; errEl.style.display='block'; return; }
-            const btn = document.getElementById('mea_btn');
-            btn.textContent='Saving...'; btn.disabled=true;
-            try {
-                const res = await fetch(`${_MBASE}/add-address`, {
-                    method:'PATCH',
-                    headers:{ Authorization:`Bearer ${_mTok()}`, 'Content-Type':'application/json' },
-                    body: JSON.stringify({ id:_meaAddrId, addressLine, city, state, pincode })
-                });
-                if (!res.ok) throw new Error(await res.text());
-                closeGModal('menuEditAddressModal');
-                showMenuToast('✅ Address updated!');
-            } catch(e) { errEl.textContent='Failed: '+(e.message||'Try again'); errEl.style.display='block'; }
-            finally { btn.textContent='Save Address'; btn.disabled=false; }
-        }
+                        setTimeout(() => {
+                            const btn = document.getElementById('userProfileBtn');
+                            const dropdown = document.getElementById('userDropdown');
+                            if (btn && dropdown) {
+                                btn.addEventListener('click', (e) => { e.stopPropagation(); dropdown.classList.toggle('hidden'); });
+                                document.addEventListener('click', () => { dropdown.classList.add('hidden'); });
+                            }
+                        }, 100);
+                    }
+                })();
         </script>
 
         <div class="absolute inset-0 flex flex-col justify-center items-center text-center px-4 pt-10">
             <h1 class="font-cinzel text-5xl md:text-6xl text-gold mb-3 drop-shadow-lg">The Royal Menu</h1>
-            <p class="text-gray-200 text-xs md:text-sm tracking-[0.4em] uppercase font-light">Handmade Thalis, Snacks & Crafts</p>
+            <p class="text-gray-200 text-xs md:text-sm tracking-[0.4em] uppercase font-light">Handmade Thalis, Snacks &
+                Crafts</p>
         </div>
     </div>
 
     <div class="relative z-10 -mt-16 mb-12">
-        <div class="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-[#faf6f1] to-transparent pointer-events-none z-10 sm:hidden"></div>
-        <div class="flex justify-center gap-4 overflow-x-auto hide-scroll px-4 pb-4">
-            <button id="btn-All"    onclick="filter('All')"             class="tab-btn px-8 py-3 rounded-full bg-amber-800 text-white text-xs font-bold uppercase shadow-lg transition-all hover:scale-105 border border-amber-900">All</button>
-            <button id="btn-Thalis" onclick="filter('THALI')"           class="tab-btn px-8 py-3 rounded-full bg-white border border-gray-200 text-gray-600 text-xs font-bold uppercase hover:bg-amber-50 hover:text-amber-800 transition-all shadow-md">Thali</button>
-            <button id="btn-Snacks" onclick="filter('SNACKS')"          class="tab-btn px-8 py-3 rounded-full bg-white border border-gray-200 text-gray-600 text-xs font-bold uppercase hover:bg-amber-50 hover:text-amber-800 transition-all shadow-md">Snacks</button>
-            <button id="btn-Sweets" onclick="filter('SWEETS')"          class="tab-btn px-8 py-3 rounded-full bg-white border border-gray-200 text-gray-600 text-xs font-bold uppercase hover:bg-amber-50 hover:text-amber-800 transition-all shadow-md">Sweets</button>
-            <button id="btn-Crafts" onclick="filter('HANDCRAFTED_ITEMS')" class="tab-btn px-8 py-3 rounded-full bg-white border border-gray-200 text-gray-600 text-xs font-bold uppercase hover:bg-amber-50 hover:text-amber-800 transition-all shadow-md">Handcrafted Items</button>
+        <div
+            class="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-[#faf6f1] to-transparent pointer-events-none z-10 sm:hidden">
         </div>
+        <div class="flex justify-center gap-4 overflow-x-auto hide-scroll px-4 pb-4">
+            <button id="btn-All" onclick="filter('All')"
+                class="tab-btn px-8 py-3 rounded-full bg-amber-800 text-white text-xs font-bold uppercase shadow-lg transition-all hover:scale-105 border border-amber-900">All</button>
+            <button id="btn-Thalis" onclick="filter('Thalis')"
+                class="tab-btn px-8 py-3 rounded-full bg-white border border-gray-200 text-gray-600 text-xs font-bold uppercase hover:bg-amber-50 hover:text-amber-800 transition-all shadow-md">Thalis</button>
+            <button id="btn-Snacks" onclick="filter('Snacks')"
+                class="tab-btn px-8 py-3 rounded-full bg-white border border-gray-200 text-gray-600 text-xs font-bold uppercase hover:bg-amber-50 hover:text-amber-800 transition-all shadow-md">Snacks</button>
+            <button id="btn-Desserts" onclick="filter('Desserts')"
+                class="tab-btn px-8 py-3 rounded-full bg-white border border-gray-200 text-gray-600 text-xs font-bold uppercase hover:bg-amber-50 hover:text-amber-800 transition-all shadow-md">Desserts</button>
+            <button id="btn-Crafts" onclick="filter('Crafts')"
+                class="tab-btn px-8 py-3 rounded-full bg-white border border-gray-200 text-gray-600 text-xs font-bold uppercase hover:bg-amber-50 hover:text-amber-800 transition-all shadow-md">Crafts</button>
+        </div>
+
+        <!-- 🕉️ TYOHAR (VRAT) TOGGLE - Cultural Filter -->
         <div class="flex items-center justify-center mt-4 gap-3">
             <span class="text-[10px] uppercase font-bold text-gray-400 tracking-widest">Standard Menu</span>
-            <button id="vratToggle" onclick="toggleVratMode()" class="relative w-14 h-7 bg-gray-300 rounded-full transition-colors duration-300 focus:outline-none shadow-inner border border-gray-200">
-                <div id="vratKnob" class="absolute left-1 top-1 w-5 h-5 bg-white rounded-full transition-transform duration-300 shadow-md"></div>
+            <button id="vratToggle" onclick="toggleVratMode()"
+                class="relative w-14 h-7 bg-gray-300 rounded-full transition-colors duration-300 focus:outline-none shadow-inner border border-gray-200">
+                <div id="vratKnob"
+                    class="absolute left-1 top-1 w-5 h-5 bg-white rounded-full transition-transform duration-300 shadow-md">
+                </div>
             </button>
             <span class="text-[10px] uppercase font-bold text-amber-700 tracking-widest flex items-center gap-1">
                 <i data-lucide="flower-2" class="w-3 h-3"></i> Vrat / Upwas
@@ -466,299 +305,455 @@
 
     <div class="max-w-7xl mx-auto px-4 pb-24">
         <div id="loading" class="text-center py-20">
-            <div class="flex flex-col items-center gap-4">
-                <div class="w-12 h-12 border-4 border-amber-200 border-t-amber-700 rounded-full animate-spin"></div>
-                <div class="font-cinzel text-amber-800 text-lg" id="loadingText">Waking up our kitchen...</div>
-                <p class="text-xs text-gray-400 max-w-xs mx-auto" id="loadingSub">Our server sleeps when idle (Render free tier).<br>First load takes <strong>30–60 seconds</strong>. Please wait 🙏</p>
-                <div id="loadingTimer" class="text-[11px] text-gray-300 font-mono bg-amber-50 px-3 py-1 rounded-full border border-amber-100">0s elapsed</div>
+            <div class="text-amber-800/50 animate-pulse tracking-widest font-cinzel text-lg mb-2">Setting the table...
             </div>
+            <p class="text-xs text-gray-400">First load may take a moment while our kitchen wakes up</p>
         </div>
         <div id="menuGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 hidden"></div>
     </div>
 
     <script>
-    let allItems = [];
-    const MOCK_DATA = [
-        { id:"neelam-dal-bati", title:"Dal Bati Churma",      price:"₹350", chef:"Neelam Joshi",      loc:"Indore, MP",  desc:"Authentic Rajasthani Dal Bati cooked on cow dung cakes.", img:"public/Neelam Joshi/Daal Bhati Churma.jpeg", avatar:"Neelam Joshi/Owner pic.png", category:"Thalis",  time:"4hrs" },
-        { id:"neelam-thali",    title:"Sampoorna Veg Thali",  price:"₹280", chef:"Neelam Joshi",      loc:"Indore, MP",  desc:"Complete meal with Rice, Kadhi, Aloo Sabji, Salad, and Roti.", img:"public/Neelam Joshi/Thali (Rice, Kadhi , Salad , Aloo sabji, Roti).jpeg", avatar:"Neelam Joshi/Owner pic.png", category:"Thalis", time:"Lunch" },
-        { id:"manju-samosa",    title:"Mini Dry Samosa",      price:"₹120", chef:"Manju Vijayvargiye", loc:"Bhopal, MP",  desc:"Crispy, dry mini samosas perfect for evening tea.", img:"public/Manju vijayvargiye/Chote Samose.jpeg", avatar:"Manju vijayvargiye/OWNER PIC.jpeg", category:"Snacks", time:"Fresh" },
-        { id:"manju-gulab",     title:"Desi Ghee Gulab Jamun",price:"₹299", chef:"Manju Vijayvargiye", loc:"Bhopal, MP",  desc:"Soft khoya dumplings in rose sugar syrup.", img:"public/Manju vijayvargiye/Gulab Jamun.jpeg", avatar:"Manju vijayvargiye/OWNER PIC.jpeg", category:"Desserts", time:"Warm" },
-        { id:"sakshi-mawa-cake",title:"Mawa Slice Cake",      price:"₹250", chef:"Sakshi Tolani",     loc:"Pune, MH",    desc:"Rich, dense Parsi-style cake loaded with mawa and butter.", img:"public/Sakshi Tolani/Sakshi Tolani/Mawa Slice Cakes as Gifts.jpeg", avatar:"Sakshi Tolani/Sakshi Tolani/Owner pic.jpeg", category:"Desserts", time:"Baked" },
-        { id:"dolly-soap",      title:"Herbal Bath Soap",     price:"₹120", chef:"Dolly Aunty",       loc:"Mumbai, MH",  desc:"Handmade organic soap with natural herbs.", img:"public/dolly aunty/herbal soap.jpeg", avatar:"dolly aunty/Owner pic.jpeg", category:"Crafts", time:"Handmade" }
-    ];
+        let allItems = [];
 
-    async function init() {
-        let elapsed = 0;
-        const timerEl = document.getElementById('loadingTimer');
-        const subEl   = document.getElementById('loadingSub');
-        const txtEl   = document.getElementById('loadingText');
-        const timerInterval = setInterval(() => {
-            elapsed++;
-            if (timerEl) timerEl.textContent = elapsed+'s elapsed';
-            if (elapsed===10 && txtEl) txtEl.textContent='Kitchen is starting up...';
-            if (elapsed===25 && txtEl) txtEl.textContent='Almost there, hang on...';
-            if (elapsed===40 && subEl) subEl.innerHTML='Taking a bit longer — Render cold start can take up to 60s. Still waiting... ☕';
-        }, 1000);
-        try {
+        // MOCK_DATA fallback when all sources fail
+        const MOCK_DATA = [
+            { id: "neelam-dal-bati", title: "Dal Bati Churma", price: "₹350", chef: "Neelam Joshi", loc: "Indore, MP", desc: "Authentic Rajasthani Dal Bati cooked on cow dung cakes.", img: "public/Neelam Joshi/Daal Bhati Churma.jpeg", avatar: "Neelam Joshi/Owner pic.png", category: "Thalis", time: "4hrs" },
+            { id: "neelam-thali", title: "Sampoorna Veg Thali", price: "₹280", chef: "Neelam Joshi", loc: "Indore, MP", desc: "Complete meal with Rice, Kadhi, Aloo Sabji, Salad, and Roti.", img: "public/Neelam Joshi/Thali (Rice, Kadhi , Salad , Aloo sabji, Roti).jpeg", avatar: "Neelam Joshi/Owner pic.png", category: "Thalis", time: "Lunch" },
+            { id: "manju-samosa", title: "Mini Dry Samosa", price: "₹120", chef: "Manju Vijayvargiye", loc: "Bhopal, MP", desc: "Crispy, dry mini samosas perfect for evening tea.", img: "public/Manju vijayvargiye/Chote Samose.jpeg", avatar: "Manju vijayvargiye/OWNER PIC.jpeg", category: "Snacks", time: "Fresh" },
+            { id: "manju-gulab", title: "Desi Ghee Gulab Jamun", price: "₹299", chef: "Manju Vijayvargiye", loc: "Bhopal, MP", desc: "Soft khoya dumplings in rose sugar syrup.", img: "public/Manju vijayvargiye/Gulab Jamun.jpeg", avatar: "Manju vijayvargiye/OWNER PIC.jpeg", category: "Desserts", time: "Warm" },
+            { id: "sakshi-mawa-cake", title: "Mawa Slice Cake", price: "₹250", chef: "Sakshi Tolani", loc: "Pune, MH", desc: "Rich, dense Parsi-style cake loaded with mawa and butter.", img: "public/Sakshi Tolani/Sakshi Tolani/Mawa Slice Cakes as Gifts.jpeg", avatar: "Sakshi Tolani/Sakshi Tolani/Owner pic.jpeg", category: "Desserts", time: "Baked" },
+            { id: "dolly-soap", title: "Herbal Bath Soap", price: "₹120", chef: "Dolly Aunty", loc: "Mumbai, MH", desc: "Handmade organic soap with natural herbs.", img: "public/dolly aunty/herbal soap.jpeg", avatar: "dolly aunty/Owner pic.jpeg", category: "Crafts", time: "Handmade" }
+        ];
+
+        async function init() {
             try {
-                const controller = new AbortController();
-                const timeoutId  = setTimeout(() => controller.abort(), 58000);
-                const res = await fetch(`${window.CONFIG.BASE_URL}/explore`, { signal: controller.signal });
-                clearTimeout(timeoutId);
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data && data.length > 0) { allItems = data; clearInterval(timerInterval); render(allItems); return; }
-                    throw new Error('Empty');
-                } else throw new Error('HTTP '+res.status);
-            } catch(e) {
-                console.warn('Backend unavailable:', e.message);
                 try {
-                    const lr = await fetch('real-products.json');
-                    if (lr.ok) {
-                        const ld = await lr.json();
-                        if (ld && ld.length>0) { allItems=ld.map(i=>({...i,image:i.img?.startsWith('http')?i.img:'public/'+i.img})); clearInterval(timerInterval); render(allItems); return; }
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 sec timeout for Render cold start
+                    const res = await fetch(`${window.CONFIG.BASE_URL}/explore`, { signal: controller.signal });
+                    clearTimeout(timeoutId);
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data && data.length > 0) {
+                            allItems = data;
+                        } else {
+                            throw new Error('Backend empty');
+                        }
+                    } else throw new Error('Backend failed');
+                } catch (e) {
+                    console.warn('Backend unavailable, trying local JSON:', e.message);
+                    try {
+                        const localRes = await fetch('real-products.json');
+                        if (localRes.ok) {
+                            const localData = await localRes.json();
+                            if (localData && localData.length > 0) {
+                                allItems = localData.map(i => ({ ...i, image: i.img?.startsWith('http') ? i.img : "public/" + i.img }));
+                            } else {
+                                throw new Error('Local JSON empty');
+                            }
+                        } else {
+                            throw new Error('Local JSON failed');
+                        }
+                    } catch (e2) {
+                        console.warn('Local JSON also failed, using MOCK_DATA:', e2.message);
+                        allItems = MOCK_DATA;
                     }
-                    throw new Error('Local JSON empty');
-                } catch { allItems = MOCK_DATA; }
-            }
-            clearInterval(timerInterval); render(allItems);
-        } catch(err) { clearInterval(timerInterval); allItems=MOCK_DATA; render(allItems); }
-    }
-
-    function render(items) {
-        document.getElementById('loading').classList.add('hidden');
-        const grid = document.getElementById('menuGrid');
-        grid.classList.remove('hidden');
-        if (items.length===0) { grid.innerHTML='<div class="col-span-full text-center text-gray-400 italic py-10">No items found.</div>'; return; }
-
-        grid.innerHTML = items.map(item => {
-            const safePrice = Number(String(item.price).replace(/[^0-9.]/g,''))||0;
-            const price = new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',minimumFractionDigits:0}).format(safePrice);
-            const img   = item.image||item.img||window.CONFIG.PLACEHOLDER;
-            const chefAvatar = item.avatar
-                ? (item.avatar.startsWith('http') ? item.avatar : `public/${item.avatar}`)
-                : `https://ui-avatars.com/api/?name=${encodeURIComponent(item.chef||'Chef')}&background=d97706&color=fff&size=64`;
-            const safeName  = (item.name||item.title||'Delicious Dish').replace(/'/g,"\\'");
-            const safeChef  = (item.chef||'Home Chef').replace(/'/g,"\\'");
-            const safeImage = item.image||item.img||'';
-
-            const descLower = ((item.desc||item.description||'')+' '+(item.name||item.title||'')).toLowerCase();
-            const badges=[];
-            if (descLower.includes('ghee')||descLower.includes('desi')) badges.push({text:'Desi Ghee',color:'bg-green-100 text-green-700 border-green-200'});
-            if (descLower.includes('handmade')||descLower.includes('hand made')) badges.push({text:'Handmade',color:'bg-amber-100 text-amber-700 border-amber-200'});
-            if (descLower.includes('vrat')||descLower.includes('falahari')||descLower.includes('upwas')) badges.push({text:'Vrat Special',color:'bg-purple-100 text-purple-700 border-purple-200'});
-            if (descLower.includes('organic')||descLower.includes('natural')) badges.push({text:'Organic',color:'bg-lime-100 text-lime-700 border-lime-200'});
-            const badgeHtml=badges.slice(0,2).map(b=>`<span class="text-[8px] font-bold px-1.5 py-0.5 rounded border ${b.color} uppercase">${b.text}</span>`).join('');
-
-            const loc=(item.loc||'').toLowerCase(), cat=(item.category||'').toLowerCase();
-            const city=loc.includes('indore')?'Indore':loc.includes('bhopal')?'Bhopal':loc.includes('pune')?'Pune':loc.includes('mumbai')?'Mumbai':'';
-            let originLabel='';
-            if (city) {
-                if (cat.includes('craft')||cat.includes('soap')) originLabel=`HANDCRAFTED · ${city.toUpperCase()}`;
-                else if (cat.includes('snack')||cat.includes('namkeen')) originLabel=city==='Indore'?'INDORI SWAD':city==='Bhopal'?'BHOPALI SNACKS':`${city.toUpperCase()} MUNCHIES`;
-                else if (cat.includes('sweet')||cat.includes('dessert')) originLabel=`${city.toUpperCase()} MITHAI`;
-                else if (cat.includes('thali')||cat.includes('meal')) originLabel=city==='Indore'?'INDORI ZAYKA':city==='Bhopal'?'BHOPALI DAAWAT':`${city.toUpperCase()} SPECIAL`;
-                else originLabel=`FROM ${city.toUpperCase()}`;
-            }
-            const originStamp=originLabel?`<div class="absolute bottom-2 left-2 bg-black/80 text-white text-[8px] font-bold px-2 py-1 rounded border border-amber-500/50 flex items-center gap-1"><i data-lucide="map-pin" class="w-2 h-2"></i> ${originLabel}</div>`:'';
-
-            // Show current cart count on button if already in cart
-            const strId = String(item.id);
-            const inCart = window._cartQty && window._cartQty[strId] ? window._cartQty[strId] : 0;
-            const btnHtml = inCart > 0
-                ? `<span style="font-size:14px;font-weight:800">${inCart}</span><span style="font-size:9px">× in cart</span>`
-                : `Add <span class="text-gold" aria-hidden="true">+</span>`;
-            const btnStyle = inCart > 0 ? 'bg-amber-700 hover:bg-amber-600' : 'bg-gray-900 hover:bg-amber-700 group-hover:bg-amber-800';
-
-            return `
-            <div class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 group hover:-translate-y-2 border border-gray-100">
-                <div class="h-60 overflow-hidden relative cursor-pointer" onclick="window.open('product.html?id=${item.id}','_blank')">
-                    <img src="${img}" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4 backdrop-blur-[2px]">
-                        <span class="text-gold font-cinzel text-lg border-b border-gold pb-1 mb-1">View Details</span>
-                    </div>
-                    <div class="absolute top-3 right-3 bg-white/90 backdrop-blur text-[10px] font-bold px-2 py-1 rounded text-amber-900 shadow-sm uppercase tracking-wide">${item.time||'Fresh'}</div>
-                    <button onclick="event.stopPropagation();toggleFavorite('${item.id}','${safeName}','${safeImage}',${safePrice},'${safeChef}',this)"
-                        class="absolute top-3 left-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur shadow-sm flex items-center justify-center hover:scale-110 transition-transform cursor-pointer z-10 group/fav border border-gray-100">
-                        <i data-lucide="heart" class="w-4 h-4 text-gray-400 group-hover/fav:text-red-500 transition-colors"></i>
-                    </button>
-                    ${originStamp}
-                </div>
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-2">
-                        <h3 class="font-cinzel text-lg text-gray-900 font-bold leading-tight truncate pr-2">${item.name||item.title}</h3>
-                        <span class="text-amber-600 text-xs font-bold bg-amber-50 px-2 py-1 rounded border border-amber-100">${item.category||'Veg'}</span>
-                    </div>
-                    ${badgeHtml?`<div class="flex flex-wrap gap-1 mb-2">${badgeHtml}</div>`:''}
-                    <div class="flex items-center gap-2 mb-3">
-                        <img src="${chefAvatar}" class="w-7 h-7 rounded-full border border-amber-200 object-cover">
-                        <span class="text-xs text-gray-500 uppercase tracking-widest">By ${item.chef||'Home Chef'}</span>
-                    </div>
-                    <p class="text-sm text-gray-600 line-clamp-2 italic mb-6 font-light leading-relaxed h-10">${item.desc||item.description||'Authentic homemade delicacy.'}</p>
-                    <div class="flex justify-between items-center pt-4 border-t border-gray-100">
-                        <span class="text-2xl font-cinzel text-amber-800 font-bold">${price}</span>
-                        <button id="cartBtn_${strId}" onclick="addToCart('${item.id}', this)"
-                            class="${btnStyle} text-white px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg transition-all flex items-center gap-2">
-                            ${btnHtml}
-                        </button>
-                    </div>
-                </div>
-            </div>`;
-        }).join('');
-
-        if (typeof lucide !== 'undefined') lucide.createIcons();
-    }
-
-    /* ── Per-item cart qty tracker ── */
-    if (!window._cartQty) window._cartQty = {};
-
-    async function addToCart(id, btn) {
-        const token = localStorage.getItem('authToken');
-        if (!token) { localStorage.setItem('redirectAfterLogin', window.location.href); window.location.href='login.html'; return; }
-
-        const strId = String(id);
-        const prevHtml = btn.innerHTML;
-        btn.innerHTML='Adding...'; btn.classList.add('opacity-70');
-
-        try {
-            const res = await fetch(`${window.CONFIG.BASE_URL}/add-to-cart`, {
-                method:'POST',
-                headers:{ 'Content-Type':'application/json', 'Authorization':`Bearer ${token}` },
-                body: JSON.stringify({ productid: parseInt(id, 10), quantity: 1 })
-            });
-
-            if (!res.ok) {
-                if (res.status===403) {
-                    localStorage.removeItem('authToken');
-                    showMenuToast('Session expired. Please login again.', true);
-                    setTimeout(() => window.location.href='login.html', 2000);
-                    return;
                 }
-                const ed = await res.json().catch(()=>({}));
-                throw new Error(ed.message||'Failed to add');
+                render(allItems);
+            } catch (err) {
+                console.error('All sources failed:', err);
+                allItems = MOCK_DATA;
+                render(allItems);
+            }
+        }
+
+        function render(items) {
+            document.getElementById('loading').classList.add('hidden');
+            const grid = document.getElementById('menuGrid');
+            grid.classList.remove('hidden');
+
+            if (items.length === 0) {
+                grid.innerHTML = '<div class="col-span-full text-center text-gray-400 italic py-10">No items found.</div>';
+                return;
             }
 
-            // Update per-item count
-            window._cartQty[strId] = (window._cartQty[strId]||0) + 1;
-            const count = window._cartQty[strId];
+            grid.innerHTML = items.map(item => {
+                const safePrice = Number(String(item.price).replace(/[^0-9.]/g, '')) || 0;
+                const price = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 }).format(safePrice);
+                const img = item.image || item.img || window.CONFIG.PLACEHOLDER;
+                const chefAvatar = item.avatar
+                    ? (item.avatar.startsWith('http') ? item.avatar : `public/${item.avatar}`)
+                    : `https://ui-avatars.com/api/?name=${encodeURIComponent(item.chef || 'Chef')}&background=d97706&color=fff&size=64`;
 
-            btn.classList.remove('opacity-70');
+                const safeName = (item.name || item.title || 'Delicious Dish').replace(/'/g, "\\'");
+                const safeChef = (item.chef || 'Home Chef').replace(/'/g, "\\'");
+                const safeImage = item.image || item.img || "";
 
-            // Update button to show count
-            btn.innerHTML = `<span style="font-size:14px;font-weight:800">${count}</span><span style="font-size:9px">× in cart</span>`;
+                // 🏷️ INGREDIENT BADGES - Auto-generate from description
+                const descLower = ((item.desc || item.description || '') + ' ' + (item.name || item.title || '')).toLowerCase();
+                const badges = [];
+                if (descLower.includes('ghee') || descLower.includes('desi')) badges.push({ text: 'Desi Ghee', color: 'bg-green-100 text-green-700 border-green-200' });
+                if (descLower.includes('handmade') || descLower.includes('hand made')) badges.push({ text: 'Handmade', color: 'bg-amber-100 text-amber-700 border-amber-200' });
+                if (descLower.includes('vrat') || descLower.includes('falahari') || descLower.includes('upwas')) badges.push({ text: 'Vrat Special', color: 'bg-purple-100 text-purple-700 border-purple-200' });
+                if (descLower.includes('organic') || descLower.includes('natural')) badges.push({ text: 'Organic', color: 'bg-lime-100 text-lime-700 border-lime-200' });
+                const badgeHtml = badges.slice(0, 2).map(b => `<span class="text-[8px] font-bold px-1.5 py-0.5 rounded border ${b.color} uppercase">${b.text}</span>`).join('');
 
-            if (count===1) {
-                // First add — flash green briefly
-                btn.className = btn.className.replace('bg-gray-900','bg-green-600').replace('group-hover:bg-amber-800','hover:bg-green-700');
+                // 📍 SMART ORIGIN STAMP - Category + Location aware
+                const loc = (item.loc || '').toLowerCase();
+                const cat = (item.category || '').toLowerCase();
+                const city = loc.includes('indore') ? 'Indore' : loc.includes('bhopal') ? 'Bhopal' : loc.includes('pune') ? 'Pune' : loc.includes('mumbai') ? 'Mumbai' : '';
+
+                let originLabel = '';
+                if (city) {
+                    // Smart labels based on product category
+                    if (cat.includes('craft') || cat.includes('art') || cat.includes('soap') || cat.includes('decor')) {
+                        originLabel = `HANDCRAFTED · ${city.toUpperCase()}`;
+                    } else if (cat.includes('snack') || cat.includes('namkeen') || cat.includes('pickle')) {
+                        originLabel = city === 'Indore' ? 'INDORI SWAD' : city === 'Bhopal' ? 'BHOPALI SNACKS' : `${city.toUpperCase()} MUNCHIES`;
+                    } else if (cat.includes('sweet') || cat.includes('dessert') || cat.includes('mithai')) {
+                        originLabel = `${city.toUpperCase()} MITHAI`;
+                    } else if (cat.includes('thali') || cat.includes('meal')) {
+                        originLabel = city === 'Indore' ? 'INDORI ZAYKA' : city === 'Bhopal' ? 'BHOPALI DAAWAT' : `${city.toUpperCase()} SPECIAL`;
+                    } else {
+                        // Default: Generic origin
+                        originLabel = `FROM ${city.toUpperCase()}`;
+                    }
+                }
+
+                const originStamp = originLabel ? `<div class="absolute bottom-2 left-2 bg-black/80 text-white text-[8px] font-bold px-2 py-1 rounded border border-amber-500/50 flex items-center gap-1"><i data-lucide="map-pin" class="w-2 h-2"></i> ${originLabel}</div>` : '';
+
+                return `
+                <div class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 group hover:-translate-y-2 border border-gray-100">
+                    <div class="h-60 overflow-hidden relative cursor-pointer" onclick="window.open('product.html?id=${item.id}', '_blank')">
+                        <img src="${img}" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4 backdrop-blur-[2px]">
+                            <span class="text-gold font-cinzel text-lg border-b border-gold pb-1 mb-1">View Details</span>
+                        </div>
+                        <div class="absolute top-3 right-3 bg-white/90 backdrop-blur text-[10px] font-bold px-2 py-1 rounded text-amber-900 shadow-sm uppercase tracking-wide">
+                            ${item.time || 'Fresh'}
+                        </div>
+                        <button onclick="event.stopPropagation(); toggleFavorite('${item.id}', '${safeName}', '${safeImage}', ${safePrice}, '${safeChef}', this)" 
+                            aria-label="Add ${safeName} to favorites"
+                            class="absolute top-3 left-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur shadow-sm flex items-center justify-center hover:scale-110 transition-transform cursor-pointer z-10 group/fav border border-gray-100">
+                            <i data-lucide="heart" class="w-4 h-4 text-gray-400 group-hover/fav:text-red-500 transition-colors"></i>
+                        </button>
+                        ${originStamp}
+                    </div>
+                    
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-cinzel text-lg text-gray-900 font-bold leading-tight truncate pr-2">${item.name || item.title}</h3>
+                            <span class="text-amber-600 text-xs font-bold bg-amber-50 px-2 py-1 rounded border border-amber-100">${item.category || 'Veg'}</span>
+                        </div>
+                        
+                        <!-- Ingredient Badges -->
+                        ${badgeHtml ? `<div class="flex flex-wrap gap-1 mb-2">${badgeHtml}</div>` : ''}
+                        
+                        <!-- Chef Info with Avatar -->
+                        <div class="flex items-center gap-2 mb-3">
+                            <img src="${chefAvatar}" class="w-7 h-7 rounded-full border border-amber-200 object-cover">
+                            <span class="text-xs text-gray-500 uppercase tracking-widest">By ${item.chef || 'Home Chef'}</span>
+                        </div>
+                        
+                        <p class="text-sm text-gray-600 line-clamp-2 italic mb-6 font-light leading-relaxed h-10">${item.desc || item.description || "Authentic homemade delicacy."}</p>
+                        
+                        <div class="flex justify-between items-center pt-4 border-t border-gray-100">
+                            <span class="text-2xl font-cinzel text-amber-800 font-bold">${price}</span>
+                            <button onclick="addToCart('${item.id}', this)" 
+                                aria-label="Add ${safeName} to cart"
+                                class="bg-gray-900 hover:bg-amber-700 text-white px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg transition-all flex items-center gap-2 group-hover:bg-amber-800">
+                                Add <span class="text-gold" aria-hidden="true">+</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `}).join('');
+
+            // Re-initialize Lucide icons for dynamic content
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        async function addToCart(id, btn) {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                localStorage.setItem('redirectAfterLogin', window.location.href);
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const originalText = btn.innerHTML;
+            btn.innerHTML = "Adding..."; btn.classList.add("opacity-70");
+
+            try {
+                console.log('🛒 Adding to cart:', id);
+                console.log('🔑 Token present:', token ? 'Yes (' + token.substring(0, 20) + '...)' : 'No');
+
+                const res = await fetch(`${window.CONFIG.BASE_URL}/add-to-cart`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ productid: id, quantity: 1 })
+                });
+
+                console.log('📥 Response status:', res.status);
+
+                if (!res.ok) {
+                    if (res.status === 403) {
+                        console.error('🔒 403 Forbidden - Token likely expired');
+                        localStorage.removeItem('authToken');
+                        localStorage.removeItem('userName');
+                        localStorage.removeItem('userRole');
+                        showToast('Your session has expired. Please login again.', 'error');
+                        setTimeout(() => window.location.href = 'login.html', 2000);
+                        return;
+                    }
+
+                    const errorData = await res.json().catch(() => ({}));
+                    console.error('Add to cart failed:', res.status, errorData);
+                    throw new Error(errorData.message || 'Failed to add');
+                }
+
+                btn.innerHTML = "Added ✓";
+                btn.classList.replace("bg-gray-900", "bg-green-600");
+                btn.classList.replace("group-hover:bg-amber-800", "hover:bg-green-700");
+
+                // Update badge
+                const badge = document.getElementById('cartCountBadge');
+                if (badge) {
+                    const current = parseInt(badge.innerText) || 0;
+                    badge.innerText = current + 1;
+                    badge.classList.remove('hidden');
+                }
+
                 setTimeout(() => {
-                    btn.className = btn.className.replace('bg-green-600','bg-amber-700').replace('hover:bg-green-700','hover:bg-amber-600');
+                    btn.innerHTML = originalText;
+                    btn.classList.replace("bg-green-600", "bg-gray-900");
+                    btn.classList.replace("hover:bg-green-700", "group-hover:bg-amber-800");
+                    btn.classList.remove("opacity-70");
                 }, 1500);
-            } else {
-                btn.className = btn.className.replace('bg-gray-900','bg-amber-700').replace('group-hover:bg-amber-800','hover:bg-amber-600');
+            } catch (e) {
+                console.error('Add to cart error:', e);
+                btn.innerHTML = "Error";
+                btn.classList.replace("bg-gray-900", "bg-red-600");
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.classList.replace("bg-red-600", "bg-gray-900");
+                    btn.classList.remove("opacity-70");
+                }, 2000);
+            }
+        }
+
+        async function toggleFavorite(dishId, dishName, dishImage, dishPrice, chefName, btn) {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
             }
 
-            // Update all navbar badges
-            updateAllCartBadges();
+            // Optimistic UI update
+            const icon = btn.querySelector('div');
+            const isFav = icon.innerText === '❤️';
+            icon.innerText = isFav ? '🤍' : '❤️';
 
-        } catch(e) {
-            console.error('Add to cart error:', e);
-            btn.innerHTML = 'Error ✕';
-            btn.className = btn.className.replace('bg-gray-900','bg-red-600');
-            setTimeout(() => { btn.innerHTML=prevHtml; btn.className=btn.className.replace('bg-red-600','bg-gray-900'); btn.classList.remove('opacity-70'); }, 2000);
+            try {
+                const endpoint = isFav ? '/remove-favorite' : '/add-favorite';
+                await fetch(`${window.CONFIG.BASE_URL}${endpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        dishId,
+                        dishName,
+                        dishImage,
+                        dishPrice,
+                        chefName
+                    })
+                });
+            } catch (e) {
+                console.error('Fav error', e);
+                // Revert on error
+                icon.innerText = isFav ? '❤️' : '🤍';
+                // Show user-friendly error
+                showToast('Could not update favorite. Please try again.', 'error');
+            }
         }
-    }
 
-    async function toggleFavorite(dishId, dishName, dishImage, dishPrice, chefName, btn) {
-        const token = localStorage.getItem('authToken');
-        if (!token) { window.location.href='login.html'; return; }
-        const icon = btn.querySelector('i');
-        const isFav = btn.dataset.fav === '1';
-        btn.dataset.fav = isFav ? '0' : '1';
-        if (icon) { icon.style.color = isFav ? '' : '#ef4444'; icon.style.fill = isFav ? '' : '#ef4444'; }
-        try {
-            const endpoint = isFav ? '/remove-favorite' : '/add-favorite';
-            await fetch(`${window.CONFIG.BASE_URL}${endpoint}`, {
-                method:'POST', headers:{ 'Content-Type':'application/json', 'Authorization':`Bearer ${token}` },
-                body: JSON.stringify({ dishId, dishName, dishImage, dishPrice, chefName })
-            });
-        } catch { btn.dataset.fav=isFav?'1':'0'; if (icon) { icon.style.color=''; icon.style.fill=''; } }
-    }
+        function normalize(c) { return (c || "").toLowerCase().trim(); }
 
-    function normalize(c) { return (c||'').toLowerCase().trim(); }
+        function filter(cat) {
+            const inactiveClass = "tab-btn px-8 py-3 rounded-full bg-white border border-gray-200 text-gray-600 text-xs font-bold uppercase hover:bg-amber-50 hover:text-amber-800 transition-all shadow-md";
+            const activeClass = "tab-btn px-8 py-3 rounded-full bg-amber-800 text-white text-xs font-bold uppercase shadow-lg transition-all hover:scale-105 border border-amber-900";
 
-    function filter(cat) {
-        const inact="tab-btn px-8 py-3 rounded-full bg-white border border-gray-200 text-gray-600 text-xs font-bold uppercase hover:bg-amber-50 hover:text-amber-800 transition-all shadow-md";
-        const act  ="tab-btn px-8 py-3 rounded-full bg-amber-800 text-white text-xs font-bold uppercase shadow-lg transition-all hover:scale-105 border border-amber-900";
-        document.querySelectorAll('.tab-btn').forEach(b=>b.className=inact);
-        const t=document.getElementById(`btn-${cat}`); if(t) t.className=act;
-        if (isVratMode) toggleVratMode();
-        if (cat==='All') render(allItems);
-        else render(allItems.filter(i=>normalize(i.category)===normalize(cat)));
-    }
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.className = inactiveClass);
+            const target = document.getElementById(`btn-${cat}`);
+            if (target) target.className = activeClass;
 
-    let isVratMode=false;
-    function toggleVratMode() {
-        isVratMode=!isVratMode;
-        const btn=document.getElementById('vratToggle'), knob=document.getElementById('vratKnob'), header=document.querySelector('h1.font-cinzel');
-        if (isVratMode) {
-            btn.classList.replace('bg-gray-300','bg-amber-500'); btn.classList.replace('border-gray-200','border-amber-600');
-            knob.classList.add('translate-x-7'); knob.classList.replace('bg-white','bg-amber-100');
-            const vrats=allItems.filter(i=>{const t=((i.name||i.title||'')+' '+(i.desc||i.description||'')).toLowerCase(); return t.includes('vrat')||t.includes('falahari')||t.includes('sabudana')||t.includes('upwas')||t.includes('kuttu');});
-            if (vrats.length>0) { render(vrats); if(header) header.innerText='🙏 Shuddh Falahari Menu'; }
-            else { render([]); if(header) header.innerText='🙏 Vrat Menu Coming Soon'; }
-        } else {
-            btn.classList.replace('bg-amber-500','bg-gray-300'); btn.classList.replace('border-amber-600','border-gray-200');
-            knob.classList.remove('translate-x-7'); knob.classList.replace('bg-amber-100','bg-white');
-            render(allItems); if(header) header.innerText='The Royal Menu';
+            // Reset Vrat mode
+            if (isVratMode) toggleVratMode();
+
+            if (cat === 'All') render(allItems);
+            else render(allItems.filter(i => normalize(i.category) === normalize(cat)));
         }
-    }
 
-    function toggleSearch() {
-        const o=document.getElementById('searchOverlay');
-        if (o.classList.contains('hidden')) { o.classList.remove('hidden'); setTimeout(()=>o.classList.remove('opacity-0'),10); document.getElementById('searchInput').focus(); }
-        else { o.classList.add('opacity-0'); setTimeout(()=>o.classList.add('hidden'),300); }
-    }
-    function liveSearch() {
-        const q=document.getElementById('searchInput').value.toLowerCase().trim();
-        const rc=document.getElementById('searchResults');
-        if (q.length<2) { rc.innerHTML='<p class="text-gray-500 text-sm">Type at least 2 characters...</p>'; return; }
-        const matches=allItems.filter(i=>{const s=((i.name||i.title||'')+' '+(i.chef||'')+' '+(i.desc||i.description||'')+' '+(i.loc||'')).toLowerCase(); return s.includes(q);}).slice(0,6);
-        if (matches.length===0) { rc.innerHTML=`<p class="text-gray-400 text-center py-8">No dishes found for "${q}"</p>`; return; }
-        rc.innerHTML=matches.map(item=>{
-            const img=item.image||item.img||'public/placeholder.jpg';
-            const price=Number(String(item.price).replace(/[^0-9.]/g,''))||0;
-            return `<a href="product.html?id=${item.id}" class="flex items-center gap-4 p-4 bg-white/5 rounded-xl hover:bg-amber-500/10 transition-all border border-transparent hover:border-amber-500/30">
-                <img src="${img}" loading="lazy" class="w-16 h-16 rounded-lg object-cover">
-                <div class="flex-1"><h4 class="font-cinzel text-white font-bold">${item.name||item.title}</h4><p class="text-xs text-gray-400">By ${item.chef||'Home Chef'} · ${item.loc||''}</p></div>
-                <span class="font-cinzel text-amber-500 font-bold">₹${price}</span>
-            </a>`;
-        }).join('');
-        if (typeof lucide!=='undefined') lucide.createIcons();
-    }
+        // ===== SORT DISHES =====
+        function sortDishes() {
+            const sortBy = document.getElementById('sortSelect').value;
+            let sorted = [...displayedDishes];
 
-    init();
+            switch (sortBy) {
+                case 'price-low':
+                    sorted.sort((a, b) => parsePrice(a) - parsePrice(b));
+                    break;
+                case 'price-high':
+                    sorted.sort((a, b) => parsePrice(b) - parsePrice(a));
+                    break;
+                case 'rating':
+                    sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+                    break;
+                case 'newest':
+                    sorted.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+                    break;
+                default:
+                    sorted.sort((a, b) => (a.name || a.title || '').localeCompare(b.name || b.title || ''));
+            }
+
+            displayedDishes = sorted;
+            renderGrid();
+        }
+
+        function parsePrice(item) {
+            const priceStr = String(item.price || '0');
+            return Number(priceStr.replace(/[^0-9.]/g, '')) || 0;
+        }
+
+        // 🕉️ TYOHAR (VRAT) TOGGLE - Cultural Filter
+        let isVratMode = false;
+        function toggleVratMode() {
+            isVratMode = !isVratMode;
+            const btn = document.getElementById('vratToggle');
+            const knob = document.getElementById('vratKnob');
+            const header = document.querySelector('h1.font-cinzel');
+
+            if (isVratMode) {
+                // Active state
+                btn.classList.replace('bg-gray-300', 'bg-amber-500');
+                btn.classList.replace('border-gray-200', 'border-amber-600');
+                knob.classList.add('translate-x-7');
+                knob.classList.replace('bg-white', 'bg-amber-100');
+
+                // Filter for Vrat/Falahari items
+                const vratItems = allItems.filter(item => {
+                    const txt = ((item.name || item.title || '') + ' ' + (item.desc || item.description || '')).toLowerCase();
+                    return txt.includes('vrat') || txt.includes('falahari') || txt.includes('sabudana') || txt.includes('upwas') || txt.includes('kuttu');
+                });
+
+                if (vratItems.length > 0) {
+                    render(vratItems);
+                    if (header) header.innerText = "🙏 Shuddh Falahari Menu";
+                } else {
+                    render([]);
+                    if (header) header.innerText = "🙏 Vrat Menu Coming Soon";
+                }
+            } else {
+                // Reset state
+                btn.classList.replace('bg-amber-500', 'bg-gray-300');
+                btn.classList.replace('border-amber-600', 'border-gray-200');
+                knob.classList.remove('translate-x-7');
+                knob.classList.replace('bg-amber-100', 'bg-white');
+
+                render(allItems);
+                if (header) header.innerText = "The Royal Menu";
+            }
+        }
+
+        // 🔍 SMART SEARCH
+        function toggleSearch() {
+            const overlay = document.getElementById('searchOverlay');
+            if (overlay.classList.contains('hidden')) {
+                overlay.classList.remove('hidden');
+                setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+                document.getElementById('searchInput').focus();
+            } else {
+                overlay.classList.add('opacity-0');
+                setTimeout(() => overlay.classList.add('hidden'), 300);
+            }
+        }
+
+        function liveSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const resultsContainer = document.getElementById('searchResults');
+
+            if (query.length < 2) {
+                resultsContainer.innerHTML = '<p class="text-gray-500 text-sm">Type at least 2 characters...</p>';
+                return;
+            }
+
+            const matches = allItems.filter(item => {
+                const searchable = ((item.name || item.title || '') + ' ' + (item.chef || '') + ' ' + (item.desc || item.description || '') + ' ' + (item.loc || '')).toLowerCase();
+                return searchable.includes(query);
+            }).slice(0, 6);
+
+            if (matches.length === 0) {
+                resultsContainer.innerHTML = '<p class="text-gray-400 text-center py-8">No dishes found for "' + query + '"</p>';
+                return;
+            }
+
+            resultsContainer.innerHTML = matches.map(item => {
+                const img = item.image || item.img || 'public/placeholder.jpg';
+                const price = Number(String(item.price).replace(/[^0-9.]/g, '')) || 0;
+                return `
+                    <a href="product.html?id=${item.id}" class="flex items-center gap-4 p-4 bg-white/5 rounded-xl hover:bg-amber-500/10 transition-all border border-transparent hover:border-amber-500/30">
+                        <img src="${img}" loading="lazy" class="w-16 h-16 rounded-lg object-cover">
+                        <div class="flex-1">
+                            <h4 class="font-cinzel text-white font-bold">${item.name || item.title}</h4>
+                            <p class="text-xs text-gray-400">By ${item.chef || 'Home Chef'} · ${item.loc || ''}</p>
+                        </div>
+                        <span class="font-cinzel text-amber-500 font-bold">₹${price}</span>
+                    </a>
+                `;
+            }).join('');
+
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        init();
     </script>
 
-    <button onclick="toggleSearch()" class="fixed bottom-24 right-6 z-40 bg-amber-600 text-white w-14 h-14 rounded-full shadow-[0_0_30px_rgba(212,175,55,0.4)] flex items-center justify-center hover:scale-110 transition-transform hover:bg-amber-500 lg:bottom-6">
+    <!-- 🔍 SMART SEARCH Floating Button -->
+    <button onclick="toggleSearch()"
+        class="fixed bottom-24 right-6 z-40 bg-amber-600 text-white w-14 h-14 rounded-full shadow-[0_0_30px_rgba(212,175,55,0.4)] flex items-center justify-center hover:scale-110 transition-transform hover:bg-amber-500 lg:bottom-6">
         <i data-lucide="search" class="w-6 h-6"></i>
     </button>
 
-    <div id="searchOverlay" class="fixed inset-0 bg-[#0f0805]/98 backdrop-blur-xl z-50 hidden opacity-0 transition-opacity duration-300">
+    <!-- 🔍 SMART SEARCH Overlay -->
+    <div id="searchOverlay"
+        class="fixed inset-0 bg-[#0f0805]/98 backdrop-blur-xl z-50 hidden opacity-0 transition-opacity duration-300">
         <div class="max-w-2xl mx-auto pt-20 px-6">
             <div class="flex justify-between items-center mb-6">
                 <span class="text-gray-400 text-xs uppercase tracking-widest">Search</span>
-                <button onclick="toggleSearch()" class="text-gray-400 hover:text-white flex items-center gap-2 text-xs"><i data-lucide="x" class="w-4 h-4"></i> ESC</button>
+                <button onclick="toggleSearch()" class="text-gray-400 hover:text-white flex items-center gap-2 text-xs">
+                    <i data-lucide="x" class="w-4 h-4"></i> ESC
+                </button>
             </div>
             <div class="relative">
                 <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500"></i>
-                <input type="text" id="searchInput" onkeyup="liveSearch()" placeholder="What are you craving? (e.g. 'Dal', 'Spicy', 'Neelam')"
+                <input type="text" id="searchInput" onkeyup="liveSearch()"
+                    placeholder="What are you craving? (e.g. 'Dal', 'Spicy', 'Neelam')"
                     class="w-full bg-white/5 border border-amber-500/30 text-xl text-white py-4 pl-12 pr-4 rounded-xl focus:outline-none focus:border-amber-500 placeholder-gray-600 font-serif">
             </div>
             <div class="flex gap-3 mt-6">
                 <span class="text-xs text-gray-500 uppercase tracking-widest">Trending:</span>
-                <button onclick="document.getElementById('searchInput').value='thali';liveSearch()" class="text-xs text-amber-500 border border-amber-500/30 px-3 py-1 rounded-full hover:bg-amber-500 hover:text-black transition-all">Thali</button>
-                <button onclick="document.getElementById('searchInput').value='sweets';liveSearch()" class="text-xs text-amber-500 border border-amber-500/30 px-3 py-1 rounded-full hover:bg-amber-500 hover:text-black transition-all">Sweets</button>
-                <button onclick="document.getElementById('searchInput').value='snacks';liveSearch()" class="text-xs text-amber-500 border border-amber-500/30 px-3 py-1 rounded-full hover:bg-amber-500 hover:text-black transition-all">Snacks</button>
+                <button onclick="document.getElementById('searchInput').value='thali';liveSearch()"
+                    class="text-xs text-amber-500 border border-amber-500/30 px-3 py-1 rounded-full hover:bg-amber-500 hover:text-black transition-all">Thali</button>
+                <button onclick="document.getElementById('searchInput').value='sweets';liveSearch()"
+                    class="text-xs text-amber-500 border border-amber-500/30 px-3 py-1 rounded-full hover:bg-amber-500 hover:text-black transition-all">Sweets</button>
+                <button onclick="document.getElementById('searchInput').value='snacks';liveSearch()"
+                    class="text-xs text-amber-500 border border-amber-500/30 px-3 py-1 rounded-full hover:bg-amber-500 hover:text-black transition-all">Snacks</button>
             </div>
             <div id="searchResults" class="mt-8 space-y-3 max-h-[60vh] overflow-y-auto">
                 <p class="text-gray-500 text-sm">Type to search dishes, chefs, or locations...</p>
@@ -766,33 +761,102 @@
         </div>
     </div>
 
+    <!-- Footer -->
     <footer class="bg-[#0f0805] border-t border-amber-500/20 py-12 px-6">
         <div class="max-w-6xl mx-auto">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
-                <div><h4 class="font-cinzel text-amber-500 font-bold text-sm mb-4">Explore</h4><ul class="space-y-2"><li><a href="index.html" class="text-gray-400 text-sm hover:text-white transition-colors">Home</a></li><li><a href="menu.html" class="text-gray-400 text-sm hover:text-white transition-colors">Our Kitchens</a></li><li><a href="about.html" class="text-gray-400 text-sm hover:text-white transition-colors">About Us</a></li></ul></div>
-                <div><h4 class="font-cinzel text-amber-500 font-bold text-sm mb-4">For Chefs</h4><ul class="space-y-2"><li><a href="menu.html" class="text-gray-400 text-sm hover:text-white transition-colors">Become a Home Chef</a></li><li><a href="login.html" class="text-gray-400 text-sm hover:text-white transition-colors">Seller Login</a></li></ul></div>
-                <div><h4 class="font-cinzel text-amber-500 font-bold text-sm mb-4">Support</h4><ul class="space-y-2"><li><span class="text-gray-500 text-sm">Contact Us (Coming Soon)</span></li><li><span class="text-gray-500 text-sm">FAQs (Coming Soon)</span></li></ul></div>
-                <div><h4 class="font-cinzel text-amber-500 font-bold text-sm mb-4">Legal</h4><ul class="space-y-2"><li><span class="text-gray-500 text-sm">Terms (Coming Soon)</span></li><li><span class="text-gray-500 text-sm">Privacy (Coming Soon)</span></li></ul></div>
+                <div>
+                    <h4 class="font-cinzel text-amber-500 font-bold text-sm mb-4">Explore</h4>
+                    <ul class="space-y-2">
+                        <li><a href="index.html"
+                                class="text-gray-400 text-sm hover:text-white transition-colors">Home</a></li>
+                        <li><a href="sellers.html" class="text-gray-400 text-sm hover:text-white transition-colors">Our
+                                Kitchens</a></li>
+                        <li><a href="about.html" class="text-gray-400 text-sm hover:text-white transition-colors">About
+                                Us</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-cinzel text-amber-500 font-bold text-sm mb-4">For Chefs</h4>
+                    <ul class="space-y-2">
+                        <li><a href="sellers.html"
+                                class="text-gray-400 text-sm hover:text-white transition-colors">Become a Home Chef</a>
+                        </li>
+                        <li><a href="login.html" class="text-gray-400 text-sm hover:text-white transition-colors">Seller
+                                Login</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-cinzel text-amber-500 font-bold text-sm mb-4">Support</h4>
+                    <ul class="space-y-2">
+                        <li><span class="text-gray-500 text-sm">Contact Us (Coming Soon)</span></li>
+                        <li><span class="text-gray-500 text-sm">FAQs (Coming Soon)</span></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-cinzel text-amber-500 font-bold text-sm mb-4">Legal</h4>
+                    <ul class="space-y-2">
+                        <li><span class="text-gray-500 text-sm">Terms (Coming Soon)</span></li>
+                        <li><span class="text-gray-500 text-sm">Privacy (Coming Soon)</span></li>
+                    </ul>
+                </div>
             </div>
             <div class="border-t border-white/10 pt-8 text-center">
-                <p class="font-cinzel italic text-sm text-amber-500/60">Gruhani — ghar jaisa khana, ghar ke log</p>
-                <p class="text-xs text-gray-500 mt-2 flex items-center justify-center gap-1">© 2026 Gruhani. Made with <i data-lucide="heart" class="w-3 h-3 text-red-500 fill-red-500"></i> in India.</p>
+                <p class="font-cinzel italic text-sm text-amber-500/60">Gruhini — ghar jaisa khana, ghar ke log</p>
+                <p class="text-xs text-gray-500 mt-2 flex items-center justify-center gap-1">© 2026 Gruhini. Made with
+                    <i data-lucide="heart" class="w-3 h-3 text-red-500 fill-red-500"></i> in India.
+                </p>
             </div>
         </div>
     </footer>
 
-    <nav class="fixed bottom-0 left-0 right-0 z-50 bg-[#0f0805]/95 backdrop-blur-xl border-t border-gold/20 py-2 px-4 lg:hidden">
+    <!-- Sort Options -->
+    <div class="flex items-center gap-3 mb-6 flex-wrap">
+        <label class="text-sm text-gray-400 font-bold uppercase tracking-wider">Sort:</label>
+        <select id="sortSelect" onchange="sortDishes()"
+            class="bg-black/40 border border-gold-main/30 text-white px-4 py-2 rounded-lg text-sm focus:outline-none focus:border-gold-main transition">
+            <option value="name">Name (A-Z)</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+            <option value="rating">Highest Rated</option>
+            <option value="newest">Newest First</option>
+        </select>
+    </div>
+
+    <!-- Mobile Bottom Navigation (Food App UX Pattern) -->
+    <nav class="fixed bottom-0 left-0 right-0 z-50 bg-[#0f0805]/95 backdrop-blur-xl border-t border-gold/20 py-2 px-4 lg:hidden"
+        id="mobileBottomNav">
         <div class="flex justify-around items-center max-w-sm mx-auto">
-            <a href="index.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-gold transition-colors"><i data-lucide="home" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-wide">Home</span></a>
-            <a href="menu.html"  class="flex flex-col items-center gap-0.5 text-gold"><i data-lucide="utensils" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-wide">Menu</span></a>
-            <a href="cart.html"  class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-gold transition-colors relative">
-                <i data-lucide="shopping-bag" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-wide">Cart</span>
-                <span id="mobileCartCountBadge" class="mobile-cart-badge">0</span>
+            <a href="index.html"
+                class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-gold-main transition-colors"
+                data-nav="home">
+                <i data-lucide="home" class="w-5 h-5"></i>
+                <span class="text-[9px] font-bold uppercase tracking-wide">Home</span>
             </a>
-            <a href="orders.html" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-gold transition-colors"><i data-lucide="package" class="w-5 h-5"></i><span class="text-[9px] font-bold uppercase tracking-wide">Orders</span></a>
+            <a href="menu.html"
+                class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-gold-main transition-colors"
+                data-nav="menu">
+                <i data-lucide="utensils" class="w-5 h-5"></i>
+                <span class="text-[9px] font-bold uppercase tracking-wide">Menu</span>
+            </a>
+            <a href="cart.html"
+                class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-gold-main transition-colors relative"
+                data-nav="cart">
+                <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                <span class="text-[9px] font-bold uppercase tracking-wide">Cart</span>
+            </a>
+            <a href="orders.html"
+                class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-gold-main transition-colors"
+                data-nav="orders">
+                <i data-lucide="package" class="w-5 h-5"></i>
+                <span class="text-[9px] font-bold uppercase tracking-wide">Orders</span>
+            </a>
         </div>
     </nav>
 
+    <!-- Initialize Lucide Icons -->
     <script>if (typeof lucide !== 'undefined') lucide.createIcons();</script>
+
 </body>
+
 </html>
