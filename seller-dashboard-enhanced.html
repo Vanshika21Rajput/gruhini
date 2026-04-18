@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gruhani – Seller Hub | अपना व्यंजन साम्राज्य</title>
+  <title>Gruhini – Seller Hub | अपना व्यंजन साम्राज्य</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Lato:wght@300;400;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="js/config.js"></script>
   <style>
     :root {
       --bg: #0a0704;
@@ -27,7 +26,7 @@
       --muted2: rgba(245,240,232,0.25);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+    body { background: var(--bg); color: var(--text); font-family: 'Lato', sans-serif; min-height: 100vh; }
 
     body::before {
       content: '';
@@ -52,7 +51,7 @@
     }
     .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
     .nav-logo img { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid rgba(212,175,55,0.4); object-fit: cover; }
-    .nav-brand { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--gold); letter-spacing: 0.15em; }
+    .nav-brand { font-family: 'Cinzel', serif; font-weight: 800; font-size: 1.1rem; color: var(--gold); letter-spacing: 0.15em; }
     .nav-badge { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; padding: 3px 8px; border-radius: 20px; background: rgba(249,115,22,0.15); color: #f97316; border: 1px solid rgba(249,115,22,0.3); }
     .nav-actions { display: flex; align-items: center; gap: 16px; }
     .nav-actions a, .nav-actions button { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); text-decoration: none; background: none; border: none; cursor: pointer; transition: color 0.2s; }
@@ -64,7 +63,7 @@
 
     .welcome { margin-bottom: 32px; }
     .welcome-greeting { font-size: 12px; color: var(--muted); font-family: 'Noto Sans Devanagari', sans-serif; margin-bottom: 4px; font-weight: 600; }
-    .welcome-name { font-family: 'Syne', sans-serif; font-size: 2.2rem; font-weight: 800; background: linear-gradient(135deg, #f5f0e8 0%, var(--gold) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 8px; }
+    .welcome-name { font-family: 'Cinzel', serif; font-size: 2.2rem; font-weight: 800; background: linear-gradient(135deg, #f5f0e8 0%, var(--gold) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 8px; }
     .welcome-subtitle { font-size: 13px; color: var(--muted); font-family: 'Noto Sans Devanagari', sans-serif; line-height: 1.7; max-width: 600px; margin-bottom: 12px; }
     .welcome-badges { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
     .badge { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 4px 10px; border-radius: 20px; }
@@ -82,7 +81,7 @@
     .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--gold-dim), transparent); }
     .stat-card:hover { transform: translateY(-3px); border-color: var(--gold-dim); }
     .stat-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted2); margin-bottom: 6px; }
-    .stat-value { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--text); }
+    .stat-value { font-family: 'Cinzel', serif; font-size: 1.5rem; font-weight: 800; color: var(--text); }
     .stat-value.gold { color: var(--gold); }
     .stat-value.green { color: var(--green); }
     .stat-sub { font-size: 10px; color: var(--muted2); margin-top: 3px; }
@@ -91,7 +90,7 @@
     .tab-btn {
       display: flex; align-items: center; gap: 7px;
       padding: 9px 20px; border-radius: 9px; border: none; cursor: pointer;
-      font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+      font-family: 'Lato', sans-serif; font-size: 13px; font-weight: 600;
       color: var(--muted); background: transparent;
       transition: all 0.25s;
     }
@@ -110,7 +109,7 @@
     }
     .chip.active, .chip:hover { background: var(--gold-dim); border-color: rgba(212,175,55,0.4); color: var(--gold); }
 
-    .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 20px; border-radius: 10px; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; transition: all 0.2s; }
+    .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 20px; border-radius: 10px; border: none; cursor: pointer; font-family: 'Lato', sans-serif; font-size: 13px; font-weight: 600; transition: all 0.2s; }
     .btn-gold { background: linear-gradient(135deg, #D4AF37, #aa8825); color: #0a0704; }
     .btn-gold:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(212,175,55,0.3); }
     .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--muted); }
@@ -134,9 +133,9 @@
     .product-img-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--muted2); }
     .product-status-dot { position: absolute; top: 10px; right: 10px; }
     .product-body { padding: 14px; }
-    .product-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; color: var(--text); margin-bottom: 2px; }
+    .product-name { font-family: 'Cinzel', serif; font-weight: 700; font-size: 14px; color: var(--text); margin-bottom: 2px; }
     .product-cat { font-size: 10px; color: var(--muted2); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
-    .product-price { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--gold); }
+    .product-price { font-family: 'Cinzel', serif; font-weight: 800; font-size: 1.1rem; color: var(--gold); }
     .product-footer { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-top: 1px solid var(--border); }
     .product-actions { display: flex; gap: 6px; }
 
@@ -144,9 +143,6 @@
     .status-approved { background: rgba(34,197,94,0.12); color: #22c55e; border: 1px solid rgba(34,197,94,0.25); }
     .status-pending { background: rgba(245,158,11,0.12); color: #f59e0b; border: 1px solid rgba(245,158,11,0.25); }
     .status-rejected { background: rgba(239,68,68,0.12); color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
-    .status-accepted { background: rgba(34,197,94,0.12); color: #22c55e; border: 1px solid rgba(34,197,94,0.25); }
-    .status-delivered { background: rgba(212,175,55,0.12); color: #D4AF37; border: 1px solid rgba(212,175,55,0.25); }
-    .status-cancelled { background: rgba(239,68,68,0.12); color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
 
     .orders-list { display: flex; flex-direction: column; gap: 14px; }
     .order-card {
@@ -156,17 +152,17 @@
     }
     .order-card:hover { border-color: rgba(212,175,55,0.15); }
     .order-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
-    .order-id { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; color: var(--text); }
+    .order-id { font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; color: var(--text); }
     .order-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
-    .order-items-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+    .order-items { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
     .order-item-chip { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 4px 10px; }
-    .order-value { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--gold); }
+    .order-value { font-family: 'Cinzel', serif; font-size: 1.1rem; font-weight: 800; color: var(--gold); }
     .order-customer { font-size: 11px; color: var(--muted); margin-top: 4px; }
     .order-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
 
     .empty-state { text-align: center; padding: 60px 20px; }
     .empty-icon { width: 56px; height: 56px; border-radius: 50%; background: var(--surface); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
-    .empty-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; color: var(--text); margin-bottom: 6px; }
+    .empty-title { font-family: 'Cinzel', serif; font-weight: 700; font-size: 16px; color: var(--text); margin-bottom: 6px; }
     .empty-sub { font-size: 12px; color: var(--muted); font-family: 'Noto Sans Devanagari', sans-serif; }
 
     .modal-overlay { position: fixed; inset: 0; z-index: 200; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); padding: 20px; }
@@ -180,7 +176,7 @@
       position: relative;
     }
     @keyframes slideUp { from { transform:translateY(20px); opacity:0; } to { transform:none; opacity:1; } }
-    .modal-title { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 800; color: var(--text); margin-bottom: 20px; }
+    .modal-title { font-family: 'Cinzel', serif; font-size: 1.3rem; font-weight: 800; color: var(--text); margin-bottom: 20px; }
     .modal-close { position: absolute; top: 20px; right: 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--muted); transition: all 0.2s; }
     .modal-close:hover { color: var(--text); border-color: var(--gold); }
 
@@ -189,7 +185,7 @@
     .form-input, .form-select, .form-textarea {
       width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border);
       border-radius: 10px; padding: 11px 14px; color: var(--text);
-      font-family: 'DM Sans', sans-serif; font-size: 13px;
+      font-family: 'Lato', sans-serif; font-size: 13px;
       transition: all 0.2s;
     }
     .form-input:focus, .form-select:focus, .form-textarea:focus {
@@ -237,9 +233,12 @@
     .skeleton { background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px; }
     @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
 
-    .otp-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: rgba(59,130,246,0.12); color: #3b82f6; border: 1px solid rgba(59,130,246,0.25); }
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .section-title { font-family: 'Cinzel', serif; font-weight: 700; font-size: 15px; color: var(--text); display: flex; align-items: center; gap: 8px; }
 
-    .premium-message {
+    .otp-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: rgba(59,130,246,0.12); color: #3b82f6; border: 1px solid rgba(59,130,246,0.25); }
+    
+    .premium-message { 
       background: linear-gradient(135deg, rgba(212,175,55,0.1), rgba(249,115,22,0.05));
       border: 1px solid rgba(212,175,55,0.2);
       border-radius: 12px;
@@ -250,11 +249,6 @@
       font-family: 'Noto Sans Devanagari', sans-serif;
       margin-bottom: 20px;
     }
-
-    /* Profile edit fields */
-    .profile-field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
-    .profile-field label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted2); }
-    .profile-field .val { font-size: 13px; color: var(--text); padding: 8px 12px; background: var(--surface2); border-radius: 8px; border: 1px solid var(--border); }
   </style>
 </head>
 <body>
@@ -262,13 +256,13 @@
 <!-- NAV -->
 <nav>
   <a href="index.html" class="nav-logo">
-    <img src="public/logo.jpg" alt="Gruhani" onerror="this.style.display='none'">
-    <span class="nav-brand">GRUHANI</span>
+    <img src="public/logo.jpg" alt="Gruhini" onerror="this.style.display='none'">
+    <span class="nav-brand">GRUHINI</span>
   </a>
   <span class="nav-badge">🍳 Seller Hub</span>
   <div class="nav-actions">
     <a href="seller-dashboard-enhanced.html">Dashboard</a>
-    <button onclick="openModal('editProfileModal')">Edit Profile</button>
+    <a href="seller-profile-modern.html">Profile</a>
     <button class="logout" onclick="localStorage.clear(); window.location.href='login.html'">Logout</button>
   </div>
 </nav>
@@ -302,30 +296,32 @@
     <strong style="color:var(--gold)">💡 Pro Tip:</strong> अपने डिश का सुंदर फोटो अपलोड करें और विवरण विस्तार से लिखें। अच्छे प्रस्तुति वाले डिश अधिक ऑर्डर पाते हैं! आप्रूवल के बाद आपका डिश मुख्य प्लेटफॉर्म पर दिखेगा।
   </div>
 
-  <!-- NEED HELP -->
-  <div style="background:rgba(255,255,255,0.03);backdrop-filter:blur(20px);border:1px solid rgba(212,175,55,0.15);border-radius:16px;padding:20px;margin-bottom:28px;position:relative;overflow:hidden;">
-    <div style="position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:radial-gradient(circle,rgba(212,175,55,0.08) 0%,transparent 70%);border-radius:50%;"></div>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;position:relative;z-index:1;">
-      <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--gold),rgba(212,175,55,0.7));display:flex;align-items:center;justify-content:center;font-size:16px;">💬</div>
-      <span style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;">Need Help?</span>
+  <!-- NEED HELP SECTION -->
+  <div style="background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border: 1px solid rgba(212,175,55,0.15); border-radius: 16px; padding: 20px; margin-bottom: 28px; position: relative; overflow: hidden;">
+    <div style="position: absolute; top: -30px; right: -30px; width: 120px; height: 120px; background: radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%); border-radius: 50%;"></div>
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px; position: relative; z-index: 1;">
+      <div style="width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, var(--gold), rgba(212,175,55,0.7)); display: flex; align-items: center; justify-content: center; font-size: 16px;">💬</div>
+      <span style="font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; color: var(--gold); text-transform: uppercase; letter-spacing: 0.08em;">Need Help?</span>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;position:relative;z-index:1;">
-      <a href="mailto:gruhani214@gmail.com" style="display:flex;align-items:center;gap:10px;padding:12px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; position: relative; z-index: 1;">
+      <a href="mailto:gruhani214@gmail.com" style="display: flex; align-items: center; gap: 10px; padding: 12px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 10px; text-decoration: none; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--gold)';this.style.background='rgba(212,175,55,0.06)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='rgba(255,255,255,0.04)'">
         <i data-lucide="mail" style="width:16px;height:16px;color:var(--gold);flex-shrink:0"></i>
         <div>
-          <div style="font-size:10px;color:var(--muted2);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:2px;">Email</div>
-          <div style="font-size:12px;color:var(--text);font-weight:600;">gruhani214@gmail.com</div>
+          <div style="font-size: 10px; color: var(--muted2); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px;">Email</div>
+          <div style="font-size: 12px; color: var(--text); font-weight: 600;">gruhani214@gmail.com</div>
         </div>
       </a>
-      <a href="tel:+919131206200" style="display:flex;align-items:center;gap:10px;padding:12px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+      <a href="tel:+919131206200" style="display: flex; align-items: center; gap: 10px; padding: 12px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 10px; text-decoration: none; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--gold)';this.style.background='rgba(212,175,55,0.06)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='rgba(255,255,255,0.04)'">
         <i data-lucide="phone" style="width:16px;height:16px;color:var(--gold);flex-shrink:0"></i>
         <div>
-          <div style="font-size:10px;color:var(--muted2);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:2px;">Phone</div>
-          <div style="font-size:12px;color:var(--text);font-weight:600;">+91 9131206200</div>
+          <div style="font-size: 10px; color: var(--muted2); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px;">Phone</div>
+          <div style="font-size: 12px; color: var(--text); font-weight: 600;">+91 9131206200</div>
         </div>
       </a>
     </div>
-    <div style="margin-top:10px;font-size:10px;color:var(--muted2);text-align:center;padding-top:10px;border-top:1px solid var(--border);">Mon–Fri, 9 AM – 6 PM IST • हर समस्या का समाधान ✨</div>
+    <div style="margin-top: 10px; font-size: 10px; color: var(--muted2); text-align: center; padding-top: 10px; border-top: 1px solid var(--border);">
+      Mon-Fri, 9 AM - 6 PM IST • हर समस्या का समाधान ✨
+    </div>
   </div>
 
   <!-- STATS BAR -->
@@ -375,15 +371,16 @@
         <i data-lucide="plus" style="width:14px;height:14px"></i> Add Dish
       </button>
     </div>
+
     <div id="productsGrid" class="products-grid">
-      <div class="skeleton" style="height:200px;border-radius:16px"></div>
-      <div class="skeleton" style="height:200px;border-radius:16px"></div>
-      <div class="skeleton" style="height:200px;border-radius:16px"></div>
+      <div class="skeleton" style="height:200px; border-radius:16px"></div>
+      <div class="skeleton" style="height:200px; border-radius:16px"></div>
+      <div class="skeleton" style="height:200px; border-radius:16px"></div>
     </div>
     <div id="noProducts" class="empty-state" style="display:none">
       <div class="empty-icon"><i data-lucide="soup" style="width:24px;height:24px;color:var(--muted)"></i></div>
       <div class="empty-title">No Dishes Yet</div>
-      <div class="empty-sub">अपना पहला व्यंजन जोड़ें! शुरुआत करने के लिए 'Add Dish' बटन दबाएं।</div>
+      <div class="empty-sub">अपना पहला व्यंजन जोड़ें! शुरुआत करने के लिए नीचे 'Add Dish' बटन दबाएं।</div>
     </div>
   </div>
 
@@ -399,9 +396,10 @@
         <button class="chip" onclick="filterOrders('CANCELLED', this)">🚫 Cancelled</button>
       </div>
     </div>
+
     <div id="ordersList" class="orders-list">
-      <div class="skeleton" style="height:120px;border-radius:16px"></div>
-      <div class="skeleton" style="height:120px;border-radius:16px"></div>
+      <div class="skeleton" style="height:120px; border-radius:16px"></div>
+      <div class="skeleton" style="height:120px; border-radius:16px"></div>
     </div>
     <div id="noOrders" class="empty-state" style="display:none">
       <div class="empty-icon"><i data-lucide="inbox" style="width:24px;height:24px;color:var(--muted)"></i></div>
@@ -424,14 +422,14 @@
       </div>
       <div class="form-group">
         <label class="form-label">Price (₹) *</label>
-        <input type="number" class="form-input" name="price" required placeholder="150" min="1">
+        <input type="number" class="form-input" name="price" required placeholder="150">
       </div>
       <div class="form-group">
         <label class="form-label">Category *</label>
-        <select class="form-select" name="category" required>
+        <select class="form-select" name="category" id="addCategory" required>
           <option value="">Select Category...</option>
-          <option value="SNACKS">🥗 Snacks &amp; Appetizers</option>
-          <option value="SWEETS">🍬 Sweets &amp; Mithai</option>
+          <option value="SNACKS">🥗 Snacks & Appetizers</option>
+          <option value="SWEETS">🍬 Sweets & Mithai</option>
           <option value="VRAT">📿 Vrat / Fasting</option>
         </select>
       </div>
@@ -441,19 +439,7 @@
       </div>
       <div class="form-group">
         <label class="form-label">Description</label>
-        <textarea class="form-textarea" name="description" placeholder="बताएं आपका यह व्यंजन खास क्यों है?"></textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Stock (Quantity) *</label>
-        <input type="number" class="form-input" name="stock" required placeholder="e.g. 20" min="0">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Discount % (Optional)</label>
-        <input type="number" class="form-input" name="discount" placeholder="e.g. 10" min="0" max="100" step="0.1">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Delivery Time *</label>
-        <input type="text" class="form-input" name="deliveryTime" required placeholder="e.g. 30-45 mins, Same day">
+        <textarea class="form-textarea" name="description" placeholder="बताएं आपका यह व्यंजन खास क्यों है? इसमें क्या-क्या है? कौन सी चीजें हाथ से बनाई जाती हैं?"></textarea>
       </div>
       <div class="form-group">
         <label class="form-label">Dish Photo *</label>
@@ -489,19 +475,19 @@
       </div>
       <div class="form-group">
         <label class="form-label">Price (₹)</label>
-        <input type="number" class="form-input" id="editPrice" min="1">
+        <input type="number" class="form-input" id="editPrice">
       </div>
       <div class="form-group">
         <label class="form-label">Category</label>
         <select class="form-select" id="editCategory">
-          <option value="SNACKS">🥗 Snacks &amp; Appetizers</option>
-          <option value="SWEETS">🍬 Sweets &amp; Mithai</option>
+          <option value="SNACKS">🥗 Snacks & Appetizers</option>
+          <option value="SWEETS">🍬 Sweets & Mithai</option>
           <option value="VRAT">📿 Vrat / Fasting</option>
         </select>
       </div>
       <div class="form-group">
         <label class="form-label">Sub-category (Optional)</label>
-        <input type="text" class="form-input" id="editSubcategory" placeholder="e.g. Namkeen, Laddu">
+        <input type="text" class="form-input" id="editSubcategory" placeholder="e.g. Namkeen, Laddu, Sabudana Khichdi">
       </div>
       <div class="form-group">
         <label class="form-label">Description</label>
@@ -518,6 +504,39 @@
 </div>
 
 <!-- ===== REJECT ORDER MODAL ===== -->
+<!-- ===== ACCEPT ORDER MODAL ===== -->
+<div id="acceptOrderModal" class="modal-overlay">
+  <div class="modal" style="max-width:440px">
+    <button class="modal-close" onclick="closeModal('acceptOrderModal')"><i data-lucide="x" style="width:14px;height:14px"></i></button>
+    <h2 class="modal-title">✅ Accept Order</h2>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:16px;font-family:'Noto Sans Devanagari',sans-serif">ग्राहक को delivery का समय और तरीका बताएं। यह जानकारी उन्हें email और order status page पर दिखेगी।</p>
+    <input type="hidden" id="acceptOrderId">
+    <div class="form-group">
+      <label class="form-label">Expected Delivery Time *</label>
+      <input type="text" class="form-input" id="deliveryTimeInput" required placeholder="e.g. आज शाम 8 बजे, या 45 मिनट में" style="font-family:'Noto Sans Devanagari',sans-serif">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Delivery Method *</label>
+      <select class="form-input" id="deliveryMethodInput" required>
+        <option value="">-- चुनें --</option>
+        <option value="SELLER_DELIVERY">मैं खुद deliver करूंगा (Seller Delivery)</option>
+        <option value="CUSTOMER_PICKUP">ग्राहक को आकर लेना होगा (Self Pickup)</option>
+        <option value="THIRD_PARTY">Dunzo/Porter से भेजूंगा (3rd Party)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Additional Notes (Optional)</label>
+      <textarea class="form-textarea" id="deliveryNotes" placeholder="e.g. आंगन में दरवाज़े के बाहर रक्खें, घंटी बजाएं वगैरह..." style="font-family:'Noto Sans Devanagari',sans-serif"></textarea>
+    </div>
+    <div class="form-actions">
+      <button type="button" class="btn btn-outline" onclick="closeModal('acceptOrderModal')">Cancel</button>
+      <button type="button" class="btn btn-green" onclick="confirmAcceptOrder()" id="confirmAcceptBtn">
+        <i data-lucide="check-circle" style="width:14px;height:14px"></i> Confirm Accept
+      </button>
+    </div>
+  </div>
+</div>
+
 <div id="rejectOrderModal" class="modal-overlay">
   <div class="modal" style="max-width:420px">
     <button class="modal-close" onclick="closeModal('rejectOrderModal')"><i data-lucide="x" style="width:14px;height:14px"></i></button>
@@ -526,7 +545,7 @@
     <input type="hidden" id="rejectOrderId">
     <div class="form-group">
       <label class="form-label">Rejection Reason *</label>
-      <textarea class="form-textarea" id="rejectReason" required placeholder="Due to unavailability of ingredients, your order could not be fulfilled."></textarea>
+      <textarea class="form-textarea" id="rejectReason" required placeholder="Due to unavailability of ingredients, your order could not be fulfilled. We apologize for the inconvenience."></textarea>
     </div>
     <div class="form-actions">
       <button type="button" class="btn btn-outline" onclick="closeModal('rejectOrderModal')">Cancel</button>
@@ -542,17 +561,16 @@
   <div class="modal" style="max-width:380px">
     <button class="modal-close" onclick="closeModal('verifyOtpModal')"><i data-lucide="x" style="width:14px;height:14px"></i></button>
     <h2 class="modal-title">🔐 Verify OTP</h2>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:8px">ग्राहक का OTP दर्ज करें delivery confirm करने के लिए।</p>
-    <p style="font-size:11px;color:rgba(245,158,11,0.8);margin-bottom:16px;background:rgba(245,158,11,0.08);padding:8px 12px;border-radius:8px;border-left:3px solid var(--amber);">OTP ग्राहक को उनके email पर भेजा गया है। वो आपको बताएंगे।</p>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:16px">ग्राहक का 6-digit OTP दर्ज करें delivery confirm करने के लिए।</p>
     <input type="hidden" id="otpOrderId">
     <div class="form-group">
       <label class="form-label">OTP</label>
-      <input type="text" class="form-input" id="otpInput" maxlength="10" placeholder="Enter OTP" style="letter-spacing:0.3em;text-align:center;font-size:1.4rem;font-family:'Syne',sans-serif">
+      <input type="text" class="form-input" id="otpInput" maxlength="6" placeholder="6-digit OTP" style="letter-spacing:0.3em;text-align:center;font-size:1.2rem;font-family:'Cinzel',serif">
     </div>
     <div class="form-actions">
       <button type="button" class="btn btn-outline" onclick="closeModal('verifyOtpModal')">Cancel</button>
-      <button type="button" class="btn btn-green" onclick="submitOtp()" id="submitOtpBtn">
-        <i data-lucide="check-circle" style="width:14px;height:14px"></i> Verify &amp; Mark Delivered
+      <button type="button" class="btn btn-green" onclick="submitOtp()">
+        <i data-lucide="check-circle" style="width:14px;height:14px"></i> Verify & Deliver
       </button>
     </div>
   </div>
@@ -562,10 +580,10 @@
 <div id="editBioModal" class="modal-overlay">
   <div class="modal" style="max-width:420px">
     <button class="modal-close" onclick="closeModal('editBioModal')"><i data-lucide="x" style="width:14px;height:14px"></i></button>
-    <h2 class="modal-title">✨ Edit Kitchen Bio</h2>
+    <h2 class="modal-title">✨ Edit Your Bio</h2>
     <p style="font-size:12px;color:var(--muted);margin-bottom:16px;font-family:'Noto Sans Devanagari',sans-serif">अपने बारे में बताएं, आपकी रसोई की विशेषता क्या है।</p>
     <div class="form-group">
-      <label class="form-label">Kitchen Bio / Description</label>
+      <label class="form-label">Kitchen Bio/Description</label>
       <textarea class="form-textarea" id="bioInput" placeholder="e.g. Home kitchen से बना शुद्ध घी में तैयार..." style="min-height:100px"></textarea>
     </div>
     <div class="form-actions">
@@ -577,76 +595,19 @@
   </div>
 </div>
 
-<!-- ===== EDIT PROFILE MODAL ===== -->
-<div id="editProfileModal" class="modal-overlay">
-  <div class="modal" style="max-width:460px">
-    <button class="modal-close" onclick="closeModal('editProfileModal')"><i data-lucide="x" style="width:14px;height:14px"></i></button>
-    <h2 class="modal-title">👤 Edit Profile</h2>
-
-    <div class="form-group">
-      <label class="form-label">Full Name</label>
-      <input type="text" class="form-input" id="ep_name" placeholder="Your name">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Phone Number</label>
-      <input type="tel" class="form-input" id="ep_phone" placeholder="10-digit phone number" maxlength="10">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Business / Kitchen Name</label>
-      <input type="text" class="form-input" id="ep_business" placeholder="e.g. Rani's Kitchen">
-    </div>
-
-    <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;">
-      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--gold);margin-bottom:12px;">📍 Service Address</div>
-      <div class="form-group" style="margin-bottom:10px">
-        <label class="form-label">Address Line</label>
-        <input type="text" class="form-input" id="ep_addressLine" placeholder="Street / Colony / Area">
-      </div>
-      <div class="form-grid" style="margin-bottom:10px">
-        <div class="form-group" style="margin-bottom:0">
-          <label class="form-label">City</label>
-          <input type="text" class="form-input" id="ep_city" placeholder="City">
-        </div>
-        <div class="form-group" style="margin-bottom:0">
-          <label class="form-label">State</label>
-          <input type="text" class="form-input" id="ep_state" placeholder="State">
-        </div>
-      </div>
-      <div class="form-group" style="margin-bottom:0">
-        <label class="form-label">Pincode</label>
-        <input type="text" class="form-input" id="ep_pincode" placeholder="6-digit pincode" maxlength="6">
-      </div>
-    </div>
-
-    <div class="form-actions">
-      <button type="button" class="btn btn-outline" onclick="closeModal('editProfileModal')">Cancel</button>
-      <button type="button" class="btn btn-gold" onclick="saveProfile()" id="saveProfileBtn">
-        <i data-lucide="save" style="width:14px;height:14px"></i> Save Profile
-      </button>
-    </div>
-  </div>
-</div>
-
 <script>
-/* ════════════════════════════════════════════════════════════
-   CONFIG & STATE
-════════════════════════════════════════════════════════════ */
-const BASE_URL = window.CONFIG?.BASE_URL || 'https://gruhani-backend.onrender.com';
+const BASE_URL = window.CONFIG?.BASE_URL || 'https://gruhinibackend.onrender.com';
 let allProducts = [], allOrders = [], currentProductFilter = '', currentOrderFilter = '';
-let _sellerProfile = null; // cached profile for save calls
 
-/* ════════════════════════════════════════════════════════════
-   INIT
-════════════════════════════════════════════════════════════ */
+// ── INIT ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   setGreeting();
+  // Try to get first name from localStorage, will be updated by profile fetch
   const name = localStorage.getItem('userName') || 'Chef';
   const firstName = name.split('@')[0].split(' ')[0] || 'Chef';
-  document.getElementById('sellerName').textContent =
-    '🔥 Hey Chef, ' + firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
+  document.getElementById('sellerName').textContent = '🔥 Hey Chef, ' + firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
   loadProducts();
   loadOrders();
-  loadSellerProfile();
   lucide.createIcons();
 });
 
@@ -658,9 +619,14 @@ function setGreeting() {
 
 function token() { return localStorage.getItem('authToken'); }
 
-/* ════════════════════════════════════════════════════════════
-   TABS
-════════════════════════════════════════════════════════════ */
+// ── CUSTOM CATEGORY HANDLER (no longer needed — only 3 backend enums) ──
+// Categories are now fixed to SNACKS, SWEETS, VRAT
+
+// Subcategory is a free-text field for additional detail
+
+// Category handling is now simple (no CUSTOM option)
+
+// ── TABS ─────────────────────────────────────────────────────
 function switchTab(name, btn) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
@@ -669,37 +635,21 @@ function switchTab(name, btn) {
   lucide.createIcons();
 }
 
-/* ════════════════════════════════════════════════════════════
-   MODALS
-════════════════════════════════════════════════════════════ */
+// ── MODALS ────────────────────────────────────────────────────
 function openModal(id) { document.getElementById(id).classList.add('open'); lucide.createIcons(); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
-document.querySelectorAll('.modal-overlay').forEach(overlay => {
-  overlay.addEventListener('click', e => {
-    if (e.target === overlay) overlay.classList.remove('open');
-  });
-});
-
-/* ════════════════════════════════════════════════════════════
-   TOAST
-════════════════════════════════════════════════════════════ */
+// ── TOAST ─────────────────────────────────────────────────────
 function toast(msg, type = 'success') {
   const c = document.getElementById('toastContainer');
   const t = document.createElement('div');
   t.className = `toast toast-${type}`;
   t.innerHTML = `<span>${msg}</span>`;
   c.appendChild(t);
-  setTimeout(() => {
-    t.style.opacity = '0';
-    t.style.transition = 'opacity 0.3s';
-    setTimeout(() => t.remove(), 300);
-  }, 3500);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity 0.3s'; setTimeout(() => t.remove(), 300); }, 3500);
 }
 
-/* ════════════════════════════════════════════════════════════
-   IMAGE PREVIEW
-════════════════════════════════════════════════════════════ */
+// ── IMAGE PREVIEW ─────────────────────────────────────────────
 function previewUpload(input, previewId, hintId) {
   if (input.files && input.files[0]) {
     const r = new FileReader();
@@ -714,17 +664,16 @@ function previewUpload(input, previewId, hintId) {
   }
 }
 
-/* ════════════════════════════════════════════════════════════
-   PRODUCTS — LOAD
-════════════════════════════════════════════════════════════ */
+// ── LOAD PRODUCTS ─────────────────────────────────────────────
 async function loadProducts(status = '') {
   try {
+    // Correct endpoint from Seller_dashboard_controls.java gruhani1.O branch
     const url = `${BASE_URL}/seller/get-All-products${status ? '?productStatus=' + status : ''}`;
     const res = await fetch(url, { headers: { Authorization: `Bearer ${token()}` } });
     if (!res.ok) throw new Error('Failed to load products');
     const data = await res.json();
-    allProducts = Array.isArray(data) ? data : [];
-    renderProducts(allProducts);
+    allProducts = data;
+    renderProducts(data);
     updateStats();
   } catch (e) {
     console.error('Error loading products:', e);
@@ -742,7 +691,7 @@ function filterProducts(status, btn) {
 }
 
 function renderProducts(products) {
-  const grid  = document.getElementById('productsGrid');
+  const grid = document.getElementById('productsGrid');
   const empty = document.getElementById('noProducts');
   if (!products.length) {
     grid.innerHTML = '';
@@ -753,23 +702,17 @@ function renderProducts(products) {
   grid.innerHTML = products.map(p => `
     <div class="product-card">
       <div class="product-img">
-        ${p.image
-          ? `<img src="${p.image}" alt="${p.name}" loading="lazy">`
-          : `<div class="product-img-placeholder"><i data-lucide="soup" style="width:32px;height:32px"></i></div>`}
-        <div class="product-status-dot">
-          <span class="status-pill status-${(p.status || 'pending').toLowerCase()}">${p.status || 'PENDING'}</span>
-        </div>
+        ${p.image ? `<img src="${p.image}" alt="${p.name}" loading="lazy">` : `<div class="product-img-placeholder"><i data-lucide="soup" style="width:32px;height:32px"></i></div>`}
+        <div class="product-status-dot"><span class="status-pill status-${(p.status||'pending').toLowerCase()}">${p.status || 'PENDING'}</span></div>
       </div>
       <div class="product-body">
         <div class="product-name">${p.name}</div>
-        <div class="product-cat">${p.category || 'Uncategorized'}${p.subcategory ? ' · ' + p.subcategory : ''}</div>
+        <div class="product-cat">${p.category || 'Uncategorized'} ${p.subcategory ? '· '+p.subcategory : ''}</div>
         <div class="product-price">₹${p.price}</div>
-        ${p.message && p.status === 'REJECTED'
-          ? `<div style="font-size:10px;color:#ef4444;margin-top:4px;background:rgba(239,68,68,0.08);padding:4px 8px;border-radius:6px">💬 Admin: ${p.message}</div>`
-          : ''}
+        ${p.message && p.status==='REJECTED' ? `<div style="font-size:10px;color:#ef4444;margin-top:4px;background:rgba(239,68,68,0.08);padding:4px 8px;border-radius:6px">💬 Admin: ${p.message}</div>` : ''}
       </div>
       <div class="product-footer">
-        <span style="font-size:10px;color:var(--muted)">${p.category || '–'}</span>
+        <span style="font-size:10px;color:var(--muted)">${p.category || 'Uncategorized'}</span>
         <div class="product-actions">
           <button class="icon-btn edit" onclick="openEditProduct(${JSON.stringify(p).replace(/"/g,'&quot;')})" title="Edit">
             <i data-lucide="pencil" style="width:13px;height:13px"></i>
@@ -784,28 +727,23 @@ function renderProducts(products) {
   lucide.createIcons();
 }
 
-/* ════════════════════════════════════════════════════════════
-   PRODUCTS — ADD
-════════════════════════════════════════════════════════════ */
+// ── ADD PRODUCT ───────────────────────────────────────────────
 document.getElementById('addProductForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const form = e.target;
-  const btn  = document.getElementById('addProductBtn');
+  const btn = document.getElementById('addProductBtn');
   btn.innerHTML = '<span class="spinner"></span> Uploading...';
-  btn.disabled  = true;
-
-  const data = {
-    name:         form.name.value,
-    price:        parseFloat(form.price.value),
-    stock:        parseInt(form.stock.value),
-    discount:     form.discount.value ? parseFloat(form.discount.value) : 0.0,
-    deliveryTime: form.deliveryTime.value,
-    category:     form.category.value,
-    subcategory:  form.subcategory?.value || '',
-    description:  form.description.value,
-  };
+  btn.disabled = true;
 
   const formData = new FormData();
+  const data = {
+    name: form.name.value,
+    price: parseFloat(form.price.value),
+    stock: 999,
+    category: form.category.value,
+    subcategory: form.subcategory?.value || '',
+    description: form.description.value,
+  };
   formData.append('data', new Blob([JSON.stringify(data)], { type: 'application/json' }));
   if (form.image.files[0]) formData.append('image', form.image.files[0]);
 
@@ -815,8 +753,11 @@ document.getElementById('addProductForm').addEventListener('submit', async (e) =
       headers: { Authorization: `Bearer ${token()}` },
       body: formData
     });
-    if (!res.ok) throw new Error(await res.text() || 'Failed to add dish');
-    toast('🍽️ Dish added! Admin review के लिए भेज दिया गया।', 'success');
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(err || 'Failed to add dish');
+    }
+    toast('🍽️ Dish added successfully! Admin review के लिए भेज दिया गया है।', 'success');
     closeModal('addProductModal');
     form.reset();
     document.getElementById('addPreview').style.display = 'none';
@@ -824,19 +765,25 @@ document.getElementById('addProductForm').addEventListener('submit', async (e) =
     loadProducts(currentProductFilter);
   } catch (err) {
     console.error('Upload error:', err);
-    toast('❌ ' + (err.message.includes('fetch') ? 'Server से connect नहीं हो सके।' : err.message), 'error');
+    let errorMsg = 'Upload करने में समस्या हुई।';
+    if (err.message.includes('Failed to fetch')) {
+      errorMsg = '❌ Server से connect नहीं हो सके। कृपया बाद में कोशिश करें।';
+    } else if (err.message.includes('Network')) {
+      errorMsg = '❌ Internet connection की समस्या है।';
+    } else {
+      errorMsg = '❌ ' + err.message;
+    }
+    toast(errorMsg, 'error');
   } finally {
     btn.innerHTML = '<i data-lucide="plus" style="width:14px;height:14px"></i> Add Dish';
-    btn.disabled  = false;
+    btn.disabled = false;
     lucide.createIcons();
   }
 });
 
-/* ════════════════════════════════════════════════════════════
-   PRODUCTS — DELETE
-════════════════════════════════════════════════════════════ */
+// ── DELETE PRODUCT ────────────────────────────────────────────
 async function deleteProduct(id, name) {
-  if (!confirm(`क्या आप "${name}" को हटाना चाहते हैं?`)) return;
+  if (!confirm(`क्या आप "${name}" को हटाना चाहते हैं? यह कार्य उलट नहीं किया जा सकता।`)) return;
   try {
     const res = await fetch(`${BASE_URL}/seller/delete-product?id=${id}`, {
       method: 'DELETE',
@@ -846,36 +793,36 @@ async function deleteProduct(id, name) {
     toast('✅ Dish हटा दी गई।', 'success');
     loadProducts(currentProductFilter);
   } catch (e) {
-    toast('❌ Delete failed.', 'error');
+    console.error('Delete product error:', e);
+    toast('❌ Delete failed. Backend endpoint may not be implemented yet.', 'error');
   }
 }
 
-/* ════════════════════════════════════════════════════════════
-   PRODUCTS — EDIT
-════════════════════════════════════════════════════════════ */
+// ── EDIT PRODUCT ──────────────────────────────────────────────
 function openEditProduct(p) {
-  document.getElementById('editProductId').value    = p.id;
-  document.getElementById('editName').value         = p.name || '';
-  document.getElementById('editPrice').value        = p.price || '';
-  document.getElementById('editCategory').value     = p.category || 'SNACKS';
-  document.getElementById('editSubcategory').value  = p.subcategory || '';
-  document.getElementById('editDescription').value  = p.description || '';
+  document.getElementById('editProductId').value = p.id;
+  document.getElementById('editName').value = p.name || '';
+  document.getElementById('editPrice').value = p.price || '';
+  document.getElementById('editCategory').value = p.category || 'SNACKS';
+  document.getElementById('editSubcategory').value = p.subcategory || '';
+  document.getElementById('editDescription').value = p.description || '';
   openModal('editProductModal');
 }
 
 document.getElementById('editProductForm').addEventListener('submit', async (e) => {
   e.preventDefault();
+ 
   const btn = document.getElementById('editProductBtn');
   btn.innerHTML = '<span class="spinner"></span> Saving...';
-  btn.disabled  = true;
+  btn.disabled = true;
 
   const payload = {
-    id:          parseInt(document.getElementById('editProductId').value),
-    name:        document.getElementById('editName').value,
-    price:       parseFloat(document.getElementById('editPrice').value),
-    stock:       999,
-    category:    document.getElementById('editCategory').value,
-    subcategory: document.getElementById('editSubcategory').value || '',
+    id: parseInt(document.getElementById('editProductId').value),
+    name: document.getElementById('editName').value,
+    price: parseFloat(document.getElementById('editPrice').value),
+    stock: 999,
+    category: document.getElementById('editCategory').value,
+    subcategory: document.getElementById('editSubcategory')?.value || '',
     description: document.getElementById('editDescription').value,
   };
 
@@ -886,28 +833,28 @@ document.getElementById('editProductForm').addEventListener('submit', async (e) 
       body: JSON.stringify(payload)
     });
     if (!res.ok) throw new Error('Failed');
-    toast('✨ Dish update हो गई! Admin review के लिए भेज दिया।', 'success');
+    toast('✨ Dish update की गई! Admin review के लिए भेज दिया।', 'success');
     closeModal('editProductModal');
     loadProducts(currentProductFilter);
   } catch (e) {
-    toast('❌ Update failed.', 'error');
+    console.error('Update product error:', e);
+    toast('❌ Update failed. Backend endpoint may not be implemented yet.', 'error');
   } finally {
     btn.innerHTML = '<i data-lucide="save" style="width:14px;height:14px"></i> Save Changes';
-    btn.disabled  = false;
+    btn.disabled = false;
     lucide.createIcons();
   }
 });
 
-/* ════════════════════════════════════════════════════════════
-   ORDERS — LOAD
-════════════════════════════════════════════════════════════ */
+// ── LOAD ORDERS ───────────────────────────────────────────────
+
 async function loadOrders(status = '') {
   try {
     const url = `${BASE_URL}/seller/view-order-seller${status ? '?orderStatus=' + status : ''}`;
     const res = await fetch(url, { headers: { Authorization: `Bearer ${token()}` } });
     if (!res.ok) throw new Error('Failed');
-    const data   = await res.json();
-    const orders = data['User details'] || (Array.isArray(data) ? data : []);
+    const data = await res.json();
+    const orders = data['User details'] || data || [];
     allOrders = orders;
     renderOrders(orders);
     document.getElementById('activeOrders').textContent =
@@ -927,7 +874,7 @@ function filterOrders(status, btn) {
 }
 
 function renderOrders(orders) {
-  const list  = document.getElementById('ordersList');
+  const list = document.getElementById('ordersList');
   const empty = document.getElementById('noOrders');
   if (!orders.length) {
     list.innerHTML = '';
@@ -935,27 +882,13 @@ function renderOrders(orders) {
     return;
   }
   empty.style.display = 'none';
-
   list.innerHTML = orders.map(o => {
-    const status     = o.orderStatus || 'PENDING';
-    const isPending  = status === 'PENDING';
+    const status = o.orderStatus || 'PENDING';
+    const isPending = status === 'PENDING';
     const isAccepted = status === 'ACCEPTED';
-    const date       = o.placedAt
-      ? new Date(o.placedAt).toLocaleString('hi-IN', { dateStyle: 'medium', timeStyle: 'short' })
-      : '';
-    const itemsHtml  = (o.orderItems || []).map(i =>
-      `<span class="order-item-chip">
-        <i data-lucide="package" style="width:10px;height:10px"></i>
-        ${i.productName} ×${i.quantity}
-        <span style="color:var(--gold);margin-left:4px">₹${
-          new Intl.NumberFormat('en-IN').format(
-            parseFloat(i.priceAtOrderTime || i.price || 0) * (i.quantity || 1)
-          )
-        }</span>
-      </span>`
-    ).join('');
-    const customer   = o.userDetails;
-
+    const date = o.placedAt ? new Date(o.placedAt).toLocaleString('hi-IN', { dateStyle: 'medium', timeStyle: 'short' }) : '';
+    const items = (o.orderItems || []).map(i => `<span class="order-item-chip"><i data-lucide="package" style="width:10px;height:10px"></i>${i.productName} ×${i.quantity}</span>`).join('');
+    const customer = o.userDetails;
     return `
       <div class="order-card">
         <div class="order-header">
@@ -965,350 +898,244 @@ function renderOrders(orders) {
           </div>
           <span class="status-pill status-${status.toLowerCase()}">${status}</span>
         </div>
-
-        <div class="order-items-row">
-          ${itemsHtml || '<span style="font-size:11px;color:var(--muted)">Items not available</span>'}
-        </div>
-
+        <div class="order-items">${items || '<span style="font-size:11px;color:var(--muted)">Items not available</span>'}</div>
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
           <div>
             <div class="order-value">₹${o.orderValue || 0}</div>
-            ${customer
-              ? `<div class="order-customer">
-                  👤 ${customer.name || ''}
-                  ${customer.contact ? ' · ' + customer.contact : ''}
-                  ${customer.email ? ' · ' + customer.email : ''}
-                 </div>`
-              : ''}
-            ${o.deliveryAddress
-              ? `<div style="font-size:11px;color:var(--muted2);margin-top:4px">
-                  📍 ${[o.deliveryAddress.addressLine, o.deliveryAddress.city, o.deliveryAddress.pincode].filter(Boolean).join(', ')}
-                 </div>`
-              : ''}
+            ${customer ? `<div class="order-customer">👤 ${customer.name || ''} ${customer.contact ? '· '+customer.contact : ''}</div>` : ''}
           </div>
-          ${isAccepted
-            ? `<span class="otp-badge"><i data-lucide="key" style="width:10px;height:10px"></i> OTP Verify</span>`
-            : ''}
+          ${isAccepted ? `<span class="otp-badge"><i data-lucide="key" style="width:10px;height:10px"></i> OTP Verify</span>` : ''}
         </div>
-
         ${isPending || isAccepted ? `
         <div class="order-actions">
           ${isPending ? `
-            <button class="btn btn-green btn-sm" onclick="acceptOrder(${o.id})">
-              <i data-lucide="check-circle" style="width:13px;height:13px"></i> Accept ✅
-            </button>
-            <button class="btn btn-red btn-sm" onclick="openRejectModal(${o.id})">
-              <i data-lucide="x-circle" style="width:13px;height:13px"></i> Reject
-            </button>
+          <button class="btn btn-green btn-sm" onclick="acceptOrder(${o.id})">
+            <i data-lucide="check-circle" style="width:13px;height:13px"></i> Accept ✅
+          </button>
+          <button class="btn btn-red btn-sm" onclick="openRejectModal(${o.id})">
+            <i data-lucide="x-circle" style="width:13px;height:13px"></i> Reject
+          </button>
           ` : ''}
           ${isAccepted ? `
-            <button class="btn btn-sm" style="background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.3);color:#3b82f6"
-              onclick="openOtpModal(${o.id})">
-              <i data-lucide="key" style="width:13px;height:13px"></i> Verify OTP → Deliver 🎉
-            </button>
+          <button class="btn btn-sm" style="background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.3);color:#3b82f6" onclick="openOtpModal(${o.id})">
+            <i data-lucide="key" style="width:13px;height:13px"></i> Verify OTP → Deliver 🎉
+          </button>
           ` : ''}
-        </div>
-        ` : ''}
+        </div>` : ''}
       </div>
     `;
   }).join('');
-
   lucide.createIcons();
 }
 
-/* ════════════════════════════════════════════════════════════
-   ACCEPT ORDER — sends List<Long> to backend (correct!)
-════════════════════════════════════════════════════════════ */
-async function acceptOrder(id) {
-  if (!confirm(`Order #${id} को accept करें?\n\nCustomer को OTP email कर दिया जाएगा।`)) return;
+// ── ACCEPT ORDER ──────────────────────────────────────────────
+function acceptOrder(id) {
+  document.getElementById('acceptOrderId').value = id;
+  document.getElementById('deliveryTimeInput').value = '';
+  document.getElementById('deliveryMethodInput').value = '';
+  document.getElementById('deliveryNotes').value = '';
+  openModal('acceptOrderModal');
+}
 
-  const orderCards = document.querySelectorAll('.order-card');
-  // Disable the button temporarily via a toast
-  toast('⏳ Processing...', 'info');
+async function confirmAcceptOrder() {
+  const id = document.getElementById('acceptOrderId').value;
+  const deliveryTime = document.getElementById('deliveryTimeInput').value.trim();
+  const deliveryMethod = document.getElementById('deliveryMethodInput').value;
+  const deliveryNotes = document.getElementById('deliveryNotes').value.trim();
+
+  if (!deliveryTime || !deliveryMethod) {
+    toast('कृपया delivery का समय और तरीका चुनें।', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('confirmAcceptBtn');
+  btn.innerHTML = '<span class="spinner"></span>';
+  btn.disabled = true;
 
   try {
     const res = await fetch(`${BASE_URL}/seller/accept-order`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token()}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify([parseInt(id)])   // ✅ Backend expects List<Long>
+      body: JSON.stringify({
+        orderId: parseInt(id),
+        deliveryTime: deliveryTime,
+        deliveryMethod: deliveryMethod,
+        deliveryNotes: deliveryNotes
+      })
     });
 
-    if (!res.ok) {
-      const errText = await res.text();
-      throw new Error(errText || 'Failed to accept order');
-    }
-
-    toast('✅ Order accepted! Customer को OTP email कर दिया गया। 🍳', 'success');
+    if (!res.ok) throw new Error('Failed to accept order');
+    
+    toast('✅ Order स्वीकार कर लिया! ग्राहक को OTP के साथ जानकारी भेज दी गई। 🍳', 'success');
+    closeModal('acceptOrderModal');
     loadOrders(currentOrderFilter);
   } catch (e) {
     console.error('Accept order error:', e);
     toast('❌ ' + e.message, 'error');
+  } finally {
+    btn.innerHTML = '<i data-lucide="check-circle" style="width:14px;height:14px"></i> Confirm Accept';
+    btn.disabled = false;
+    lucide.createIcons();
   }
 }
 
-/* ════════════════════════════════════════════════════════════
-   REJECT ORDER
-════════════════════════════════════════════════════════════ */
+// ── REJECT ORDER ──────────────────────────────────────────────
+
 function openRejectModal(id) {
   document.getElementById('rejectOrderId').value = id;
-  document.getElementById('rejectReason').value  = '';
+  document.getElementById('rejectReason').value = '';
   openModal('rejectOrderModal');
 }
 
 async function confirmRejectOrder() {
-  const id     = document.getElementById('rejectOrderId').value;
+  const id = document.getElementById('rejectOrderId').value;
   const reason = document.getElementById('rejectReason').value.trim();
   if (!reason) { toast('कृपया rejection की वजह लिखें।', 'error'); return; }
 
   const btn = document.getElementById('confirmRejectBtn');
   btn.innerHTML = '<span class="spinner"></span>';
-  btn.disabled  = true;
+  btn.disabled = true;
 
   try {
     const res = await fetch(`${BASE_URL}/seller/reject-order`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token()}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify([parseInt(id)])  // ✅ Backend expects List<Long>
+      body: JSON.stringify([parseInt(id)])
     });
     if (!res.ok) throw new Error('Failed');
-    toast('Order reject कर दिया। ग्राहक को सूचित कर दिया गया। 📲', 'info');
+    toast('Order reject कर दिया। ग्राहक को संदेश भेज दिया गया। 📲', 'info');
     closeModal('rejectOrderModal');
     loadOrders(currentOrderFilter);
   } catch (e) {
-    toast('❌ Could not reject order.', 'error');
+    console.error('Reject order error:', e);
+    toast('❌ Could not reject. Backend endpoint may not be implemented yet.', 'error');
   } finally {
     btn.innerHTML = '<i data-lucide="x-circle" style="width:14px;height:14px"></i> Reject Order';
-    btn.disabled  = false;
+    btn.disabled = false;
     lucide.createIcons();
   }
 }
 
-/* ════════════════════════════════════════════════════════════
-   OTP VERIFY — seller enters OTP told by customer
-════════════════════════════════════════════════════════════ */
+// ── OTP VERIFY ────────────────────────────────────────────────
+
 function openOtpModal(id) {
   document.getElementById('otpOrderId').value = id;
-  document.getElementById('otpInput').value   = '';
+  document.getElementById('otpInput').value = '';
   openModal('verifyOtpModal');
 }
 
 async function submitOtp() {
-  const id  = document.getElementById('otpOrderId').value;
+  const id = document.getElementById('otpOrderId').value;
   const otp = document.getElementById('otpInput').value.trim();
-  if (!otp) { toast('कृपया OTP दर्ज करें।', 'error'); return; }
-
-  const btn = document.getElementById('submitOtpBtn');
-  btn.innerHTML = '<span class="spinner"></span>';
-  btn.disabled  = true;
-
+  if (!otp || otp.length !== 6) { toast('कृपया 6-digit OTP दर्ज करें।', 'error'); return; }
   try {
-    const res = await fetch(
-      `${BASE_URL}/seller/verify-otp?orderId=${id}&otp=${encodeURIComponent(otp)}`,
-      { method: 'POST', headers: { Authorization: `Bearer ${token()}` } }
-    );
+    const res = await fetch(`${BASE_URL}/seller/verify-otp?orderId=${id}&otp=${otp}`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token()}` }
+    });
     const text = await res.text();
     if (!res.ok) throw new Error(text);
-
-    if (text.toUpperCase().includes('NOT') || text.toUpperCase().includes('WRONG') || text.toUpperCase().includes('INCORRECT')) {
-      toast('❌ Wrong OTP. ग्राहक से दोबारा पूछें।', 'error');
+    if (text.includes('NOT VERIFIED') || text.includes('not')) {
+      toast('❌ Wrong OTP. कृपया दोबारा कोशिश करें।', 'error');
     } else {
       toast('🎉 OTP Verified! Order Delivered! ग्राहक को सूचित कर दिया गया।', 'success');
       closeModal('verifyOtpModal');
       loadOrders(currentOrderFilter);
     }
-  } catch (e) {
-    toast('❌ OTP verification failed: ' + e.message, 'error');
-  } finally {
-    btn.innerHTML = '<i data-lucide="check-circle" style="width:14px;height:14px"></i> Verify & Mark Delivered';
-    btn.disabled  = false;
-    lucide.createIcons();
+  } catch {
+    toast('OTP verification failed.', 'error');
   }
 }
 
-/* ════════════════════════════════════════════════════════════
-   STATS
-════════════════════════════════════════════════════════════ */
+// ── STATS ─────────────────────────────────────────────────────
 function updateStats() {
-  document.getElementById('totalProducts').textContent    = allProducts.length;
+  document.getElementById('totalProducts').textContent = allProducts.length;
   document.getElementById('approvedProducts').textContent = allProducts.filter(p => p.status === 'APPROVED').length;
-  document.getElementById('pendingProducts').textContent  = allProducts.filter(p => p.status === 'PENDING').length;
+  document.getElementById('pendingProducts').textContent = allProducts.filter(p => p.status === 'PENDING').length;
 }
 
-/* ════════════════════════════════════════════════════════════
-   SELLER PROFILE — load from /seller/get-seller-profile
-   DTO: { id, name, contact, address:{addressLine,city,state,pincode}, businessName, image, Description }
-════════════════════════════════════════════════════════════ */
+// ── SELLER BIO ────────────────────────────────────────────────
 async function loadSellerProfile() {
   try {
-    const res = await fetch(`${BASE_URL}/seller/get-seller-profile`, {
+    const res = await fetch(`${BASE_URL}/view-profile`, {
       headers: { Authorization: `Bearer ${token()}` }
     });
-    if (!res.ok) throw new Error('Profile fetch failed');
+    if (!res.ok) throw new Error('Failed');
     const data = await res.json();
-    _sellerProfile = data;
-
-    // Update welcome section — businessName takes priority over name
-    const displayName = data.businessName || data.name || localStorage.getItem('userName') || 'Chef';
-    const firstName   = displayName.split(' ')[0];
-    document.getElementById('sellerName').textContent = '🔥 Hey Chef, ' + firstName;
-    localStorage.setItem('userName', displayName);
-
-    // Bio — SellerDetailsDto field is capital D "Description"
-    const bio = data.Description || data.description || '';
-    if (bio) {
-      document.getElementById('sellerBio').textContent = bio;
-      document.getElementById('bioInput').value = bio;
+    
+    // Update seller name and bio if data is provided
+    if (data.name || data.businessName || data.shopName) {
+      const displayName = data.businessName || data.shopName || data.name;
+      const firstName = displayName.split(' ')[0];
+      document.getElementById('sellerName').textContent = '🔥 Hey Chef, ' + firstName;
+      localStorage.setItem('userName', displayName);
     }
-
-    // Pre-fill edit profile modal fields
-    document.getElementById('ep_name').value        = data.name || '';
-    document.getElementById('ep_phone').value       = data.contact || '';
-    document.getElementById('ep_business').value    = data.businessName || '';
-    if (data.address) {
-      document.getElementById('ep_addressLine').value = data.address.addressLine || '';
-      document.getElementById('ep_city').value        = data.address.city || '';
-      document.getElementById('ep_state').value       = data.address.state || '';
-      document.getElementById('ep_pincode').value     = data.address.pincode || '';
+    if (data.description) {
+      document.getElementById('sellerBio').textContent = data.description;
+      document.getElementById('bioInput').value = data.description;
     }
-
   } catch (e) {
-    console.warn('Seller profile fetch error:', e.message);
-    // Fallback to localStorage name
-    const name      = localStorage.getItem('userName') || 'Chef';
+    console.log('Seller profile fetch (expected if endpoint not yet implemented)', e.message);
+    // Fallback: use localStorage name
+    const name = localStorage.getItem('userName') || 'Chef';
     const firstName = name.split('@')[0].split(' ')[0] || 'Chef';
-    document.getElementById('sellerName').textContent =
-      '🔥 Hey Chef, ' + firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
+    document.getElementById('sellerName').textContent = '🔥 Hey Chef, ' + firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
   }
 }
 
-/* ════════════════════════════════════════════════════════════
-   EDIT BIO — uses POST /seller/update-profile with SellerReceiveDto
-════════════════════════════════════════════════════════════ */
 function openEditBioModal() {
-  document.getElementById('bioInput').value = document.getElementById('sellerBio').textContent || '';
   openModal('editBioModal');
+  const bio = document.getElementById('sellerBio').textContent;
+  document.getElementById('bioInput').value = bio || '';
 }
 
 async function saveBio() {
   const bio = document.getElementById('bioInput').value.trim();
-  if (!bio) { toast('कृपया कुछ लिखें।', 'error'); return; }
+  if (!bio) {
+    toast('कृपया कुछ लिखें।', 'error');
+    return;
+  }
 
   const btn = document.getElementById('saveBioBtn');
   btn.innerHTML = '<span class="spinner"></span> Saving...';
-  btn.disabled  = true;
+  btn.disabled = true;
 
   try {
-    // Build SellerReceiveDto — backend @PostMapping /seller/update-profile
-    const payload = {
-      name:         _sellerProfile?.name         || localStorage.getItem('userName') || '',
-      email:        _sellerProfile?.email        || '',
-      phone:        _sellerProfile?.contact      || '',
-      businessName: _sellerProfile?.businessName || '',
-      description:  bio,
-      categories:   ['ALL'],
-      addressDto: {
-        id:          0,
-        addressLine: _sellerProfile?.address?.addressLine || '',
-        city:        _sellerProfile?.address?.city        || '',
-        state:       _sellerProfile?.address?.state       || '',
-        pincode:     _sellerProfile?.address?.pincode     || ''
-      }
-    };
-
-    const res = await fetch(`${BASE_URL}/seller/update-profile`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${token()}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+    const res = await fetch(`${BASE_URL}/update-profile`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${token()}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ description: bio })
     });
-    if (!res.ok) throw new Error(await res.text() || 'Failed');
 
+    if (!res.ok) throw new Error('Failed to update bio');
+    const data = await res.json();
+
+    // Update UI
     document.getElementById('sellerBio').textContent = bio;
-    if (_sellerProfile) _sellerProfile.Description = bio;
-    toast('✅ Bio अपडेट हो गया! 🎉', 'success');
+    toast('✅ आपका परिचय अपडेट हो गया! 🎉', 'success');
     closeModal('editBioModal');
   } catch (e) {
     console.error('Save bio error:', e);
-    toast('❌ अपडेट नहीं हो सका: ' + e.message, 'error');
+    toast('❌ अपडेट नहीं हो सका। कृपया पुनः प्रयास करें।', 'error');
   } finally {
     btn.innerHTML = '<i data-lucide="save" style="width:14px;height:14px"></i> Update Bio';
-    btn.disabled  = false;
+    btn.disabled = false;
     lucide.createIcons();
   }
 }
 
-/* ════════════════════════════════════════════════════════════
-   EDIT FULL PROFILE — uses POST /seller/update-profile
-════════════════════════════════════════════════════════════ */
-async function saveProfile() {
-  const name        = document.getElementById('ep_name').value.trim();
-  const phone       = document.getElementById('ep_phone').value.trim();
-  const businessName = document.getElementById('ep_business').value.trim();
-  const addressLine = document.getElementById('ep_addressLine').value.trim();
-  const city        = document.getElementById('ep_city').value.trim();
-  const state       = document.getElementById('ep_state').value.trim();
-  const pincode     = document.getElementById('ep_pincode').value.trim();
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+});
 
-  if (!name)        { toast('नाम आवश्यक है।', 'error'); return; }
-  if (phone && !/^[0-9]{10}$/.test(phone)) { toast('10-digit phone number दर्ज करें।', 'error'); return; }
-  if (pincode && !/^[0-9]{6}$/.test(pincode)) { toast('6-digit pincode दर्ज करें।', 'error'); return; }
-
-  const btn = document.getElementById('saveProfileBtn');
-  btn.innerHTML = '<span class="spinner"></span> Saving...';
-  btn.disabled  = true;
-
-  try {
-    const payload = {
-      name,
-      email:        _sellerProfile?.email || '',
-      phone:        phone || _sellerProfile?.contact || '',
-      businessName: businessName || _sellerProfile?.businessName || '',
-      description:  _sellerProfile?.Description || _sellerProfile?.description || '',
-      categories:   ['ALL'],
-      addressDto: {
-        id:      0,
-        addressLine: addressLine || _sellerProfile?.address?.addressLine || '',
-        city:        city        || _sellerProfile?.address?.city        || '',
-        state:       state       || _sellerProfile?.address?.state       || '',
-        pincode:     pincode     || _sellerProfile?.address?.pincode     || ''
-      }
-    };
-
-    const res = await fetch(`${BASE_URL}/seller/update-profile`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${token()}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    if (!res.ok) throw new Error(await res.text() || 'Failed');
-
-    // Update localStorage + UI
-    localStorage.setItem('userName', businessName || name);
-    const firstName = (businessName || name).split(' ')[0];
-    document.getElementById('sellerName').textContent = '🔥 Hey Chef, ' + firstName;
-
-    // Refresh cached profile
-    if (_sellerProfile) {
-      _sellerProfile.name         = name;
-      _sellerProfile.contact      = phone;
-      _sellerProfile.businessName = businessName;
-      if (_sellerProfile.address) {
-        _sellerProfile.address.addressLine = addressLine;
-        _sellerProfile.address.city        = city;
-        _sellerProfile.address.state       = state;
-        _sellerProfile.address.pincode     = pincode;
-      }
-    }
-
-    toast('✅ Profile update हो गई! 🎉', 'success');
-    closeModal('editProfileModal');
-  } catch (e) {
-    console.error('Save profile error:', e);
-    toast('❌ Profile update नहीं हो सकी: ' + e.message, 'error');
-  } finally {
-    btn.innerHTML = '<i data-lucide="save" style="width:14px;height:14px"></i> Save Profile';
-    btn.disabled  = false;
-    lucide.createIcons();
-  }
-}
+// Load seller profile on page load
+window.addEventListener('load', loadSellerProfile);
 </script>
 </body>
 </html>
