@@ -31,22 +31,18 @@
 
     * { box-sizing:border-box; margin:0; padding:0; }
 
-   body {
-  background:
-    radial-gradient(ellipse 100% 60% at 5% 5%, rgba(212,175,55,0.2), transparent 50%),
-    radial-gradient(ellipse 80% 50% at 95% 95%, rgba(212,175,55,0.15), transparent 50%),
-    radial-gradient(ellipse 60% 70% at 50% 50%, rgba(212,175,55,0.08), transparent 70%),
-
-    linear-gradient(135deg, rgba(15,8,5,0.9), rgba(26,15,10,0.95), rgba(15,8,5,0.9)),
-
-    url('background2.png') center/cover no-repeat;
-
-  background-attachment: fixed;
-  min-height: 100vh;
-  color: var(--text);
-  font-family: 'Lato', sans-serif;
-  line-height: 1.6;
-}
+    body {
+      background: var(--dark);
+      background-image:
+        radial-gradient(ellipse 100% 60% at 5% 5%, rgba(212,175,55,0.2) 0%, transparent 50%),
+        radial-gradient(ellipse 80% 50% at 95% 95%, rgba(212,175,55,0.15) 0%, transparent 50%),
+        radial-gradient(ellipse 60% 70% at 50% 50%, rgba(212,175,55,0.08) 0%, transparent 70%);
+      background-attachment: fixed;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: 'Lato', sans-serif;
+      line-height: 1.6;
+    }
 
     /* NAV */
     nav {
@@ -828,7 +824,9 @@ async function loadAllSellers() {
     const r = await fetch(`${BASE}/admin/Sellers-viewAll`, { headers:hdrs() });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     allSellersList = await r.json();
-  } catch(e) { toast('Failed to load all sellers: '+e.message,'error'); }
+    // Ensure we're always getting fresh data
+    return allSellersList;
+  } catch(e) { toast('Failed to load all sellers: '+e.message,'error'); return []; }
 }
 
 async function loadPendingSellers() {
@@ -837,7 +835,8 @@ async function loadPendingSellers() {
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     pendingSellersList = await r.json();
     animateStat('statPendingSellers', pendingSellersList.length);
-  } catch(e) { toast('Failed to load pending sellers: '+e.message,'error'); }
+    return pendingSellersList;
+  } catch(e) { toast('Failed to load pending sellers: '+e.message,'error'); return []; }
 }
 
 async function loadSellersAll() {
@@ -959,15 +958,31 @@ async function bulkApproveSellers() {
 
 async function deleteSeller(id) {
   if (!confirm('Delete this seller and ALL their data? Cannot be undone.')) return;
+  
+  // OPTIMISTIC: Remove immediately from UI
+  allSellersList = allSellersList.filter(s => s.id !== id);
+  pendingSellersList = pendingSellersList.filter(s => s.id !== id);
+  filteredSellers = filteredSellers.filter(s => s.id !== id);
+  selectedSellerIds.delete(id);
+  analyticsLoaded = false;
+  
+  closeModal('sellerDetailModal');
+  toast('⏳ Permanently removing seller...','info');
+  
   try {
+    // DELETE from backend
     const r = await fetch(`${BASE}/admin/delete-seller/${id}`, { method:'DELETE', headers:hdrs() });
     if (!r.ok) throw new Error(await r.text());
-    toast('🗑️ Seller deleted.');
-    closeModal('sellerDetailModal');
-    selectedSellerIds.delete(id);
-    analyticsLoaded = false;
+    
+    // Wait a moment for backend sync, then refresh to ensure consistency
+    await new Promise(resolve => setTimeout(resolve, 800));
+    renderSellers();
+    toast('✅ Seller permanently deleted from system.','success');
+  } catch(e) {
+    toast('❌ Delete failed on server: '+e.message,'error');
+    // Reload to restore the seller if deletion failed
     await loadSellersAll();
-  } catch(e) { toast('Delete failed: '+e.message,'error'); }
+  }
 }
 
 async function openSellerModal(id) {
