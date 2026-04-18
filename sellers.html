@@ -443,10 +443,16 @@
 
         async function loadSellers() {
             try {
+                const token = localStorage.getItem('authToken');
+                const headers = {};
+                if (token) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                }
+
                 // Fetch both products and sellers simultaneously
                 const [exploreRes, sellersRes] = await Promise.all([
-                    fetch(`${BASE_URL}/explore`).catch(() => ({ ok: false, json: () => [] })),
-                    fetch(`${BASE_URL}/get-allSellers`).catch(() => ({ ok: false, json: () => [] }))
+                    fetch(`${BASE_URL}/explore`, { headers }).catch(() => ({ ok: false, json: () => [] })),
+                    fetch(`${BASE_URL}/get-allSellers`, { headers }).catch(() => ({ ok: false, json: () => [] }))
                 ]);
                 
                 let products = [];
