@@ -317,9 +317,10 @@
         <!-- Filter Buttons -->
         <div class="flex justify-center gap-3 mb-8 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide" id="filterButtons">
             <button onclick="filterSellers('all', event)" class="filter-btn active snap-start flex-shrink-0" data-filter="all">All Chefs</button>
-            <button onclick="filterSellers('veg', event)" class="filter-btn snap-start flex-shrink-0" data-filter="veg">🥗 Veg Only</button>
-            <button onclick="filterSellers('nonveg', event)" class="filter-btn snap-start flex-shrink-0" data-filter="nonveg">🍗 Non-Veg</button>
+            <button onclick="filterSellers('Snacks', event)" class="filter-btn snap-start flex-shrink-0" data-filter="Snacks">🥟 Snacks</button>
             <button onclick="filterSellers('Thalis', event)" class="filter-btn snap-start flex-shrink-0" data-filter="Thalis">🥘 Thalis</button>
+            <button onclick="filterSellers('Desserts', event)" class="filter-btn snap-start flex-shrink-0" data-filter="Desserts">🍰 Sweets</button>
+            <button onclick="filterSellers('Crafts', event)" class="filter-btn snap-start flex-shrink-0" data-filter="Crafts">🛍️ Crafts & Others</button>
         </div>
 
         <div id="loading" class="text-center py-12 sm:py-16 text-gray-400 font-hindi">
@@ -593,12 +594,18 @@
 
         function applyFilters(filteredSellersList) {
             let filtered = [...filteredSellersList];
-            if (currentFilter === 'veg') {
-                filtered = filtered.filter(s => s.isVeg !== false);
-            } else if (currentFilter === 'nonveg') {
-                filtered = filtered.filter(s => s.isVeg === false);
-            } else if (currentFilter !== 'all') {
-                filtered = filtered.filter(s => (s.specialty || '').includes(currentFilter));
+            if (currentFilter !== 'all') {
+                filtered = filtered.filter(s => {
+                    const spec = (s.specialty || '').toLowerCase();
+                    const filter = currentFilter.toLowerCase();
+                    if (filter === 'crafts') {
+                        return spec.includes('craft') || spec.includes('soap') || spec.includes('handloom');
+                    }
+                    if (filter === 'desserts') {
+                        return spec.includes('dessert') || spec.includes('sweet');
+                    }
+                    return spec.includes(filter);
+                });
             }
             render(filtered);
         }
@@ -626,7 +633,7 @@
                 const topDishImg = seller.topDish ? getImageUrl(seller.topDish.img || seller.topDish.image) : '';
                 const dishThumbs = seller.topDishes.slice(0, 3).map(d => {
                     const imgUrl = getImageUrl(d.img);
-                    return imgUrl ? '<img src="' + imgUrl + '" alt="' + d.name + '" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg object-cover border border-white/10" onerror="this.style.display=\\'none\\'">' : '';
+                    return imgUrl ? `<img src="${imgUrl}" alt="${d.name}" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg object-cover border border-white/10" onerror="this.style.display='none'">` : '';
                 }).join('');
 
                 const card = document.createElement('div');
