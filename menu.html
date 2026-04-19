@@ -264,9 +264,71 @@ async function _syncCartFromServer() {
 }
  
 // Sync when tab becomes visible again (user returns from cart.html)
-document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') {
-        _syncCartFromServer();
+// ── Safely Handle Add, −, + clicks via event delegation ──
+document.addEventListener('click', async function(e) {
+    const btn = e.target.closest('.cart-action-btn');
+    if (!btn) return;
+
+    // Prevent any accidental bubbling
+    e.preventDefault();
+    e.stopPropagation();
+
+    const minus = e.target.closest('.qty-minus');
+    const plus  = e.target.closest('.qty-plus');
+    const strId = btn.dataset.productid;
+
+    if (!strId) return;
+
+    const token = localStorage.getItem('authToken');
+    if (!token) { window.location.href = 'login.html'; return; }
+
+    const current = window._cartQty[strId] || 0;
+
+    // SCENARIO 1: Clicked MINUS
+    if (minus) {
+        if (current <= 0) return;
+        btn.style.opacity = '0.6';
+        try {
+            if (current === 1) {
+                // Completely remove from cart
+                const res = await fetch(`${window.CONFIG.BASE_URL}/remove-from-cart/${strId}`, {
+                    method: 'DELETE',
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                if (!res.ok) throw new Error('Remove failed');
+                delete window._cartQty[strId];
+            } else {
+                // Fallback: Remove entirely and re-add (current - 1) times
+                const removeRes = await fetch(`${window.CONFIG.BASE_URL}/remove-from-cart/${strId}`, {
+                    method: 'DELETE',
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                if (!removeRes.ok) throw new Error('Remove failed');
+                window._cartQty[strId] = 0;
+
+                for (let i = 0; i < current - 1; i++) {
+                    await fetch(`${window.CONFIG.BASE_URL}/add-to-cart`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                        body: JSON.stringify({ productid: parseInt(strId, 10), quantity: 1 })
+                    });
+                }
+                window._cartQty[strId] = current - 1;
+            }
+            _updateCartButton(strId, btn);
+            updateAllCartBadges();
+        } catch(err) {
+            showMenuToast('Could not update quantity', true);
+        } finally {
+            btn.style.opacity = '1';
+        }
+        return;
+    }
+
+    // SCENARIO 2: Clicked PLUS or Initial "ADD"
+    if (plus || current === 0) {
+        await addToCart(strId, btn);
+        return;
     }
 });
  
@@ -709,8 +771,8 @@ window.addEventListener('focus', _syncCartFromServer);
 
                     <div class="flex justify-between items-center pt-3.5 border-t border-gray-100">
                         <span class="text-2xl font-cinzel text-amber-800 font-bold">${price}</span>
-                        <button id="cartBtn_${strId}" onclick="addToCart('${item.id}', this)"
-                            class="${btnBase} text-white px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg transition-all flex items-center gap-2">
+                        <button id="cartBtn_${strId}" data-productid="${item.id}"
+    class="cart-action-btn ${btnBase} text-white px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg transition-all flex items-center justify-center gap-2">
                             ${btnHtml}
                         </button>
                     </div>
@@ -747,8 +809,7 @@ async function addToCart(id, btn) {
         });
  
         if (!res.ok) {
-            const errBody = await res.json().catch(() => ({}));
-            const errMsg  = errBody.message || '';
+            const errMsg = await res.text(); 
  
             // ── DIFFERENT SELLER ──
             if (res.status === 400 && errMsg.toLowerCase().includes('one seller')) {
