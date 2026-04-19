@@ -42,7 +42,26 @@
             min-height: 100vh;
             position: relative;
         }
-
+.cat-chip {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: transparent;
+    color: rgba(245,240,232,0.5);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Lato', sans-serif;
+    white-space: nowrap;
+}
+.cat-chip.active, .cat-chip:hover {
+    background: rgba(197,160,89,0.15);
+    border-color: rgba(197,160,89,0.4);
+    color: #c5a059;
+}
         /* Background image overlay - traditional chulha kitchen */
         body::before {
             content: '';
@@ -303,7 +322,28 @@
                     class="w-4 h-4 text-gold"></i> हमारी रसोइयाँ</span>
             <span class="w-8 sm:w-12 h-px bg-gradient-to-l from-transparent to-gold/50"></span>
         </h2>
-
+<!-- SEARCH + FILTER BAR -->
+<div class="flex flex-col sm:flex-row gap-3 mb-6">
+    <!-- Search input -->
+    <div class="relative flex-1">
+        <i data-lucide="search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:rgba(197,160,89,0.5);"></i>
+        <input type="text" id="sellerSearchInput" 
+            placeholder="Search kitchens..."
+            oninput="filterSellers()"
+            style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:10px 12px 10px 36px;color:#f5f0e8;font-size:13px;outline:none;box-sizing:border-box;transition:border-color 0.2s;"
+            onfocus="this.style.borderColor='rgba(197,160,89,0.5)'"
+            onblur="this.style.borderColor='rgba(255,255,255,0.08)'">
+    </div>
+    <!-- Category chips -->
+    <div class="flex gap-2 flex-wrap" id="categoryChips">
+        <button class="cat-chip active" onclick="setCat('',this)">All</button>
+        <button class="cat-chip" onclick="setCat('SNACKS',this)">Snacks</button>
+        <button class="cat-chip" onclick="setCat('SWEETS',this)">Sweets</button>
+        <button class="cat-chip" onclick="setCat('THALI',this)">Thali</button>
+        <button class="cat-chip" onclick="setCat('VRAT',this)">Vrat</button>
+        <button class="cat-chip" onclick="setCat('HANDCRAFTED_ITEMS',this)">Crafts</button>
+    </div>
+</div>
         <div id="loading" class="text-center py-12 sm:py-16 text-gray-400 font-hindi">
             <div class="w-10 h-10 border-4 border-gold/30 border-t-gold rounded-full animate-spin mx-auto mb-4"></div>
             रसोइयाँ लोड हो रही हैं...
@@ -489,77 +529,75 @@
             processCombinedData(MOCK_DATA, []);
         }
 
-        function processCombinedData(products, backendSellers) {
-            const sellersMap = new Map();
+       function processCombinedData(products, backendSellers) {
+    const sellersMap = new Map(); // key = String(sellerId)
 
-            // 1. Add all registered sellers
-            if (Array.isArray(backendSellers)) {
-                backendSellers.forEach(s => {
-                    if (!s.businessName) return;
-                    sellersMap.set(s.businessName, {
-                        name: s.businessName,
-                        loc: s.location || 'Home Kitchen',
-                        avatar: s.profileImageUrl,
-                        specialty: (s.category && s.category.length > 0) ? s.category[0] : 'Home Cooked',
-                        bio: s.bio || '',
-                        isApproved: true,
-                        dishCount: 0,
-                        topDish: null,
-                        topDishes: []
-                    });
+    // 1. Seed map from approved sellers (SellerSummaryDto has: id, businessName, profileImageUrl, category, rating)
+    if (Array.isArray(backendSellers)) {
+        backendSellers.forEach(s => {
+            if (!s.id) return;
+            sellersMap.set(String(s.id), {
+                id:         s.id,
+                name:       s.businessName || 'Home Kitchen',
+                loc:        'Home Kitchen',
+                avatar:     s.profileImageUrl || null,
+                categories: s.category || [],
+                rating:     s.rating || 0,
+                bio:        '',
+                isApproved: true,
+                dishCount:  0,
+                topDish:    null,
+                topDishes:  []
+            });
+        });
+    }
+
+    // 2. Map products → sellers using sellerId (ProductDto.sellerId)
+    if (Array.isArray(products)) {
+        products.forEach(item => {
+            if (!item.sellerId) return;
+            const key = String(item.sellerId);
+
+            // Create entry if seller wasn't in approved list
+            if (!sellersMap.has(key)) {
+                sellersMap.set(key, {
+                    id:         item.sellerId,
+                    name:       item.sellerName || 'Home Kitchen',
+                    loc:        'Home Kitchen',
+                    avatar:     null,
+                    categories: [item.category].filter(Boolean),
+                    rating:     0,
+                    bio:        '',
+                    isApproved: false,
+                    dishCount:  0,
+                    topDish:    null,
+                    topDishes:  []
                 });
             }
 
-            // 2. Map products to their respective sellers
-            if (Array.isArray(products)) {
-                products.forEach(item => {
-                    const name = item.chef || item.seller?.businessName;
-                    if (!name) return;
-
-                    if (!sellersMap.has(name)) {
-                        sellersMap.set(name, {
-                            name: name,
-                            loc: item.loc || item.seller?.location || 'Home Kitchen',
-                            avatar: item.avatar || item.seller?.avatar,
-                            specialty: item.category || 'Home Cooked',
-                            bio: '',
-                            isApproved: true,
-                            dishCount: 0,
-                            topDish: null,
-                            topDishes: []
-                        });
-                    }
-                    
-                    const seller = sellersMap.get(name);
-                    
-                    if (seller.loc === 'Home Kitchen' && (item.loc || item.seller?.location)) {
-                        seller.loc = item.loc || item.seller?.location;
-                    }
-                    if (!seller.avatar && (item.avatar || item.seller?.avatar)) {
-                        seller.avatar = item.avatar || item.seller?.avatar;
-                    }
-
-                    seller.dishCount++;
-                    if (!seller.topDish) seller.topDish = item;
-                    if (seller.topDishes.length < 3) {
-                        seller.topDishes.push({
-                            name: item.title || item.name, 
-                            img: item.img || item.image
-                        });
-                    }
+            const seller = sellersMap.get(key);
+            seller.dishCount++;
+            if (!seller.topDish) seller.topDish = item;
+            if (seller.topDishes.length < 3) {
+                seller.topDishes.push({
+                    name: item.name || item.title || '',
+                    img:  item.image || item.img || ''
                 });
             }
+        });
+    }
 
-            document.getElementById('statKitchens').textContent = sellersMap.size;
-            document.getElementById('statDishes').textContent = Array.isArray(products) ? products.length : 0;
-            
-            const sellersArray = [...sellersMap.values()];
-            loadedSellers = sellersArray;
-            
-            render(sellersArray);
-            renderFeaturedSeller(sellersArray);
-            renderStories(sellersArray);
-        }
+    const sellersArray = [...sellersMap.values()];
+    loadedSellers      = sellersArray;
+
+    // Update stats
+    document.getElementById('statKitchens').textContent = backendSellers.length || sellersMap.size;
+    document.getElementById('statDishes').textContent   = Array.isArray(products) ? products.length : 0;
+
+    render(sellersArray);
+    renderFeaturedSeller(sellersArray);
+    renderStories(sellersArray);
+}
         
         function render(sellers) {
             const grid = document.getElementById('grid');
@@ -567,7 +605,9 @@
             if (sellers.length === 0) { document.getElementById('empty').classList.remove('hidden'); return; }
             sellers.forEach((seller, i) => {
                 const avatarUrl = getAvatarUrl(seller.avatar, seller.name);
-                const topDishImg = seller.topDish ? getImageUrl(seller.topDish.img || seller.topDish.image) : '';
+               const topDishImg = seller.topDish
+    ? getImageUrl(seller.topDish.image || seller.topDish.img)
+    : '';
 
                 const dishThumbs = seller.topDishes.slice(0, 3).map(d => {
                     const imgUrl = getImageUrl(d.img);
@@ -639,7 +679,7 @@
         `;
 
                 card.onclick = () => {
-                    window.location.href = `seller-profile.html?seller=${encodeURIComponent(seller.name)}`;
+                  window.location.href = `seller-profile.html?id=${seller.id}`;
                 };
 
                 grid.appendChild(card);
@@ -662,7 +702,32 @@
             const encodedPath = img.split('/').map(part => encodeURIComponent(part)).join('/');
             return `public/${encodedPath}`;
         }
+let _activeCat = '';
 
+function setCat(cat, btn) {
+    _activeCat = cat;
+    document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    filterSellers();
+}
+
+function filterSellers() {
+    const q   = (document.getElementById('sellerSearchInput')?.value || '').toLowerCase().trim();
+    const cat = _activeCat.toUpperCase();
+
+    const filtered = loadedSellers.filter(s => {
+        const nameMatch = !q || (s.name || '').toLowerCase().includes(q);
+        const catMatch  = !cat || (s.categories || []).some(c =>
+            String(c).toUpperCase().includes(cat)
+        ) || (s.topDishes || []).some(d =>
+            // also match if any dish category matches (from sellersMap build)
+            false
+        );
+        return nameMatch && catMatch;
+    });
+
+    render(filtered);
+}
         // Initialize
         loadSellers();
 
