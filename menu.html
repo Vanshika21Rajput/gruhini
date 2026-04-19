@@ -224,7 +224,54 @@
                     updateAllCartBadges();
                 }).catch(() => {});
         }
-
+/* Re-sync cart from server whenever user returns to this tab.
+   This fixes stale counts after deleting items on cart.html */
+async function _syncCartFromServer() {
+    const token = localStorage.getItem('authToken');
+    if (!token) return;
+    try {
+        const res = await fetch(`${window.CONFIG.BASE_URL}/get-cart`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+ 
+        // Rebuild _cartQty from server truth
+        window._cartQty = {};
+        if (Array.isArray(data)) {
+            data.forEach(item => {
+                const id = String(item.productid || item.product?.id || item.id || '');
+                if (id) window._cartQty[id] = (window._cartQty[id] || 0) + (parseInt(item.quantity) || 1);
+            });
+        }
+ 
+        updateAllCartBadges();
+ 
+        // Update all visible cart buttons to reflect new truth
+        document.querySelectorAll('[id^="cartBtn_"]').forEach(btn => {
+            const strId = btn.id.replace('cartBtn_', '');
+            const count = window._cartQty[strId] || 0;
+            if (count > 0) {
+                btn.innerHTML = _qtyControlHtml(count);
+                btn.classList.remove('bg-gray-900');
+                btn.classList.add('bg-amber-700');
+            } else {
+                _renderCartBtnEmpty(strId, btn);
+            }
+        });
+ 
+    } catch(e) { /* silent fail */ }
+}
+ 
+// Sync when tab becomes visible again (user returns from cart.html)
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+        _syncCartFromServer();
+    }
+});
+ 
+// Also sync on window focus
+window.addEventListener('focus', _syncCartFromServer);
         // Master function to update all badges
         function updateAllCartBadges() {
             if (!window._cartQty) return;
@@ -622,12 +669,9 @@
                 : '';
 
             // Cart state
-            const inCart   = window._cartQty && window._cartQty[strId] ? window._cartQty[strId] : 0;
-            const btnHtml  = inCart > 0
-                ? `<span style="font-size:14px;font-weight:800">${inCart}</span><span style="font-size:9px">× in cart</span>`
-                : `Add <span class="text-gold" aria-hidden="true">+</span>`;
-            const btnBase  = inCart > 0 ? 'bg-amber-700 hover:bg-amber-600' : 'bg-gray-900 hover:bg-amber-700 group-hover:bg-amber-800';
-
+            const inCart  = window._cartQty && window._cartQty[strId] ? window._cartQty[strId] : 0;
+    const btnHtml = inCart > 0 ? _qtyControlHtml(inCart) : `Add <span style="color:#c5a059">+</span>`;
+    const btnBase = inCart > 0 ? 'bg-amber-700 hover:bg-amber-600' : 'bg-gray-900 hover:bg-amber-700 group-hover:bg-amber-800'
             return `
             <div class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 group hover:-translate-y-2 border border-gray-100">
                 <div class="h-60 overflow-hidden relative cursor-pointer" onclick="window.open('product.html?id=${item.id}','_blank')">
@@ -680,70 +724,245 @@
     /* ── Per-item cart qty tracker ── */
     if (!window._cartQty) window._cartQty = {};
 
-    async function addToCart(id, btn) {
-        const token = localStorage.getItem('authToken');
-        if (!token) { localStorage.setItem('redirectAfterLogin', window.location.href); window.location.href='login.html'; return; }
-
-        const strId = String(id);
-        const prevHtml = btn.innerHTML;
-        btn.innerHTML='Adding...'; btn.classList.add('opacity-70');
-
-        try {
-            const res = await fetch(`${window.CONFIG.BASE_URL}/add-to-cart`, {
-                method:'POST',
-                headers:{ 'Content-Type':'application/json', 'Authorization':`Bearer ${token}` },
-                body: JSON.stringify({ productid: parseInt(id, 10), quantity: 1 })
-            });
-
-            if (!res.ok) {
-                if (res.status===403) {
-                    localStorage.removeItem('authToken');
-                    showMenuToast('Session expired. Please login again.', true);
-                    setTimeout(() => window.location.href='login.html', 2000);
-                    return;
+// Pending add after conflict resolution
+let _pendingCartAdd = null;
+ 
+async function addToCart(id, btn) {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        localStorage.setItem('redirectAfterLogin', window.location.href);
+        window.location.href = 'login.html';
+        return;
+    }
+ 
+    const strId   = String(id);
+    const prevHtml = btn ? btn.innerHTML : '';
+    if (btn) { btn.innerHTML = 'Adding...'; btn.classList.add('opacity-70'); btn.disabled = true; }
+ 
+    try {
+        const res = await fetch(`${window.CONFIG.BASE_URL}/add-to-cart`, {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+            body:    JSON.stringify({ productid: parseInt(id, 10), quantity: 1 })
+        });
+ 
+        if (!res.ok) {
+            const errBody = await res.json().catch(() => ({}));
+            const errMsg  = errBody.message || '';
+ 
+            // ── DIFFERENT SELLER ──
+            if (res.status === 400 && errMsg.toLowerCase().includes('one seller')) {
+                // Find current cart's seller name for context
+                let cartSellerName = '';
+                try {
+                    const cartRes = await fetch(`${window.CONFIG.BASE_URL}/get-cart`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+                    if (cartRes.ok) {
+                        const cartItems = await cartRes.json();
+                        if (cartItems.length > 0) cartSellerName = cartItems[0].chefname || '';
+                    }
+                } catch {}
+ 
+                // Store pending add and open modal
+                _pendingCartAdd = { id, btn, prevHtml };
+                document.getElementById('conflictCartSeller').textContent =
+                    cartSellerName ? `Current cart: ${cartSellerName}` : '';
+                document.getElementById('sellerConflictModal').style.display = 'flex';
+ 
+                // Reset button while modal is shown
+                if (btn) {
+                    btn.innerHTML = prevHtml;
+                    btn.classList.remove('opacity-70');
+                    btn.disabled = false;
                 }
-                const ed = await res.json().catch(()=>({}));
-                throw new Error(ed.message||'Failed to add');
+                return;
             }
-
-            // Update per-item count
-            window._cartQty[strId] = (window._cartQty[strId]||0) + 1;
-            const count = window._cartQty[strId];
-
+ 
+            throw new Error(errMsg || `HTTP ${res.status}`);
+        }
+ 
+        // ── SUCCESS ──
+        window._cartQty[strId] = (window._cartQty[strId] || 0) + 1;
+        _updateCartButton(strId, btn);
+        updateAllCartBadges();
+ 
+        if (typeof window._showCartToast === 'function') {
+            const toastItem = allItems.find(i => String(i.id) === strId);
+            if (toastItem) window._showCartToast(toastItem.name || toastItem.title, toastItem.image || toastItem.img || '');
+        }
+ 
+    } catch(e) {
+        console.error('Add to cart error:', e);
+        // Show error on button briefly
+        if (btn) {
+            btn.innerHTML = e.message.includes('one seller') ? '1 kitchen only' : 'Error ✕';
+            btn.style.background = '#dc2626';
             btn.classList.remove('opacity-70');
-
-            // Update button to show count
-            btn.innerHTML = `<span style="font-size:14px;font-weight:800">${count}</span><span style="font-size:9px">× in cart</span>`;
-
-            if (count===1) {
-                // First add — flash green briefly
-                btn.className = btn.className.replace('bg-gray-900','bg-green-600').replace('group-hover:bg-amber-800','hover:bg-green-700');
-                setTimeout(() => {
-                    btn.className = btn.className.replace('bg-green-600','bg-amber-700').replace('hover:bg-green-700','hover:bg-amber-600');
-                }, 1500);
-            } else {
-                btn.className = btn.className.replace('bg-gray-900','bg-amber-700').replace('group-hover:bg-amber-800','hover:bg-amber-600');
-            }
-
-            // Update all navbar badges
-            updateAllCartBadges();
-
-            // Desktop cart toast — find the item from allItems
-            if (typeof window._showCartToast === 'function') {
-                const toastItem = allItems.find(i => String(i.id) === strId);
-                if (toastItem) window._showCartToast(
-                    toastItem.name || toastItem.title || 'Dish',
-                    toastItem.image || toastItem.img || ''
-                );
-            }
-
-        } catch(e) {
-            console.error('Add to cart error:', e);
-            btn.innerHTML = 'Error ✕';
-            btn.className = btn.className.replace('bg-gray-900','bg-red-600');
-            setTimeout(() => { btn.innerHTML=prevHtml; btn.className=btn.className.replace('bg-red-600','bg-gray-900'); btn.classList.remove('opacity-70'); }, 2000);
+            setTimeout(() => {
+                btn.innerHTML = prevHtml;
+                btn.style.background = '';
+                btn.disabled = false;
+            }, 2500);
         }
     }
+}
+ 
+function closeConflictModal() {
+    document.getElementById('sellerConflictModal').style.display = 'none';
+    _pendingCartAdd = null;
+}
+ 
+async function clearCartAndAdd() {
+    if (!_pendingCartAdd) return;
+    const { id, btn, prevHtml } = _pendingCartAdd;
+    const token  = localStorage.getItem('authToken');
+    const clearBtn = document.getElementById('clearAndAddBtn');
+    clearBtn.innerHTML = 'Clearing...'; clearBtn.disabled = true;
+ 
+    try {
+        // Get current cart items and remove each one
+        const cartRes = await fetch(`${window.CONFIG.BASE_URL}/get-cart`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        if (cartRes.ok) {
+            const cartItems = await cartRes.json();
+            await Promise.all(cartItems.map(item =>
+                fetch(`${window.CONFIG.BASE_URL}/remove-from-cart/${item.productid}`, {
+                    method: 'DELETE',
+                    headers: { Authorization: `Bearer ${token}` }
+                })
+            ));
+        }
+ 
+        // Clear local tracking
+        window._cartQty = {};
+        // Re-render all cart buttons to show 0
+        document.querySelectorAll('[id^="cartBtn_"]').forEach(b => {
+            const pid = b.id.replace('cartBtn_', '');
+            _renderCartBtnEmpty(pid, b);
+        });
+        updateAllCartBadges();
+ 
+        closeConflictModal();
+ 
+        // Now add the new item
+        _pendingCartAdd = null;
+        await addToCart(id, btn);
+ 
+    } catch(e) {
+        showMenuToast('Could not clear cart: ' + (e.message || 'Try again'), true);
+        clearBtn.innerHTML = 'Clear & Add New'; clearBtn.disabled = false;
+    }
+}
+ 
+// ── Update a single cart button with current qty ──
+function _updateCartButton(strId, btn) {
+    if (!btn) return;
+    const count = window._cartQty[strId] || 0;
+    if (count > 0) {
+        // Show quantity controls: [−] count [+]
+        btn.innerHTML = _qtyControlHtml(count);
+        btn.style.background = '';
+        btn.classList.remove('bg-gray-900', 'opacity-70');
+        btn.classList.add('bg-amber-700');
+        btn.disabled = false;
+    } else {
+        _renderCartBtnEmpty(strId, btn);
+    }
+}
+ 
+function _renderCartBtnEmpty(strId, btn) {
+    btn.innerHTML = `Add <span style="color:#c5a059">+</span>`;
+    btn.className = btn.className
+        .replace('bg-amber-700', 'bg-gray-900')
+        .replace('hover:bg-amber-600', 'hover:bg-amber-700 group-hover:bg-amber-800');
+    btn.disabled = false;
+}
+ 
+function _qtyControlHtml(count) {
+    return `
+        <span class="qty-minus" style="
+            font-size:18px; font-weight:900; line-height:1;
+            padding:0 4px; cursor:pointer; user-select:none;
+        ">−</span>
+        <span style="font-size:14px; font-weight:800; min-width:18px; text-align:center;">${count}</span>
+        <span class="qty-plus" style="
+            font-size:18px; font-weight:900; line-height:1;
+            padding:0 4px; cursor:pointer; user-select:none;
+        ">+</span>
+    `;
+}
+ 
+// ── Handle −/+ clicks via event delegation on the grid ──
+document.addEventListener('click', async function(e) {
+    const minus = e.target.closest('.qty-minus');
+    const plus  = e.target.closest('.qty-plus');
+    if (!minus && !plus) return;
+ 
+    e.stopPropagation();
+ 
+    const btn = (minus || plus).closest('button');
+    if (!btn) return;
+ 
+    const strId = btn.id ? btn.id.replace('cartBtn_', '') : null;
+    if (!strId) return;
+ 
+    const token = localStorage.getItem('authToken');
+    if (!token) { window.location.href = 'login.html'; return; }
+ 
+    if (plus) {
+        // Increase
+        await addToCart(parseInt(strId, 10), btn);
+    } else {
+        // Decrease
+        const current = window._cartQty[strId] || 0;
+        if (current <= 0) return;
+ 
+        btn.style.opacity = '0.6';
+ 
+        try {
+            if (current === 1) {
+                // Remove from cart
+                const res = await fetch(`${window.CONFIG.BASE_URL}/remove-from-cart/${strId}`, {
+                    method: 'DELETE',
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                if (!res.ok) throw new Error('Remove failed');
+                delete window._cartQty[strId];
+            } else {
+                // Backend doesn't have a "decrease by 1" endpoint, so:
+                // Remove and re-add (current - 1) times
+                // Better: remove item first, then add back (current-1)
+                const removeRes = await fetch(`${window.CONFIG.BASE_URL}/remove-from-cart/${strId}`, {
+                    method: 'DELETE',
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                if (!removeRes.ok) throw new Error('Remove failed');
+                window._cartQty[strId] = 0;
+ 
+                // Re-add current-1 times
+                for (let i = 0; i < current - 1; i++) {
+                    await fetch(`${window.CONFIG.BASE_URL}/add-to-cart`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                        body: JSON.stringify({ productid: parseInt(strId, 10), quantity: 1 })
+                    });
+                }
+                window._cartQty[strId] = current - 1;
+            }
+ 
+            _updateCartButton(strId, btn);
+            updateAllCartBadges();
+ 
+        } catch(e) {
+            showMenuToast('Could not update quantity', true);
+        } finally {
+            btn.style.opacity = '1';
+        }
+    }
+});
+
 
     async function toggleFavorite(dishId, dishName, dishImage, dishPrice, chefName, btn) {
         const token = localStorage.getItem('authToken');
@@ -979,5 +1198,40 @@
     </script>
 
     <script>if (typeof lucide !== 'undefined') lucide.createIcons();</script>
+    <div id="sellerConflictModal" style="
+  display:none; position:fixed; inset:0; z-index:600;
+  background:rgba(0,0,0,0.82); backdrop-filter:blur(6px);
+  align-items:center; justify-content:center; padding:20px;
+">
+  <div style="
+    background:#1a0f0a; border:1px solid rgba(197,160,89,0.35);
+    border-radius:20px; padding:28px; width:100%; max-width:400px;
+    box-shadow:0 30px 80px rgba(0,0,0,0.6);
+  ">
+    <div style="font-size:28px; text-align:center; margin-bottom:12px;">🍽️</div>
+    <h3 style="font-family:'Cinzel',serif; color:#c5a059; font-size:1rem; font-weight:700; text-align:center; margin-bottom:8px;">
+      Different Kitchen
+    </h3>
+    <p style="font-size:12px; color:rgba(255,255,255,0.6); text-align:center; line-height:1.7; margin-bottom:6px;">
+      Your cart has items from another kitchen.<br>
+      Gruhani delivers from <strong style="color:#c5a059;">one kitchen per order</strong>.
+    </p>
+    <p id="conflictCartSeller" style="font-size:11px; color:rgba(197,160,89,0.5); text-align:center; margin-bottom:20px; font-style:italic;"></p>
+    <div style="display:flex; gap:10px;">
+      <button onclick="closeConflictModal()" style="
+        flex:1; padding:11px; background:transparent;
+        border:1px solid rgba(255,255,255,0.12); color:rgba(255,255,255,0.5);
+        border-radius:10px; cursor:pointer; font-size:12px; font-family:'Lato',sans-serif;
+      ">Keep current cart</button>
+      <button id="clearAndAddBtn" onclick="clearCartAndAdd()" style="
+        flex:1; padding:11px;
+        background:linear-gradient(135deg,#c5a059,#8c6a38);
+        color:#0f0805; border:none; border-radius:10px;
+        font-weight:700; cursor:pointer; font-size:12px;
+        font-family:'Cinzel',serif; letter-spacing:.04em;
+      ">Clear & Add New</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
