@@ -1,5 +1,6 @@
 package com.example.Gruhani.service;
 
+import com.example.Gruhani.Enums.ProductStatus;
 import com.example.Gruhani.Exceptions.ProductNotFoundException;
 import com.example.Gruhani.Exceptions.UserNotFoundException;
 import com.example.Gruhani.Repositories.PasswordResetOtpRepository;
@@ -8,13 +9,18 @@ import com.example.Gruhani.Repositories.SellerRepo;
 import com.example.Gruhani.Repositories.UserRepo;
 import com.example.Gruhani.dtos.*;
 import com.example.Gruhani.models.*;
-import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -33,8 +39,11 @@ public class UserService {
     @Autowired
     ProductRepo productRepo;
 
+    @Transactional(readOnly=true)
+    @Cacheable(value="seller",key="#id")
     public SellerDetailsDto searchSeller(Long id)
     {
+        System.out.println("fetching from  productss dbb");
         Seller seller=sellerRepo.findById(id).orElseThrow(()->new UserNotFoundException("SELLER NOT FOUND"));
         SellerDetailsDto sellerDto= maptoSellerDto(seller);
         return sellerDto;
@@ -145,19 +154,23 @@ public class UserService {
         userRepo.save(user);
     }
 
+
+    @Transactional
+   @Cacheable(value ="searchAllSellers")
     public List<SellerSummaryDto> getAllSellers() {
-        List<Seller>sellers=sellerRepo.findByIsApproved(true);
-        List<SellerSummaryDto>sellerSummaryDtos=sellers.stream().map(this::maptoSellerSummaryDto).collect(Collectors.toList());
-        return sellerSummaryDtos;
+        System.out.println("insideee all sellersss");
+        List<SellerSummaryDto> sellers=sellerRepo.findAllApprovedSellerSummaries();
+        //List<SellerSummaryDto>sellerSummaryDtos=sellers.stream().map(this::maptoSellerSummaryDto).collect(Collectors.toList());
+        return sellers;
     }
 
     private SellerSummaryDto maptoSellerSummaryDto(Seller seller) {
         SellerSummaryDto sellerSummaryDto=new SellerSummaryDto();
         sellerSummaryDto.setBusinessName(seller.getBusinessName());
-        sellerSummaryDto.setCategory(seller.getCategories());
         sellerSummaryDto.setRating(seller.getRating());
         sellerSummaryDto.setProfileImageUrl(seller.getUser().getProfileImageUrl());
         sellerSummaryDto.setId(seller.getId());
+
         return  sellerSummaryDto;
     }
     private ProductDto mapToProductDto(Product product) {
@@ -165,7 +178,7 @@ public class UserService {
         dto.setId(product.getId());
         dto.setName(product.getName());
         dto.setPrice(product.getPrice());
-        dto.setCategory(product.getCategory());
+        dto.setCategories(product.getCategory());
         dto.setSubcategory(product.getSubcategory());
         dto.setDescription(product.getDescription());
         dto.setStock(product.getStock());
@@ -180,10 +193,23 @@ public class UserService {
         dto.setSellerId(product.getSeller().getId());
         return dto;
     }
+
+    @Cacheable(value="product",key="#id")
     public ProductDto viewSingleProduct(Long id)
     {
+        System.out.println("fetching from  productss dbb");
         Product product=productRepo.findById(id).orElseThrow(()->new ProductNotFoundException("NOT FOUND"));
-        ProductDto  productdto=mapToProductDto(product);
+        ProductDto productdto=mapToProductDto(product);
         return productdto;
+    }
+
+    @Transactional
+    @Cacheable(value="getAllproducts")
+    public List<ProductDto> getAllProducts()
+    {
+        List<ProductDto> l = productRepo.findAllProductsDto(ProductStatus.APPROVED);
+        //projection query to fetch onlu the required fields from db and mapping it into db implicitly
+        return l;
+
     }
 }

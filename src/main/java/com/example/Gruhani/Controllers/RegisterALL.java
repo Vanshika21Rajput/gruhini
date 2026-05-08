@@ -57,7 +57,7 @@ ProfileService profileService;
     @PostMapping("/register-seller")
     public ResponseEntity<Map<String, Object>> sellerRegister( @Valid @RequestBody SellerReceiveDto sellerReceiveDto)
     {
-        System.out.print("inside seler");
+        System.out.print("inside seller");
         profileService.registerSeller(sellerReceiveDto);
 
         return ResponseEntity.ok(Map.of(

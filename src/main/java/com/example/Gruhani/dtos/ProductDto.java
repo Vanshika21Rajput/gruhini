@@ -17,7 +17,7 @@ public class ProductDto {
     Long id;
    String  name;
    BigDecimal price;
-    Category category;
+    Category categories;
     String subcategory;
     String  description;
      int stock;
@@ -30,4 +30,39 @@ public class ProductDto {
      String badge;
      Long sellerId;
      String image;
+    public ProductDto(
+            Long id,
+            String name,
+            BigDecimal price,
+            Category categories,
+            String subcategory,
+            String description,
+            int stock,
+            ProductStatus status,
+            Double rating,
+            Double discount,
+            Boolean verified,
+            String message,
+            String deliveryTime,
+            String badge,
+            Long sellerId,
+            String image
+    ) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.categories = categories;
+        this.subcategory = subcategory;
+        this.description = description;
+        this.stock = stock;
+        this.status = status;
+        this.rating = rating;
+        this.discount = discount;
+        this.verified = verified;
+        this.message = message;
+        this.deliveryTime = deliveryTime;
+        this.badge = badge;
+        this.sellerId = sellerId;
+        this.image = image;
+    }
 }

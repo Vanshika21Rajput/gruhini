@@ -16,6 +16,8 @@ import com.example.Gruhani.models.Seller;
 import com.example.Gruhani.models.Users;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -72,6 +74,7 @@ public class SellerDashBoardService {
             throw new RuntimeException(e);
         }
     }
+    @CacheEvict(value="product",key="#id")
     public void deleteproduct(Long id)
     {
        Product product=productRepo.findById(id).orElseThrow(()->new ProductNotFoundException("No Product Found"));
@@ -80,6 +83,7 @@ public class SellerDashBoardService {
     }
 
     @Transactional
+    @Cacheable(value = "allproducts")
     public  List<ProductDto> getAllProducts(String productStatus) {
         String username=usernameFromContext.fetchUsername();
         Seller seller=sellerRepo.findByuser_email(username);
@@ -109,7 +113,7 @@ public class SellerDashBoardService {
         dto.setId(product.getId());
         dto.setName(product.getName());
         dto.setPrice(product.getPrice());
-        dto.setCategory(product.getCategory());
+        dto.setCategories(product.getCategory());
         dto.setSubcategory(product.getSubcategory());
         dto.setDescription(product.getDescription());
         dto.setStock(product.getStock());
@@ -137,7 +141,7 @@ public class SellerDashBoardService {
         if (dto.getName() != null) product.setName(dto.getName());
         if (dto.getDescription() != null) product.setDescription(dto.getDescription());
         if (dto.getPrice() != null) product.setPrice(dto.getPrice());
-        if (dto.getCategory() != null) product.setCategory(dto.getCategory());
+        if (dto.getCategories() != null) product.setCategory(dto.getCategories());
         if (dto.getSubcategory() != null) product.setSubcategory(dto.getSubcategory());
         if (dto.getStock() > 0) product.setStock(dto.getStock());
         if (dto.getDiscount() != null) product.setDiscount(dto.getDiscount());

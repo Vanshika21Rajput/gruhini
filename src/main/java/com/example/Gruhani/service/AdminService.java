@@ -44,7 +44,7 @@ public class AdminService {
         dto.setId(product.getId());
         dto.setName(product.getName());
         dto.setPrice(product.getPrice());
-        dto.setCategory(product.getCategory());
+        dto.setCategories(product.getCategory());
         dto.setSubcategory(product.getSubcategory());
         dto.setDescription(product.getDescription());
         dto.setStock(product.getStock());

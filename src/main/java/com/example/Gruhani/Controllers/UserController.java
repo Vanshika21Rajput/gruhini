@@ -20,6 +20,7 @@ import com.example.Gruhani.service.UserService;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -74,34 +75,8 @@ public class UserController {
 */
     @GetMapping("/explore")
     public ResponseEntity<?> method() {
-        List<Product> l = prepo.findAllByStatus(ProductStatus.APPROVED);
-        Map<String, Object> response = new HashMap<>();
-        List<ProductDto> s = l.stream()
-                .map(product -> {
-                    ProductDto dto = new ProductDto();
-                    dto.setId(product.getId());
-                    dto.setName(product.getName());
-                    dto.setDescription(product.getDescription());
-                    dto.setPrice(product.getPrice());
-                    dto.setRating(product.getRating());
-                    dto.setCategory(product.getCategory());
-                    dto.setSubcategory(product.getSubcategory());
-                    dto.setStock(product.getStock());
-                    dto.setStatus(product.getStatus());
-                    dto.setDiscount(product.getDiscount());
-                    dto.setVerified(product.getVerified());
-                    dto.setMessage(product.getMessage());
-                    dto.setDeliveryTime(product.getDeliveryTime());
-                    dto.setBadge(product.getBadge());
-                    dto.setImage(product.getImage());
-
-                    if (product.getSeller() != null) {
-                        dto.setSellerId(product.getSeller().getId());
-                    }
-                    return dto;
-                })
-                .collect(Collectors.toList());
-        return ResponseEntity.ok().body(s);
+        List<ProductDto>productDtos=userService.getAllProducts();
+        return ResponseEntity.ok().body(productDtos);
     }
     @PostMapping("/save-fcm-token")
     public ResponseEntity<String> saveFcmToken(
@@ -121,6 +96,7 @@ public class UserController {
    @GetMapping("/get-allSellers")
    public ResponseEntity<?> getAllSellers()
    {
+
        List<SellerSummaryDto>sellerSummaryDtos= userService.getAllSellers();
         return ResponseEntity.ok(sellerSummaryDtos);
    }
@@ -148,10 +124,14 @@ public class UserController {
         ProductDto productDto = userService.viewSingleProduct(id);
         return ResponseEntity.ok().body(productDto);
     }
+    @Autowired
+    private CacheManager cacheManager;
 
-
-
-
+    @GetMapping("/clear-cache")
+    public String clearCache() {
+        cacheManager.getCache("searchAllSellers").clear();
+        return "Cache cleared";
+    }
 }
 
 

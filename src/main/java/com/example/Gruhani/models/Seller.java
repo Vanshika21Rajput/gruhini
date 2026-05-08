@@ -39,7 +39,6 @@ public class Seller {
      private List<Category> categories=new ArrayList<>();
     @OneToMany(mappedBy = "seller",fetch=FetchType.LAZY,orphanRemoval = true,cascade = CascadeType.ALL)
     private List<Order> orders=new ArrayList<>();
-
     private int totalOrderCount=0;
     private Float rating;
     private String Description;

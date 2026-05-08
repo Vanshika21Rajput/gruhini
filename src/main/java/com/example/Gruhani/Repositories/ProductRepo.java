@@ -1,8 +1,10 @@
 package com.example.Gruhani.Repositories;
 
 import com.example.Gruhani.Enums.ProductStatus;
+import com.example.Gruhani.dtos.ProductDto;
 import com.example.Gruhani.models.Product;
 import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,9 +16,32 @@ import java.util.Optional;
 
 @Repository
 public interface ProductRepo extends JpaRepository<Product,Long> {
+
     List<Product> findAllByStatus(ProductStatus productStatus);
 
-
+    @Query("""
+SELECT new com.example.Gruhani.dtos.ProductDto(
+    p.id,
+    p.name,
+    p.price,
+    p.category,
+    p.subcategory,
+    p.description,
+    p.stock,
+    p.status,
+    p.rating,
+    p.discount,
+    p.verified,
+    p.message,
+    p.deliveryTime,
+    p.badge,
+    p.seller.id,
+    p.image
+)                                 
+FROM Product p 
+WHERE p.status = :status
+""")
+    List<ProductDto> findAllProductsDto(ProductStatus status);//projection to direclty fetch dto instead of full entity and mapping them
 
      List<Product> findAllByname(String s);
 

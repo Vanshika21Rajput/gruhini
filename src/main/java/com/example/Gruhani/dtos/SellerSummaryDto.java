@@ -14,6 +14,14 @@ public class SellerSummaryDto {
         private Long id;
         private String businessName;
         private String profileImageUrl;
-        private List<Category> category;
         private Float rating;
+    public SellerSummaryDto(Long id,
+                            String businessName,
+                            String profileImageUrl,
+                            Float rating) {
+        this.id = id;
+        this.businessName = businessName;
+        this.profileImageUrl = profileImageUrl;
+        this.rating = rating;
+    }
 }

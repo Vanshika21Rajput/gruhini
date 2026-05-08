@@ -1,7 +1,9 @@
 package com.example.Gruhani.Repositories;
 
+import com.example.Gruhani.dtos.SellerSummaryDto;
 import com.example.Gruhani.models.Seller;
 import com.example.Gruhani.models.Users;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -15,6 +17,22 @@ public interface SellerRepo extends JpaRepository<Seller, Long> {
 
 
 
+    @Query("""
+SELECT new com.example.Gruhani.dtos.SellerSummaryDto(
+    s.id,
+    s.businessName,
+    u.profileImageUrl,
+    
+    s.rating
+)
+FROM Seller s
+JOIN s.user u
+WHERE s.isApproved = true
+""")
+    List<SellerSummaryDto> findAllApprovedSellerSummaries();
+
+
+    @EntityGraph(attributePaths = {"categories"})
     List<Seller> findByIsApproved(boolean b);
 
     boolean existsByUser(Users user);
