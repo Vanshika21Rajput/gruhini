@@ -208,7 +208,7 @@ public class UserService {
     public List<ProductDto> getAllProducts()
     {
         List<ProductDto> l = productRepo.findAllProductsDto(ProductStatus.APPROVED);
-        //projection query to fetch onlu the required fields from db and mapping it into db implicitly
+        //projection query to fetch only the required fields from db and mapping it into db implicitly
         return l;
 
     }
