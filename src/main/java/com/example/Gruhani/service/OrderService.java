@@ -69,7 +69,7 @@ public class OrderService {
         String username = usernameFromContext.fetchUsername();
         Users user = userRepo.findByEmail(username).orElseThrow(() -> new UserNotFoundException("USER NOT FOUND"));
         Cart cart = user.getCart();
-        System.out.println("inside cart process");
+        System.out.println("inside cart process order");
         if (cart == null) {
 
             throw new InvalidCart("Cart Doesn't Exist");
